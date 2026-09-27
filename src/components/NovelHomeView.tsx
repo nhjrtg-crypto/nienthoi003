@@ -202,14 +202,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     return 'amethyst-haze';
   });
 
-  // Dark Mode: Mặc định luôn là chế độ sáng (false) khi vào trang chủ theo yêu cầu người dùng
+  // Dark Mode: Đồng bộ và ghi nhớ chế độ tối theo lựa chọn của người dùng
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
-      if (safeStorage.getItem('cosmo_home_light_default_v1') !== 'true') {
-        safeStorage.setItem('cosmo_home_light_default_v1', 'true');
-        safeStorage.setItem('cosmo_darkmode', 'false');
-        return false;
-      }
       const saved = safeStorage.getItem('cosmo_darkmode');
       return saved === 'true';
     } catch {
@@ -217,10 +212,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   });
 
-  // Khi vào trang chủ mặc định chế độ sáng theo yêu cầu người dùng
+  // Tự động đồng bộ chế độ tối khi quay về trang chủ
   useEffect(() => {
-    setIsDarkMode(false);
-    safeStorage.setItem('cosmo_darkmode', 'false');
+    try {
+      const saved = safeStorage.getItem('cosmo_darkmode');
+      if (saved !== null) {
+        setIsDarkMode(saved === 'true');
+      }
+    } catch {}
   }, []);
 
   // Dark Background Option for non-white, non-cosmic dark themes

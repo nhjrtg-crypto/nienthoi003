@@ -52,6 +52,48 @@ interface SavedViewState {
   viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
   selectedNovel: Novel | null;
   readingChapterNumber: number | null;
+  targetNovelId?: string | null;
+}
+
+export function normalizeNovelTitle(title?: string | null): string {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+export function findNovelByIdOrAlias(novels: Novel[], queryIdOrSlug?: string | null): Novel | undefined {
+  if (!queryIdOrSlug) return undefined;
+  const q = queryIdOrSlug.trim();
+  const qLower = q.toLowerCase();
+
+  // 1. Direct ID match
+  const direct = novels.find((n) => n.id === q);
+  if (direct) return direct;
+
+  // 2. Known aliases (e.g. Mẹ Kế Vừa Mềm Vừa Ngọt Firestore ID <-> slug)
+  if (qLower === 'me-ke-vua-mem-vua-ngot' || qLower === 'e5h5ozgg1sgnfyhjdm5z') {
+    const found = novels.find((n) => n.id === 'e5H5oZGg1sGnFyHjdM5Z' || n.id === 'me-ke-vua-mem-vua-ngot');
+    if (found) return found;
+  }
+  if (qLower === 'lua-nhau' || qLower === '2liaf62usgccmvld5xta') {
+    const found = novels.find((n) => n.id === 'lua-nhau' || n.id === '2liAf62uSgCcMvld5xtA');
+    if (found) return found;
+  }
+  if (qLower === 'truc-ma-alpha' || qLower === 's1zjuvan4umw3h7nxo9m') {
+    const found = novels.find((n) => n.id === 'truc-ma-alpha' || n.id === 's1zJUVAn4uMW3h7NXO9M');
+    if (found) return found;
+  }
+
+  // 3. Normalized title match
+  const normQ = normalizeNovelTitle(q);
+  const byTitle = novels.find((n) => normalizeNovelTitle(n.title) === normQ || normalizeNovelTitle(n.id) === normQ);
+  if (byTitle) return byTitle;
+
+  return undefined;
 }
 
 const LUA_NHAU_EXACT_COVER =
@@ -280,10 +322,37 @@ function getInitialNovels(): Novel[] {
           }
           return withDefaults;
         });
+
+        // Khử trùng lặp triệt để tránh trường hợp bộ truyện bị nhân đôi
+        const seen = new Set<string>();
+        const deduplicated: Novel[] = [];
+        for (const n of processed) {
+          const normTitle = normalizeNovelTitle(n.title);
+          const isMeKe = normTitle.includes('mekevuamemvuangot') || n.id === 'me-ke-vua-mem-vua-ngot' || n.id === 'e5H5oZGg1sGnFyHjdM5Z';
+          const key = isMeKe ? 'me-ke-vua-mem-vua-ngot' : normTitle;
+
+          if (seen.has(key)) {
+            const idx = deduplicated.findIndex((d) => {
+              const dKey = (normalizeNovelTitle(d.title).includes('mekevuamemvuangot') || d.id === 'me-ke-vua-mem-vua-ngot' || d.id === 'e5H5oZGg1sGnFyHjdM5Z') ? 'me-ke-vua-mem-vua-ngot' : normalizeNovelTitle(d.title);
+              return dKey === key;
+            });
+            if (idx !== -1 && (!deduplicated[idx].chapters || deduplicated[idx].chapters.length === 0) && n.chapters && n.chapters.length > 0) {
+              deduplicated[idx] = {
+                ...deduplicated[idx],
+                chapters: n.chapters,
+                totalChaptersCount: Math.max(deduplicated[idx].totalChaptersCount || 0, n.chapters.length),
+              };
+            }
+            continue;
+          }
+          seen.add(key);
+          deduplicated.push(n);
+        }
+
         try {
-          safeStorage.setItem('cosmo_novels', JSON.stringify(processed));
+          safeStorage.setItem('cosmo_novels', JSON.stringify(deduplicated));
         } catch {}
-        return processed;
+        return deduplicated;
       }
     }
   } catch (e) {
@@ -292,53 +361,102 @@ function getInitialNovels(): Novel[] {
   return INITIAL_NOVELS;
 }
 
+export function parseRouteFromLocation(): {
+  viewMode?: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
+  novelId?: string;
+  chapterNumber?: number;
+} {
+  if (typeof window === 'undefined') return {};
+
+  let raw = '';
+  // Kiểm tra hash trước (nếu người dùng truy cập link cũ có dấu #)
+  if (window.location.hash) {
+    raw = window.location.hash.replace(/^#\/?/, '').trim();
+  }
+  // Sau đó kiểm tra pathname tiêu chuẩn (không có dấu #)
+  if (!raw && window.location.pathname && window.location.pathname !== '/') {
+    raw = window.location.pathname.replace(/^\/+|\/+$/g, '').trim();
+  }
+
+  if (!raw) return {};
+
+  // Khớp định dạng: read/:novelId/:chapterNumber hoặc novel/:novelId/chapter/:chapterNumber
+  const readMatch = raw.match(/^(?:read|novel)\/([^/]+)\/(?:chapter\/|ch\/)?(\d+)$/i);
+  if (readMatch) {
+    const chapterNum = parseInt(readMatch[2], 10);
+    return {
+      viewMode: 'novel-detail',
+      novelId: readMatch[1],
+      chapterNumber: isNaN(chapterNum) ? 1 : chapterNum,
+    };
+  }
+
+  // Khớp định dạng: read/:novelId (mặc định mở chương 1)
+  const readNoChap = raw.match(/^read\/([^/]+)$/i);
+  if (readNoChap) {
+    return {
+      viewMode: 'novel-detail',
+      novelId: readNoChap[1],
+      chapterNumber: 1,
+    };
+  }
+
+  // Khớp định dạng: novel/:novelId (trang thông tin truyện)
+  const novelMatch = raw.match(/^novel\/([^/]+)$/i);
+  if (novelMatch) {
+    return {
+      viewMode: 'novel-detail',
+      novelId: novelMatch[1],
+      chapterNumber: undefined,
+    };
+  }
+
+  // Giới thiệu
+  if (
+    raw === 'about' ||
+    raw === 'about-light' ||
+    raw === 'gioi-thieu' ||
+    raw === 'intro-light' ||
+    raw === 'intro'
+  ) {
+    return { viewMode: 'about-light' };
+  }
+
+  if (raw === 'portfolio' || raw === 'skills' || raw === 'experience' || raw === 'projects' || raw === 'contact') {
+    return { viewMode: 'portfolio' };
+  }
+
+  if (raw === 'novels' || raw === 'novel-home' || raw === 'truyen') {
+    return { viewMode: 'novel-home' };
+  }
+
+  return {};
+}
+
 function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
-  // 1. First priority: check URL hash if present
-  if (typeof window !== 'undefined' && window.location.hash) {
-    const hash = window.location.hash.replace(/^#\/?/, '');
-
-    // Format: read/:novelId/:chapterNumber or novel/:novelId/chapter/:chapterNumber
-    const readMatch = hash.match(/^(?:read|novel)\/([^/]+)\/(?:chapter\/|ch\/)?(\d+)$/i);
-    if (readMatch) {
-      const novelId = readMatch[1];
-      const chapterNum = parseInt(readMatch[2], 10);
-      const novel = availableNovels.find((n) => n.id === novelId);
-      if (novel) {
+  // 1. Ưu tiên số 1: Phân tích đường dẫn URL thực tế (hỗ trợ cả link sạch không có # và link hash)
+  const route = parseRouteFromLocation();
+  if (route.viewMode) {
+    if (route.viewMode === 'novel-detail' && route.novelId) {
+      const found = findNovelByIdOrAlias(availableNovels, route.novelId);
+      if (found) {
         return {
           viewMode: 'novel-detail',
-          selectedNovel: novel,
-          readingChapterNumber: isNaN(chapterNum) ? 1 : chapterNum,
+          selectedNovel: found,
+          readingChapterNumber: route.chapterNumber ?? null,
+          targetNovelId: null,
         };
       }
+      // Nếu danh mục Firestore đang tải bất đồng bộ khi vừa F5, không bị văng về trang chủ!
+      return {
+        viewMode: 'novel-detail',
+        selectedNovel: null,
+        readingChapterNumber: route.chapterNumber ?? 1,
+        targetNovelId: route.novelId,
+      };
     }
 
-    // Format: novel/:novelId
-    const novelMatch = hash.match(/^novel\/([^/]+)$/i);
-    if (novelMatch) {
-      const novelId = novelMatch[1];
-      const novel = availableNovels.find((n) => n.id === novelId);
-      if (novel) {
-        return {
-          viewMode: 'novel-detail',
-          selectedNovel: novel,
-          readingChapterNumber: null,
-        };
-      }
-    }
-
-    // Format: about, intro, gioi-thieu (Bỏ trang giới thiệu phong cách cosmic, chuyển thẳng vào about-light)
-    if (
-      hash === 'about' ||
-      hash === 'about-light' ||
-      hash === 'gioi-thieu' ||
-      hash === 'intro-light' ||
-      hash === 'intro' ||
-      hash === 'portfolio' ||
-      hash === 'skills' ||
-      hash === 'experience' ||
-      hash === 'projects' ||
-      hash === 'contact'
-    ) {
+    if (route.viewMode === 'about-light') {
       return {
         viewMode: 'about-light',
         selectedNovel: null,
@@ -346,8 +464,15 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
       };
     }
 
-    // Format: novels or novel-home
-    if (hash === 'novels' || hash === 'novel-home' || hash === 'truyen') {
+    if (route.viewMode === 'portfolio') {
+      return {
+        viewMode: 'portfolio',
+        selectedNovel: null,
+        readingChapterNumber: null,
+      };
+    }
+
+    if (route.viewMode === 'novel-home') {
       return {
         viewMode: 'novel-home',
         selectedNovel: null,
@@ -356,7 +481,7 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
     }
   }
 
-  // 2. Second priority: safeStorage 'cosmo_active_view'
+  // 2. Ưu tiên số 2: safeStorage 'cosmo_active_view'
   try {
     const saved = safeStorage.getItem('cosmo_active_view');
     if (saved) {
@@ -369,7 +494,7 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
         };
       }
       if (parsed.viewMode === 'novel-detail' && parsed.novelId) {
-        const novel = availableNovels.find((n) => n.id === parsed.novelId);
+        const novel = findNovelByIdOrAlias(availableNovels, parsed.novelId);
         if (novel) {
           const chapNum = typeof parsed.readingChapterNumber === 'number' ? parsed.readingChapterNumber : null;
           return {
@@ -378,6 +503,12 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
             readingChapterNumber: chapNum,
           };
         }
+        return {
+          viewMode: 'novel-detail',
+          selectedNovel: null,
+          readingChapterNumber: typeof parsed.readingChapterNumber === 'number' ? parsed.readingChapterNumber : null,
+          targetNovelId: parsed.novelId,
+        };
       }
     }
   } catch (e) {
@@ -408,6 +539,7 @@ export default function App() {
   const [novels, setNovels] = useState<Novel[]>(initialNovels);
   const [selectedNovel, setSelectedNovel] = useState<Novel | null>(initialView.selectedNovel);
   const [readingChapterNumber, setReadingChapterNumber] = useState<number | null>(initialView.readingChapterNumber);
+  const [pendingNovelId, setPendingNovelId] = useState<string | null>(initialView.targetNovelId || null);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   // Admin & Firestore States
@@ -512,11 +644,15 @@ export default function App() {
   const allMergedNovels = useMemo(() => {
     const mapped = firestoreTruyens.map((ft) => {
       const converted = convertFirestoreTruyenToNovel(ft);
-      const existingLocal = novels.find((n) => n.id === ft.id);
+      const existingLocal =
+        findNovelByIdOrAlias(novels, ft.id) ||
+        novels.find((n) => normalizeNovelTitle(n.title) === normalizeNovelTitle(ft.tenTruyen));
+
       if (existingLocal) {
         return {
           ...converted,
           ...existingLocal,
+          id: ft.id,
           comments:
             existingLocal.comments && existingLocal.comments.length > 0
               ? existingLocal.comments
@@ -550,15 +686,82 @@ export default function App() {
       }
       return converted;
     });
+
     const fsIdSet = new Set(mapped.map((m) => m.id));
-    const nonConflictingLocal = novels.filter((n) => !fsIdSet.has(n.id));
-    const all = [...mapped, ...nonConflictingLocal].filter((n) => !isBannedOrDraftNovel(n));
-    return all.map((novel) => ({
-      ...novel,
-      status: 'completed' as const,
-      translator: novel.translator || 'Jouriee65',
-    }));
+    const fsTitleSet = new Set(mapped.map((m) => normalizeNovelTitle(m.title)));
+
+    const nonConflictingLocal = novels.filter((n) => {
+      if (fsIdSet.has(n.id)) return false;
+      if (fsTitleSet.has(normalizeNovelTitle(n.title))) return false;
+      if (
+        (n.id === 'me-ke-vua-mem-vua-ngot' || n.id === 'e5H5oZGg1sGnFyHjdM5Z') &&
+        (fsIdSet.has('me-ke-vua-mem-vua-ngot') || fsIdSet.has('e5H5oZGg1sGnFyHjdM5Z'))
+      ) {
+        return false;
+      }
+      return true;
+    });
+
+    const combined = [...mapped, ...nonConflictingLocal].filter((n) => !isBannedOrDraftNovel(n));
+
+    // Khử trùng lặp triệt để: Đảm bảo không bao giờ có 2 bộ truyện cùng tên (như "Mẹ Kế Vừa Mềm Vừa Ngọt")
+    const seenTitles = new Set<string>();
+    const seenIds = new Set<string>();
+    const deduplicated: Novel[] = [];
+
+    for (const novel of combined) {
+      const normTitle = normalizeNovelTitle(novel.title);
+      const isMeKe =
+        normTitle.includes('mekevuamemvuangot') ||
+        novel.id === 'me-ke-vua-mem-vua-ngot' ||
+        novel.id === 'e5H5oZGg1sGnFyHjdM5Z';
+      const dedupeKey = isMeKe ? 'me-ke-vua-mem-vua-ngot' : normTitle;
+
+      if (seenTitles.has(dedupeKey) || seenIds.has(novel.id)) {
+        const existingIdx = deduplicated.findIndex((d) => {
+          const dKey =
+            normalizeNovelTitle(d.title).includes('mekevuamemvuangot') ||
+            d.id === 'me-ke-vua-mem-vua-ngot' ||
+            d.id === 'e5H5oZGg1sGnFyHjdM5Z'
+              ? 'me-ke-vua-mem-vua-ngot'
+              : normalizeNovelTitle(d.title);
+          return dKey === dedupeKey || d.id === novel.id;
+        });
+        if (existingIdx !== -1) {
+          const existing = deduplicated[existingIdx];
+          if ((!existing.chapters || existing.chapters.length === 0) && novel.chapters && novel.chapters.length > 0) {
+            deduplicated[existingIdx] = {
+              ...existing,
+              chapters: novel.chapters,
+              totalChaptersCount: Math.max(existing.totalChaptersCount || 0, novel.chapters.length),
+            };
+          }
+        }
+        continue;
+      }
+
+      seenTitles.add(dedupeKey);
+      seenIds.add(novel.id);
+      deduplicated.push({
+        ...novel,
+        status: 'completed' as const,
+        translator: novel.translator || 'Jouriee65',
+      });
+    }
+
+    return deduplicated;
   }, [firestoreTruyens, novels]);
+
+  // Tự động phân giải pendingNovelId ngay khi danh mục truyện allMergedNovels được tải
+  useEffect(() => {
+    if (pendingNovelId) {
+      const found = findNovelByIdOrAlias(allMergedNovels, pendingNovelId);
+      if (found) {
+        setSelectedNovel(found);
+        setPendingNovelId(null);
+      }
+    }
+  }, [allMergedNovels, pendingNovelId]);
 
   // Save novels to safeStorage whenever state updates
   useEffect(() => {
@@ -582,7 +785,7 @@ export default function App() {
         const localList: Novel[] = JSON.parse(savedNovelsStr);
         if (!Array.isArray(localList) || localList.length === 0) return;
 
-        const builtInIds = new Set(['lua-nhau', 'truc-ma-alpha', 'me-ke-vua-mem-vua-ngot', 'c-lua-nhau']);
+        const builtInIds = new Set(['lua-nhau', 'truc-ma-alpha', 'me-ke-vua-mem-vua-ngot', 'e5H5oZGg1sGnFyHjdM5Z', 'c-lua-nhau']);
 
         for (const local of localList) {
           if (!local || !local.title || !local.title.trim()) continue;
@@ -591,7 +794,9 @@ export default function App() {
 
           // Check if already in firestore by ID or exact title
           const existsInFirestore = firestoreTruyens.some(
-            (ft) => ft.id === local.id || ft.tenTruyen.toLowerCase().trim() === local.title.toLowerCase().trim()
+            (ft) =>
+              ft.id === local.id ||
+              normalizeNovelTitle(ft.tenTruyen) === normalizeNovelTitle(local.title)
           );
 
           if (!existsInFirestore) {
@@ -639,27 +844,29 @@ export default function App() {
   // Keep selectedNovel synchronized with latest novel data in allMergedNovels array
   useEffect(() => {
     if (selectedNovel) {
-      const refreshed = allMergedNovels.find((n) => n.id === selectedNovel.id);
+      const refreshed = findNovelByIdOrAlias(allMergedNovels, selectedNovel.id);
       if (refreshed) {
         if (refreshed !== selectedNovel || refreshed.totalChaptersCount !== selectedNovel.totalChaptersCount || refreshed.trangThai !== selectedNovel.trangThai) {
           setSelectedNovel(refreshed);
         }
       } else {
-        // Novel was deleted or is banned
-        setSelectedNovel(null);
-        setViewMode('novel-home');
+        // Chỉ reset về trang chủ khi danh mục từ Firestore đã tải xong thật sự mà vẫn không tìm thấy
+        if (hasLoadedCatalogRef.current && firestoreTruyens.length > 0) {
+          setSelectedNovel(null);
+          setViewMode('novel-home');
+        }
       }
     }
   }, [allMergedNovels, selectedNovel?.id]);
 
-  // Persist active view state and synchronize URL hash
+  // Persist active view state and synchronize clean URL without '#'
   useEffect(() => {
     try {
       safeStorage.setItem(
         'cosmo_active_view',
         JSON.stringify({
           viewMode,
-          novelId: selectedNovel?.id ?? null,
+          novelId: selectedNovel?.id ?? pendingNovelId ?? null,
           readingChapterNumber,
         })
       );
@@ -667,36 +874,43 @@ export default function App() {
       console.warn('Could not save active view state', e);
     }
 
-    // Synchronize URL hash
+    // Synchronize clean URL (Không dùng dấu # trên tên miền)
     if (typeof window !== 'undefined') {
-      let desiredHash = '';
+      // Đang chờ nạp truyện từ Firestore, không ghi đè làm mất URL của người dùng
+      if (pendingNovelId && !selectedNovel) return;
+
+      let desiredPath = '/';
       if (viewMode === 'novel-detail' && selectedNovel) {
         if (readingChapterNumber !== null) {
-          desiredHash = `#read/${selectedNovel.id}/${readingChapterNumber}`;
+          desiredPath = `/read/${selectedNovel.id}/${readingChapterNumber}`;
         } else {
-          desiredHash = `#novel/${selectedNovel.id}`;
+          desiredPath = `/novel/${selectedNovel.id}`;
         }
       } else if (viewMode === 'novel-home') {
-        desiredHash = '';
+        desiredPath = '/';
       } else if (viewMode === 'portfolio') {
-        desiredHash = '#portfolio';
+        desiredPath = '/portfolio';
       } else if (viewMode === 'about-light') {
-        desiredHash = '#about-light';
+        desiredPath = '/about';
       }
 
-      if (window.location.hash !== desiredHash) {
+      const currentPath = window.location.pathname;
+      const currentHash = window.location.hash;
+
+      // Cập nhật đường dẫn sạch, xóa bỏ hash cũ nếu có
+      if (currentPath !== desiredPath || currentHash) {
         try {
-          window.history.replaceState(null, '', desiredHash || window.location.pathname);
+          window.history.replaceState(null, '', desiredPath);
         } catch {
           try {
-            window.location.hash = desiredHash;
+            window.location.hash = desiredPath === '/' ? '' : desiredPath.replace(/^\//, '#');
           } catch {
             // Ignored in sandboxed iframes
           }
         }
       }
     }
-  }, [viewMode, selectedNovel?.id, readingChapterNumber]);
+  }, [viewMode, selectedNovel?.id, readingChapterNumber, pendingNovelId]);
 
   // Ghi nhận LƯỢT XEM WEB phiên truy cập (Tối ưu hóa: chỉ tính 1 lượt xem cho cả phiên, chống F5/spam)
   useEffect(() => {
@@ -710,24 +924,29 @@ export default function App() {
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber]);
 
-  // Respond to browser back/forward buttons (hashchange)
+  // Phản hồi nút Back/Forward của trình duyệt (hỗ trợ cả popstate và hashchange)
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleLocationChange = () => {
       const parsed = parseSavedViewState(allMergedNovels);
       setViewMode(parsed.viewMode);
       setSelectedNovel(parsed.selectedNovel);
       setReadingChapterNumber(parsed.readingChapterNumber);
+      if (parsed.targetNovelId) {
+        setPendingNovelId(parsed.targetNovelId);
+      }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
   }, [allMergedNovels]);
 
   const handleOpenNovelPlatform = () => {
     setSelectedNovel(null);
     setReadingChapterNumber(null);
-    setIsDarkMode(false);
-    safeStorage.setItem('cosmo_darkmode', 'false');
     setViewMode('novel-home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1135,8 +1354,6 @@ export default function App() {
             onBack={() => {
               setSelectedNovel(null);
               setReadingChapterNumber(null);
-              setIsDarkMode(false);
-              safeStorage.setItem('cosmo_darkmode', 'false');
               setViewMode('novel-home');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
@@ -1164,8 +1381,6 @@ export default function App() {
               onBackToNovels={() => {
                 setSelectedNovel(null);
                 setReadingChapterNumber(null);
-                setIsDarkMode(false);
-                safeStorage.setItem('cosmo_darkmode', 'false');
                 setViewMode('novel-home');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -1183,8 +1398,6 @@ export default function App() {
               onBackToNovels={() => {
                 setSelectedNovel(null);
                 setReadingChapterNumber(null);
-                setIsDarkMode(false);
-                safeStorage.setItem('cosmo_darkmode', 'false');
                 setViewMode('novel-home');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -1194,7 +1407,7 @@ export default function App() {
                 safeStorage.setItem('light_intro_option', opt);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              isDarkMode={false}
+              isDarkMode={isDarkMode}
               onToggleDarkMode={toggleDarkMode}
             />
           )}
