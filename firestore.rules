@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Thống kê hệ thống và bộ đếm tổng lượt xem toàn web / lượt đọc thực
+    match /he_thong/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Danh sách truyện
+    match /truyen/{truyenId} {
+      allow read: if true;
+      allow write: if true;
+
+      // Danh sách chương truyện
+      match /chuong/{chuongId} {
+        allow read: if true;
+        allow write: if true;
+      }
+
+      // Bình luận độc giả theo truyện
+      match /binh_luan/{commentId} {
+        allow read: if true;
+        allow write: if true;
+      }
+    }
+
+    // Bình luận độc giả
+    match /binh_luan/{commentId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // Thống kê thả tim trang giới thiệu (Style 1 và Style 2)
+    match /gioi_thieu_stats/{styleId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Lưu bút / Lời nhắn trang giới thiệu Style 1 (Sổ Kế Hoạch 2 Mặt)
+    match /gioi_thieu_notes_style1/{noteId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // Lưu bút / Lời nhắn trang giới thiệu Style 2 (Máy Trứng Tamagotchi)
+    match /gioi_thieu_notes_style2/{noteId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // Mặc định các collection khác
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

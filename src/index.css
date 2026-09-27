@@ -1,0 +1,2602 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Source Sans 3', 'Be Vietnam Pro', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 430;
+    background-color: #060713;
+    color: #e2e8f0;
+    overflow-x: hidden;
+  }
+
+  /* Ensure all headings have distinct bold weight */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+  }
+
+  /* Ensure all buttons have distinct bold weight */
+  button, input[type="submit"], input[type="button"] {
+    font-weight: 600;
+  }
+}
+
+/* Tên truyện/tiêu đề trên toàn bộ web: font Lexend Deca, font-weight giảm một chút (600) */
+.font-stix,
+.font-bodoni,
+.font-cambria,
+.font-novel-title {
+  font-family: 'Lexend Deca', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 600 !important;
+}
+
+/* Phông Lexend Deca */
+.font-lexend,
+.font-lexend-deca {
+  font-family: 'Lexend Deca', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Phông Dongle */
+.font-dongle {
+  font-family: 'Dongle', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Phông Noto Serif Display, font weight: 700 cho thương hiệu Niên Thời */
+.font-brand-noto,
+.font-brand-title {
+  font-family: 'Noto Serif Display', 'Source Serif 4', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+}
+
+.font-brand-cormorant {
+  font-family: 'Cormorant Garamond', Garamond, Georgia, serif !important;
+  font-weight: 500 !important;
+  font-style: italic !important;
+}
+
+.font-serif,
+.font-source-serif {
+  font-family: 'Source Serif 4', 'Playfair Display', Georgia, serif;
+}
+
+.font-lora {
+  font-family: 'Lora', Georgia, serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-open-sans {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-times {
+  font-family: 'Times New Roman', Times, 'Liberation Serif', Georgia, serif;
+}
+
+.font-roboto {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+}
+
+.font-source-sans {
+  font-family: 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Tăng cỡ chữ thêm 1px cho tất cả các phần tử phông Source Sans 3 */
+.font-source-sans.text-\[10px\],
+.font-source-sans .text-\[10px\] {
+  font-size: 11px !important;
+}
+.font-source-sans.text-\[11px\],
+.font-source-sans .text-\[11px\] {
+  font-size: 12px !important;
+}
+.font-source-sans.text-xs,
+.font-source-sans .text-xs {
+  font-size: 14px !important;
+}
+.font-source-sans.text-sm,
+.font-source-sans .text-sm {
+  font-size: 16px !important;
+}
+.font-source-sans.text-base,
+.font-source-sans .text-base {
+  font-size: 18px !important;
+}
+.font-source-sans.text-lg,
+.font-source-sans .text-lg {
+  font-size: 20px !important;
+}
+.font-source-sans.text-xl,
+.font-source-sans .text-xl {
+  font-size: 22px !important;
+}
+
+@media (min-width: 640px) {
+  .font-source-sans.sm\:text-xs,
+  .font-source-sans .sm\:text-xs {
+    font-size: 14px !important;
+  }
+  .font-source-sans.sm\:text-sm,
+  .font-source-sans .sm\:text-sm {
+    font-size: 16px !important;
+  }
+  .font-source-sans.sm\:text-base,
+  .font-source-sans .sm\:text-base {
+    font-size: 18px !important;
+  }
+  .font-source-sans.sm\:text-lg,
+  .font-source-sans .sm\:text-lg {
+    font-size: 20px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .font-source-sans.md\:text-xs,
+  .font-source-sans .md\:text-xs {
+    font-size: 14px !important;
+  }
+  .font-source-sans.md\:text-sm,
+  .font-source-sans .md\:text-sm {
+    font-size: 16px !important;
+  }
+  .font-source-sans.md\:text-base,
+  .font-source-sans .md\:text-base {
+    font-size: 18px !important;
+  }
+  .font-source-sans.md\:text-lg,
+  .font-source-sans .md\:text-lg {
+    font-size: 20px !important;
+  }
+}
+
+.font-sans, .font-modern {
+  font-family: 'Source Sans 3', 'Be Vietnam Pro', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.font-tektur {
+  font-family: 'Tektur', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-syne {
+  font-family: 'Tektur', 'Syne', sans-serif;
+}
+
+.font-jakarta {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-architects {
+  font-family: 'Architects Daughter', cursive, sans-serif;
+}
+
+.font-dm {
+  font-family: 'DM Sans', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Default weight 430 for modern and sans text without overriding explicit weights or buttons/headings */
+:where(.font-sans, .font-modern, .font-outfit, .font-jakarta, .font-dm) {
+  font-weight: 430;
+}
+
+/* Headings and buttons using font-sans/font-modern default to bold */
+:where(h1, h2, h3, h4, h5, h6).font-sans,
+:where(h1, h2, h3, h4, h5, h6).font-modern {
+  font-weight: 700;
+}
+
+:where(button, [role="button"]).font-sans,
+:where(button, [role="button"]).font-modern {
+  font-weight: 600;
+}
+
+/* Specificity safeguards for explicit Tailwind font weights */
+.font-normal { font-weight: 400 !important; }
+.font-medium { font-weight: 500 !important; }
+.font-semibold { font-weight: 600 !important; }
+.font-bold { font-weight: 700 !important; }
+.font-extrabold { font-weight: 800 !important; }
+.font-black { font-weight: 900 !important; }
+
+/* Cosmic Coordinate Grid */
+.cosmic-grid {
+  background-size: 64px 64px;
+  background-image: 
+    linear-gradient(to right, rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.07) 1px, transparent 1px);
+}
+
+.cosmic-grid-fine {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(168, 85, 247, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(168, 85, 247, 0.04) 1px, transparent 1px);
+}
+
+/* Cosmic Glow Utilities */
+.glow-purple {
+  box-shadow: 0 0 35px rgba(168, 85, 247, 0.35);
+}
+
+/* Glassmorphism Header Utilities */
+.glass-header {
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+}
+
+/* Glassmorphism Dark Mode Panel & Card Utilities (Optimized for 60fps & smooth theme transitions) */
+.glass-panel-dark {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.glass-card-dark {
+  /* Lightweight blur without extreme saturation to keep grid rendering silky smooth */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.glow-magenta {
+  box-shadow: 0 0 45px rgba(236, 72, 153, 0.45);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.35);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 25px rgba(196, 181, 253, 0.55), 0 0 50px rgba(139, 92, 246, 0.35);
+}
+
+.text-glow-pink {
+  text-shadow: 0 0 20px rgba(244, 114, 182, 0.6);
+}
+
+/* Orbital Keyframe Animations */
+@keyframes orbit-cw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes float-cosmic {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-1deg);
+  }
+}
+
+.animate-orbit-1 {
+  animation: orbit-cw 36s linear infinite;
+}
+
+.animate-orbit-2 {
+  animation: orbit-ccw 54s linear infinite;
+}
+
+.animate-orbit-3 {
+  animation: orbit-cw 72s linear infinite;
+}
+
+.animate-orbit-counter-1 {
+  animation: orbit-ccw 36s linear infinite;
+}
+
+.animate-orbit-counter-2 {
+  animation: orbit-cw 54s linear infinite;
+}
+
+.animate-orbit-counter-3 {
+  animation: orbit-ccw 72s linear infinite;
+}
+
+.animate-float {
+  animation: float-cosmic 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 7s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-subtle 4s ease-in-out infinite;
+}
+
+/* 1. Hiệu ứng lớp đệm hào quang chuyển động (Motion Halo Cushion) không viền chuẩn theo ảnh - nhanh và mượt mà hơn */
+@keyframes halo-cushion-pulse {
+  0%, 100% {
+    transform: scale(0.99);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.025);
+    opacity: 0.6;
+  }
+}
+
+.animate-halo-cushion,
+.animate-single-pulse-ring {
+  animation: halo-cushion-pulse 1.6s ease-in-out infinite;
+}
+
+/* 2. Hiệu ứng Viền chuyển sắc động (Animated Gradient Flow Border) - nhanh hơn nhưng vẫn mượt mà */
+@keyframes subtle-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-flow {
+  background-size: 250% 250%;
+  animation: subtle-gradient-flow 4.2s linear infinite;
+}
+
+/* 3. Hiệu ứng Vệt sáng lướt ngang (Soft Shimmer Sweep) - nhanh hơn nhưng mượt mà */
+@keyframes soft-shimmer-sweep {
+  0%, 12% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  22% {
+    opacity: 0.8;
+  }
+  42% {
+    transform: translateX(250%) skewX(-20deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+.animate-shimmer-sweep {
+  animation: soft-shimmer-sweep 3.2s ease-in-out infinite;
+}
+
+/* 4. Hiệu ứng Chấm tròn phát tín hiệu nhanh hơn và mượt mà */
+@keyframes ping-fast {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-ping-smooth {
+  animation: ping-fast 0.85s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Utility to hide scrollbar while preserving scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 5. Border Beam: A thin arc of light sweeping along rounded borders */
+@keyframes border-beam-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-border-beam {
+  animation: border-beam-sweep 6s linear infinite;
+  will-change: transform;
+}
+
+/* 6. Web Logo: Circular Frame with Drifting Clouds (4 Options) */
+@keyframes cloud-drift-horizontal-1 {
+  0% {
+    transform: translateX(-12px) translateY(0px);
+  }
+  50% {
+    transform: translateX(10px) translateY(-1.5px);
+  }
+  100% {
+    transform: translateX(-12px) translateY(0px);
+  }
+}
+
+@keyframes cloud-drift-horizontal-2 {
+  0% {
+    transform: translateX(8px) translateY(0px);
+  }
+  50% {
+    transform: translateX(-11px) translateY(1.5px);
+  }
+  100% {
+    transform: translateX(8px) translateY(0px);
+  }
+}
+
+@keyframes cloud-drift-horizontal-3 {
+  0% {
+    transform: translateX(-6px) translateY(0.5px);
+  }
+  50% {
+    transform: translateX(7px) translateY(-1px);
+  }
+  100% {
+    transform: translateX(-6px) translateY(0.5px);
+  }
+}
+
+.animate-cloud-drift-1 {
+  animation: cloud-drift-horizontal-1 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-cloud-drift-2 {
+  animation: cloud-drift-horizontal-2 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-cloud-drift-3 {
+  animation: cloud-drift-horizontal-3 5.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes portal-glow-pulse {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.animate-portal-pulse {
+  animation: portal-glow-pulse 3.6s ease-in-out infinite;
+  transform-origin: 50px 50px;
+  will-change: transform, opacity;
+}
+
+@keyframes celestial-shimmer {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.animate-celestial-star {
+  animation: celestial-shimmer 2.4s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Light Theme Logo Animations: Creative Motifs */
+@keyframes sundial-sweep {
+  0% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(20deg);
+  }
+  100% {
+    transform: rotate(-15deg);
+  }
+}
+
+.animate-sundial-pointer {
+  animation: sundial-sweep 8s ease-in-out infinite;
+  transform-origin: 50px 58px;
+  will-change: transform;
+}
+
+@keyframes leaf-sway {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  25% {
+    transform: translate(4px, -3px) rotate(8deg);
+  }
+  50% {
+    transform: translate(7px, 2px) rotate(-4deg);
+  }
+  75% {
+    transform: translate(3px, 4px) rotate(6deg);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+}
+
+.animate-leaf-float {
+  animation: leaf-sway 5.6s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes page-curl {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(-2.5deg) scale(1.02);
+  }
+}
+
+.animate-page-curl {
+  animation: page-curl 4.2s ease-in-out infinite;
+  transform-origin: 50px 65px;
+  will-change: transform;
+}
+
+@keyframes branch-breeze {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+.animate-branch-breeze {
+  animation: branch-breeze 4.8s ease-in-out infinite;
+  transform-origin: 22px 72px;
+  will-change: transform;
+}
+
+@keyframes dew-shimmer {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-dew-shimmer {
+  animation: dew-shimmer 2.6s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+@keyframes ink-ripple-1 {
+  0% {
+    r: 4px;
+    opacity: 0.85;
+    stroke-width: 1.8px;
+  }
+  100% {
+    r: 28px;
+    opacity: 0;
+    stroke-width: 0.6px;
+  }
+}
+
+@keyframes ink-ripple-2 {
+  0% {
+    r: 4px;
+    opacity: 0.85;
+    stroke-width: 1.8px;
+  }
+  100% {
+    r: 28px;
+    opacity: 0;
+    stroke-width: 0.6px;
+  }
+}
+
+.animate-ink-ripple-1 {
+  animation: ink-ripple-1 3.2s cubic-bezier(0.1, 0.45, 0.35, 1) infinite;
+  will-change: r, opacity;
+}
+
+.animate-ink-ripple-2 {
+  animation: ink-ripple-2 3.2s cubic-bezier(0.1, 0.45, 0.35, 1) infinite;
+  animation-delay: 1.6s;
+  will-change: r, opacity;
+}
+
+@keyframes quill-dip {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2.5px) rotate(-3deg);
+  }
+}
+
+.animate-quill-dip {
+  animation: quill-dip 3.2s ease-in-out infinite;
+  transform-origin: 50px 52px;
+  will-change: transform;
+}
+
+/* Landscape Icons Animations (🌷 ☂ 🌈 ♪ 💽) */
+@keyframes tulip-sway {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+.animate-tulip-sway {
+  animation: tulip-sway 4.2s ease-in-out infinite;
+  transform-origin: 50px 75px;
+  will-change: transform;
+}
+
+@keyframes petal-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(18px, 14px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.animate-petal-drift {
+  animation: petal-drift 5.6s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes rain-fall {
+  0% {
+    transform: translateY(-12px) translateX(-6px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.85;
+  }
+  75% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(16px) translateX(8px);
+    opacity: 0;
+  }
+}
+
+.animate-rain-1 {
+  animation: rain-fall 2.2s linear infinite;
+  will-change: transform, opacity;
+}
+
+.animate-rain-2 {
+  animation: rain-fall 2.2s linear infinite;
+  animation-delay: 0.7s;
+  will-change: transform, opacity;
+}
+
+.animate-rain-3 {
+  animation: rain-fall 2.2s linear infinite;
+  animation-delay: 1.4s;
+  will-change: transform, opacity;
+}
+
+@keyframes umbrella-sway {
+  0%, 100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-umbrella-sway {
+  animation: umbrella-sway 4.6s ease-in-out infinite;
+  transform-origin: 50px 65px;
+  will-change: transform;
+}
+
+@keyframes rainbow-shimmer {
+  0%, 100% {
+    opacity: 0.82;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.1);
+  }
+}
+
+.animate-rainbow-shimmer {
+  animation: rainbow-shimmer 4.8s ease-in-out infinite;
+  will-change: opacity, filter;
+}
+
+@keyframes bird-glide {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-2px) translateX(3px);
+  }
+}
+
+.animate-bird-glide {
+  animation: bird-glide 3.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes note-float-1 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(8deg);
+  }
+}
+
+.animate-note-float-1 {
+  animation: note-float-1 3.4s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes note-float-2 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3.5px) rotate(-6deg);
+  }
+}
+
+.animate-note-float-2 {
+  animation: note-float-2 3.8s ease-in-out infinite;
+  animation-delay: 0.6s;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-vinyl-spin {
+  animation: vinyl-spin 18s linear infinite;
+  transform-origin: 50px 50px;
+  will-change: transform;
+}
+
+@keyframes tonearm-nudge {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.animate-tonearm {
+  animation: tonearm-nudge 5s ease-in-out infinite;
+  transform-origin: 75px 25px;
+  will-change: transform;
+}
+
+/* Asian Moon Gate Window & Blooming Blossom Animations */
+@keyframes bloom-flower-cycle {
+  0%, 8% {
+    transform: scale(0.32) rotate(-10deg);
+    opacity: 0.65;
+  }
+  32% {
+    transform: scale(0.72) rotate(-2deg);
+    opacity: 0.88;
+  }
+  50%, 80% {
+    transform: scale(1.04) rotate(2deg);
+    opacity: 1;
+  }
+  92%, 100% {
+    transform: scale(0.32) rotate(-10deg);
+    opacity: 0.65;
+  }
+}
+
+.animate-bloom-flower {
+  animation: bloom-flower-cycle 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+@keyframes bloom-petal-splay-left {
+  0%, 8% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+  45%, 80% {
+    transform: rotate(-24deg) translate(-2px, -1px);
+  }
+  95%, 100% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+}
+
+.animate-bloom-petal-left {
+  animation: bloom-petal-splay-left 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+@keyframes bloom-petal-splay-right {
+  0%, 8% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+  45%, 80% {
+    transform: rotate(24deg) translate(2px, -1px);
+  }
+  95%, 100% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+}
+
+.animate-bloom-petal-right {
+  animation: bloom-petal-splay-right 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+@keyframes bloom-stamen-reveal {
+  0%, 15% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  48%, 80% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  90%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-bloom-stamen {
+  animation: bloom-stamen-reveal 7.5s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+@keyframes zen-branch-sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-zen-branch {
+  animation: zen-branch-sway 5.2s ease-in-out infinite;
+  transform-origin: 18px 74px;
+  will-change: transform;
+}
+
+@keyframes zen-petal-float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(22px, 16px) rotate(55deg);
+    opacity: 0;
+  }
+}
+
+.animate-zen-petal-float {
+  animation: zen-petal-float 6.2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* ==========================================================================
+   Icon-Based Standalone Logos (No Outer Ring/Circle) Animation Keyframes
+   🌠 Shooting Star, ☄️ Comet, 🌌 Galaxy, 🎼 Musical Score, 🍑 Peach, 🌈 Rainbow, 🎀 Ribbon Bow
+   ========================================================================== */
+
+/* 1. 🌠 Shooting Star Animations */
+@keyframes shooting-star-dash {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-3px, 3px) scale(1.04);
+  }
+}
+
+.animate-shooting-star {
+  animation: shooting-star-dash 3.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes star-tail-pulse {
+  0%, 100% {
+    opacity: 0.75;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    opacity: 1;
+    stroke-dashoffset: 6;
+  }
+}
+
+.animate-star-tail {
+  animation: star-tail-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes starlet-sparkle {
+  0%, 100% {
+    transform: scale(0.6) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+.animate-starlet-1 {
+  animation: starlet-sparkle 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-starlet-2 {
+  animation: starlet-sparkle 2.6s ease-in-out 0.8s infinite;
+  transform-origin: center;
+}
+
+.animate-starlet-3 {
+  animation: starlet-sparkle 3s ease-in-out 1.4s infinite;
+  transform-origin: center;
+}
+
+/* 2. ☄️ Comet Animations */
+@keyframes comet-thrust {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(2px, -2px) scale(1.02);
+  }
+}
+
+.animate-comet-body {
+  animation: comet-thrust 3.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes comet-trail-flow {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scaleX(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scaleX(1.05);
+  }
+}
+
+.animate-comet-trail {
+  animation: comet-trail-flow 2.4s ease-in-out infinite;
+  transform-origin: 65px 35px;
+}
+
+@keyframes comet-particle-fly {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-18px, 14px);
+    opacity: 0;
+  }
+}
+
+.animate-comet-particle {
+  animation: comet-particle-fly 1.8s linear infinite;
+}
+
+/* 3. 🌌 Milky Way / Galaxy Animations */
+@keyframes galaxy-slow-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-galaxy-spin {
+  animation: galaxy-slow-spin 24s linear infinite;
+  transform-origin: 50px 50px;
+  will-change: transform;
+}
+
+@keyframes galaxy-core-pulse {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+.animate-galaxy-core {
+  animation: galaxy-core-pulse 3.6s ease-in-out infinite;
+  transform-origin: 50px 50px;
+}
+
+/* 4. 🎼 Musical Score & Clef Animations */
+@keyframes clef-rhythm-sway {
+  0%, 100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  50% {
+    transform: rotate(4deg) translateY(-2px);
+  }
+}
+
+.animate-clef-sway {
+  animation: clef-rhythm-sway 3.6s ease-in-out infinite;
+  transform-origin: 45px 55px;
+  will-change: transform;
+}
+
+@keyframes staff-undulate {
+  0%, 100% {
+    transform: scaleY(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleY(1.08);
+    opacity: 0.85;
+  }
+}
+
+.animate-staff-wave {
+  animation: staff-undulate 4.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes musical-note-rise {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(6px, -18px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.animate-note-rise-1 {
+  animation: musical-note-rise 4.2s ease-in-out infinite;
+}
+
+.animate-note-rise-2 {
+  animation: musical-note-rise 4.8s ease-in-out 2s infinite;
+}
+
+/* 5. 🍑 Peach Animations */
+@keyframes peach-gentle-breathe {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.04) translateY(-2px);
+  }
+}
+
+.animate-peach-body {
+  animation: peach-gentle-breathe 4s ease-in-out infinite;
+  transform-origin: 50px 60px;
+  will-change: transform;
+}
+
+@keyframes peach-leaf-flutter {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-6deg);
+  }
+}
+
+.animate-peach-leaf-left {
+  animation: peach-leaf-flutter 3.5s ease-in-out infinite;
+  transform-origin: 48px 32px;
+}
+
+@keyframes peach-leaf-flutter-right {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+.animate-peach-leaf-right {
+  animation: peach-leaf-flutter-right 3.8s ease-in-out 0.4s infinite;
+  transform-origin: 52px 32px;
+}
+
+@keyframes dew-gleam {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-dew-gleam {
+  animation: dew-gleam 2.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* 6. 🌈 Rainbow Animations */
+@keyframes rainbow-arch-gleam {
+  0%, 100% {
+    filter: drop-shadow(0 2px 4px rgba(236, 72, 153, 0.2));
+    transform: scaleY(1);
+  }
+  50% {
+    filter: drop-shadow(0 3px 8px rgba(59, 130, 246, 0.35));
+    transform: scaleY(1.03);
+  }
+}
+
+.animate-rainbow-arch {
+  animation: rainbow-arch-gleam 4.6s ease-in-out infinite;
+  transform-origin: 50px 70px;
+}
+
+@keyframes rainbow-cloud-float-l {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-1.5px, -1.5px);
+  }
+}
+
+.animate-cloud-float-left {
+  animation: rainbow-cloud-float-l 3.6s ease-in-out infinite;
+}
+
+@keyframes rainbow-cloud-float-r {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(1.5px, -1.5px);
+  }
+}
+
+.animate-cloud-float-right {
+  animation: rainbow-cloud-float-r 4s ease-in-out 0.5s infinite;
+}
+
+/* 7. 🎀 Ribbon Bow Animations */
+@keyframes ribbon-tail-wave-l {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-5deg) scale(1.02);
+  }
+}
+
+.animate-ribbon-tail-left {
+  animation: ribbon-tail-wave-l 3.8s ease-in-out infinite;
+  transform-origin: 42px 52px;
+}
+
+@keyframes ribbon-tail-wave-r {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(6deg) scale(1.02);
+  }
+}
+
+.animate-ribbon-tail-right {
+  animation: ribbon-tail-wave-r 4.2s ease-in-out 0.3s infinite;
+  transform-origin: 58px 52px;
+}
+
+@keyframes ribbon-loop-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.animate-ribbon-loop {
+  animation: ribbon-loop-breathe 4s ease-in-out infinite;
+  transform-origin: 50px 48px;
+}
+
+@keyframes jewel-shine {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-jewel-shine {
+  animation: jewel-shine 2.5s ease-in-out infinite;
+  transform-origin: 50px 48px;
+}
+
+/* =========================================================================
+   8. 🌈 CREATIVE ENERGETIC RAINBOW ANIMATIONS (VIVID & NOTICEABLE MOTIONS)
+   ========================================================================= */
+
+/* Option 1: ☀️ Thái Dương & Mây Vờn */
+@keyframes sun-spin-rays {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-sun-spin-rays {
+  animation: sun-spin-rays 6s linear infinite;
+  transform-origin: 50px 24px;
+}
+
+@keyframes sun-body-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.45));
+  }
+  50% {
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.95)) drop-shadow(0 0 22px rgba(251, 191, 36, 0.8));
+  }
+}
+
+.animate-sun-body-pulse {
+  animation: sun-body-pulse 2.2s ease-in-out infinite;
+  transform-origin: 50px 24px;
+}
+
+/* =========================================================================
+   BỘ CHUYỂN ĐỘNG CẦU VỒNG NGHÊNH XUÂN & HOA ĐÀO (KHÔNG BỊ LỐ, ĐA DẠNG MOTION)
+   ========================================================================= */
+
+/* 1. 🌈 Dòng Chảy Sắc Quang (Stream Flow - Vòm cung tĩnh, ánh sáng luân chuyển dọc thân) */
+@keyframes rainbow-stream-glow {
+  0%, 100% {
+    filter: drop-shadow(0 2px 5px rgba(244, 63, 94, 0.35)) drop-shadow(0 0 8px rgba(56, 189, 248, 0.25));
+  }
+  50% {
+    filter: drop-shadow(0 2px 10px rgba(251, 191, 36, 0.55)) drop-shadow(0 0 16px rgba(244, 63, 94, 0.45));
+  }
+}
+
+.animate-rainbow-stream-glow {
+  animation: rainbow-stream-glow 3s ease-in-out infinite;
+}
+
+@keyframes light-shimmer-sweep {
+  0% {
+    stroke-dashoffset: 160;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    stroke-dashoffset: -160;
+    opacity: 0;
+  }
+}
+
+.animate-light-shimmer-sweep {
+  stroke-dasharray: 40 120;
+  animation: light-shimmer-sweep 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 2. 🌸 Lốc Gió Lạc Anh (Whirling Sakura Petal Spiral - Cánh hoa xoay lượn theo quỹ đạo 3D) */
+@keyframes petal-orbit-1 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.9);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translate(22px, -18px) rotate(90deg) scale(1.15);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(46px, -4px) rotate(190deg) scale(0.95);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translate(24px, 12px) rotate(290deg) scale(0.75);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg) scale(0.9);
+    opacity: 0.4;
+  }
+}
+
+.animate-petal-orbit-1 {
+  animation: petal-orbit-1 5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes petal-orbit-2 {
+  0% {
+    transform: translate(0, 0) rotate(40deg) scale(0.7);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translate(-18px, -14px) rotate(160deg) scale(1.1);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-36px, 6px) rotate(260deg) scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(0, 0) rotate(400deg) scale(0.7);
+    opacity: 0.3;
+  }
+}
+
+.animate-petal-orbit-2 {
+  animation: petal-orbit-2 6.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1.2s infinite;
+}
+
+/* 3. 🌊 Sóng Lụa Ngũ Sắc Đa Tầng (Layered Phase Wave - Từng dải màu gợn sóng lệch pha uyển chuyển) */
+@keyframes layer-wave-band {
+  0%, 100% {
+    transform: translateY(0px) scaleY(1);
+  }
+  50% {
+    transform: translateY(-2.5px) scaleY(1.02);
+  }
+}
+
+.animate-phase-wave-1 { animation: layer-wave-band 2.6s ease-in-out infinite; transform-origin: 50px 70px; }
+.animate-phase-wave-2 { animation: layer-wave-band 2.6s ease-in-out 0.22s infinite; transform-origin: 50px 70px; }
+.animate-phase-wave-3 { animation: layer-wave-band 2.6s ease-in-out 0.44s infinite; transform-origin: 50px 70px; }
+.animate-phase-wave-4 { animation: layer-wave-band 2.6s ease-in-out 0.66s infinite; transform-origin: 50px 70px; }
+.animate-phase-wave-5 { animation: layer-wave-band 2.6s ease-in-out 0.88s infinite; transform-origin: 50px 70px; }
+
+/* 🌈 Hào Quang Biến Sắc (Chroma Aura Shift - Luân chuyển màu sắc hào quang lung linh, êm dịu) */
+@keyframes rainbow-chroma-aura {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.75)) drop-shadow(0 0 13px rgba(251, 146, 60, 0.5));
+  }
+  20% {
+    transform: scale(1.018);
+    filter: drop-shadow(0 0 7px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 15px rgba(249, 115, 22, 0.55));
+  }
+  40% {
+    transform: scale(1.025);
+    filter: drop-shadow(0 0 7px rgba(16, 185, 129, 0.8)) drop-shadow(0 0 15px rgba(52, 211, 153, 0.55));
+  }
+  60% {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.85)) drop-shadow(0 0 16px rgba(6, 182, 212, 0.55));
+  }
+  80% {
+    transform: scale(1.012);
+    filter: drop-shadow(0 0 7px rgba(168, 85, 247, 0.8)) drop-shadow(0 0 15px rgba(236, 72, 153, 0.55));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.75)) drop-shadow(0 0 13px rgba(251, 146, 60, 0.5));
+  }
+}
+
+.animate-rainbow-chroma-aura {
+  animation: rainbow-chroma-aura 6s ease-in-out infinite;
+  transform-origin: 50px 75px;
+}
+
+/* 4. ✨ Hơi Thở Dạ Quang (Ethereal Bloom - Hào quang bừng nở mềm mại, không nhảy nhót) */
+@keyframes rainbow-ethereal-bloom {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 2px 6px rgba(244, 63, 94, 0.35));
+    opacity: 0.96;
+  }
+  50% {
+    transform: scale(1.025);
+    filter: drop-shadow(0 4px 14px rgba(251, 191, 36, 0.65)) drop-shadow(0 0 20px rgba(244, 63, 94, 0.5));
+    opacity: 1;
+  }
+}
+
+.animate-rainbow-ethereal-bloom {
+  animation: rainbow-ethereal-bloom 3.4s ease-in-out infinite;
+  transform-origin: 50px 65px;
+}
+
+/* 5. 🍃 Phong Diêu Uyển Chuyển (Spring Sway - Lắc lư chao nghiêng êm ái như cành hoa trong gió) */
+@keyframes rainbow-spring-sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2.2deg);
+  }
+  75% {
+    transform: rotate(2.2deg);
+  }
+}
+
+.animate-rainbow-spring-sway {
+  animation: rainbow-spring-sway 4.5s ease-in-out infinite;
+  transform-origin: 50px 75px;
+}
+
+/* Các chuyển động Hoa Đào & Cánh Hoa Rơi (Lạc Anh Rơi Êm Ả) */
+@keyframes sakura-cascade-1 {
+  0% {
+    transform: translate(-6px, -12px) rotate(0deg) scale(0.65);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(2px, -3px) rotate(55deg) scale(1);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translate(16px, 14px) rotate(160deg) scale(0.95);
+  }
+  100% {
+    transform: translate(26px, 26px) rotate(240deg) scale(0.7);
+    opacity: 0;
+  }
+}
+
+.animate-sakura-cascade-1 {
+  animation: sakura-cascade-1 4.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes sakura-cascade-2 {
+  0% {
+    transform: translate(10px, -10px) rotate(45deg) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-3px, -2px) rotate(110deg) scale(0.95);
+  }
+  75% {
+    opacity: 0.85;
+    transform: translate(-18px, 12px) rotate(210deg) scale(0.85);
+  }
+  100% {
+    transform: translate(-28px, 24px) rotate(310deg) scale(0.65);
+    opacity: 0;
+  }
+}
+
+.animate-sakura-cascade-2 {
+  animation: sakura-cascade-2 4.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.5s infinite;
+}
+
+@keyframes sakura-flutter-gentle {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  50% {
+    transform: rotate(12deg) translateY(-2px);
+  }
+}
+
+.animate-sakura-flutter-gentle {
+  animation: sakura-flutter-gentle 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Đôi Cụm Mây Mềm Mại (Chuyển động êm dịu, không giật cục) */
+@keyframes cloud-gentle-l {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-1.5px, -2px) scale(1.03);
+  }
+}
+
+.animate-cloud-gentle-l {
+  animation: cloud-gentle-l 3.6s ease-in-out infinite;
+  transform-origin: 20px 65px;
+}
+
+@keyframes cloud-gentle-r {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(1.5px, -2px) scale(1.03);
+  }
+}
+
+.animate-cloud-gentle-r {
+  animation: cloud-gentle-r 3.6s ease-in-out 0.4s infinite;
+  transform-origin: 80px 65px;
+}
+
+/* ☁️ Đám Mây Bay Qua Bay Lại (Cloud Traverse - Lướt ngang qua lại êm ái giữa bầu trời) */
+@keyframes cloud-traverse-horizontal {
+  0% {
+    transform: translateX(-16px) translateY(0);
+    opacity: 0.85;
+  }
+  30% {
+    transform: translateX(0px) translateY(-2px);
+    opacity: 0.95;
+  }
+  50% {
+    transform: translateX(18px) translateY(0);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translateX(2px) translateY(1.8px);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(-16px) translateY(0);
+    opacity: 0.85;
+  }
+}
+
+.animate-cloud-traverse {
+  animation: cloud-traverse-horizontal 8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* ✨ Ngôi Sao Chớp Tắt (Twinkling Stars - Nhấp nháy luân phiên bừng sáng) */
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(0.35);
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 4px rgba(254, 240, 138, 0.95)) drop-shadow(0 0 8px rgba(251, 191, 36, 0.7));
+  }
+}
+
+.animate-star-twinkle-1 {
+  animation: star-twinkle 2.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.animate-star-twinkle-2 {
+  animation: star-twinkle 2.7s ease-in-out 0.4s infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.animate-star-twinkle-3 {
+  animation: star-twinkle 3.1s ease-in-out 0.9s infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.animate-star-twinkle-4 {
+  animation: star-twinkle 2.5s ease-in-out 1.4s infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.animate-star-twinkle-5 {
+  animation: star-twinkle 2.9s ease-in-out 0.7s infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ☁️ Mây Trôi Bồng Bềnh (Cloud Drift - Lướt êm ả lơ lửng quanh dải cầu vồng) */
+@keyframes cloud-drift-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  35% {
+    transform: translate(-3.5px, -3px) scale(1.035);
+  }
+  70% {
+    transform: translate(1.5px, -1.2px) scale(0.98);
+  }
+}
+
+.animate-cloud-drift-1 {
+  animation: cloud-drift-1 5.2s ease-in-out infinite;
+  transform-origin: 20px 75px;
+  will-change: transform;
+}
+
+@keyframes cloud-drift-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(3.5px, -3.2px) scale(1.04);
+  }
+  75% {
+    transform: translate(-1.8px, -1.2px) scale(0.98);
+  }
+}
+
+.animate-cloud-drift-2 {
+  animation: cloud-drift-2 5.6s ease-in-out 0.5s infinite;
+  transform-origin: 80px 75px;
+  will-change: transform;
+}
+
+/* Backward compatibility aliases */
+.animate-rainbow-vivid-wave {
+  animation: rainbow-stream-glow 3s ease-in-out infinite;
+}
+.animate-rainbow-bouncy {
+  animation: rainbow-spring-sway 4.5s ease-in-out infinite;
+}
+.animate-rainbow-float-3d {
+  animation: layer-wave-band 2.6s ease-in-out infinite;
+}
+.animate-rainbow-glow-pulse {
+  animation: rainbow-ethereal-bloom 3.4s ease-in-out infinite;
+}
+.animate-rainbow-gentle {
+  animation: rainbow-spring-sway 4.5s ease-in-out infinite;
+}
+.animate-cloud-lively-l {
+  animation: cloud-gentle-l 3.6s ease-in-out infinite;
+}
+.animate-cloud-lively-r {
+  animation: cloud-gentle-r 3.6s ease-in-out 0.4s infinite;
+}
+
+/* Option 2: 🕊️ Cánh Én & Hoa Đào 🌸 */
+@keyframes swallow-flight {
+  0%, 100% {
+    transform: translate(-10px, 4px) rotate(-12deg);
+  }
+  35% {
+    transform: translate(2px, -7px) rotate(6deg);
+  }
+  70% {
+    transform: translate(11px, -2px) rotate(0deg);
+  }
+}
+
+.animate-swallow-flight {
+  animation: swallow-flight 4.2s ease-in-out infinite;
+}
+
+@keyframes swallow-wing-flap {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(-0.65);
+  }
+}
+
+.animate-swallow-wing {
+  animation: swallow-wing-flap 0.5s ease-in-out infinite;
+  transform-origin: 50px 22px;
+}
+
+@keyframes sakura-drift-1 {
+  0% {
+    transform: translate(-4px, -8px) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(26px, 18px) rotate(220deg) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.animate-sakura-drift-1 {
+  animation: sakura-drift-1 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes sakura-drift-2 {
+  0% {
+    transform: translate(8px, -10px) rotate(30deg) scale(0.75);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-20px, 18px) rotate(-190deg) scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-sakura-drift-2 {
+  animation: sakura-drift-2 5s cubic-bezier(0.4, 0, 0.2, 1) 1.8s infinite;
+}
+
+/* Option 3: 💧 Giọt Pha Lê & Sao Tinh Khiết ✨ */
+@keyframes crystal-raindrop-1 {
+  0% {
+    transform: translateY(0) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.1);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translateY(16px) scale(0.85, 1.35);
+  }
+  100% {
+    transform: translateY(22px) scale(1.6, 0.35);
+    opacity: 0;
+  }
+}
+
+.animate-crystal-raindrop-1 {
+  animation: crystal-raindrop-1 2.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
+}
+
+@keyframes crystal-raindrop-2 {
+  0% {
+    transform: translateY(0) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.1);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translateY(16px) scale(0.85, 1.35);
+  }
+  100% {
+    transform: translateY(22px) scale(1.6, 0.35);
+    opacity: 0;
+  }
+}
+
+.animate-crystal-raindrop-2 {
+  animation: crystal-raindrop-2 2.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) 0.75s infinite;
+}
+
+@keyframes crystal-raindrop-3 {
+  0% {
+    transform: translateY(0) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.1);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translateY(16px) scale(0.85, 1.35);
+  }
+  100% {
+    transform: translateY(22px) scale(1.6, 0.35);
+    opacity: 0;
+  }
+}
+
+.animate-crystal-raindrop-3 {
+  animation: crystal-raindrop-3 2.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) 1.45s infinite;
+}
+
+@keyframes prism-star-burst {
+  0%, 100% {
+    transform: scale(0.85) rotate(0deg);
+    opacity: 0.6;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+  }
+  50% {
+    transform: scale(1.4) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px #fef08a) drop-shadow(0 0 14px #38bdf8);
+  }
+}
+
+.animate-prism-star-burst {
+  animation: prism-star-burst 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Option 4: 🌠 Sao Băng Mini & Bong Bóng 🫧 */
+@keyframes rainbow-shooting-star {
+  0% {
+    transform: translate(-22px, 14px) rotate(-18deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(26px, -12px) rotate(14deg);
+    opacity: 0;
+  }
+}
+
+.animate-rainbow-shooting-star {
+  animation: rainbow-shooting-star 3.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes bubble-float-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-4px, -8px) scale(1.15);
+  }
+  66% {
+    transform: translate(3px, -14px) scale(0.92);
+  }
+}
+
+.animate-bubble-float-1 {
+  animation: bubble-float-1 3.6s ease-in-out infinite;
+}
+
+@keyframes bubble-float-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(4px, -9px) scale(1.2);
+  }
+  75% {
+    transform: translate(-3px, -15px) scale(0.88);
+  }
+}
+
+.animate-bubble-float-2 {
+  animation: bubble-float-2 4.2s ease-in-out 0.6s infinite;
+}
+
+@keyframes bubble-float-3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(2px, -11px) scale(1.18);
+  }
+}
+
+.animate-bubble-float-3 {
+  animation: bubble-float-3 3.8s ease-in-out 1.2s infinite;
+}
+
+/* Option 5: 💖 Ái Tâm & Nốt Nhạc 🎵 */
+@keyframes heartbeat-lively {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 2px 4px rgba(244, 63, 94, 0.35));
+  }
+  14% {
+    transform: scale(1.28);
+    filter: drop-shadow(0 4px 12px rgba(244, 63, 94, 0.75));
+  }
+  28% {
+    transform: scale(0.94);
+  }
+  42% {
+    transform: scale(1.18);
+    filter: drop-shadow(0 3px 9px rgba(244, 63, 94, 0.6));
+  }
+  56% {
+    transform: scale(0.98);
+  }
+}
+
+.animate-heartbeat-lively {
+  animation: heartbeat-lively 2.4s ease-in-out infinite;
+  transform-origin: 50px 28px;
+}
+
+@keyframes note-dance-1 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-5px, -14px) rotate(-22deg);
+    opacity: 1;
+    filter: drop-shadow(0 2px 5px rgba(244, 63, 94, 0.4));
+  }
+}
+
+.animate-note-dance-1 {
+  animation: note-dance-1 3.2s ease-in-out infinite;
+}
+
+@keyframes note-dance-2 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(6px, -15px) rotate(24deg);
+    opacity: 1;
+    filter: drop-shadow(0 2px 5px rgba(168, 85, 247, 0.4));
+  }
+}
+
+.animate-note-dance-2 {
+  animation: note-dance-2 3.5s ease-in-out 0.5s infinite;
+}
+
+/* =========================================================================
+   ANIMATION KEYFRAMES CHO CÁC ICON TRANG TRÍ & MOTION CẦU VỒNG SÁNG TẠO
+   ========================================================================= */
+
+/* 1. 🦋 Bướm Tiên Ngũ Sắc: Bay lượn dập dờn & Đập cánh 3D */
+@keyframes butterfly-flight {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-5px, -8px) rotate(-14deg);
+  }
+  50% {
+    transform: translate(4px, -13px) rotate(12deg);
+  }
+  75% {
+    transform: translate(-3px, -5px) rotate(-6deg);
+  }
+}
+
+.animate-butterfly-flight {
+  animation: butterfly-flight 3.4s ease-in-out infinite;
+}
+
+@keyframes butterfly-wing-flap {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-0.45);
+  }
+}
+
+.animate-butterfly-wing {
+  animation: butterfly-wing-flap 0.35s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* 2. 🍀 Cỏ 4 Lá May Mắn: Lắc lư chào gió */
+@keyframes clover-nod {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  35% {
+    transform: rotate(15deg) scale(1.1);
+  }
+  70% {
+    transform: rotate(-10deg) scale(0.95);
+  }
+}
+
+.animate-clover-nod {
+  animation: clover-nod 3s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* 3. 👑 Vương Miện Hoàng Gia: Bồng bềnh phát sáng lấp lánh */
+@keyframes crown-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5));
+  }
+  50% {
+    transform: translateY(-7px) rotate(6deg) scale(1.18);
+    filter: drop-shadow(0 4px 14px rgba(251, 191, 36, 0.9)) drop-shadow(0 0 20px rgba(245, 158, 11, 0.7));
+  }
+}
+
+.animate-crown-float {
+  animation: crown-float 2.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* 4. ✨ Quỹ Đạo Sao Lấp Lánh: Xoay tròn quanh đỉnh cầu vồng */
+@keyframes orbit-sparkle-cw {
+  0% {
+    transform: rotate(0deg) translateX(24px) rotate(0deg) scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(180deg) translateX(24px) rotate(-180deg) scale(1.3);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px #fde047);
+  }
+  100% {
+    transform: rotate(360deg) translateX(24px) rotate(-360deg) scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+.animate-orbit-sparkle-1 {
+  animation: orbit-sparkle-cw 4.5s linear infinite;
+  transform-origin: 50px 35px;
+}
+
+@keyframes orbit-sparkle-ccw {
+  0% {
+    transform: rotate(0deg) translateX(20px) rotate(0deg) scale(1.2);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px #38bdf8);
+  }
+  50% {
+    transform: rotate(-180deg) translateX(20px) rotate(180deg) scale(0.7);
+    opacity: 0.4;
+  }
+  100% {
+    transform: rotate(-360deg) translateX(20px) rotate(360deg) scale(1.2);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px #38bdf8);
+  }
+}
+
+.animate-orbit-sparkle-2 {
+  animation: orbit-sparkle-ccw 5s linear infinite;
+  transform-origin: 50px 35px;
+}
+
+/* 5. 🌟 Ngôi Sao Kim Cương 4 Cánh Bùng Sáng Mạnh Mẽ */
+@keyframes sparkle-burst-big {
+  0%, 100% {
+    transform: scale(0.8) rotate(0deg);
+    opacity: 0.7;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+  }
+  50% {
+    transform: scale(1.6) rotate(90deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #fef08a) drop-shadow(0 0 18px #38bdf8);
+  }
+}
+
+.animate-sparkle-burst-big {
+  animation: sparkle-burst-big 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: center;
+}
+
+/* 6. 🌸 Cánh Hoa Đào Xoay Lượn */
+@keyframes sakura-petal-twirl {
+  0% {
+    transform: translate(-8px, -14px) rotate(0deg) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(2px, -4px) rotate(80deg) scale(1.05);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translate(22px, 14px) rotate(260deg) scale(1.15);
+  }
+  100% {
+    transform: translate(36px, 26px) rotate(380deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.animate-sakura-petal-twirl {
+  animation: sakura-petal-twirl 4.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+/* 7. 🎶 Phím Đàn Ngũ Sắc Sóng Nhạc */
+@keyframes music-keys-wave {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.35);
+  }
+}
+
+.animate-music-keys-1 { animation: music-keys-wave 1.6s ease-in-out infinite; transform-origin: bottom; }
+.animate-music-keys-2 { animation: music-keys-wave 1.6s ease-in-out 0.2s infinite; transform-origin: bottom; }
+.animate-music-keys-3 { animation: music-keys-wave 1.6s ease-in-out 0.4s infinite; transform-origin: bottom; }
+.animate-music-keys-4 { animation: music-keys-wave 1.6s ease-in-out 0.6s infinite; transform-origin: bottom; }
+.animate-music-keys-5 { animation: music-keys-wave 1.6s ease-in-out 0.8s infinite; transform-origin: bottom; }
+
+/* 8. 💧 Giọt Mưa Pha Lê Lớn & Vòng Sóng Va Chạm (Splash Ring) */
+@keyframes crystal-raindrop-big {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(5px) scale(1.2);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(22px) scale(0.85, 1.4);
+  }
+  95% {
+    transform: translateY(28px) scale(1.8, 0.25);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(29px) scale(2.2, 0.1);
+    opacity: 0;
+  }
+}
+
+.animate-crystal-raindrop-big {
+  animation: crystal-raindrop-big 2s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
+}
+
+@keyframes rain-splash-ring {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  75% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  85% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-rain-splash {
+  animation: rain-splash-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  transform-origin: center;
+}
+
+/* 9. ☀️ Mặt Trời Xoay Nhanh & Mỉm Cười */
+@keyframes sun-spin-fast {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-sun-spin-fast {
+  animation: sun-spin-fast 6s linear infinite;
+  transform-origin: 50px 24px;
+}
+
+@keyframes sun-face-happy {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.12) rotate(-5deg);
+  }
+  75% {
+    transform: scale(1.12) rotate(5deg);
+  }
+}
+
+.animate-sun-face-happy {
+  animation: sun-face-happy 2.6s ease-in-out infinite;
+  transform-origin: 50px 24px;
+}
+
+/* Lá bài vận mệnh Flip Animation 3D */
+@keyframes tarotFlip {
+  0% {
+    transform: rotateY(0deg) scale(1);
+  }
+  25% {
+    transform: rotateY(90deg) scale(1.05);
+  }
+  50% {
+    transform: rotateY(180deg) scale(1);
+  }
+  75% {
+    transform: rotateY(270deg) scale(1.05);
+  }
+  100% {
+    transform: rotateY(360deg) scale(1);
+  }
+}
+
+@keyframes sageFillLoop {
+  0% {
+    transform: translateY(22px);
+  }
+  45% {
+    transform: translateY(-8px);
+  }
+  70% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(22px);
+  }
+}
+
+@keyframes sageStreamFlow {
+  0%, 100% {
+    opacity: 0.95;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scaleX(0.88);
+  }
+}
+
+/* =========================================================================
+   HIỆU ỨNG NHẬT / NGUYỆT THỰC TOÀN PHẦN (THEME WHITE - RANDOM NOVEL PICKER)
+   Vầng bóng đen từ từ lan rộng và nuốt chửng hoàn toàn 100% ánh sáng của mặt trăng,
+   đưa mặt trăng về trạng thái nhật/nguyệt thực toàn phần 🌑
+   ========================================================================= */
+@keyframes eclipse-shadow-creep {
+  0% {
+    /* Khởi đầu: Mặt trăng sáng tròn đầy, bóng đen ở xa bên phải ngoài rìa */
+    transform: translate(75px, 0);
+    opacity: 0.2;
+  }
+  12% {
+    /* Bóng đen bắt đầu chạm mép vầng trăng */
+    transform: translate(52px, 0);
+    opacity: 0.85;
+  }
+  32% {
+    /* Bóng đen nuốt 50% ánh trăng (trăng bán nguyệt khuyết dần) */
+    transform: translate(24px, 0);
+    opacity: 0.96;
+  }
+  50%, 75% {
+    /* Nuốt chửng HOÀN TOÀN 100% ánh sáng mặt trăng -> Nhật/nguyệt thực toàn phần 🌑 */
+    transform: translate(0px, 0);
+    opacity: 1;
+  }
+  88% {
+    /* Bóng đen từ từ lướt qua bên kia trả lại ánh trăng cho chu kỳ mới */
+    transform: translate(-50px, 0);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-75px, 0);
+    opacity: 0.2;
+  }
+}
+
+@keyframes eclipse-corona-flare {
+  0%, 25% {
+    opacity: 0.12;
+    transform: scale(0.98);
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.15));
+  }
+  50%, 75% {
+    /* Bừng sáng vành hào quang Corona lộng lẫy bao quanh khi đạt nhật/nguyệt thực toàn phần 🌑 */
+    opacity: 1;
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 24px rgba(226, 232, 240, 0.75));
+  }
+  92%, 100% {
+    opacity: 0.12;
+    transform: scale(0.98);
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.15));
+  }
+}
+
+@keyframes snowflake-smooth-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================================================= */
+/* CƠ CHẾ VẬT LÝ 3D CHÂN THỰC (.hv-11__btn--stack)                           */
+/* Trạng thái tĩnh (Default): translateY(0), box-shadow: 0 6px 0 var(...)    */
+/* Khi rê chuột (Hover): translateY(3px), box-shadow: 0 3px 0 var(...)       */
+/* Khi bấm giữ (Active / Press): translateY(6px), box-shadow: 0 0 0 var(...) */
+/* ========================================================================= */
+.hv-11__btn--stack {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(0);
+  box-shadow: 0 6px 0 var(--btn-stack-shadow, rgba(0, 0, 0, 0.35));
+  transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.12s cubic-bezier(0.2, 0.8, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.hv-11__btn--stack:hover {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 var(--btn-stack-shadow, rgba(0, 0, 0, 0.35));
+}
+
+.hv-11__btn--stack:active {
+  transform: translateY(6px);
+  box-shadow: 0 0 0 var(--btn-stack-shadow, rgba(0, 0, 0, 0.35));
+}
+
+/* ========================================================================= */
+/* TAMAGOTCHI RETRO LCD & SCROLLBAR PASTEL                                   */
+/* ========================================================================= */
+.tamagotchi-scrollbar,
+.tamagotchi-screen-lcd,
+.tamagotchi-screen-lcd * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 114, 182, 0.45) transparent;
+}
+
+.tamagotchi-scrollbar::-webkit-scrollbar,
+.tamagotchi-screen-lcd::-webkit-scrollbar,
+.tamagotchi-screen-lcd *::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.tamagotchi-scrollbar::-webkit-scrollbar-track,
+.tamagotchi-screen-lcd::-webkit-scrollbar-track,
+.tamagotchi-screen-lcd *::-webkit-scrollbar-track {
+  background: rgba(253, 232, 238, 0.35);
+  border-radius: 9999px;
+  margin: 3px 0;
+}
+
+.tamagotchi-scrollbar::-webkit-scrollbar-thumb,
+.tamagotchi-screen-lcd::-webkit-scrollbar-thumb,
+.tamagotchi-screen-lcd *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(244, 114, 182, 0.55), rgba(251, 113, 133, 0.65));
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 2px rgba(244, 114, 182, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+
+.tamagotchi-scrollbar::-webkit-scrollbar-thumb:hover,
+.tamagotchi-screen-lcd::-webkit-scrollbar-thumb:hover,
+.tamagotchi-screen-lcd *::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(236, 72, 153, 0.8), rgba(244, 63, 94, 0.85));
+  box-shadow: 0 1px 4px rgba(244, 63, 94, 0.35);
+}
+
+.tamagotchi-scrollbar::-webkit-scrollbar-corner,
+.tamagotchi-screen-lcd::-webkit-scrollbar-corner,
+.tamagotchi-screen-lcd *::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ==========================================================================
+   HỌA TIẾT NỀN: LƯỚI CARO SỔ CÒNG (PLANNER BINDER GRID)
+   ========================================================================== */
+
+/* 1. CHẾ ĐỘ SÁNG (Light Mode) */
+.pattern-caro-pastel,
+.pattern-caro-pastel-purple {
+  /* Màu nền giấy tím oải hương pastel dịu nhẹ (Amethyst / Purple) */
+  background-color: #faf6fe;
+
+  /* 4 lớp gradient đan chéo tạo thành lưới caro sổ còng đa tầng */
+  background-image:
+    /* Lớp 1: Đường kẻ dọc 1px ô nhỏ (32px) */
+    linear-gradient(90deg, rgba(186, 147, 230, 0.28) 1px, transparent 1px),
+    /* Lớp 2: Đường kẻ ngang 1px ô nhỏ (32px) */
+    linear-gradient(0deg, rgba(186, 147, 230, 0.28) 1px, transparent 1px),
+    /* Lớp 3: Dải kẻ dọc bản dày 16px ô lớn (64px) */
+    linear-gradient(90deg, rgba(224, 204, 247, 0.20) 16px, transparent 16px),
+    /* Lớp 4: Dải kẻ ngang bản dày 16px ô lớn (64px) */
+    linear-gradient(0deg, rgba(224, 204, 247, 0.20) 16px, transparent 16px);
+
+  /* Kích thước bước lặp: ô con 32x32px và ô mẹ 64x64px */
+  background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
+}
+
+.pattern-caro-pastel-white {
+  /* Màu nền giấy trắng tinh khôi dịu nhẹ (White) */
+  background-color: #f8fafc;
+  background-image:
+    linear-gradient(90deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(203, 213, 225, 0.16) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(203, 213, 225, 0.16) 16px, transparent 16px);
+  background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
+}
+
+.pattern-caro-pastel-frost {
+  /* Màu nền giấy xanh mây baby pastel (Frost) */
+  background-color: #f4f8fd;
+  background-image:
+    linear-gradient(90deg, rgba(147, 197, 253, 0.30) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(147, 197, 253, 0.30) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(191, 219, 254, 0.18) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(191, 219, 254, 0.18) 16px, transparent 16px);
+  background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
+}
+
+.pattern-caro-pastel-sage {
+  /* Màu nền giấy trà sữa matcha pastel (Sage) */
+  background-color: #f5f9f4;
+  background-image:
+    linear-gradient(90deg, rgba(167, 209, 163, 0.32) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(167, 209, 163, 0.32) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 228, 195, 0.18) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(198, 228, 195, 0.18) 16px, transparent 16px);
+  background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
+}
+
+.pattern-caro-pastel-linen {
+  /* Màu nền giấy kem caramel vani pastel (Linen / Mocha) */
+  background-color: #fbf7f2;
+  background-image:
+    linear-gradient(90deg, rgba(214, 185, 160, 0.30) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(214, 185, 160, 0.30) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(235, 215, 196, 0.18) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(235, 215, 196, 0.18) 16px, transparent 16px);
+  background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
+}
+
+.pattern-caro-pastel-cosmic {
+  /* Màu nền giấy cực quang ngân hà pastel (Cosmic) */
+  background-color: #fbf7ff;
+  background-image:
+    linear-gradient(90deg, rgba(232, 166, 244, 0.28) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(180, 166, 244, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 198, 235, 0.18) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(210, 198, 248, 0.18) 16px, transparent 16px);
+  background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
+}
+
+/* 1px Scrollbar for Reader Settings popover with theme matching color */
+.reader-settings-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, #9333ea) transparent;
+}
+
+.reader-settings-scrollbar::-webkit-scrollbar {
+  width: 1px !important;
+  height: 1px !important;
+}
+
+.reader-settings-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.reader-settings-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb, #9333ea) !important;
+  border-radius: 9999px !important;
+}
+
+.reader-settings-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb, #9333ea) !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

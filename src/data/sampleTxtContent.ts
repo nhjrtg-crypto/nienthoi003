@@ -1,0 +1,1554 @@
+export const SAMPLE_LUA_NHAU_TXT = `Chương 1
+
+8h40 tối.
+
+Sau khi kết thúc cuộc họp cuối cùng trong ngày, Tô Chấp Duật mới bước ra khỏi công ty.
+
+Vừa ra khỏi cổng công ty, điện thoại trong túi áo vest của hắn lại bắt đầu rung lên như đã đoán chắc được giờ giấc làm việc của hắn. Tô Chấp Duật lấy điện thoại ra, thấy trong điện thoại đã có hai cuộc gọi nhỡ đều là của Trình Thi Duyệt.
+
+Từ lần gặp gỡ không mấy vui vẻ vào tuần trước hai người đã không còn liên hệ với nhau, không ngờ lúc này Trình Thi Duyệt lại đến tìm hắn nữa.
+
+Hắn trượt mở màn hình điện thoại, bấm vào tin nhắn của đối phương.
+
+“Ngài Tô, em xin lỗi vì chuyện lần trước, hy vọng ngài không trách em. Em muốn hẹn gặp mặt ngài để giải thích chút chuyện, biết ngài bận nên em đã đặt chỗ trước tại nhà hàng trên đường Kim Ngạn, em sẽ đợi đến mười hai giờ….”
+
+Tô Chấp Duật quen biết Trình Thi Duyệt tại một buổi tiệc chiêu đãi do Tô Nghiệp Đường tổ chức cách đây không lâu.
+
+Cô ta là một người phụ nữ trưởng thành thông minh, quyến rũ với mái tóc xoăn dày.
+
+Lần gặp mặt đầu tiên, cô ta cũng thể hiện mình là tay già đời trong những bữa tiệc. Chiếc váy đuôi cá màu đen ôm lấy những đường cong cơ thể nổi bật, sau khi buổi chiêu đãi bắt đầu cô ta bước về phía Tô Chấp Duật với ly rượu vang đỏ trên tay nhiệt tình bắt chuyện với hắn.
+
+Kể từ khi hắn đảm nhận vị trí giám đốc của tập đoàn Công nghệ Tô Đức, những người bên cạnh muốn lấy lòng hắn cũng không ít. Nhưng hắn chỉ lo tập trung vào công việc, gặp mấy chuyện thế này chỉ cảm thấy rất phiền phức.
+
+Đúng lúc này hắn gặp được Trình Thi Duyệt, lý do chính khiến hắn sẵn sàng cho cô ta cơ hội là vì cô ta sở hữu ngoại hình nổi bật, cách cư xử khéo léo không bao giờ đi quá giới hạn hay bám người quá mức, lúc nào cũng nở nụ cười rạng rỡ và thể hiện bản thân xuất sắc trong mọi tình huống.
+
+Nếu đã có Trình Thi Duyệt bên cạnh, những vấn đề rắc rối khác cũng tự nhiên được giải quyết vô cùng sạch sẽ.
+
+Tô Chấp Duật điều tra lý lịch của Trình Thi Duyệt ngay khi cho phép cô ta ở bên cạnh mình, phát hiện cô ta tốt nghiệp một trường đại học danh tiếng, bởi vậy cử chỉ và cách ăn nói cũng hoàn toàn khác với những người phụ nữ được mấy tên doanh nhân sắp xếp để trèo lên giường hắn trước đây.
+
+Nói chung hắn hài lòng với Trình Thi Duyệt. Cô ta là một người phụ nữ thông minh, có EQ cao nên cũng có thể mang lại một chút giá trị tinh thần nào đó. Mỗi khi Tô Chấp Duật đưa cô ta đi xem vài buổi triển lãm tranh hay nghe các buổi biểu diễn âm nhạc, cũng nghe cô ta chia sẻ một số suy ngẫm và hiểu biết độc đáo của mình.
+
+Trong gần ba tháng hai người duy trì mối quan hệ, Tô Chấp Duật hào phóng tặng cho cô ta không ít túi xách và trang sức hàng hiệu. Nếu không có gì bất ngờ xảy ra, mối quan hệ khiến hai bên đều hài lòng này sẽ kéo dài lâu hơn.
+
+Nhưng đúng ngay lúc này Trình Thi Duyệt lại nóng vội, làm một chuyện khiến hắn cảm thấy bị xúc phạm.
+
+Sau khi hai người uống chút rượu trong bữa tối, cô ta vô tình làm đổ đĩa ăn khiến quần áo bị bẩn. Tô Chấp Duật vẫn ra vẻ lịch sự, cùng cô ta đến dãy phòng khách sạn phía trên nhà hàng để thay quần áo.
+
+Lúc ấy đã gần sáng sớm, Tô Chấp Duật nghe thấy tiếng Trình Thi Duyệt đang tắm trong phòng tắm không khỏi cảm thấy có gì đó không ổn, lúc này hắn đứng dậy vặn tay nắm cửa lại phát hiện cửa phòng đã bị khóa.
+
+Sau đó, tiếng nước trong phòng tắm cũng ngừng lại. Trình Thi Duyệt từ phòng tắm đi ra chỉ mặc một chiếc áo choàng tắm, toàn thân ướt át đi chân trần ra ngoài…
+
+Thủ đoạn thế này chẳng được tính là cao siêu, bọn họ đều đã quen biết nhau được gần ba tháng nhưng quan hệ vẫn cứ lấp lửng tại chỗ, bây giờ Trình Thi Duyệt muốn làm liều một lần cũng không có gì lạ.
+
+Chuyện nam nữ vốn dĩ rất bình thường.
+
+Nhưng điều khác thường là Tô Chấp Duật chẳng có phản ứng gì trước sự cám dỗ.
+
+Hắn rõ ràng không thích kiểu chủ động này, người đàn ông từ trước đến nay luôn tỏ ra dịu dàng trước mặt Trình Thi Duyệt lần đầu tiên tỏ vẻ thiếu kiên nhẫn và thất vọng. Dù biểu cảm thoáng qua rất nhanh nhưng vẫn bị cô ta nhìn thấy. Kết quả đúng như Trình Thi Duyệt dự đoán, sau khi buổi tối ngại ngùng đó trôi qua, Tô Chấp Duật đã ngầm ra hiệu cho cô ta biết mối quan hệ giữa bọn họ đã kết thúc.
+
+Tô Chấp Duật vốn dĩ cũng đã quên béng mất cô ta là ai, dù biết nhau đã được ba tháng nhưng hắn bận rộn với công việc nên số lần hai người gặp nhau cũng chỉ đếm trên đầu ngón tay.
+
+Lúc này, đã một tháng trôi qua kể từ đêm hôm đó. Tô Chấp Duật cau mày nhìn hai cuộc gọi nhỡ và tin nhắn do đối phương gửi đến trên điện thoại, mất mấy giây mới nhớ được dáng vẻ của người phụ nữ này trong đầu. Nếu không có những dòng ghi chú trên điện thoại, hắn chắc đã quên luôn tên của cô ta rồi.
+
+Nhà hàng mà Trình Thi Duyệt đã đặt bàn rất gần công ty, chỉ mất năm phút đi bộ qua một ngã tư.
+
+Lúc 8 giờ 50 phút tối, Trình Thi Duyệt đang ngồi bên chiếc bàn gần cửa sổ trong nhà hàng, không khỏi ngạc nhiên khi nhìn thấy một bóng dáng quen thuộc đang đi qua đường. Cô ta không chắc hắn có chịu đến gặp hay không, nhìn thấy hắn đến sớm như thế khiến cô ta ngạc nhiên trong giây lát, sau đó vẻ mặt chuyển sang vô cùng vui sướng.
+
+Tô Chấp Duật đẩy cửa nhà hàng ra, nhìn thấy Trình Thi Duyệt đang ngồi bỗng đứng dậy, trên mặt nở nụ cười nhiệt tình quen thuộc thay cho lời chào hỏi.
+
+Điểm khác biệt duy nhất là hôm nay cô ta chuyển sang một phong cách mà hắn chưa từng thấy trước đây. Khuôn mặt trang điểm cực kỳ tao nhã, trang phục cũng giản dị và thoải mái khác hẳn với phong cách điệu đà lộng lẫy thường ngày, ngay cả đường uốn cong lông mi cũng phải đạt đến tiêu chuẩn nhất định.
+
+Khi đến gần hơn, Tô Chấp Duật mới nhìn thấy còn một người khác đang ngồi cạnh cô ta.
+
+“Ngài Tô! Mời ngồi.” Trình Thi Duyệt rất khách khí: “Cảm ơn ngài Tô bận trăm công nghìn việc bớt chút thời gian đến đây…” Vừa nói xong cô ta đã nhìn thấy Tô Chấp Duật nhìn liếc sang chỗ ngồi bên cạnh. Nụ cười trên môi vẫn không thay đổi, mở miệng nói: “Ngài Tô, đây là em họ của em, cuối tuần nó đến đây chơi với nên em đưa nó đi cùng.”
+
+Dứt lời cô ta giơ tay chạm vào người em họ, “Còn không mau chào hỏi ngài Tô đi!”
+
+Thiếu niên ngồi cạnh Trình Thi Duyệt cứ đưa mắt nhìn chằm chằm vào Tô Chấp Duật từ khi hắn xuất hiện.
+
+Cậu có đôi mắt mèo tròn xoe, chiếc mũi thẳng, khuôn mặt trắng trẻo và con ngươi màu hổ phách. Một khuôn mặt kiều diễm, đôi môi đỏ mọng hơn nhiều so với người thường và còm có chút ướt át.
+
+Lúc chưa bị Trình Thi Duyệt nhắc nhở, vẻ ngoài của cậu toát ra vẻ ngây ngô chưa trải sự đời giống một con nai con thỏ. Mãi đến khi nghe thấy cô ta thúc giục, cậu mới đột nhiên tỉnh táo lại. Cậu đứng dậy khỏi chỗ ngồi, đưa tay về phía Tô Chấp Duật và nói: “Xin chào ngài Tô, tôi tên là Phương Thời Ân.”
+
+Tô Chấp Duật tùy ý liếc nhìn bàn tay đang đưa ra về phía mình, sau đó tầm mắt dời lên trên đánh giá, phát hiện ra ly rượu hoa quả sủi bọt có màu sắc sặc sỡ đã vơi đi phân nửa.
+
+Dưới cái nhìn của Tô Chấp Duật, bàn tay đang đưa ra của Phương Thời Ân cứng đờ trong không trung, cậu phát hiện đối phương không có ý định bắt tay mình. Sau khi ánh mắt hai người thoáng đối diện với nhau vài giây, cậu lập tức quay sang nhìn Trình Thi Duyệt như đang cầu cứu.
+
+Thiếu niên tên Phương Thời Ân hành động như một sản phẩm chưa được sản xuất hoàn chỉnh, đã bị Trình Thi Duyệt vội vàng đóng gói thật tinh xảo để đẩy đến đây.
+
+Lúc này hắn mới thôi không nhìn nữa, chậm rãi đi tới ngồi xuống đối diện bọn họ, thản nhiên nói: “Tô Chấp Duật.”
+
+Trình Thi Duyệt rốt cuộc cũng mỉm cười, nắm lấy tay Phương Thời Ân vỗ vỗ hai lần như đang trấn an, sau đó nói: “Ngồi xuống nói chuyện.”
+
+Ba người cuối cùng cũng ngồi xuống, Trình Thi Duyệt gọi người phục vụ bảo dọn đồ ăn ra.
+
+Ban đầu Tô Chấp Duật không muốn lãng phí quá nhiều thời gian trong cuộc gặp gỡ này. Lý do chính khiến hắn đến đây là để chia tay với Trình Thi Duyệt, sau đó thương lượng một cái giá để sau này khỏi bị làm phiền nữa.
+
+Không ngờ cô ta lại đưa một đứa em họ đi cùng.
+
+Ánh mắt thiếu niên thỉnh thoảng lại liếc nhìn hắn, dường như còn thấy cách nhìn này sẽ không bị ai phát hiện.
+
+“Ngài Tô, chuyện lần trước thật sự là hiểu lầm, em không ngờ khóa cửa phòng đó lại bị hỏng. Nếu ngài thật sự không tin thì em có thể cho ngài số điện thoại của quản lý khách sạn, hắn sẽ làm chứng cho em… Chuyện xảy ra hôm đó hoàn toàn là sự cố, chứ không phải do em cố tình…”
+
+Trình Thi Duyệt vừa thành thật giải thích vừa giới thiệu món ăn đã được dọn ra bàn: “Đây là món ăn mới ra trong tuần này. Ngài Tô thử xem mùi vị như thế nào…”
+
+Trong suốt quá trình Tô Chấp Duật trông rất lơ đãng, hắn cầm chiếc nĩa cắt một miếng bít tết, nhưng còn chưa kịp bỏ vào trong miệng đã cảm thấy chân mình dưới bàn đang bị thứ gì đó cọ xát. Hắn tưởng mình bị ảo giác không ngờ lại bị cọ thêm lần thứ hai, đối phương dường như cũng không có ý định bỏ cuộc
+
+Hắn cụp mắt xuống nhìn thấy một bàn chân đang kề sát mắt cá chân của mình từ từ cọ xát lên trên, đợi đến khi bàn chân cọ đến bắp chân bỗng nhiên bị hắn né tránh.
+
+Tô Chấp Duật ngẩng đầu lên nhìn Phương Thời Ân, thấy cậu tự cho là tinh nghịch nháy mắt với mình một cái.
+
+“Em trai của cô trông còn nhỏ quá.” Hắn nói một câu không đầu không đuôi.
+
+Trình Thi Duyệt không để ý, trả lời: “Trông nó còn nhỏ nhưng năm nay cũng 21 tuổi rồi ạ.”
+
+“À? Vậy không phải vẫn đang đi học sao? Chưa tốt nghiệp đại học phải không?”
+
+“Dạ, nó học trễ hơn bạn cùng lứa một năm, hiện đang là sinh viên năm hai ở Đại học A.”
+
+Trên khuôn mặt của hắn không thể nào đoán được được có bao nhiêu phần chân thành: “Đại học A à, điểm cũng cao đó.”
+
+“Làm gì có, kém hơn ngài Tô nhiều… Khi nào có thời gian phải cho nó đi theo ngài Tô học tập…”
+
+Trên mặt Trình Thi Duyệt hiện lên một nụ cười ngầm ẩn ý.
+
+Không hiểu tại sao Tô Chấp Duật đột nhiên không muốn ăn nữa. Ngay lúc hắn đặt dao nĩa trên tay xuống, điện thoại cũng đúng lúc reo lên.
+
+Bữa ăn tối kết thúc sau cuộc điện thoại, Tô Chấp Duật bị ba gọi về nhà cũ của gia đình. Sau khi hắn rời đi, Trình Thi Nguyệt muốn giảm cân để giữ dáng nên không ăn gì nữa, phần lớn đồ ăn đều rơi vào miệng của Phương Thời Ân.
+
+Mười phút sau khi nhân vật chính Tô Chấp Duật rời đi, chị em họ cũng đi ra khỏi nhà hàng.
+
+Xe của Trình Thi Duyệt là một chiếc Lamborghini màu vàng rất thời thượng, Phương Thời Ân ngồi lên xe rồi chiếc xe từ từ di chuyển ra khỏi gara dưới lòng đất. Khi chiếc xe thể thao hoà vào dòng xe cộ trên đường, cô ta ngẩng đầu vén những lọn tóc đang xõa xuống che khuất tầm nhìn ra sau tai, nói: “Thấy thế nào?”
+
+Phương Thời Ân ngồi ở ghế phụ, nheo mắt nhớ lại khuôn mặt đó, cậu không khỏi ngồi thẳng dậy đến gần chị gái: “Chị ơi, không ngờ anh ấy lại đẹp trai như vậy.”
+
+“Không đẹp thì chị dễ gì để lại cho em?” Trình Thi Duyệt nói, “Anh ta là con trai thứ hai của Tập đoàn Tô Thị, doanh nhân mới nổi chạm vào là bỏng tay ở Vân Thành. Với xuất thân, ngoại hình và học vấn như vậy, em biết có bao nhiêu người bon chen muốn tiếp cận anh ta không?”
+
+Phương Thời Ân nghe vậy, trong giọng nói không khỏi cảm thấy có chút thiếu tự tin: “Vậy em có làm được không?”
+
+Trong khi xe dừng lại chờ đèn đỏ, Trình Thi Duyệt vốn bị nghiện hút thuốc nên rút một điếu thuốc ngậm vào miệng, cậu lập tức lại gần lấy bật lửa châm cho cô ta.
+
+Đốm đỏ trên tàn thuốc tắt, Trình Thi Duyệt nhả ra một hơi khói, nói: “Em sợ cái gì? Chẳng phải còn chị ở đây à?”
+
+Phương Thời Ân nghe vậy mới bình tĩnh lại.
+
+Lúc này thời gian đếm ngược đến đèn đỏ đã kết thúc, phía trước có rất nhiều xe cộ qua lại. Trình Thi Duyệt dập tắt điếu thuốc rồi lái xe đến một con đường cách xa trung tâm thành phố.
+
+Chương 2
+
+Công bằng mà nói ở ấn tượng đầu tiên, người toát ra khí chất hoàn toàn khác biệt với những người khác như Tô Chấp Duật, lý lịch hoàn hảo và gia thế hiển hách, nhiều yếu tố cộng lại đều dễ khiến người ta cảm thấy thích hắn.
+
+Trong số đó, Phương Thời Ân tuy không hiểu biết nhiều nhưng cũng có chút kiến ​​thức không nằm ngoài ngoại lệ.
+
+Sau bữa ăn tối cậu đã lấy được thông tin liên lạc của Tô Chấp Duật từ chị gái của mình, sau khi gửi lời mời kết bạn cứ cách nửa giờ cậu lại nhấc điện thoại lên kiểm tra.
+
+Trên đường trở về Trình Thi Duyệt không ngừng động viên cậu, còn không quên vẽ ra viễn cảnh tương lai đẹp đẽ. Lần đầu tiên tiếp xúc với Tô Chấp Duật, một người trong giới thượng lưu hoàn toàn khác biệt với thế giới của mình khiến cậu vừa phấn khích vừa lo lắng.
+
+Mười hai giờ tối, Tô Chấp Duật cuối cùng cũng chấp nhận lời mời kết bạn của cậu.
+
+Phương Thời Ân vui vẻ nhảy ra khỏi giường, thầm hò hét trong lòng “Á!”
+
+Cùng lúc đó ở một nơi khác, sau khi Tô Chấp Duật báo cáo công việc ở nhà họ Tô xong, hắn lên xe nhìn thấy danh sách bạn bè trên điện thoại hiện lên một chấm đỏ.
+
+Nhấp vào mới thấy hình đại diện của người đó là một con cừu thổi bong bóng, gửi yêu cầu kết bạn cho hắn.
+
+“Xin chào, tôi là Phương Thời Ân.”
+
+Việc ứng phó với Tô Nghiệp Đường ở nhà đã khiến hắn tốn không ít tâm sức. Sáng nay vừa đi công tác ở tỉnh khác về, cộng thêm việc liên tục họp hành ở công ty vào ban ngày, làm việc liên tục đến giờ này dù có mạnh khỏe đến đâu cũng không khỏi cảm thấy mệt mỏi.
+
+Phương Thời Ân à, trong đầu nhớ lại thiếu niên xinh đẹp nhưng không được thông minh cho lắm mà mình đã gặp hôm nay, Trình Thi Duyệt đã giới thiệu đứa em họ của mình thế nào…
+
+Trong lúc phân tâm, hắn chợt nhận ra tay phải cầm điện thoại đã vô tình bấm vào nút “chấp nhận”.
+
+“Xin chào, tôi tên là Phương Thời Ân.”
+
+Tin nhắn xuất hiện ở trên cùng, ngay khi hắn chấp nhận kết bạn đối phương đã nhanh chóng gửi tin nhắn.
+
+Hình như đã đợi rất lâu rồi.
+
+“Ngài Tô, trễ thế này còn chưa ngủ à? Công việc vất vả quá.”
+
+Tô Chấp Duật xem tin nhắn cũng không trả lời.
+
+Năm phút sau, Phương Thời Ân gửi tin nhắn thứ hai.
+
+“Cho dù làm việc bận rộn cũng nhớ giữ gìn sức khỏe nha.”
+
+Tô Chấp Duật bấm nút thoát ra, bấm vào ảnh đại diện của Phương Thời Ân rồi cài đặt chế độ nhắn tin không làm phiền.
+
+Gay.
+
+Hắn không biết có nên cảm thấy may mắn, vì Trình Thi Duyệt phán đoán hắn là gay chứ không phải bị bệnh liệt dương sau đêm đó không, nhưng hắn cũng không hoàn toàn đồng ý với kết luận này.
+
+Khi còn học ở trong nước, hắn và anh trai Tô Chấp Thư học cùng trường. Mẹ của bọn họ Trần Bích Uyển xuất thân từ gia đình danh gia vọng tộc, nên việc giáo dục con cái vô cùng nghiêm khắc. Tô Chấp Dật phải duy trì thành tích xuất sắc mới có thể khiến cho nét mặt ít khi nở nụ cười của mẹ bớt đi phần lạnh lùng, ánh mắt bớt đi phần sắc bén khi nhìn mình.
+
+Theo những gì mà lúc nhỏ hắn tình cờ nghe được từ người giúp việc đã đi theo Trần Bích Uyển hơn mười mấy năm, Tô Chấp Duật không phải là con ruột của Trần Bích Uyển mà là sản phẩm từ một đêm phong lưu của Tô Nghiệp Đường thời trẻ.
+
+Trần Bích Uyển cũng không hề giấu giếm chuyện này.
+
+Hắn không biết tên mẹ ruột của mình là gì, dù lúc còn nhỏ hay khi đã trưởng thành cũng chưa bao giờ có ý định tìm kiếm thông tin về người đó. Nhưng hắn cũng thông cảm cho những hành động phân biệt đối xử lén lún và đôi khi cũng quá trắng trợn của Trần Bích Uyển suốt mấy năm qua.
+
+Sau khi học xong cấp 2, lên cấp 3 hắn theo học tại một trường tư thục quý tộc nổi tiếng ở nước ngoài, sau đó học lên đến chương trình nghiên cứu sinh mới trở về nước.
+
+Lúc đại học hắn học ngành Khoa học máy tính, sau này lên nghiên cứu sinh lại chuyển sang ngành Tài chính, đồng thời cũng tham gia khá nhiều cuộc thi khác nhau để giành giải thưởng. Tất nhiên đây cũng không phải chuyện dễ dàng, hắn gần như dành toàn bộ thời gian và sức lực vào việc học. Còn phải luôn chú ý đến hành động của Tô Chấp Thư, mỗi lần ba mẹ cho anh trai mình những cơ hội gì thì hắn cũng phải trang thủ giành phần.
+
+Giữa cuộc sống học tập bận rộn, hắn còn phải tìm thời gian gọi điện cho Tô Nghiệp Đường thể hiện “lòng hiếu thảo” đúng lúc, mong rằng ba sẽ không quên mất đứa con ngoài giá thú này.
+
+Mặc dù bận bịu với việc học và tham gia các hoạt động ngoại khóa, Tô Chấp Dật sở hữu ngoại hình lẫn thành tích nổi bật nên cũng không ít người thích hắn. Lúc đó hắn cảm thấy bản thân khó tìm được thời gian rảnh để yêu đương, bởi vì duy trì một mối quan hệ cũng cần phải bỏ ra nhiều thời gian và công sức. Sau khi từ chối nhiều lời tỏ tình, khi còn học đại học cuối cùng hắn cũng gật đầu đồng ý hẹn hò với một cô gái gốc Á đã theo đuổi mình dai dẳng suốt nửa năm.
+
+Nhưng mối tình này kết thúc chóng vánh chỉ sau một tháng.
+
+Đối phương ngỏ lời chia tay trước.
+
+Cô nói một người chỉ ngủ 5 tiếng mỗi ngày như Tô Chấp Duật, dành hết thời gian còn lại cho việc học tập, nghiên cứu và thi cử, đến bây giờ vẫn chưa đột ngột lăn ra chết đúng là một điều kỳ diệu. Lời chia tay mà cô dành cho hắn khá tế nhị, đó là chúc hắn sống lâu trăm tuổi.
+
+Kể từ đó Tô Chấp Duật đã hoàn toàn từ bỏ ý định yêu đương.
+
+Hắn cũng biết bản tính của mình lạnh nhạt trời sinh, không thể yêu ai càng không có ham muốn, nên hắn sẵn sàng tự mình giải quyết các vấn đề sinh lý vì bản thân là người vô tính.
+
+Khi đưa ra nhận xét về bản thân, hắn cũng không biết đó có phải là cách xác định đúng hay chưa.
+
+Đương nhiên về vấn đề này, Cố Tân – người tốt nghiệp cùng trường và là người duy nhất hắn xem là bạn đã từng thẳng thắn nói rằng: Kiểu người như Tô Chấp Duật chỉ giao lưu với những người cần thiết, khi giao lưu với những kẻ không phù hợp với khuôn khổ tiêu chuẩn của mình đều coi như lãng phí thời gian, hơn nữa tính tình còn kiên trì cố chấp nên đến hiện tại cũng chưa có quan hệ thân mật với ai được, cũng rất có khả năng hắn bị tự luyến quá mức.
+
+Sau bao nhiêu năm tháng cẩn trọng tính toán và sắp xếp thời gian chính xác đến từng phút từng giây, cuối cùng Tô Chấp Duật cũng đuổi kịp anh trai của mình, tốt nghiệp cùng năm với Tô Chấp Thư lớn hơn mình hai tuổi rồi vào công ty làm việc.
+
+Mặc dù ở một mức độ nào đó Tô Nghiệp Đường đã đối xử rất công bằng giữa đứa con cả và đứa con ngoài giá thú, nhưng hắn vẫn không nghĩ như vậy, hắn thấy năng lực của mình vượt xa Tô Chấp Thư mà xếp hai người ngang nhau đã là một sự bất công.
+
+Hai năm qua sức khỏe của Tô Nghiệp Đường ngày càng sa sút, trong năm nay đã phải nhập viện hai lần để hồi phục sức khỏe. Hắn nghi ngờ dưới sự dụ dỗ của Trần Bích Uyển, ông sẽ để lại phần lớn cổ phần của mình cho Tô Chấp Thư trước khi nghỉ hưu.
+
+Trở lại vấn đề gay.
+
+Bản thân hắn cũng không có kỳ thị những người đó, nhưng nếu hắn thực sự là gay thì đúng là một rắc rối lớn. Với kiểu người truyền thống và cổ hủ như Tô Nghiệp Đường chắc chắn sẽ rất tức giận, thậm chí hắn có thể hoàn toàn mất đi sự ủng hộ của ba mình.
+
+Nửa năm trước Tô Chấp Thư đã đính hôn với Mạnh Lâm, gia đình nhà gái có quan hệ rất tốt với nhà bọn họ. Hai người lớn lên cùng nhau, nên việc đính hôn cũng do một tay Trần Bích Uyển sắp xếp.
+
+Nếu Tô Chấp Dật là người đồng tính, tin này lan ra ngoài sẽ khiến hắn không thể liên hôn với gia tộc nào nữa, hậu quả của việc này sẽ khiến hắn mất đi rất nhiều khả năng cạnh tranh trong cuộc chiến tranh giành gia sản với Tô Chấp Thư.
+
+Thế hắn có phải gay hay không?
+
+Khuôn mặt của thiếu niên tên Phương Thời Ân đêm nay lại hiện lên trong tâm trí hắn.
+
+Hắn mở điện thoại ra đã thấy 12h30, đối phương chúc hắn ngủ ngon và bảo hắn đi ngủ sớm. Hắn tắt màn hình thở ra một hơi, tựa lưng vào ghế rồi từ từ cụp mắt xuống. Nếu có thể hắn vẫn hy vọng thà đừng như vậy thì tốt hơn.
+
+“Hôm nay trời trở lạnh, anh nhớ mặc thêm quần áo nhé.”
+
+“Anh Chấp Duật, sao anh không để ý đến em?”
+
+Sau một tuần, Phương Thời Ân vẫn miệt mài gửi tin nhắn cho Tô Chấp Duật, thỉnh thoảng nhận được câu trả lời: “Ừ” hoặc “Đang bận” của hắn khiến cậu như được tiếp thêm động lực, lúc đầu còn gọi ngài Tô rất lịch sự dần biến thành anh Chấp Duật luôn rồi.
+
+“Ối, hôm nay em vô tình va vào góc bàn, đau quá đi.”
+
+Tin nhắn hôm nay lại gửi đến, sau khi nhắn xong lại gửi kèm một bức ảnh.
+
+Dưới ánh đèn sáng rực trong bức ảnh, trên đầu gối vốn trắng nõn mịn màng xuất hiện một mảng bầm tím nhỏ do va đập, xung quanh phần da không bị thương có ánh hồng phớt nhẹ. Bức ảnh không chỉ chụp đầu gối mà còn cả một đoạn cẳng chân trắng mịn đang cuộn tròn trên chiếc ghế sofa tối màu.
+
+Khi Tô Chấp Duật xem được tin nhắn này, đối phương đã gửi từ hai giờ trước.
+
+Ánh mắt hắn dừng lại ở bức ảnh vài giây, không hiểu vì sao lại có cảm giác nếu cứ tiếp tục như vậy cậu sớm muộn gì cũng gửi ảnh khỏa thân cho mình.
+
+Chương 3
+
+Hắn gặp lại Phương Thời Ân vào một đêm cuối tuần.
+
+Buổi tối Tô Chấp Duật đi vào bãi đậu xe của công ty, nhìn thấy một người đang đứng cạnh xe của mình.
+
+Thiếu niên đang tựa người vào chiếc xe màu đen, có vẻ đứng chờ đợi một lúc lâu cũng thấy hơi mệt nên thỉnh thoảng cậu lại nhón chân chạm vào mặt đất.
+
+Nghe thấy tiếng bước chân vang lên trong gara dưới tầng hầm, cơ thể vốn không có chút sức sống nào của Phương Thời Ân lập tức đứng thẳng lên quay đầu lại nhìn hắn.
+
+Hôm nay cậu diện một chiếc áo khoác demin cùng với quần tây sáng màu, mái tóc có vẻ đã được chải chuốt kỹ lưỡng để lộ ra vầng trán mịn màng, khiến cậu trông rất trẻ trung tràn đầy sức sống.
+
+Phương Thời Ân nhìn thấy Tô Chấp Duật nên ngước mắt lên, đi nhanh về phía hắn rồi gọi: “Anh Chấp Duật.” Sau đó đôi lông mày xinh đẹp hơi nhíu lại tỏ vẻ tủi thân: “Sao anh Chấp Duật không trả lời tin nhắn của em thế?”
+
+Tô Chấp Duật nghe cậu nhắc nhở mới nhớ, sau bức ảnh hôm đó hắn vẫn chưa bấm vào tin nhắn của đối phương lần nào nữa.
+
+Đây không phải do hắn cố ý, hắn có quá nhiều việc phải giải quyết nên cũng không có nhiều rảnh rỗi trả lời những tin nhắn vô nghĩa của đối phương, hơn nữa dựa vào tính tình của Phương Thời Ân chắc cậu nói chuyện một mình vẫn ổn thôi.
+
+Hắn nhìn người đứng trước mặt, cũng không hỏi làm sao Phương Thời Ân đến được đây. Nhưng trong lòng lại một lần nữa cảm nhận được Trình Thi Nguyệt quyết tâm muốn đưa em trai lên giường hắn cho bằng được.
+
+Vẻ mặt Tô Chấp Duật vẫn thờ ơ, không có ý định trả lời câu hỏi của cậu mà chỉ hỏi: “Có chuyện gì sao?”
+
+Dáng vẻ lạnh lùng muốn đẩy người khác ra xa hàng ngàn dặm của Tô Chấp Duật quá áp bức, Phương Thời Ân dù có cố ra vẻ thân mật cũng trở nên hơi gượng gạo, nhưng cậu tốn thời gian đợi hắn lâu như thế sao có thể chịu từ bỏ dễ dàng được.
+
+Cậu hít một hơi mỉm cười, lấy hết can đảm đến gần hắn, “Anh Chấp Duật, em có hai vé xem hòa tấu. Em muốn mời anh đi chung được không?”
+
+Phương Thời Ân lấy hai tấm vé từ trong túi đưa cho hắn xem rồi nói: “Anh làm việc vất vả quá đi, đôi khi cũng nên thư giãn chứ. Phải kết hợp giữa công việc và nghỉ ngơi đó.”
+
+Tô Chấp Duật nhìn thoáng qua hai tấm vé, nhận ra đây chính là ban nhạc hoà tấu mà mình từng đưa Trình Thi Duyệt đi nghe.
+
+Thời gian không còn nhiều nên khi hai người đến nơi rồi tìm được chỗ ngồi, thì buổi biểu diễn cũng bắt đầu luôn sau một phút nữa.
+
+Phương Thời Ân nhìn lên sân khấu, sau khi màn trình diễn bắt đầu cậu hạ giọng ghé vào tai hắn nói: “Thật ra em hay nghe ban nhạc này biểu diễn lắm…”
+
+Tô Chấp Duật ngửi thấy mùi nước hoa ngọt ngào trên người cậu, không khỏi cau mày ngắt lời: “Yên tĩnh.”
+
+Phương Thời Ân nhìn sắc mặt của hắn, không nhịn được hậm hực “À” một tiếng.
+
+Cậu không nói gì nữa nên hắn cảm thấy bên tai bình yên hơn hẳn, ba mươi phút sau buổi hòa tấu hắn cảm giác vai phải của mình đột nhiên bị chạm vào.
+
+Phương Thời Ân tự nhận mình thường xuyên nghe ban nhạc này biểu diễn đã ngủ quên từ lúc nào.
+
+Hai người dựa vào rất gần nhau nên Tô Chấp Duật chỉ cần cụp mắt xuống là nhìn thấy hàng mi cong vút của đối phương, xuống sống mũi rồi đến đôi môi.
+
+Đôi môi của cậu trông đầy đặn căng mọng, có vẻ rất hợp để hôn.
+
+Chỉ xét về ngoại hình hắn không thể tìm ra lời chê bai nào, nhưng ở những khía cạnh khác cậu chắc chắn sẽ kém hơn chị gái mình một chút.
+
+Phương Thời Ân đang ngủ ngon lành không biết lúc này người xung quanh đánh giá mình như thế nào, đêm qua cậu thức đến khuya để chơi game, trước khi đến gặp Tô Chấp Duật còn dành hai giờ để sửa soạn, rồi đứng chờ trong gara dưới hầm rất lâu nữa. Đúng lúc nhiệt độ trong phòng hòa tấu quá dễ chịu, cậu ngồi xuống chưa được bao lâu mà mí mắt đã cụp xuống.
+
+Cậu dịu mắt mấy lần cũng không cưỡng lại cơn buồn ngủ.
+
+Nhạc trưởng trên sân khấu đã bắt đầu đứng lên đối diện với khán giả, phía sau anh ta là nữ nghệ sĩ chơi piano, nghệ sĩ cello, nghệ sĩ violin và dàn nhạc đều đã đứng dậy.
+
+Khi buổi hoà tấu kết thúc, Phương Thời Ân bị tiếng vỗ tay của khán giả đánh thức.
+
+Cậu chợt ngồi dậy nhận ra mình đã ngủ quên từ nãy giờ, cậu nhanh chóng nhìn sang Tô Chấp Duật đang ngồi bên cạnh, thấy hắn cứ nhìn thẳng về phía trước như thể không hề chú ý đến cậu, lúc này mới dám thở phào nhẹ nhõm.
+
+Trời đã khuya, khán giả bắt đầu rời đi.
+
+Sau khi những người khác đã rời đi gần hết, hai người mới đứng dậy khỏi chỗ ngồi bắt đầu bước ra ngoài.
+
+Phương Thời Ân được chợp mắt một lúc nên sức lực cũng lấy lại được rất nhiều. Cậu nhìn Tô Chấp Duật đang đi trước mình hai bước, cuối cùng cũng nhớ lại mục đích chính của mình.
+
+Phương Thời Ân nhanh chóng đuổi kịp hắn, hai người sóng vai bước đi. Cậu liếc nhìn hắn, sau đó nghiêm túc nhớ lại bộ phim mình đã xem trước đó nhưng không tài nào nhớ nổi, mấy lời hay ho cậu cố tình học thuộc sau một giấc ngủ dậy đã bay đi hết.
+
+Không sao, cậu vẫn có thể tự đối đáp được.
+
+“Anh thấy màn trình diễn của họ thế nào?”
+
+“Hả?” Tô Chấp Duật hơi cúi đầu, như thể không nghe rõ cậu đang nói gì.
+
+“Em thích ban nhạc này lắm. Thiệt đó, em rất ngưỡng mộ họ. Từ lúc bọn họ nổi tiếng nhờ màn trình diễn “Gió đêm trên biển” tại Golden Hall, em đã trở thành fan trung thành luôn…”
+
+“Thật sao?” Hắn nhẹ nhàng hỏi.
+
+Phương Thời Ân nói rất kiên quyết: “Đương nhiên!” Cậu nhìn hắn với đôi mắt sáng ngời: “Anh Chấp Duật, sau này chúng ta cùng đi nghe nữa được không?”
+
+Tô Chấp Duật không phải chưa từng gặp người muốn tiếp cận mình, nhưng người dùng những cách thức thô thiển như Phương Thời Ân đúng là hiếm khi gặp được.
+
+Con người buồn ngủ sẽ cần đi ngủ, Tô Chấp Duật chịu áp lực cao trong thời gian dài đôi khi cũng cần có thứ tiêu khiển
+
+Phương Thời Ân nhìn như đang cố gắng dùng hết mọi thủ đoạn của mình để tiếp cận hắn, thu hút sự chú ý của hắn. Mục đích của cậu lộ liễu đến mức hắn có thể nhìn thấu một cách dễ dàng.
+
+Trong một vài khoảnh khắc nào đó trong cuộc tiếp xúc ngắn ngủi với cậu, hắn có cảm giác mình đang đứng ở trên cao bỗng nhiên được mời đến xem một màn hài kịch đẹp mắt và sống động được chuẩn bị riêng cho mình.
+
+Cậu ngước nhìn Tô Chấp Duật, không biết người kia đang nhìn mình từ một góc độ kỳ lạ như vậy. Khi cậu còn đang cảm thấy lo lắng vì sự im lặng kéo dài của người đàn ông, cuối cùng cũng nghe thấy hắn nói: “Khi nào có thời gian thì tính sau.”
+
+“Hôm nay muộn rồi, tôi đưa em về.”
+
+Lúc bọn họ sắp đi đến gần xe, Tô Chấp Duật bỗng nhiên nói thế.
+
+Phương Thời Ân lên xe nói với hắn: “Anh đưa em đến trang viên Winner nha.”
+
+Tô Chấp Duật nghe thế không thể không hỏi: “Em không quay lại trường à?”
+
+Cậu giật mình, ngay sau đó hình như chợt nhớ ra điều gì nên giải thích: “Dạ, bởi vì… vì sáng mai không có tiết học nên em muốn về nhà với chị.”
+
+Tô Chấp Duật nhận ra giọng điệu có hơi gượng gạo của cậu, ánh mắt lơ đễnh nhìn lướt qua mặt cậu.
+
+“Không phải em đang học ở trường đại học A sao?”
+
+Ở ngã tư phía trước đang gặp đèn đỏ nên hắn dừng xe lại, hắn nhìn đèn của các xe phía trước nhấp nháy rồi nói: “Sao không lo tập trung học hành vậy?”
+
+“Lo học hành?” Phương Thời Ân lặp lại một lần nữa, như thể bị nhắc đến điều gì đó rất đáng ghét nên khuôn mặt lập tức trở nên nhăn nhó: “Có nghĩa gì?”
+
+Nói xong cậu quay người nhìn về phía hắn, “Chơi với anh Chấp Duật thú vị hơn.”
+
+Đôi mắt tròn xoe của cậu cong lên vì mỉm cười.
+
+Cậu ngoan cố làm theo ý mình.
+
+Lòng tốt của Tô Chấp Duật có hạn, cũng chưa bao giờ có ý định “cứu vớt” ai nên không nói gì nữa.
+
+Chương 4
+
+“Anh Chấp Duật, hẹn gặp lại nha.”
+
+Chiếc xe màu đen dừng lại trước cổng trang viên Winner, Phương Thời Ân bước xuống xe nói lời tạm biệt với Tô Chấp Duật trước khi đóng cửa lại.
+
+Sau khi cửa xe đóng lại, cậu nhìn thấy chiếc Maybach màu đen lái về phía ngã tư rồi đi thẳng vào đường chính.
+
+Trang viên Winner là khu dân cư giàu có nức tiếng nhất Vân Hoài, cảnh quan cây xanh được thiết kế như một khu vườn. Phương Thời Ân đi qua tượng đài phun nước, rẽ một khúc cua đến biệt thự của Trình Thi Duyệt.
+
+Toàn bộ khu nhà trong Winner đều là biệt thự độc lập. Cậu bước vào cổng biệt thự, dùng dấu vân tay để mở cửa đi vào phòng khách. Lúc này cả người bỗng chốc không thể chịu đựng được nổi, vẻ nhiệt tình khi ở bên Tô Chấp Duật biến mất không còn dấu vết, vai cậu chán nản rủ xuống, vừa vào cửa đã đá văng đôi giày trên chân để tìm dép lê xỏ vào, bỗng phát hiện trong tủ giày có thêm mấy đôi giày cao gót nữ.
+
+“Chị ơi!” Cậu ngẩng cổ kêu to, mang dép đi đến tủ lạnh rót cho mình một ly Coca lạnh. Cậu vừa uống một ngụm nước có ga lạnh như băng, cánh cửa của phòng đánh bài trên tầng hai bỗng nhiên bị mở ra.
+
+Đó là một gương mặt quen thuộc.
+
+Trương Kỳ thường đến tìm Trình Thi Duyệt chơi mạt chược, trông khoảng ba mươi tuổi. Cô ấy đang mặc một chiếc váy hai dây trông rất mát mẻ, dùng một tay giữ cửa rồi thò nửa người ra vẫy tay chào Phương Thời Ân ở dưới lầu: “Lên đây đi.”
+
+Cậu uống hết mấy ngụm Coca trong ly, đặt chiếc ly lên bàn rồi chạy lên lầu. Vừa vào cửa cậu đã nhìn thấy khoảng ba đến năm người phụ nữ trong phòng, bọn họ đều là những người thường xuyên đến đây chơi.
+
+Trình Thi Duyệt ngồi ở bàn mạt chược, giữa ngón tay kẹp một điếu thuốc lá của phụ nữ, vừa ngồi chơi mạt chượt vừa hút thuốc.
+
+Phòng đánh bài rộng rãi, bên trong có hai cô gái trẻ đang ngồi trên ghế sofa da, một người đang giúp người kia sơn móng tay, thỉnh thoảng lại bật cười rôm rả không biết đang bàn về cái gì.
+
+Mấy cô nàng vừa nhìn thấy cậu bước vào cửa đều ngẩng đầu kêu lên: “Ây da, Tiểu Thời Ân về rồi nè…”
+
+Phương Thời Ân bước vào phòng nhưng chưa kịp đi đến trước mặt chị, đã bị Chu Vi Tuyết đang ngồi trên bàn mạt chược duỗi tay ra ôm lấy cổ, “Ui, Tiểu Thời Ân càng lớn càng xinh đẹp, để chị ngắm xíu coi.”
+
+Cậu bất ngờ bị túm lại nên cơ thể cũng loạng choạng, vừa lơ đễnh vài giây đã bị Chu Vi Tuyết in một dấu hôn đỏ chót trên má.
+
+“Ối! Chị Vi Tuyết!” Tâm trạng của cậu vốn dĩ đang không vui nên kéo cánh tay của Chu Vi Tuyết xuống, lấy ống tay lau mặt: “Chị phiền quá à.”
+
+Phương Thời Ân dù có tỏ vẻ bực bội cũng không khiến đám phụ nữ ở đây chán ghét, ngược lại khuôn mặt nhỏ trắng nõn bị dính dấu son môi lau qua lau lại một hồi làm nửa khuôn mặt cũng đỏ ửng, lấm lem như một con mèo mướp.
+
+Chẳng những không có chút uy hiếp nào, mà còn khiến mấy người phụ nữ ngồi ở bàn mạt chược bật cười thành tiếng.
+
+Trình Thi Duyệt thấy cậu bị trêu đến nỗi nhăn mặt, mới mở miệng nói: “Được rồi.”
+
+Cô ta ngước mắt nhìn Phương Thời Ân: “Sao vậy, mới về mà không vui rồi.”
+
+Phương Thời Ân đi đến bên cạnh chị mình, cụp mắt xuống nói với giọng điệu rất thất bại: “Anh ấy không thích em đâu, lúc em nói chuyện anh ấy lúc nào cũng hờ hững, phải làm sao đây chị?”
+
+Cậu nhìn Trình Thi Duyệt: “Rõ ràng là em đã làm hết mọi việc chị bảo rồi.”
+
+Trình Thi Duyệt không cần cậu nói rõ cũng biết cậu đang nhắc đến ai, sau khi nghe xong không khỏi ngẩng đầu lên nhìn cậu hỏi: “Em làm thế nào?”
+
+Phương Thời Ân tưởng cô ta không tin, không nhịn được lấy điện thoại ra chứng minh: “Chị chỉ em nói chuyện với anh ấy thế nào là em làm y chang, chị kêu em mời anh ấy đi nghe hoà tấu em cũng làm luôn rồi, nhưng anh ấy không hề có ý gì với em luôn.”
+
+Trước khi Trình Thi Duyệt giới thiệu cậu cho Tô Chấp Duật, cũng đã huấn luyện cậu rất nhiều. Phương Thời Ân tự nhận mình đã nỗ lực học tập, nhưng không ngờ những chiêu này đối với hắn mà nói chẳng có tác dụng gì.
+
+“Cả đêm nay anh ấy còn chưa nói được mười câu với em!” Cậu khoa trương múa may tay, sau đó bắt chước lại vẻ mặt lạnh lùng của Tô Chấp Duật.
+
+“Ừ.”
+
+“Yên tĩnh.”
+
+“Sao không lo tập trung học hành vậy?”
+
+Trình Thi Duyệt hình như cũng thấy mắc cười với động tác bắt chước của cậu, cô ta nở một nụ cười nhẹ, bàn tay đang đặt trên bàn mạt chược giơ lên đặt trên vai cậu vỗ nhẹ an ủi: “Được rồi được rồi, đừng nóng vội quá.”
+
+“Em phải biết, nếu Tô Chấp Duật thật sự không có hứng thú với em, thì em đã không được thêm vào danh sách bạn tốt của hắn rồi.”
+
+Trình Thi Duyệt nói: “Hắn đã quen tự cao tự đại, em cứ cố gắng nữa xem sao.”
+
+Cô ta đẩy Phương Thời Ân về chỗ ngồi của mình: “Em chơi giùm chị hai ván đi, chị đi ra nghe gọi điện.”
+
+Cậu ngồi xuống theo động tác của Trình Thi Duyệt, không có bất kỳ sự phản kháng nào.
+
+“Dạ.”
+
+Thực ra nhìn thấy bọn họ chơi mạt chược, làm Phương Thời Ân thấy ngứa tay lâu lắm rổi. Ngay khi ngồi xuống đặt tay lên mạt chược, những bực bội và ấm ức trong lòng lúc nãy đều tan biến không còn dấu vết.
+
+Trình Thi Duyệt nói chuyện điện thoại rất lâu, đợt này Phương Thời Ân đúng lúc gặp may nên thắng liên tiếp ba ván, trong lúc đó nói chuyện trêu đùa với đám người Chu Vi Tuyết.
+
+Nói là trêu đùa nhưng thực ra phần lớn đều là các cô nàng trêu chọc cậu, Phương Thời Ân chẳng những phản bác lại mà còn đánh thắng bọn họ trên bàn mạt chược, khiến bọn họ càng nói ra nói vào nhiều hơn.
+
+Lúc Trình Thi Duyệt nghe điện thoại xong cũng là lúc Phương Thế Ân phải nhường chỗ, trong lòng còn chơi chưa đã thèm.
+
+“Hôm nay em may mắn quá, để em chơi tiếp nha chị.”
+
+Nếu bị đôi mắt mèo sáng ngời như vậy nhìn chằm chằm sẽ khiến người ta rất dễ mềm lòng, nhưng Trình Thi Duyệt vẫn chẳng xiêu lòng mà còn thúc giục: “Mấy giờ rồi? Em về phòng ngủ sớm đi.” Cô ta nói xong, sau đó im lặng vài giây mới nhắc nhở: “Đừng quên chúc ngài Tô ngủ ngon.”
+
+Hầu như lúc nào Phương Thời Ân cũng nghe lời chị mình, nghe Trình Thi Duyệt nói như vậy, tuy rằng vẫn rất nhớ nhung bàn mạt chược nhưng vẫn không thể không đứng dậy. Đối mặt với lời nhắc của chị, cậu cố tình kéo dài giọng trả lời: “Em biết rồi.”
+
+Lúc cậu đang chuẩn bị rời khỏi phòng, cô ta bỗng ngăn cậu lại: “Nhân tiện, cố vấn học tập của em mới gọi cho chị, nói em lâu lắm rồi không lên trường. Em dành chút thời gian lên trường đi, nếu tiếp tục như vậy sẽ bị đuổi học.”
+
+Phương Thời Ân phát ra vài tiếng càu nhàu, khi cánh cửa cách âm được đóng lại cô ta cũng không nghe thấy cậu lẩm bẩm gì.
+
+Khi cậu rời khỏi phòng, mạt chược trên bàn được máy mạt chược tự động kéo vào trong xáo trộn lại.
+
+“Mày đưa cậu hai họ Tô đó cho em mày rồi à?”
+
+Vừa nãy hai người nói chuyện cũng không tránh mặt mọi người, có mấy người thân thiết với nhau nên đôi khi còn trao đổi lợi ích và thông tin với nhau, huống hồ mấy người này đều là cáo già vừa nghe đã hiểu ra ngay.
+
+Chu Vi Tuyết nghe vậy không khỏi cong môi, liếc nhìn Trình Thi Nguyệt nói: “Mày trông vậy mà bỏ dễ thế?
+
+Lời nói có nhiều ý nghĩa sâu xa, không biết là bỏ cậu hai họ Tô kia hay bỏ Phương Thời Ân.
+
+Trương Kỳ ngồi đối diện với Chu Vi Tuyết, đánh một quân mạt chược trong tay rồi nói: “Tên đó có vẻ là một cục xương khó gặm, mày nghĩ sao?”
+
+Trình Thi Duyệt vẫn thản nhiên nói: “Nó rảnh rỗi không có việc gì làm nên tìm chút chuyện cho nó thôi, như con nít chơi đồ hàng không được thì thôi mà.”
+
+“Đơn giản vậy à, tính tình em mày thế nào đâu phải mày chưa biết. Lỡ như làm người ta thấy ghét, đắc tội họ thì sao?”
+
+“Cái gì mà đắc tội hay không đắc tội chứ, mày nói như thể nó được người ta xem trọng lắm.” Trình Thi Duyệt như vừa nghe thấy điều gì đó rất buồn cười, ngay sau đó lắc đầu: “Mày không hiểu đâu, có một kiểu người khi đã kiêu ngạo đến cực điểm sẽ có một mức độ khoan dung nhất định. Thời gian của bọn họ rất quý giá, nên không thèm chấp vặt hay cãi cọ với một con kiến ​​đâu.”
+
+Chu Vi Tuyết nghe cô ta nói xong không khỏi thở dài: “Cậu hai họ Tô không dễ chạm vào đâu, mày cũng coi như có nhiều tính toán.”
+
+Cô vừa mới nói xong, Hứa Nhan vốn dĩ nãy giờ vẫn luôn im lặng đột nhiên lạnh lùng nói ra ba chữ: “Trùng hút máu.”
+
+Bàn mạt chược đột nhiên im lặng, nhiệt độ xung quanh cũng giảm xuống.
+
+Ngay cả Trình Thi Duyệt lúc nào cũng tươi cười rạng rỡ cũng chậm rãi hạ môi xuống. Mặc dù Hứa Nhan như đang cảm thấy bất bình thay cho Trình Thi Duyệt, nhưng rõ ràng cô ta cũng chẳng mảy may quan tâm.
+
+Chu Vi Tuyết nhìn thấy sắc mặt cô ta, vội vàng huých vào khuỷu tay của Hứa Nhan rồi ra mặt hoà giải: “Mày đang nói nhảm cái gì vậy? A Duyệt thương em trai lắm!”
+
+Trương Kỳ cũng vội nói: “Hồi nãy ở dưới uống nhiều quá hả Hứa Nhan.”
+
+“Chơi mạt chược, chơi mạt chược, một quân bốn chục…”
+
+***
+
+Mặc dù Phương Thời Ân rất ghét trường học, nhưng tối qua chị mình đã cố ý nhắc nhở nên cậu không thể không đến trường, hơn nữa cậu cũng không muốn bị đuổi học đâu.
+
+Mặc dù trường của cậu là một nơi chỉ cần bỏ ra chút tiển là có thể vào học.
+
+Bởi vì đã lâu không đến trường nên cậu suýt chút nữa đã vào nhầm phòng khi vào tìm phòng học. Đối với một đứa sinh viên nghỉ học nhiều như cậu, thời gian đến trường quá ít nên trong trường cũng không có nổi một đứa bạn thân.
+
+Sau khi tìm thấy lớp học cậu đi xuống ngồi ở hàng cuối cùng, giảng viên dạy suốt hai giờ thì cậu cũng chơi điện thoại suốt hai giờ.
+
+Hai giờ chiều vẫn còn có lớp, thời gian còn khá ngắn nên cậu không cần phải vội vã về trang viên Winner.
+
+Phương Thời Ân cũng biết ăn cơm trong trường chắc chắn sẽ không ngon, nhưng không ngờ lại tệ đến mức làm ta giận sôi máu. Cậu ăn được hai muỗng đã không ăn nổi nữa, đổ cơm xong lại chuẩn bị quay lại ký túc xá để nghỉ ngơi.
+
+Cậu tìm thấy tòa nhà ký túc xá của trường, leo lên cầu thang tìm cánh cửa ký túc xá trong ký ức của mình, dùng chìa khóa mở cửa bước vào.
+
+Lúc đi đến chỗ giường ngủ của mình, tâm trạng vốn đã không tốt lại càng trở nên tồi tệ hơn.
+
+Cậu phát hiện bàn học của mình đã bị bạn cùng phòng ngang nhiên sử dụnh. Trên bàn bày la liệt các loại cốc nước, ấm trà, mì gói, đồ dùng vệ sinh cá nhân, chẳng khác gì biến cái bàn thành một thứ công cộng cho mọi người dùng chung.
+
+Phương Thời Ân liếc nhìn những thứ bừa bộn trên bàn, càng nhìn càng khó chịu. Cậu nhanh chóng bước hai bước đến bàn, ban đầu còn tức giận muốn đẩy mọi thứ trên bàn xuống đất, nhưng trước khi làm bỗng nhớ lại mấy đứa bạn cùng phòng của mình.
+
+Hình như có một tên rất cao to, lỡ như trong đây có đồ đạc của gã, lát nữa trở về nổi cơn giận thì cậu không có đánh lại nổi đâu.
+
+Cậu nhấc lên một hơi, nắm chặt tay rồi lại buông xuống.
+
+Cậu còn chưa kịp nghiến răng đưa ra quyết định thì đã nghe thấy tiếng cửa ký túc xá đập mạnh, nhóm bạn cùng phòng đã quay lại.
+
+Không biết là do tâm lý hay còn gì khác, nhưng cậu cảm thấy có một mùi lạ đọng lại trong ký túc xá, mùi đó càng trở nên nặng hơn sau khi đám bạn cùng phòng quay về.
+
+Cũng phải thôi, năm người đàn ông sống trong một môi trường chật chội như vậy, giày và tất của ai cũng chất đống ở đó, còn có mùi mồ hôi của họ chảy ra sau khi tập thể dục, có mấy người còn để bật lửa và thuốc lá y nguyên trên bàn.
+
+Làm thế nào mà thơm tho cho được?
+
+Mà biệt thự của Trình Thi Duyệt trong trang viên Winner luôn có một người phụ trách dọn dẹp. Biệt thự được trang bị hệ thống lọc không khí tiên tiến nhất, khi cửa mở không khí lúc nào cũng tràn ngập mùi thơm nồng nàn của những bông hoa tulip.
+
+Mặc dù Phương Thời Ân và những người này đều học ở một ngôi trường tồi tàn trong mắt mọi người, nhưng cậu luôn khoác trên mình những bộ quần áo hàng hiệu đắt tiền, lui tới những nhà hàng sang trọng và sinh sống trong trang viên Winner. Do vậy, Phương Thời Ân mới tự cho rằng bản thân và đám bạn cùng phòng đã không phải người ở chung một thế giới.
+
+Phương Thời Ân liếc nhìn bọn họ với vẻ mặt bình tĩnh, tự cho là mình đang nói chuyện với giọng điệu rất uy hiếp: “Ai cho mấy người đặt đồ lên bàn của tôi?”
+
+Những lúc cậu vắng mặt ở trường, nhóm bạn cùng phòng đã thân thiết với nhau hơn, lúc này thấy cậu đột nhiên xuất hiện trong ký túc xá nên ai nấy cũng ngạc nhiên.
+
+Người tên Phương Thời Ân này chỉ sống trong ký túc xá đúng một tháng lúc khai giảng năm nhất. Từ khi chuyển ra ngoài ở riêng, cậu thường xuyên vắng mặt, ba, bốn, thậm chí năm tuần liền không đến lớp là chuyện bình thường. Lên đại học năm hai thì tình trạng còn tệ hơn, ngoại trừ lộ mặt vào lúc khai giảng, hầu như không ai nhìn thấy bóng dáng của cậu đâu.
+
+Bởi vậy, bàn học và giường ngủ của Phương Thời Ân bị bọn họ chiếm giữ cũng là điều đương nhiên.
+
+“Ai biết cậu còn học nữa không? Đều tưởng cậu bỏ học luôn rồi!” Một người bạn cùng phòng nghẹn ngào khi nghe câu hỏi không mấy tử tế của cậu.
+
+Phương Thời Ân vốn dĩ đã tức giận, nghe xong lập tức nói: “Tai nào của mấy người nghe nói tôi không đi học nữa? Cố vấn báo cho mấy người à?”
+
+Cậu đi lên trước một bước, giơ ngón tay chỉ vào bọn họ: “Dọn hết rác ra khỏi bàn của tôi ngay bây giờ, nếu không tôi sẽ vứt hết đó, mấy người có tin không?!”
+
+Thực ra nếu Phương Thời Ân muốn về ký túc xá ở, cậu chỉ cần lịch sự kêu bọn họ lấy đồ đạc về là xong chuyện, nhưng thái độ của cậu bây giờ thực sự làm người ta bực bội.
+
+“Mày nói ai là rác rưởi? Nói lại đi!” Vương Đinh nghe xong lập tức không vui: “Mày ném đi, mày ném thử cho tao coi!?”
+
+Vương Đinh chính là người bạn cùng phòng có vóc dáng cao to trong trí nhớ của Phương Thời Ân, cậu nhìn người cao hơn mình một cái đầu, không ngờ người này lại tàn bạo và vô lý như vậy, rõ ràng bọn họ chiếm chỗ của cậu trước mà bây giờ còn dám uy hiếp cậu nữa.
+
+Phương Thời Ân bị lời nói của gã kích thích đến mức gần như mất trí, vung tay cầm thẳng thùng mì ăn liền trên bàn quăng vào ngực đối phương. Đó vô tình cũng chính là bữa tối mà Vương Đinh định ăn tối nay, gã đột nhiên nổi giận đùng đùng tiến lên túm lấy cổ áo của cậu.
+
+Phương Thời Ân sợ đến mức hét toáng lên: “Cậu buông tôi ra ngay? Cậu biết quần áo của tôi đắt tiền thế nào không? Nếu bị rách, cậu có bán thân cũng không đủ tiền trả đâu!”
+
+Chẳng cần nói thì họ cũng có thể đoán được đó từ cách ăn mặc của cậu, hơn nữa bọn họ còn thấy Phương Thời Ân thường xuyên được một chiếc Lamborghini đón đưa. Mấy người cũng thầm đoán cậu là con nhà giàu, Phương Thời Ân dễ đánh rồi nhưng đánh xong lại sợ gặp rắc rối nữa thôi.
+
+“Mấy thứ cá thối tôm hôi mấy người! Bọn cặn bã xã hội, mấy người dám động tay vào một cái tay của tôi, tôi sẽ làm cho mấy người phải khổ sở!”
+
+Trên trán Vương Đinh nổi lên gân xanh, giận dữ dáp: “Mày gọi ai là cá thối tôm hôi? Tin tao làm mày không bước ra khỏi cửa ký túc xá này không!”
+
+Nhìn thấy hai người càng kích động nên những người xung quanh vội vàng tiến tới ngăn cản, có người đi tới nắm lấy tay Vương Đinh đang giữ cổ áo của Phương Thời Ân.
+
+“Được rồi, được rồi, anh Vương, chúng ta đừng có so đo với hắn…”
+
+Cuối cùng hai người mới tách ra, cổ áo vừa được buông cậu mới dám thở phào nhẹ nhõm, vội vàng lui ra sau sợ tên hung ác ngang tàn này lại bắt được mình.
+
+Phương Thời Ân bị bóp cổ đe doạ một hồi cuối cùng cũng bình tĩnh lại, nhận ra đối phương không chỉ có sức mạnh áp đảo mà còn người đông thế mạnh. Khuôn mặt cậu đỏ bừng vì tức giận, dùng hết sức sửa lại cổ áo rồi nhìn bọn họ nói: “Mau lên! Mang đồ của mấy người đi!”
+
+Lúc cậu nói lời này như muốn muốn thể hiện điều gì đó, giọng nói to hơn và âm cuối có phần bén nhọn.
+
+Vương Đinh nghe mà cau mày, sau đó nhìn thấy cậu trợn tròn mắt, tức giận nghiến răng nghiến lợi đến nỗi khiến khuôn mặt xinh đẹp tinh xảo đỏ bừng.
+
+Người này từ đầu đến cuối đều rất khác biệt với bọn họ, không chỉ chưng diện mà lúc đến gần gã còn ngửi được mùi nước hoa rất nồng.
+
+Vương Đình nhìn cậu hai cái, mắng: “Con quỷ cái.”
+
+Chương 5
+
+Khác với dự đoán của Phương Thời Ân, đám bạn cùng phòng không những không dọn dẹp đồ đạc trên bàn, mà còn “dọn” cả bản thân cậu ra khỏi ký túc xá.
+
+Dù sao cũng phụ lòng dặn dò của Trình Thi Duyệt, cậu mang tâm trạng buồn bực rời khỏi trường học, còn bị mất hết thể diện nên trong thời gian ngắn cậu cũng không muốn quay lại trường.
+
+Thời điểm này mà về cậu lo sẽ đụng mặt chị, hôm nay chị đã cố tình bảo cậu phải về trường học nên cậu cũng không muốn chị phải lo lắng chuyện cậu bị đuổi học.
+
+Phương Thời Ân ngồi nhàn nhã trong quán cà phê một lúc, bữa trưa ở căng tin trường ăn không được ngon nên cậu gọi thêm vài chiếc bánh ngọt bơ có vẻ ngoài xinh xắn. Cậu vừa lướt điện thoại vừa ăn hai chiếc bánh nhỏ vào bụng. Chơi điện thoại suốt hai tiếng cậu mới nhìn lên bầu trời, quyết định ra khỏi quán cà phê. Giờ này vẫn còn sớm nên cậu không định về nhà.
+
+Hôm qua Trình Thi Duyệt bảo cậu chơi giùm hai ván bài khiến ham muốn chơi mạt chược cũng được khơi lên, vả lại đã lâu lắm rồi không chơi, gần đây chỉ lo tập trung vào “việc chính” mà chị sắp xếp cho mình.
+
+Nghĩ đến đây, Phương Thời Ân lấy điện thoại ra nhấp vào khung trò chuyện của mình và Tô Chấp Dật, thấy câu “Chào buổi sáng” mình gửi hôm nay vẫn lẻ loi không nhận được bất kỳ phản hồi nào.
+
+Cậu chán nản nhét điện thoại vào túi, mang tâm trạng sa đọa gọi taxi đến quán bar Lan Hải. Quán bar này nằm ở một nơi khá vắng vẻ phía sau phố đi bộ sầm uất, vị trí bình thường và trang trí bên trong cũng không có gì đặc sắc so với các quán bar khác.
+
+Theo lẽ thường, quán bar sẽ không mở cửa sớm thế này.
+
+Nhưng Phương Thời Ân không đến quán bar để uống rượu.
+
+Cậu đẩy cửa bước vào quán bar, rồi đi theo con đường quen thuộc đến cánh cửa bí mật phía sau quán bar. Nhân viên phục vụ nhận ra đây là khách quen nên không cản trở, còn làm một cử chỉ chào mời thân thiện.
+
+Cánh cửa mở ra, cậu đi xuống vài bậc thang đã lập tức nghe thấy tiếng ồn ào phấn khích bên trong, xuống tầng hầm mới thấy hóa ra quán bar này còn có một cõi khác.
+
+Đây là một sòng bài nhỏ hoạt động ngầm.
+
+Lúc này có vài người xung quanh cũng đang chơi, Phương Thời Ân nghe tiếng xúc xắc vang lên, ánh sáng bên trong không được tốt lắm mà có tông màu ấm hơi tối.
+
+Mặc dù đến sòng bài nhưng cậu tự nhận mình không nghiện cờ bạc, chỉ thích chơi mạt chược thôi.
+
+Với ngoại hình như vậy của cậu đáng lẽ sẽ rất thu hút sự chú ý, nhưng hiện tại những con bạc trên bàn chỉ tập trung vào các lá bài. Phương Thời Ân bước vào cũng rất nhỏ nhẹ, vì vậy đi một đoạn đường cũng không thu hút được sự chú ý của ai.
+
+Cậu đi thẳng đến quầy bar của người phụ trách sòng bài, chống tay lên quầy hỏi: “Ông chủ Lưu, còn chỗ chơi mạt chược không?”
+
+Người đàn ông trung niên để râu quai nón ngước mắt nhìn, ánh mắt dừng lại, biểu cảm trên mặt lập tức trở nên nhiệt tình: “Cậu Phương lại đến chơi à, đương nhiên còn chỗ chơi mạt chược rồi, theo tôi đến đây.”
+
+Phương Thời Ân chơi mạt chược ở đây không phải mới một lần hay hai lần. Số tiền chơi mạt chược cũng không hề nhỏ, nhìn vào cách ăn mặc của cậu và số tiền boa mà cậu thường xuyên đưa cho nhân viên phục vụ, ông chủ Lưu luôn nghĩ cậu là một tên thiếu gia nhà giàu ăn chơi trác táng.
+
+Tiếng mở cửa “kẽo kẹt” vang lên, trên bàn mạt chược trong phòng vừa vặn thiếu một người, ông chủ Lưu dẫn Phương Thời Ân đi đến chỗ ngồi.
+
+Khi cậu ngồi vào bàn mạt chược, những người bạn cùng phòng đáng ghét và Tô Chấp Dật khó ưa… một loạt chuyện lộn xộn khác trong đầu đều bị gạt bỏ hết.
+
+Không khí ngột ngạt trong căn hầm này không tốt lắm, nhưng khi Phương Thời Ân sờ vào mạt chược vẻ mặt lập tức tốt hơn hẳn.
+
+Dáng vẻ giống như một chú mèo vừa bắt được cá.
+
+Những người cùng bàn nhìn thấy vẻ mặt của cậu không khỏi liếc nhìn nhau, có người còn lơ là quên cả việc mình đã đánh ra quân nào.
+
+Trên bàn mạt chược Phương Thời Ân tập trung cao độ, những người muốn nói chuyện với cậu đều bị phớt lờ.
+
+Thời gian chơi mạt chược trôi qua rất nhanh, hôm nay cậu không may mắn lắm nhưng vẫn chưa muốn về sớm như vậy, đến cuối cùng không ngờ mình lại thua sạch hết tiền trong thẻ.
+
+Phương Thời Ân theo bản năng định gọi điện cho chị, nhưng ngay sau đó mới chợt nhớ ra tuần trước Trình Thi Duyệt vừa chuyển cho cậu một khoản tiền tiêu vặt. Vả lại cậu đã hứa sẽ về trường học cũng chưa làm được, còn đến sòng bài ngồi cả buổi chiều rồi thua sạch tiền.
+
+Cậu đặt ngón tay lên số điện thoại của chị chần chừ trong vài giây, sau một hồi đấu tranh tư tưởng cậu vẫn không bấm.
+
+“Thôi quên đi.” Phương Thời Ân đứng dậy khỏi bàn mạt chược, vươn vai, “Hôm nay không chơi nữa.”
+
+Cậu phớt lờ những lời níu kéo của mấy người trên bàn mạt chược muốn giữ mình lại chơi thêm hai ván, đi ra ngoài phòng riêng.
+
+Ông chủ Lưu thấy cậu đi ra, không khỏi ngạc nhiên: “Sao thế cậu Phương, chơi xong rồi sao?”
+
+Trước đây, Phương Thời Ân thường xuyên chơi thâu đêm.
+
+“Không muốn chơi nữa!” Giọng điệu của cậu không tốt lắm, nhưng cũng không muốn tỏ ra yếu đuối trước mặt ông chủ.
+
+Người đàn ông trung niên đã lăn lộn trong sòng bài từ lâu, nhìn thấy vẻ mặt rõ ràng là chưa thỏa mãn của Phương Thời Ân liền đảo mắt một cái, lập tức hạ giọng đến gần nói: “Cậu Phương, dạo này có phải hơi eo hẹp không?”
+
+“Không sao, tôi hiểu mà, chắc là bị gia đình cắt tiền tiêu vặt rồi nhỉ. Nhưng tiền không thành vấn đề, không có thì tôi cho cậu vay trước, chơi đến khi nào cậu vui thì thôi.”
+
+“Thật ư?” Phương Thời Ân vốn định hất tay áo bỏ đi, liếc nhìn đối phương rồi thầm nghi ngờ sao có thể tốt bụng cho mình vay tiền chơi như vậy.
+
+“Tất nhiên rồi!”
+
+Cậu suy nghĩ một lúc, không biết nghĩ đến đâu mà thử hỏi: “Có tính lãi không?”
+
+Ông chủ lén lút đưa cho cậu một con số.
+
+Ngay lập tức tròng mắt Phương Thời Ân như muốn lòi ra ngoài, cao như vậy sao không đi cướp tiền luôn đi, đây không phải cho vay nặng lãi thì là gì.
+
+Mặc dù con mắt nhìn đời của cậu còn non nớt, nhưng đối với bốn chữ “cho vay nặng lãi” vẫn rất cảnh giác, biết rằng đây là thứ không thể đụng vào.
+
+Người đàn ông vốn nhiệt tình và niềm nở tiếp đón mình lại có tâm địa đen tối như vậy, nên Phương Thời Ân thầm mắng vài câu. Cậu nhìn thân hình to lớn gấp đôi mình của đối phương, rồi lại nhìn lướt qua sợi dây chuyền vàng trên cổ và hình xăm trên cánh tay, những lời mắng suýt nói ra lập tức nuốt trở lại.
+
+Cuối cùng cậu chỉ nói với giọng điệu khó chịu, để lại một câu: “Đã nói là hôm nay không có tâm trạng! Không chơi nữa!”
+
+***
+
+Lúc Phương Thời Ân trở về trang viên Winner, nhìn thấy đèn phòng khách sáng lên cũng biết Trình Thi Duyệt đang ở nhà.
+
+Cậu mở cửa thấy chị vẫn mặc chiếc váy dài màu đỏ chưa kịp thay, đang nằm ngả lưng trên ghế sofa lim dim, gương mặt xinh đẹp tuyệt trần sau khi trang điểm hiện lên vẻ mệt mỏi khó che giấu.
+
+Cậu hỏi: “Chị, sao không lên lầu nghỉ ngơi?”
+
+“Một lát nữa chị phải đi ra ngoài.” Trình Thi Duyệt trả lời rồi nhìn sang cậu, “Em đi học rồi à?”
+
+Phương Thời Ân vừa chơi mạt chược đến giờ mới về nhà, nhưng vẻ mặt không thay đổi và tim cũng không đập mạnh khi trả lời: “Vâng, không phải chị bảo em về trường à.”
+
+Cậu nhìn chị mình, đi đến nằm xuống ghế sofa, dang tay ôm lấy eo Trình Thi Duyệt rồi đầu cũng vùi vào lòng cô ta.
+
+Trình Thi Duyệt không ngăn cản trò nũng nịu quen thuộc của cậu, giơ tay vuốt ve khuôn mặt ấm áp của cậu.
+
+Cô ta ngửi thấy mùi rượu xen lẫn thuốc lá trên người Phương Thời Ân, nhìn vào đôi mắt đẹp long lanh đang nhìn mình cũng không vạch trần cậu, chỉ nhẹ nhàng gạt đi lọn tóc rối của cậu.
+
+“Thời Ân, em cứ ham chơi như vậy làm sao ngài Tô thích được chứ?”
+
+Cậu nghe vậy càng vùi mặt sâu hơn vào lòng Trình Thi Duyệt, giọng nói uể oải: “Ngài Tô vốn dĩ không có thích em đâu.”
+
+Cậu lại nói thêm: “Chị giỏi như vậy mà ngài Tô còn không thích, làm sao có thể thích em được chứ.”
+
+“Hắn là gay đấy.”
+
+Cậu ngẩng mặt lên: “Sao chị biết, chị đã nói anh ấy chưa từng có bạn trai mà?”
+
+Trình Thi Duyệt vẫn kiên nhẫn với cậu: “Đó là vì hắn còn chưa biết bản thân mình là gay.” Cô ta đặt tay lên vai cậu rồi nói: “Em phải cho hắn biết, hiểu chưa?”
+
+Phương Thời Ân nhăn mặt, chưa kịp nói mình không hiểu thì đã bị chị đẩy ra.
+
+“Đến giờ rồi, chị phải đi đây.” Cô ta đứng dậy khỏi ghế sofa, chỉnh trang lại váy của mình rồi nói với cậu: “Tối nay chị có thể không về nhà, nếu em đói thì bảo dì nấu cơm cho ăn.”
+
+Trình Thi Duyệt nói xong mới bước đi, nhưng cơ thể không đứng vững nên thân hình cứ chao đảo.
+
+Phương Thời Ân vội vàng đứng lên đỡ cô ta, giọng nói lo lắng: “Sao vậy chị, không khỏe thì ở nhà nghỉ ngơi đi.”
+
+“Tối qua không ngủ ngon, không sao đâu, đã hẹn với người ta rồi sao có thể thất hẹn được.”
+
+Cậu nhìn chị mình từ đầu đến chân, không có chỗ nào không được trau chuốt tỉ mỉ, bèn hỏi: “Chị lại tìm kiếm người mới rồi à?”
+
+Trình Thi Duyệt dường như cũng cảm thấy câu hỏi của em trai mình ngây thơ đến buồn cười, đẩy tay cậu ra rồi mỉm cười hỏi ngược lại: “Nếu không thì cứ ngồi đợi đến lúc mỏ vàng cũng cạn à?”
+
+Tiếng “cạch” vang lên khi cô ta đóng cửa đi ra ngoài.
+
+Phương Thời Ân nhìn theo bóng lưng chị gái khuất dần, trong lòng hoang mang một hồi. Từ trước đến nay cậu vô cùng ngưỡng mộ chị, trong mắt cậu Trình Thi Duyệt rất tài giỏi, khéo léo, xinh đẹp lại còn thông minh. Dường như chị chẳng cần tốn nhiều sức lực, chỉ cần nhấc nhẹ ngón tay hay nở một nụ cười là những người đàn ông giàu có sẽ tự động vây quanh chị, dâng lên vô số những món trang sức vàng bạc.
+
+Trình Thi Duyệt là tay chơi lão luyện trong chốn quyền quý, cậu tưởng chị mình sẽ luôn sống ung dung tự tại, khi nhìn thấy chị không khỏe mà vẫn cố gắng tham dự buổi tiệc trong đêm khiến cậu cảm thấy không quen.
+
+Dường như Trình Thi Duyệt luôn làm mọi việc một cách dễ dàng, giờ đây cũng cần phải “tốn một chút sức”.
+
+Phương Thời Ân nhận ra điều này, đột nhiên cảm thấy mình cũng nên gánh vác một phần nào đó cho chị, nên cậu lại bắt đầu khôi phục lại chế độ tích cực “làm phiền ” Tô Chấp Duật.
+
+***
+
+Cuối tuần này, một cơn mưa nhỏ đổ xuống.
+
+Thời tiết se lạnh dần, sau trận mưa mùa hè cũng đã đi đến hồi kết.
+
+Phương Thời Ân tiêu hết tiền tiêu vặt cũng không dám mở miệng xin thêm, chỉ có thể ở nhà chơi game.
+
+Đang lúc cậu tập trung điều khiển nhân vật trên màn hình, tung ra đòn tấn công mạnh mẽ, thì nghe thấy chiếc điện thoại đặt trên tủ đầu giường bỗng rung lên những tiếng “ong ong”.
+
+Mười ngày sau, cậu cuối cùng cũng nhận được lời hẹn gặp của Tô Chấp Duật.
+
+Hắn trả lời tin nhắn “Anh Chấp Duật, anh đã ăn tối chưa ạ? Công viên Tân Hồ mở cửa trở lại rồi, hay là mình đi dạo nhé?” mà cậu đã gửi hai mươi phút trước bằng một chữ “Được”.
+
+Phương Thời Ân lập tức buông máy chơi game ra, xông vào phòng tắm tắm rửa sạch sẽ, sau đó ra trước tủ quần áo bắt đầu chọn đồ.
+
+Vừa cầm một chiếc quần dài ra, cậu bỗng nhớ lại hình ảnh của Trình Thi Duyệt hôm nọ, cậu khựng lại cuối cùng cắn răng đưa tay vào tủ lấy ra một chiếc quần ngắn.
+
+Chín giờ rưỡi tối, Tô Chấp Duật nhìn thấy Phương Thời Ân đang đứng dựa vào tường ở lối vào công viên Tân Hồ đợi hắn.
+
+Cậu mặc một chiếc áo sơ mi trắng mỏng manh, cổ tay có thêu hoạ tiết hoạt hình, áo sơ mi được sơ vin vào chiếc quần short màu nâu nhạt có thể lộ đầu gối khi đi bộ, tôn lên vòng eo vô cùng thon thả. Dưới chân là một đôi giày thể thao màu trắng, kết hợp với khuôn mặt non nớt nói cậu là học sinh cấp 3 cũng có người tin.
+
+Nhưng vào thời điểm chuyển giao từ mùa hè sang mùa thu, ban ngày mặc như vậy vẫn được nhưng đến tối nhiệt độ xuống thấp, cộng thêm gió thổi nên không tránh khỏi sẽ hơi lạnh.
+
+Tô Chấp Duật cho rằng cậu có thể đã hiểu lầm sở thích của mình.
+
+Phương Thời Ân dường như cũng nhận ra ánh mắt của hắn, thấy cậu liếc nhìn mình một cái sau đó chạy chậm đến gần.
+
+Công viên Tân Hồ sau khi tu sửa lại cũng không khác biệt nhiều so với trước đây. Ít nhất là trên đoạn đường mà cậu đang đi qua, chỉ có thêm một vài đài phun nước nhân tạo và đường sỏi được thay bằng những cây cổ thụ quý giá có gắn bảng tên.
+
+Hai người đi dọc theo con đường ngắm cảnh được sửa sang lại, chưa đi được bao xa Tô Chấp Duật đã cảm thấy cậu như vô tình cọ vào mu bàn tay mình.
+
+Phương Thời Ân thấy hắn không phản ứng gì, cũng không cố ý né tránh nên lấy hết can đảm đưa tay nắm lấy tay hắn.
+
+Hắn có cảm giác thiếu niên đang đi bên cạnh mình rõ ràng đã thở phào nhẹ nhõm.
+
+Đôi khi hắn cảm thấy Phương Thời Ân rất kỳ lạ, khi nhắn tin cho mình trên điện thoại hầu như câu nào cũng phải có những từ ngữ biểu cảm như “mà”, “nhé”, “à”, cậu còn gửi những bức ảnh gợi cảm rất lộ liễu. Nhưng khi tiếp xúc ngoài đời, những cử chỉ lại táo bạo mà hời hợt cũng không thể che giấu được sự vụng về.
+
+Hắn nghĩ có lẽ là giống kiểu trẻ con mặc quần áo người lớn rồi cố tỏ ra trưởng thành. Dù có thể bắt chước lời nói và hành động, nhưng cũng rất dễ khiến người ta cảm thấy không hợp.
+
+Ngay lúc Tô Chấp Duật suy nghĩ, hắn phát hiện ra Phương Thời Ân đang nắm tay mình đã dừng bước. Hắn thấy cậu nhìn về phía một quầy hàng trong công viên Tân Hồ, quầy hàng đó đang bán kem.
+
+“Anh Chấp Duật, anh ăn kem không?”
+
+Hắn không thích ăn những thứ đồ ăn quá ngọt, nhưng chưa kịp trả lời đã thấy Phương Thời Ân buông tay mình ra chạy đến quầy bán kem.
+
+Trước quầy không có ai xếp hàng, nên chỉ trong chốc lát cậu đã cầm một cây kem vui vẻ chạy về phía hắn đang đứng.
+
+“Cho anh nè.”
+
+Tô Chấp Duật bị nhét một cây kem vô tay.
+
+Phương Thời Ân dường như rất thích những món ăn vặt trông không mấy lành mạnh này, hắn thấy cậu ăn vài ngụm đã làm cây kem vơi hơn một nửa.
+
+Có lẽ là do biểu cảm của cậu khi ăn kem quá mức hưởng thụ, như thể thứ đầy màu sắc và đường hóa học trong tay vô cùng thơm ngon, cũng có thể là do bị Phương Thời Ân thúc giục hai tiếng: “Ăn đi.”
+
+Thế là hắn đành há miệng nếm thử một miếng.
+
+Vừa ăn xong Tô Chấp Duật lập tức nhíu mày, đúng như hắn dự đoán vị kem ngọt gắt và nồng mùi hương liệu, thêm vào đó kem lúc này cũng đã bắt đầu tan ra nên hắn không do dự giơ tay định ném vào thùng rác.
+
+Phương Thời Ân nhìn thấy hành động của hắn, vội vàng ngăn lại: “Đừng làm vậy, anh không thích ăn thì đưa cho em, vứt đi thì quá lãng phí.”
+
+Cậu đưa tay ra kéo lại, mới phát hiện tay hắn đã bị kem nhiễu xuống làm bẩn.
+
+“Phương Thời Ân, buông tay.” Tô Chấp Duật lúc này rõ ràng đã thấy không vui, hắn nhìn cậu đang nắm lấy cổ tay mình.
+
+Phương Thời Ân nghe thấy hắn gọi tên mình nên sững sờ, ngước mắt nhìn thấy khuôn mặt lạnh lùng của hắn lập tức lo sợ buông tay ra.
+
+Kem đã chảy ra làm bẩn nửa bàn tay Tô Chấp Duật.
+
+Hắn cúi mắt nhìn Phương Thời Ân, vẻ mặt khó đoán.
+
+Dường như lúc này cậu mới nhận ra mình đã làm chuyện quá thất lễ, đang nghĩ cách sửa chữa: “Không sao đâu… Em có khăn giấy ướt để lau cho anh, ồ đúng rồi, đằng trước còn có nhà vệ sinh…”
+
+Lời nói lắp bắp của cậu chưa nói xong đã bị cắt ngang.
+
+“Ăn đi.”
+
+Tô Chấp Duật đột nhiên nói.
+
+Hắn đưa bàn tay đang cầm cây kem lên trước mặt cậu, giọng điệu nhàn nhạt: “Chẳng phải em bảo muốn ăn à?”
+
+Phương Thời Ân đưa tay ra nhận, nhưng lại bị né tránh.
+
+Tô Chấp Duật lại mở lời: “Cứ ăn như vậy.”
+
+“À.” Cậu khẽ đáp một tiếng, ngước mắt lên nhìn lại vẻ mặt đối phương nhưng lại không thể nhìn ra gì.
+
+Hình như không giống cố ý trêu đùa, Phương Thời Ân nghĩ, chắc sợ mình cầm sẽ làm bẩn tay thêm. Nghĩ vậy nên cậu tiến đến gần tay hắn, đầu lưỡi đỏ thè ra liếm lấy phần kem còn lại vô tình liếm luôn tay của Tô Chấp Duật.
+
+Ngón trỏ của hắn chợt cảm thấy ướt nóng.
+
+Cậu định ngẩng đầu lên nói xin lỗi, nhưng lại thấy hắn vừa nãy còn kêu mình ăn kem đột nhiên giơ tay ném cây kem vào thùng rác.
+
+Tô Chấp Duật cảm thấy cậu đúng là người hết thuốc chữa, đồng thời Phương Thời Ân cũng thầm chửi hắn đôi khi thật khó hiểu.
+
+Sớm biết vậy đã không ăn kem, ý nghĩ này sau khi ăn hết một cây kem mới nhiều lần xuất hiện trong tâm trí Phương Thời Ân. Bản thân cậu mặc như vậy đi trong gió lạnh buổi tối đã hơi mệt, bây giờ thêm một cây kem lạnh nuốt xuống bụng cũng hút hết hơi ấm còn lại trong người.
+
+Phương Thời Ân đứng đợi Tô Chấp Duật từ nhà vệ sinh công cộng của công viên đi ra.
+
+Bây giờ tốt rồi, làm tới làm lui tay của hắn cũng lạnh luôn.
+
+Tô Chấp Duật cảm thấy cậu càng đi càng sát mình, đến khi đi qua bồn hoa gần như nửa người đã muốn dựa vào người hắn.
+
+Hắn ngửi thấy mùi nước hoa ngọt ngào trên người cậu, Phương Thời Ân dường như cũng cảm thấy mình cản trở hắn đi đường, nhưng thực sự không chịu được nên đành run bần bật nói: “Xin lỗi, anh Chấp Duật, em thực sự là… quá lạnh.”
+
+Đây không phải lời nói dối, hai chân lộ ra ngoài của cậu đã bị gió thổi lạnh buốt.
+
+Tô Chấp Duật cúi đầu, nhìn thấy dưới ánh đèn đường mờ ảo của công viên là hai đầu gối đã ửng đỏ vì lạnh. Sau một lúc lâu hắn mới dời mắt, giọng điệu bình tĩnh: “Không sao, trung tâm thương mại có lẽ vẫn chưa đóng cửa, chúng ta đi thôi.”
+
+Đi dạo trong công viên chưa đầy hai mươi phút, hai người đã rẽ vào trung tâm thương mại.
+
+Phương Thời Ân không ngờ Tô Trạch Duật sẽ dẫn mình đi mua quần áo, đến trung tâm thương mại mua được một bộ quần áo có giá cả trên nhãn khiến cậu hoa mắt chóng mặt, nên suốt quãng đường đi ra cậu đều vui mừng khôn xiết.
+
+Khi ra khỏi trung tâm thương mại, trời đã rất tối, Tô Chấp Duật lái xe đưa cậu về nhà.
+
+Lần này Phương Thời Ân đã biết cẩn thận hơn, nói với hắn chỉ cần chở cậu đến cổng đại học A là được. Tô Chấp Duật lái xe đưa cậu đến cổng trường, cậu cầm quần áo cũ đi vòng từ ghế phụ lái sang.
+
+Hắn nhìn cậu, hạ cửa sổ xe xuống hỏi: “Sao vậy?”
+
+Nếu đã nhận được quà, sao cậu có thể mặt dày không đáp lại Tô Chấp Duật đã chi tiền hào phóng chứ?
+
+Lúc này Phương Thời Ân nhìn hắn, đột ngột thò đầu ra hôn lên má hắn một cái.
+
+Nụ hôn dùng sức quá mạnh như muốn đánh lén, độ chính xác thì ổn nhưng tiếng hôn có hơi to.
+
+Tô Chấp Duật đơ ra trong chốc lát, sau khi nhận ra cậu vừa làm gì mới định giơ tay lên lau, bỗng nhìn thấy khuôn mặt giả vờ e ấp của Phương Thời Ân bên ngoài cửa sổ xe.
+
+“Cảm ơn anh Chấp Duật.”
+
+Điệu bộ cố tình ra vẻ ngây thơ.
+
+Hắn kéo cửa sổ xe lên.
+
+Chương 6
+
+Từ đại học A đi ra, Tô Chấp Dật rẽ xe vào đường chính.
+
+Ở gần đây có rất nhiều trường đại học, nên đến tận giờ này trên con phố trong làng đại học vẫn còn náo nhiệt.
+
+Phía trước là dòng xe cộ đông đúc, đúng lúc gặp phải đèn đỏ nên những chiếc xe vốn đi chậm cũng dừng lại hẳn. Tô Chấp Dật đạp phanh, quãng đường đi chỉ mất ba phút đã kéo dài đến tận mười phút mà vẫn chưa đi xong.
+
+Không biết có phải là ảo giác hay không, nhưng hắn cảm thấy chỗ trên mặt bị Phương Thời Ân “tấn công” vẫn còn mùi vani thoang thoảng của kem.
+
+Xe dừng lại, Tô Chấp Duật như cảm thấy bực bội nên hạ cửa sổ xe xuống một chút để hít thở không khí.
+
+Hắn đang nhìn lướt qua xung quanh một cách vô định bỗng ngừng lại một chỗ, qua gương chiếu hậu hắn thấy Phương Thời Ân mà mình vừa đưa đến cổng trường đại học đang đi ra từ góc đường đối diện. Nhìn cách cậu bước đi qua đường có vẻ rất vui sướng, cậu còn đang cầm túi xách in logo của thương hiệu xa xỉ vừa mua hôm nay.
+
+Phương Thời Ân rời khỏi trường đại học A, hoặc nói đúng hơn là chưa từng bước vào trường.
+
+Tô Chấp Dật nhìn vào gương chiếu hậu, vẻ mặt không hề bộc lộ cảm xúc nhìn bóng dáng cậu dần dần biến mất. Dừng lại vài giây, hắn mới lấy điện thoại ra gọi cho trợ lý Giang Trác của mình.
+
+Điện thoại reo ba tiếng, Giang Trác ở đầu dây bên kia đã bắt máy.
+
+“Alo, giám đốc Tô.”
+
+Tô Chấp Duật chuyển ánh mắt từ gương chiếu hậu sang chỗ khác, thời gian đã rất muộn nên hắn nói ngắn gọn đi thẳng vào vấn đề: “Trợ lý Giang giúp tôi điều tra hai người, Trình Thi Duyệt mà tôi đã gặp vài tháng trước và em trai của cô ta là Phương Thời Ân, nghe nói đang học ở trường đại học A.”
+
+Giang Trác ở bên kia đầu dây nghe thấy cái tên có chút quen thuộc, nhanh chóng nhớ ra: “Giám đốc Tô, cô gái này trước đây không phải đã điều tra rồi sao?”
+
+Trong ba tháng ở bên cạnh Trình Thi Duyệt, ngay từ đầu hắn đã kêu Giang Trác tra lý lịch của cô ta, nhưng lúc đó hắn chỉ nhìn lướt qua một lượt chứ không xem kỹ.
+
+Một cuộc gặp gỡ chóng vánh không đáng để Tô Chấp Duật phải bận tâm quá nhiều, sau khi xem sơ qua tuổi tác và trường đại học của đối phương, thấy không có vấn đề gì lớn nên hắn gác lại sang một bên.
+
+“Cảm thấy không ổn nên cậu điều tra lại một lần nữa, càng chi tiết càng tốt.” Tô Chấp Duật nói.
+
+Đèn đỏ phía trước hết thời gian đếm ngược, hắn khởi động xe lần nữa, dặn dò xong việc rồi cúp máy.
+
+***
+
+Bên này Phương Thời Ân đi taxi cũng về đến trang viên Winner, cậu vào đến sân vườn thấy phòng khách không bật đèn đã biết Trình Thi Duyệt vẫn chưa về.
+
+Cậu nhìn xuống điện thoại thấy đã khuya lắm rồi.
+
+Trình Thi Duyệt chưa nhắn tin báo tối nay sẽ không về nhà, nên cậu đặt chiếc túi xách lên ghế sofa rồi ngồi chơi điện thoại tiếp. Cậu mặc y nguyên bộ đồ mới mà Tô Chấp Duật mua cho mình, định đợi chị về sẽ khoe cho chị biết.
+
+Giống như một học sinh vừa giải được một bài toán trên đề thi, háo hức muốn tìm giáo viên khoe khoang.
+
+Đến hai giờ sáng, Phương Thời Ân vô tình ngủ thiếp đi trên ghế sofa chợt tỉnh giấc vì cảm giác lạnh lẽo. Cậu lấy điện thoại ra, thấy chị vẫn chưa về nhà nhưng cũng không thấy tin nhắn nào, chắc có lẽ chị đã quên.
+
+Mang theo một chút thất vọng và rất nhiều mệt mỏi, Phương Thời Ân cuối cùng cũng bỏ cuộc. Cậu xách chiếc túi xách in logo khổng lồ đã hơi biến dạng, lê từng bước nặng nề lên lầu.
+
+Không biết là do đêm nay mặc đồ quá mỏng manh đi dạo trong công viên lạnh lẽo, hay là do ngủ thiếp đi trên ghế sofa bị cảm lạnh, hoặc có thể cả hai. Sáng hôm sau thức dậy cậu hắt hơi một cái, đầu óc choáng váng và mũi cũng bị nghẹt.
+
+Cậu quấn chăn tìm nhiệt kế, sau khi đo xong mới phát hiện mình bị sốt nhẹ.
+
+***
+
+Những cơn mưa liên tiếp làm không ít lá cây rụng ở hai bên đường ở thành phố Vân Hoài, nhiệt độ sau mưa giảm mạnh báo hiệu mùa hè đã hoàn toàn chia tay thành phố này.
+
+Cuối tháng 9, Tô Chấp Duật được mời tham dự buổi họp báo ra mắt sản phẩm mới của đối tác.
+
+Công ty Khang Nhạc Duệ là một công ty lâu đời được thành lập sớm hơn cả tập đoàn Công nghệ Tô Đức, hai bên đã bắt đầu hợp tác trong một số dự án sản phẩm từ năm ngoái và đạt được những thành công đáng kể.
+
+Bởi vậy mặc dù khá bận rộn, nhưng hắn vẫn dành thời gian bay đến tham dự buổi họp báo ra mắt sản phẩm mới của Khang Nhạc Duệ.
+
+Buổi họp báo chính thức bắt đầu, hắn ngồi ở hàng ghế đầu. Khi người dẫn chương trình giới thiệu, hắn đứng dậy khỏi chỗ ngồi, mỉm cười lịch sự rồi vẫy tay chào giới truyền thông và khán giả.
+
+Sản phẩm lần này là sản phẩm chủ lực của Khang Nhạc Duệ trong năm nay. Giám đốc dự án đứng trình bày trên sân khấu, trên màn hình lớn là các ý tưởng thiết kế được liệt kê rất chi tiết. Buổi họp báo kéo dài gần ba tiếng đồng hồ, Tô Chấp Duật im lặng lắng nghe bên dưới. Sau khi kết thúc buổi họp báo, hắn được nhân viên dẫn đi.
+
+Đến buổi tối, để chúc mừng sự kiện ra mắt sản phẩm mới hàng năm và khen thưởng những nhân viên đã làm việc chăm chỉ trong dự án phát triển sản phẩm, Khang Nhạc Duệ tổ chức một bữa tiệc ăn mừng hoành tráng.
+
+Tô Chấp Duật tất nhiên phải tham dự.
+
+Sau khi trò chuyện giao lưu với một số người trong ngành và nâng ly chúc mừng, hắn cảm thấy hơi bí bách nên cởi hai cúc áo ở cổ ra. Hắn không biết mình có thích những dịp như thế này hay không, chỉ đơn giản coi đây là một phần công việc của mình.
+
+Phó tổng giám đốc tập đoàn Khang Nhạc Duệ đến chào hỏi hắn, dù không thấy câu chuyện cười của đối phương hài hước nhưng hắn vẫn lịch sự tiếp lời.
+
+Tô Chấp Duật nhận lấy ly rượu mà đối phương hào hứng đưa cho, cũng nâng ly lên cụng nhẹ với ông ta. Nhưng chỉ vừa nhấp một ngụm, hắn đã nhanh chóng nhận ra có điều không ổn. Ngoài mặt hắn không có bất kỳ phản ứng khác thường nào, chỉ hơi khựng lại một chút sau đó nhanh chóng nâng tay lên uống hơn phân nửa ly rượu.
+
+Phó tổng Khang Nhạc Duệ lớn hơn hắn mười mấy tuổi, cười tít mắt vỗ vai hắn rồi nói thêm vài câu khen ngợi.
+
+Khi bữa tiệc kết thúc Tô Chấp Duật rời khỏi sảnh tiệc, gọi điện cho Giang Trác đặt vé máy bay sớm nhất vào ngày mai và phòng khách sạn tối nay.
+
+Biết rõ điều gì đang chờ đợi mình, nên hắn không đến ở phòng khách sạn mà ban tổ chức đã chuẩn bị sẵn.
+
+Giang Trác lúc nào cũng làm việc nhanh gọn, chưa được một lúc sau khi cúp điện thoại hắn đã nhận được thông tin chuyến bay và khách sạn.
+
+Tô Chấp Duật đến khách sạn đã đặt chỗ vào đêm khuya, tắm rửa trong phòng tắm lâu hơn bình thường rất nhiều, sau đó mang cơ thể còn ướt nước bước ra ngoài.
+
+Tóc hắn ướt sũng, nhưng không dùng mấy sấy mà lau sơ qua bằng khăn tắm.
+
+Trong phòng chỉ bật đèn ngủ nên ánh sáng lờ mờ, hắn mặc áo choàng tắm ngồi trên ghế sofa trước cửa sổ sát đất, ung dung hút một điếu thuốc trong khi nhìn xuống những ngọn đèn sáng lấp lánh dưới tòa nhà cao tầng.
+
+Trước sảnh khách sạn có ánh đèn chiếu sáng rực rỡ như ban ngày. Tô Chấp Duật nhìn qua cửa sổ xuống tầng một, thấy một người đàn ông trung niên say khướt, hai tay ôm hai cô gái ăn mặc hở hang cùng nhau cười đùa đi vào khách sạn.
+
+Hút xong một điếu thuốc, hắn lại tắm lần thứ hai trong đêm.
+
+Lần thứ hai bước ra khỏi phòng tắm, trước khi ngủ hắn đột nhiên cảm thấy mình không cần phải cố làm những điều không cần thiết.
+
+Dù sao Tô Nghiệp Đường luôn tự xưng mình là người đàng hoàng, yêu vợ như mạng, thường xuyên tham gia các hoạt động từ thiện còn đi ra ngoài ngoại tình, thì việc hắn trở thành người đồng tính có gì to tát?
+
+Có lẽ việc bản thân là gay không sao, quan trọng là phải giấu Tô Nghiệp Đường.
+
+***
+
+Khi máy bay hạ cánh xuống sân bay Vân Hoài, Tô Chấp Duật nhận được điện thoại từ phó tổng giám đốc tập đoàn Khang Nhạc Duệ. Ông ta biết hắn không nhận món quà mà mình sắp xếp tối qua, vì vậy gọi điện thoại hỏi thăm rồi bày tỏ mình không có ý xấu, chỉ muốn giám đốc Tô vui vẻ mà thôi.
+
+Tô Chấp Duật tỏ vẻ không sao, cảm ơn sự tiếp đón nhiệt tình của ông ta.
+
+“Hu hu, em bị bệnh rồi.”
+
+Trở về Vân Hoài, trước khi bắt đầu một cuộc họp vào buổi chiều, Tô Chấp Duật mở tin nhắn trò chuyện với Phương Thời Ân ra, thấy tin nhắn của đối phương kèm theo một bức ảnh đang truyền dịch.
+
+Trên mu bàn tay trắng mịn dán băng cố định kim tiêm, vì da quá trắng nên có thể dễ dàng nhìn thấy những đường gân xanh ẩn hiện.
+
+Lúc này, Giang Trác gõ cửa bước vào nên hắn lập tức tắt màn hình điện thoại.
+
+“Đây là tài liệu của sản phẩm trong cuộc họp hôm nay, xin giám đốc Tô xem qua.”
+
+Tô Chấp Duật nhẹ nhàng gật đầu, khi Giang Trác đặt tài liệu xuống định quay người đi ra ngoài bỗng nhiên bị hắn gọi lại.
+
+“Trợ lý Giang, việc điều tra thông tin cá nhân của chị em Phương Thời Ân và Trình Thi Duyệt mà tôi giao lần trước thế nào rồi?”
+
+Giang Trác dừng bước, trả lời: “Đã điều tra xong…”
+
+Tô Chấp Duật nhìn vào màn hình máy tính, giọng nói bình thản: “Ừ, thế nào?”
+
+Y vốn định nói “Sẽ sắp xếp đưa cho anh sau khi kết thúc cuộc họp” nhưng lại nuốt vào trong bụng, vì thấy vẻ mặt của Tô Chấp Duật có ý muốn nghe ngay lập tức.
+
+Giang Trác mở máy bảng tính tìm thông tin tài liệu mà mình đã điều tra.
+
+“Phương Thời Ân và Trình Thi Duyệt đều là trẻ mồ côi, họ quen nhau ở một trại trẻ mồ côi ở Nhạn Thành. Khi Phương Thời Ân sáu tuổi và Trình Thi Duyệt mười một tuổi, cả hai đều được nhận nuôi vào cùng năm.”
+
+“Phương Thời Ân năm nay 21 tuổi, gia đình nhận nuôi cậu sống ở Huyện Khê. Ba mẹ nuôi không có công việc ổn định, kinh doanh một siêu thị tư nhân. Hai năm sau khi nhận nuôi Phương Thời Ân, mẹ nuôi sinh ra một bé trai. Khi Phương Thời Ân học cấp hai, cậu một lần nữa liên lạc lại với Trình Thi Duyệt. Vì không đỗ cấp ba nên cậu học trung cấp nghề và ở lại ký túc xá, dần dần tách biệt khỏi gia đình ba mẹ nuôi. Trong thời gian đó cậu và Trình Thi Duyệt vẫn giữ liên lạc với nhau, từ khi cậu tới Vân Hoài học trường dạy nghề đến tận bây giờ vẫn được Trình Thi Duyệt chu cấp tiền.”
+
+“Ba mẹ nuôi của Trình Thi Duyệt ly hôn khi cô học cấp hai, cô chuyển về sống với ba nuôi. Sau khi bỏ học cấp ba, cô theo một người làm kinh doanh bất động sản giàu có tên là Vương Huệ đến Vân Hoài. Vương Huệ sắp xếp cho cô học trường mới, sau đó cô sang Anh du học. Khi trở về vì có sự giới thiệu của Vương Huệ, cô đã hẹn hò với Vu Kha của tập đoàn Lưu thị một năm rưỡi …”
+
+Thông tin của Trình Thi Duyệt có phần đúng phần sai so với lần điều tra đầu tiên, ít nhất là trường học tốt nghiệp trong lý lịch là thật. Còn Phương Thời Ân, có thể nói ngoại trừ giới tính nam và tuổi tác thì còn lại hầu như đều là thông tin giả.
+
+Tô Chấp Duật nhanh chóng rút ra hai điểm mấu chốt từ những thông tin mà Giang Trác cung cấp.
+
+Thứ nhất, Phương Thời Ân thực sự còn trinh.
+
+Thứ hai, rõ ràng Trình Thi Duyệt đang cho Phương Thời Ân “luyện tập trước” với hắn.
+
+Tô Chấp Duật rất khó diễn tả cảm xúc của mình khi bản thân bị vướng vào một trò lừa đảo không mấy cao siêu, còn thấy vô cùng hoang đường khi trở thành con mồi của cặp chị em này.
+
+Hắn cảm thấy rất buồn cười, thế là cười một cái.
+
+Giang Trác đứng bên bàn làm việc, khi nhìn thấy nụ cười tự dưng xuất hiện trên khuôn mặt Tô Chấp Duật, tiếng báo cáo của y không khỏi vấp váp trong giây lát.
+
+Tô Chấp Duật vốn lạnh lùng giống như một cỗ máy được lắp ráp chính xác, để hoạt động trong cường độ cao bất cứ lúc nào. Dù nhìn từ xa hay gần hắn cũng có vẻ không hề thân thiết chút nào, bởi vậy có thể khiến người khác hiểu lầm hắn là người ít khi cười.
+
+Nhưng thực tế lại hoàn toàn trái ngược, là trợ lý của Tô Chấp Duật nên Giang Trác đã từng chứng kiến ​​hắn cười rất nhiều lần. Nụ cười giả vờ đối phó với đối thủ cạnh tranh, nụ cười giả dối với đối tác, nụ cười lịch thiệp trước truyền thông, nụ cười hiền hòa tốt bụng trước mặt Tô Nghiệp Đường.
+
+Nhưng chưa bao giờ có nụ cười nào như thế này, trong văn phòng của tập đoàn Tô Đức có nhiệt độ hơn 20 độ C mà y cảm thấy rợn tóc gáy, ớn lạnh toàn thân.
+
+Chương 7
+
+“Trời ơi, em còn tưởng nhà bị cháy cơ chứ!”
+
+Lúc Phương Thời Ân đi xuống từ lầu hai, trong phòng khách đã nồng nặc mùi khói thuốc không thể xua tan. Nhìn kỹ lại thì ở ra dưới phòng khách Trình Thi Duyệt đang ngồi trên ghế sofa hút thuốc, một vòng khói thuốc tỏa ra từ đó.
+
+Cậu đến gần mới thấy gạt tàn thuốc trước mặt cô ta đã chất đầy tàn thuốc, cậu rút lại giọng điệu và biểu cảm khoa trương khi nãy, nhìn chị hỏi: “Sao vậy, chị có chuyện gì buồn à?”
+
+Cô ta lười biếng ngước mắt lên nhìn cậu, trả lời: “Không có.”
+
+“Vậy chị…”
+
+Trình Thi Duyệt nhìn theo ánh mắt của cậu, mở lời: “Chị chuẩn bị cai thuốc rồi.”
+
+Cậu khựng lại một lúc vì biết chị mình vốn bị nghiện thuốc không nhẹ, cậu đã thấy chị bắt đầu hút thuốc từ lúc còn đi học rồi. Cậu không thích mùi thuốc lá, nên từng khuyên chị cai thuốc nhưng đều bị làm lơ. Bây giờ dù không biết tại sao Trình Thi Duyệt lại đột nhiên muốn cai thuốc, nhưng cậu vẫn nhanh chóng nói: “Vậy tốt quá, em đã nói với chị từ lâu rồi mà, hút thuốc có hại cho sức khỏe lắm.”
+
+“Tất nhiên, vì sức khỏe.” Trình Thi Duyệt nhún vai, ấn tàn thuốc lá cuối cùng vào gạt tàn thuốc: “Hôm nay là lần cuối cùng thỏa mãn cơn thèm rồi.”
+
+Cô ta nói xong cũng đứng dậy khỏi ghế sofa vươn vai, lúc đi ngang qua Phương Thời Ân còn giơ tay vỗ vào mông cậu.
+
+“Chị sẽ đi xa vài ngày, trong thời gian này em tự chăm sóc bản thân nhé.”
+
+Mấy ngày nay Trình Thi Duyệt thường xuyên đi đêm không về giờ lại định đi tiếp, Phương Thời Ân vội vàng hỏi: “Đi đâu vậy?”
+
+“Chưa biết, có lẽ sẽ bay ra nước ngoài.”
+
+“Đi du lịch à?”
+
+Cô ta gật đầu: “Ừ.”
+
+Phương Thời Ân lại hỏi: “Với bạn trai mới của chị?”
+
+Trình Thi Duyệt “Ừm” một tiếng.
+
+“Nhanh vậy à!?” Cậu không khỏi thốt lên.
+
+Từ lần Trình Thi Duyệt nói đi tìm mục tiêu mới đến nay đã bao lâu đâu, mà giờ người đàn ông đó đã định đưa chị đi du lịch rồi sao.
+
+Phương Thời Ân không thể thừa nhận căn biệt thự ở trang viên Winner quá lớn, những lúc không có chị ở đây cậu ở một mình cũng thấy hơi sợ. Nhưng bây giờ chị còn vì người đàn ông đó mà cai thuốc lá, cậu biết chị đang còn hứng thú nên phải lâu lắm mới đến lúc thấy chán đá hắn đi.
+
+Trong lòng có chút ấm ức khó nói, nhưng cậu nhìn sắc mặt của chị gái, cuối cùng cũng ngẩng mặt lên như không cam chịu thua kém mà nói: “Thực ra em cũng sắp thành công rồi, em chưa kịp nói với chị thôi.”
+
+Cậu lấy điện thoại ra lắc lắc trước mặt Trình Thi Duyệt: “Chị xem này, ngài Tô còn hứa tối mai dẫn em đi ăn ở Thuỵ Cát Đặc nữa.”
+
+Cô ta vừa nghe đến Thuỵ Cát Đặc lập tức nhíu mày, đó là nhà hàng mà hôm họ chia tay nhau. Trình Thi Duyệt ngẩng đầu nhìn thấy Phương Thời Ân vẫn đang vênh mặt, vẻ mặt đắc ý như còn đợi mình nói gì đó nên cô ta đành phải tạm gác lại sự nghi ngờ trong lòng, có lẽ chỉ là trùng hợp.
+
+Cuối cùng cô ta nói: “Ở đó có món cá ngừ vây béo ngon lắm, em đừng quên gọi món đó.”
+
+***
+
+Lúc Tô Chấp Duật đến đã nhìn thấy Phương Thời Ân ngồi trên bàn gọi món xong xuôi, đang chăm chú chụp cận cảnh từng món ăn.
+
+Có vẻ cũng đã nghe tiếng bước chân nên cậu ngẩng đầu lên nhìn hắn, vội vàng tắt điện thoại cất đi.
+
+“Anh Chấp Duật, anh đến rồi.”
+
+Tô Chấp Duật “Ừm” một tiếng, sau khi ngồi xuống hỏi: “Em đến lâu chưa?”
+
+“Chưa lâu, chưa lâu.” Phương Thời Ân nói: “Anh Chấp Duật đến vừa kịp lúc, họ vừa dọn hết món lên đó.”
+
+Tô Chấp Duật cúi đầu nhìn lướt qua bàn ăn, các món ăn quả thật chưa hề bị chạm vào, chỉ có ly nước uống màu sắc rực rỡ trước mặt cậu đã vơi đi hơn một nửa.
+
+“Chẳng phải hẹn nhau lúc bảy rưỡi à?”
+
+“À, em ở nhà rảnh rỗi không biết làm gì.” Nói xong cậu mới đột nhiên nhớ ra hôm nay là ngày phải đi học, vừa định mở miệng chữa cháy thì nghe hắn lên tiếng.
+
+“Chiều nay vẫn không có tiết học à?”
+
+Phương Thời Ân nhìn thấy khóe môi hắn cong lên một đường cong rất nhẹ, đường nét khuôn mặt của hắn vốn sắc sảo nên những lúc không cười sẽ tạo cho người ta cảm giác lạnh lùng sắc bén. Lúc này hắn nhìn cậu nhưng trong ánh mắt dường như không có chút ấm áp nào, biểu cảm cũng có chút lạnh nhạt.
+
+Cậu chưa kịp nhìn kỹ thì hắn đã nhanh chóng trở lại vẻ mặt bình thường, đường cong nhếch môi cũng hạ xuống.
+
+Như thể đó chỉ là ảo giác.
+
+Phương Thời Ân cố gắng không vấp váp nữa: “Vâng, chúng em, học kỳ này ít tiết học hơn.”
+
+Tô Chấp Duật dường như không nghe thấy gì, hắn cúi đầu mở khăn ăn che dao nĩa trước mặt mình ra, giọng điệu nhàn nhạt nói: “Ăn đi, em chờ lâu vậy hẳn là đói rồi.”
+
+Cậu đúng là đang thấy đói, lúc này cũng không thèm nói thêm gì nữa, cầm lấy bộ đồ ăn đã chuẩn bị từ trước.
+
+“Anh Chấp Duật, dạo này công việc bận rộn không?”
+
+“Cũng ổn.”
+
+“Ban nhạc chúng ta nghe lần trước sẽ có một buổi biểu diễn nữa vào tháng sau, lúc đó anh có muốn đi nghe cùng em không?”
+
+“Để xem có thời gian không.”
+
+“…”
+
+Thỉnh thoảng trò chuyện đơn giản vài câu, ăn đến một nửa, Phương Thời Ân đang gắp miếng cá ngừ vây béo cuối cùng mới bất chợt nhớ ra mình chưa chụp ảnh món này.
+
+Cậu có chút hối hận vì hồi nãy đã không chụp ảnh món này đầu tiên, rồi gửi cho Trình Thi Duyệt đang đi du lịch nước ngoài với bạn trai.
+
+Có lẽ vì thấy cậu gắp miếng cá ngừ quá lâu, Tô Chấp Duật ngước mắt lên nhìn vẻ mặt của cậu, sau đó vẫy tay gọi phục vụ lấy thêm một phần nữa. Phương Thời Ân ngạc nhiên trước sự quan tâm của hắn, cậu lúng túng nói: “Nhưng có hơi lãng phí, em không chắc có thể ăn hết được.”
+
+“Không sao đâu.” Tô Chấp Duật nói.
+
+Phương Thời Ân nhân cơ hội lấy điện thoại nhắn tin rồi nhanh chóng chụp một bức ảnh ưng ý, sau đó gắp hai miếng cá ngừ vây béo trong đĩa thứ hai là dừng lại.
+
+Hắn nhìn cậu cuối cùng cũng dừng lại, giả vờ thuận miệng hỏi: “Ăn no chưa?”
+
+Phương Thời Ân lộ ra vẻ mặt thỏa mãn, trả lời: “Ăn no rồi!”
+
+Ngay giây sau chiếc ly trước mặt Tô Chấp Duật chợt đổ thẳng xuống, vì bị động tác giơ tay lên của hắn vô ý chạm vào.
+
+Điều xui xẻo là rượu vang đổ trúng vào người Phương Thời Ân. Mặc dù hai người ngồi đối diện nhau, nhưng cậu cũng không hề nhận ra ly rượu của hắn đang đặt rất gần giữa bàn.
+
+Tay áo của cậu bị dính rượu, sau tiếng kêu bất ngờ cậu đứng dậy khỏi bàn.
+
+Tô Chấp Duật nhanh chóng xin lỗi, nhân viên phục vụ cũng bước đến lấy khăn giấy ra giúp đỡ lau chùi.
+
+“Không sao đâu.” Phương Thời Ân sờ sờ tay áo ướt đẫm của mình, tự hỏi làm thế nào để nhắc khéo Tô Chấp Duật rằng tối nay còn sớm, trung tâm thương mại chắc đã mở cửa sẵn để chờ hắn đưa cậu vô mua sắm.
+
+“Anh Chấp Duật, em hơi lạnh…”
+
+Phương Thời Ân ra vẻ run lẩy bẩy, trong nhà hàng luôn duy trì nhiệt độ thích hợp.
+
+“Vậy à?” Hắn đứng dậy khỏi ghế, “Vậy chúng ta lên lầu thay đồ đi nhé.”
+
+Tô Chấp Duật nhìn kỹ biểu cảm của Phương Thời Ân, không muốn bỏ qua màn diễn xuất hết mình của cậu nên cũng hùa theo: “Đúng rồi, cửa hàng tôi dẫn em đi mua đồ đã có mẫu mới, tôi đã dặn nhân viên giữ lại vài cái, để lát nữa tôi bảo trợ lý mang đến cho em thử xem sao?”
+
+Gần như không tốn chút sức lực nào, cũng là quen nhau ba tháng, tại cùng một nhà hàng, Tô Chấp Duật đã sử dụng mánh khóe của Trình Thi Duyệt để đưa Phương Thời Ân đến khách sạn trên lầu của nhà hàng.
+
+“Có thấy dính không? Phải chờ nhân viên thêm một lúc nữa, em muốn tắm trước không?” Sau khi vào phòng, Tô Chấp Duật ngồi xuống ghế sofa trong phòng rồi hỏi cậu như vậy.
+
+Vừa vào cửa Phương Thời Ân đã nhìn thấy một căn phòng được trang trí rất xa hoa, bồn tắm lớn trong phòng tắm, ngước mắt lên lại thấy cảnh đêm thành phố lộng lẫy bên ngoài cửa sổ sát đất.
+
+Cậu nhìn xung quanh một hồi mới thôi, hình như việc mở một phòng sang trọng như thế chỉ để thay đồ có vẻ hơi lãng phí.
+
+Hơn nữa toàn bộ tay áo ướt đẫm, dính vào cánh tay cũng thực sự không dễ chịu lắm nên cậu trả lời: “Dạ.”
+
+Ba phút sau, Phương Thời Ân cởi bỏ quần áo mỏng manh của mình trong phòng tắm, như ý muốn nằm vào bồn tắm siêu lớn mà mình đã ngắm nghía nhìn nhiều lần trước đó. Ngâm mình hơn hai mươi phút, cậu khoác áo choàng tắm bước ra khỏi phòng.
+
+“Anh Chấp Duật, trợ lý mang quần áo bao lâu nữa mới đến?” Vừa dứt lời, cậu ngay lập tức nhận ra điều bất thường.
+
+Đèn trong phòng đã tắt, chỉ còn lại đèn trần ở lối vào và đèn treo tường trước cửa sổ. Phương Thời Ân ngơ ngác trong chốc lát, ánh mắt mê mang nhìn Tô Chấp Duật đang bước về phía mình.
+
+Khi hắn đến trước mặt mình, Phương Thời Ân vẫn còn tự hỏi có phải mình đã đi tắm quá lâu hay không. Đến khi Tô Chấp Duật giơ tay đặt lên sau gáy, cảm giác hơi mát lạnh khiến cậu đột nhiên tỉnh táo lại.
+
+“Tắm xong rồi à?” Hắn hỏi.
+
+“Anh Chấp Duật, trợ lý của anh khi nào mới đến?” Phương Thời Ân cứng người lại, cố gắng bình tĩnh như không có chuyện gì xảy ra rồi hỏi lại một lần nữa.
+
+Trái tim cậu bỗng đập thình thịch, cậu không ngốc, thời gian, địa điểm và hành động của Tô Chấp Duật đều cho thấy một điều.
+
+Trình Thi Duyệt nói đúng, hắn quả thực là gay.
+
+Nhưng mà…
+
+Tô Chấp Duật dường như rất hững hờ nói: “Có lẽ sáng mai, có lẽ sẽ mãi mãi không đến.”
+
+“Em nghĩ sao?” Hắn hỏi Phương Thời Ân, sau đó vẻ mặt dần trở nên xa lạ: “Em muốn có được cái gì, nhất định phải đánh đổi thứ gì đó.”
+
+Cậu lặng lẽ nuốt nước bọt xuống, dưới ánh nhìn áp bức của hắn, cậu hít một hơi thật sâu rồi đột nhiên bước đến gần.
+
+Tô Chấp Duật nhanh chóng nhận ra Phương Thời Ân muốn hôn mình, nhưng lần này hắn đã giơ tay lên ngăn cản. Trước khi cậu chạm vào má mình, hắn đã đẩy bờ vai thấp hơn mình rất nhiều ra.
+
+Hắn nói: “Đừng làm vậy, đây là chuyện không cần thiết.”
+
+Dưới ánh đèn mờ, Phương Thời Ân nhìn vào bóng hình cao lớn của Tô Chấp Duật. Trên mặt hắn không có biểu cảm gì chỉ cúi đầu nhìn xuống cậu từ trên cao, bộ vest của hắn thậm chí còn chưa cởi.
+
+Đến giờ phút này thấy cơ thể vẫn đang bất động của Phương Thời Ân, hắn dường như có chút mất kiên nhẫn, vẻ mặt trở nên lạnh lùng, giọng điệu cũng bắt đầu trở nên hết dịu dàng: “Sao vậy, chị gái vẫn chưa kịp dạy em những chuyện tiếp theo à?”
+
+Chương 8
+
+Thực ra nói đi cũng phải nói lại kiểu người như Tô Chấp Duật nhìn qua đã biết khó chơi vô cùng, vốn dĩ không thích hợp làm “người nhập môn” cho Phương Thời Ân chẳng có kinh nghiệm gì.
+
+Nhưng lại vô cùng thích hợp để Trình Thi Duyệt lựa chọn, lúc ấy cô ta ấp ủ ý định muốn hủy hoại Phương Thời Ân, sau đó lại mềm lòng thay đổi thành hủy hoại một phần chứ không nên hủy hoại hoàn toàn.
+
+Lần đầu tiếp xúc với Tô Chấp Duật, cô ta đã biết đây là một người đàn ông làm việc rất có quy tắc. Giữa rượu chè sắc dục và quyền lực hắn chỉ quan tâm đến mỗi “quyền lực”, hoàn toàn khác với những gã đàn ông trước đây vừa gặp đã động tay động chân, sờ đùi ôm eo cô ta. Ngược lại, Trình Thi Duyệt cũng ít khi nhận được thứ gì từ hắn
+
+Tô Chấp Duật có tiền nhưng không phải nhà từ thiện, sẽ thanh toán sòng phẳng cho đồ trang sức, túi xách hàng hiệu của Trình Thi Duyệt. Nhưng không thể chỉ vì một cái khoác tay, một sự tiếp xúc đơn giản như vậy mà tặng nhà cửa hay xe cộ cho cô ta.
+
+Những thứ có thể nhận được từ Tô Chấp Duật, đối với Trình Thi Duyệt vốn đã quen sống xa hoa sẽ thấy vô cùng hạn hẹp. Đến khi đẩy Phương Thời Ân cho hắn, cô ta cũng không hề quan tâm đến việc đối phương có thể cho cậu bao nhiêu tiền bạc đồ đạc, mà chủ yếu nhắm vào lý do hắn sẽ lười so đo với bọn họ.
+
+Cô ta biết rõ em trai mình không thông minh lắm, nếu đẩy Phương Thời Ân qua chỗ khác, chưa nói đến chuyện khác nhưng lỡ đắc tội với ai thì cô ta còn phải đi theo dọn dẹp hậu quả nữa.
+
+Lúc đầu, Trình Thi Duyệt cũng ngạc nhiên khi biết cậu thực sự đã hẹn gặp được Tô Chấp Duật vài lần. Sau đó nhìn thấy em trai mình khoe khoang với vẻ mặt đắc ý, giống như một chú mèo dựng đứng chiếc đuôi lông xù lộng lẫy.
+
+Cô ta lại suy nghĩ, may mà Phương Thời Ân có ngoại hình đẹp đẽ, có một khuôn mặt xinh đẹp không chê vào đâu được.
+
+Theo suy đoán của Trình Thi Duyệt, Tô Chấp Duật nhìn Phương Thời Ân có lẽ giống như nhìn một chú chim nhỏ có bộ lông rực rỡ luôn ríu rít hót líu lo, lúc rảnh rỗi có thể cúi đầu ngắm nhìn một chút. Đó là thú vui, là tiêu khiển, nhưng hiển nhiên sẽ không vuốt ve hay thực sự mang về nuôi.
+
+Cô ta rời đi với tâm trạng như vậy, nên sau này khi biết hai người cứ dây dưa bên nhau, một thời gian rất lâu trôi qua vẫn thấy vô cùng khó hiểu.
+
+Tại sao một người như Tô Chấp Duật lại đột nhiên chịu dừng lại, nhất quyết phải dây vào một con kiến?
+
+***
+
+Có thể nói đó là một đêm vô cùng hỗn loạn.
+
+Từ khi Phương Thời Ân nói câu đó rồi cứ đứng yên không nhúc nhích. Hai người im lặng hồi lâu, Tô Chấp Duật lùi lại một bước, vẻ mặt lạnh lùng như sắp quay lưng bỏ đi, lúc này cậu nghiến răng cởi bỏ áo choàng tắm.
+
+Mọi chuyện diễn ra quá đột ngột.
+
+Có lẽ khi Tô Chấp Duật biết sự thật về thân thế của cặp chị em đã bị kích thích, hoặc cũng có lẽ do thấy Phương Thời Ân ngốc nghếch dễ lừa, vậy mà luôn muốn đến trước mặt lừa gạt hắn, nên nảy sinh tâm lý muốn trừng phạt là điều dễ hiểu.
+
+Nhưng điều này thực sự đã làm đảo lộn kế hoạch ban đầu của hắn
+
+Tô Chấp Duật có thể duy trì hình tượng “điềm tĩnh lịch thiệp” nhiều năm như vậy, cũng là do hắn có thói ở sạch trong phương diện này. Ban đầu hắn định sẽ nhờ Giang Trác sắp xếp thời gian cho Phương Thời Ân đi khám sức khỏe.
+
+Cũng may đêm qua biểu hiện trên giường của Phương Thời Ân tệ đến mức khiến người ta yên tâm. Nhưng tốt nhất vẫn nên kiểm tra sức khỏe, dù sao cậu cũng sống chung với chị của mình.
+
+Nghĩ đến đây, Tô Chấp Duật tắt nước trong phòng tắm.
+
+Tối qua hắn chỉ ngủ hơn hai tiếng, nhưng hiện tại cũng không cảm thấy mệt mỏi. Thực ra hắn vẫn chưa thỏa mãn, chỉ tại Phương Thời Ân khóc quá ồn ào nên đành phải dừng lại.
+
+Tô Chấp Duật lau khô người, bước ra khỏi phòng tắm và thay trang phục mà Giang Trác mang đến hai mươi phút trước. Nhìn sang giường thấy hai mắt của Phương Thời Ân sưng húp, cả người cuộn tròn trong chăn khiến tóc tai rối bời, môi mất đi màu hồng hào như thường lệ, không biết khi nào sẽ tỉnh.
+
+Hắn nhìn chằm chằm vào khuôn mặt trông vô cùng yếu ớt của Phương Thời Ân, sau một lúc mới bước đến đứng cạnh giường, giơ tay tháo chiếc đồng hồ trên cổ tay đặt lên tủ đầu giường.
+
+Khi Tô Chấp Duật xuống khỏi tầng mười ba của Thuỵ Cát Đặc, Giang Trác đã lái xe ra khỏi bãi đậu xe chờ sẵn bên dưới.
+
+Sau khi hắn lên xe, Giang Trác khởi động xe chạy về phía công ty Công nghệ Tô Đức
+
+***
+
+Khi Phương Thời Ân tỉnh dậy đã là mười hai giờ rưỡi trưa.
+
+Cậu vừa mở mắt ra đã thấy đầu óc choáng váng, mắt sưng húp và căng tức, cả người như bị tháo rời rồi lắp ráp lại, cảm giác đau nhức ở khắp nơi khiến cậu hoang mang chẳng biết chỗ nào đau nhất.
+
+Phương Thời Ân khó khăn bò dậy khỏi giường, loạng quạng vịn tường đi vào phòng tắm. Vừa bước lên thảm trong phòng tắm bằng chân trần, một giây sau cậu đã dẫm lên vũng nước chưa khô ngã xuống sàn.
+
+Đầu gối đập mạnh xuống gạch men trắng, cánh tay không còn sức làm cả người ngã lăn trong phòng tắm một cách thảm hại. Cú ngã khiến cậu choáng váng, phải nằm trên sàn hơn mười phút mới từ từ bò dậy.
+
+Vừa tắm rửa vệ sinh bản thân, Phương Thời Ân vừa khóc nức nở dưới vòi hoa sen vì đau. Sau khi tắm xong, đầu óc đã tỉnh táo hơn một chút mới chợt nhớ lại hành động của Tô Chấp Duật tối qua, vịn cửa phòng tắm bước ra.
+
+Đầu óc Phương Thời Ân ù ù, không ngờ con đường tắt mà chị gái mình đã đi bây giờ tới lượt mình lại gập ghềnh đến vậy. Cậu lảo đảo bước ra, thầm nghĩ đây mà gọi là đường tắt sao, chẳng khác gì tra tấn, chắc cậu không hợp với nghề này…
+
+Cậu vừa lao lên giường đã định gọi điện cho chị gái khóc lóc than vãn, bỗng chốc một vật kim loại trên tủ đầu giường lọt vào mắt. Lúc này Phương Thời Ân mới nhìn thấy trên tủ đầu giường là bộ đồ mới đã được gửi đến và bên cạnh là một chiếc đồng hồ Patek Philippe.
+
+Không biết Tô Chấp Duật đã gia hạn phòng bao lâu, nhưng khi cậu rời khỏi đây vẫn chưa bị nhân viên đến thúc giục.
+
+Một giờ hai mươi chiều, Phương Thời Ân khoác lên mình bộ đồ mới, trên cổ tay đeo một chiếc đồng hồ gọi xe về trang viên Winner.
+
+Chiều hôm đó cậu bắt đầu bị tiêu chảy.
+
+Đã vậy còn đi lại khó khăn, ngủ bù cả buổi chiều mà vẫn chưa thấy khoẻ, huống chi còn phải chạy đi vệ sinh khiến cậu càng thêm xanh xao.
+
+Đến tối cậu uống vài viên thuốc lại bảo dì nấu món cháo thanh đạm, sau khi uống xong nằm ngủ thiếp đi, đến sáng hôm sau mới coi như lấy lại được chút sức sống.
+
+***
+
+Hai ngày sau.
+
+Phương Thời Ân trùm chăn, nằm trên giường xem phim.
+
+Có lẽ do hôm đó bị tiêu chảy mà không mặc quần áo kỹ lưỡng khi đi vệ sinh, nên hôm nay cậu bắt đầu chảy nước mũi.
+
+“Hừ!” Phương Thời Ân rút khăn giấy ra che miệng hắt hơi một cái, vứt vào thùng rác.
+
+Tiếp tục tập trung vào hình ảnh trên màn hình, lần đầu làm tình với Tô Chấp Duật quá tệ, nhưng cậu nghĩ có lẽ do hôm đó quá vội vàng và cũng chưa chuẩn bị kỹ lưỡng, dù sao…
+
+Đôi mắt của cậu đã bớt sưng, ngẩng đầu lên nhìn hai bóng dáng đang đè lên nhau trên màn hình, người ở dưới rên rỉ sung sướng trông không giống như đang khó chịu.
+
+Lúc này ở phía bên kia trái đất, Trình Thi Duyệt hình như mới nhìn thấy tin nhắn cậu đã gửi từ ba tiếng trước.
+
+Nhìn thấy tin nhắn “Chị ơi, em đã thành công” mà Trình Thi Duyệt không khỏi rơi vào trầm tư. Dù không quá đúng lúc, giữa đêm nhân lúc người đàn ông bên cạnh cuối cùng cũng ngủ say, cô ta ra ngoài tìm một nơi kín đáo gọi video cho em trai.
+
+Phương Thời Ân đang xem phim đột nhiên giật mình vì tiếng chuông điện thoại vang lên, thấy tên của Trình Thi Duyệt nên cậu vội vàng tạm dừng phim, sau đó bật đèn kết nối cuộc gọi video.
+
+Trình Thi Duyệt nhìn vẻ mặt của cậu, nghi ngờ hỏi: “Em thành công rồi? Thành công cái gì?”
+
+Phương Thời Ân đã chịu đủ khổ sở, giờ mọi chuyện đã đến nước này chỉ có thể ưỡn thẳng lưng, giơ tay ra làm động tác nắm tay thành nắm đấm: “Em đã tóm được ngài Tô rồi.”
+
+Chắc vì đang bị cảm nhẹ, nên giọng nói có giọng mũi khiến cậu càng thiếu chút khí thế.
+
+Trình Thi Duyệt hốt hoảng trong chốc lát, sau đó nhìn lại vẻ mặt không mấy vui vẻ của cậu, trong đầu hiện lên cảnh tưởng cậu nhắc đến nhà hàng ngày hôm đó, cổ họng như nghẹn lại.
+
+Cuối cùng, cô ta mới muộn màng nhận ra Phương Thời Ân đã trải qua những gì trong những ngày mình vắng mặt, em trai cuối cùng cũng đi đến bước này.
+
+Không biết nên diễn tả tâm trạng ra sao, Trình Thi Duyệt thở dài một hơi có vẻ gượng gạo, sau khi do dự hồi lâu mới hỏi: “Vậy em có bị thương không?”
+
+Phương Thời Ân đột nhiên đỏ mặt, nhanh chóng lắc đầu cố gắng phủ nhận: “Không có.”
+
+Lúc này cậu mới phát hiện ánh mắt Trình Thi Duyệt đang nhìn vào cổ tay mình. Phương Thời Ân theo ánh mắt của chị, phát hiện trên cổ tay mình có một vết hằn xanh nhạt. Thực ra đây là vết hằn do hai ngày nay cậu đi ngủ mà không chịu cởi chiếc Patek Philippe đó ra, vì không vừa vặn hoặc ngủ không yên nên vô tình để lại vết hằn.
+
+Ánh mắt cô ta bỗng trở nên phức tạp, lúc này cô ta nghe thấy Phương Thời Ân lẩm bẩm nói: “Ừm… bị thương một chút, chỉ là vết thương nhỏ.”
+
+Chương 9
+
+“Tủ đầu giường trong phòng chị có thuốc chống viêm, thấy đau thì lấy ra uống hai viên đi.”
+
+Phương Thời Ân nói: “Chị quên mất à, lần trước em đã lấy thuốc trong phòng chị đi rồi.” Cậu nhướng mày trước màn hình, “Em uống hai viên luôn rồi.”
+
+Giọng điệu và vẻ mặt của cậu, như đang muốn nói cho Trình Thi Duyệt biết cậu có khả năng tự chăm sóc bản thân rất tốt.
+
+Nếu một tên công tử bột có diện mạo đẹp trai ra vẻ nhướng mày như thế, có lẽ sẽ toát lên vẻ ăn chơi lêu lỏng. Nhưng biểu cảm này xuất hiện trên khuôn mặt có phần trẻ con của Phương Thời Ân lại trở nên rất kỳ quái, đôi mắt tự nhiên mở to ra và lông mày cũng nhướng lên trong vài giây.
+
+Trình Thi Duyệt thấy vậy lại hỏi: “Sao vậy Thời Ân, mắt cũng bị đau hả?”
+
+“Đâu có.” Cậu vô thức trả lời, bởi vì nhìn chằm chằm vào màn hình trong thời gian dài và tư thế ngồi không nghiêm chỉnh nên vừa nhắc là cũng thấy nhức mỏi thật.
+
+Cậu nói không có nhưng vẫn không nhịn được đưa tay lên dịu mắt, “Chị, chị còn mấy ngày nữa mới về?”
+
+“Chị còn…” Cô ta vừa định trả lời bỗng nhiên nghe thấy tiếng động ở đằng xa nên quay đầu nhìn lại, Phương Thời Ân thấy mái tóc xoăn sóng lớn của chị mình lướt qua camera, sau đó chị nhanh chóng quay đầu lại, “Không nói chuyện nữa, em nghỉ sớm đi.”
+
+Chắc là người đàn ông đi du lịch cùng Trình Thi Duyệt đang gọi.
+
+Cậu nhìn vào cuộc gọi video bị cúp đột ngột, không khỏi chu môi lên.
+
+***
+
+Có lẽ là vì suy nghĩ cho cậu, muốn cậu có thời gian nghỉ ngơi hồi phục sức khỏe. Năm ngày sau cái đêm hoang đường tại khách sạn Thuỵ Cát Đặc, Phương Thời Ân cuối cùng cũng nhận được điện thoại từ hắn.
+
+Tô Chấp Duật kêu Giang Trác đưa cậu đến bệnh viện tư để kiểm tra sức khỏe.
+
+Tám giờ sáng, Phương Thời Ân đang ngủ say bị một cuộc điện thoại đánh thức.
+
+Giang Trác đợi ở cổng trang viên Winner chừng năm sáu phút, mới nhìn thấy một thiếu niên bước ra từ bên trong. Trong tiết trời sáng sớm mùa thu, trên người cậu chỉ mặc mỗi một chiếc áo hoodie mỏng manh.
+
+Vì đã điều tra kỹ lưỡng thông tin của đối phương trước đó, nên Giang Trác vừa thấy cậu bước ra khỏi cửa đã nhận ra ngay. Anh ta xuống xe bước đến chào hỏi, lúc Phương Thời Ân đi đến gần xe còn ân cần mở cửa xe cho cậu.
+
+Phương Thời Ân chưa ngủ đủ giấc nên đôi mắt cứ lim dim, mái tóc trước trán còn hơi ướt có lẽ do vội vàng rửa mặt. Sau khi đã ngồi vào xe, cậu vẫn còn ôm điện thoại, có vẻ không vui lắm khi than phiền với người ở đầu dây bên kia: “Em đã nói em không bệnh rồi mà, sao lại bắt em đi khám sức khỏe chứ…”
+
+Giang Trác đóng cửa xe, không cần đoán cũng biết người ở đầu dây bên kia là ai.
+
+Anh ta đi vòng ra phía trước ngồi vào ghế lái, khởi động xe rời khỏi trang viên Winner. Nhìn lại người kia qua gương chiếu hậu, quả thực ngoài đời còn đẹp hơn so với những bức ảnh trong hồ sơ.
+
+Giang Trác không muốn bình luận gì về đời tư của sếp, nhưng anh ta không ngờ Tô Chấp Duật vốn chẳng bao giờ có hứng thú đến chuyện ấy, cuối cùng lại chọn một người như Phương Thời Ân. Nhưng bây giờ nhìn tận mắt ngoài đời, chỉ liếc mắt vài lần anh ta đã có thể hiểu được phần nào.
+
+Không học hành gì đàng hoàng lại ham mê hư vinh, Phương Thời Ân có thể không làm được gì khác nhưng làm món đồ chơi cho mấy tên nhà giàu nuôi, với khuôn mặt và vóc dáng đó đúng là quá dư sức.
+
+Vì đã đặt lịch hẹn trước nên kiểm tra sức khỏe diễn ra khá nhanh chóng.
+
+Giang Trác vốn đang đứng chờ bên cạnh, lúc này thấy Phương Thời Ân đã lấy máu xong mới phát hiện ra bữa sáng mình đặt cho “chim hoàng yến” của sếp vẫn chưa đến, vì người giao hàng đang bị kẹp xe trong giờ cao điểm.
+
+Không còn cách nào khác, anh ta thấy sắc mặt Phương Thời Ân sau khi lấy máu có vẻ hơi tái nhợt nên đi lấy bữa sáng miễn phí có trong gói kiểm tra sức khỏe của bệnh viện.
+
+Mặc dù là bệnh viện tư thuộc Tập đoàn Tô Thị nhưng bữa sáng miễn phí rất đơn giản, hương vị cũng bình thường.
+
+“Xin lỗi cậu Phương, bữa sáng đã đặt chưa đến, đây là bữa sáng của bệnh viện, cậu ăn tạm được không?” Lúc đưa cho cậu khay đồ ăn chỉ có sữa đậu nành và bánh quẩy, anh ta đã chuẩn bị tinh thần cho việc đối phương sẽ nổi cơn giận.
+
+Không ngờ Phương Thời Ân sau khi nhận đồ đã ăn sạch mọi thứ, chỉ chừa lại đúng một quả trứng luộc.
+
+***
+
+Nhà họ Tô vốn có truyền thống lâu đời, nhà chính được xây dựng từ lâu trong khu phố cổ của thành phố Vân Hoài Sau này, Tô Chấp Duật và Tô Chấp Thư trưởng thành dọn ra ngoài ở, nhà đều nằm ở khu vực thành phố mới nên mỗi lần trở về đều phải đi qua nửa vòng thành phố.
+
+Chiếc Maybach màu đen tiến vào biệt thự trong màn đêm. Biệt thự này đã được trùng tu cách đây ba năm nhưng không thay đổi nhiều, cây cối luôn được cắt tỉa theo kiểu dáng cố định.
+
+Xe đi qua ba cánh cổng sắt, Tô Chấp Duật mới bước xuống xe.
+
+Trần nhà trong biệt thự rất cao, một chiếc đèn pha lê khổng lồ treo trong phòng khách chiếu sáng bộ ghế sofa bằng da thật.
+
+Vừa vào cửa hắn thấy Tô Chấp Thư đã đến, đang ngồi trên ghế sofa vắt chéo chân.
+
+Tô Chấp Duật đi đến, lên tiếng gọi: “Anh.”
+
+Lúc hắn đi vào cũng không phải là không có tiếng động nào, nhưng Tô Chấp Thư cứ ngồi tại chỗ giả vờ như không thấy, mãi đến khi hắn đứng trước mặt gọi mới ngước mắt lên.
+
+“Uầy, tao còn nói ai thế nhỉ, hóa ra là Tổng giám đốc Tô bận rộn trăm công nghìn việc à.” Tô Chấp Thư nhìn em trai mình, cười mỉa: “Kêu mày về ăn cơm một bữa còn phải ba mời bốn lần!”
+
+Tháng này trong nhà đã tổ chức có hai bữa tiệc, lần nào cũng gọi Tô Chấp Duật về nhưng đều không thấy hắn đến.
+
+“Lần trước do em đi công tác xa không về được, em đã giải thích với ba rồi.” Tô Chấp Duật dường như không bị những lời nói của anh trai khơi gợi lên bất kỳ cảm xúc nào, chỉ thản nhiên giải thích.
+
+Tô Chấp Thư vốn định mở miệng nói thêm, lúc này có vẻ như đã nhận được thông báo từ người giúp việc rằng Tô Chấp Duật đã đến, nên Trần Bích Uyển đỡ Tô Nghiệp Đường từ trên lầu đi xuống.
+
+Nhìn thấy ba mình xuất hiện, hai người đều kiềm chế lại.
+
+Trước đây sức khỏe của Tô Nghiệp Đường vẫn khá tốt, ít nhất trong trí nhớ của Tô Chấp Duật đã thấy ông bơi lội với Tô Chấp Thư trong bể bơi ở nhà rất nhiều lần. Nhưng sau khi đột nhiên phát hiện ra mình mắc bệnh tim, cộng thêm làm việc quá sức khi tiếp quản công ty hồi trẻ đã bào mòn sức khỏe quá nhiều, nên giờ đây tình trạng sức khỏe không quá lạc quan.
+
+Mọi người đã đến đông đủ, Trần Bích Uyển bảo người giúp việc bắt đầu dọn thức ăn lên.
+
+Mọi người ngồi xuống, Tô Nghiệp Đường ngồi ở vị trí chủ nhà, Trần Bích Uyển ngồi bên trái ông. Hai anh em Tô Chấp Duật và Tô Chấp Thư ngồi đối diện nhau qua chiếc bàn rộng rãi.
+
+Về ngoại hình, hai anh em không giống nhau lắm.
+
+Trên khuôn mặt Tô Chấp Duật, ngoài đôi lông mày và đôi mắt có chút bóng dáng của Tô Nghiệp Đường khi còn trẻ, không thể tìm thấy bất kỳ điểm nào giống với những người trong gia đình này. Còn Tô Chấp Thư lại giống như sự kết hợp hoàn hảo của cả ba lẫn mẹ, sở hữu chiếc mũi và miệng giống Tô Nghiệp Đường, đôi lông mày và đôi mắt lại giống Trần Bích Uyển.
+
+Có những lúc, hắn cũng cảm thấy mình bắt Trần Bích Uyển phải đối xử công bằng với cả hai người là chuyện vô cùng ngược đời.
+
+“Tô Chấp Duật, dạo này công việc của con vẫn bận rộn lắm sao?” Tô Nghiệp Đường nhận lấy bát canh đã được đầy mà Trần Bích Uyển múc cho mình, mở miệng hỏi.
+
+Tô Chấp Duật nói: “Cũng ổn.”
+
+“Mấy năm nay con làm việc rất tốt, ba đều biết hết đấy, dạo trước chú Lưu và bác Vương đến thăm ba còn khen ngợi con nữa.”
+
+Trên mặt hắn hiện lên nụ cười hiền hòa: “Chắc chú Lưu và bác Vương chỉ nói chuyện xã giao cho vui thôi ạ, thành tích của con so với họ chẳng đáng là bao, con cháu chúng con nên học hỏi nhiều hơn mới phải…”
+
+“Ba mẹ, hai người nghe lời nói giả tạo của nó kìa.” Tô Chấp Thư đặt muỗng canh xuống lên tiếng, rồi lại nói với em trai mình: “Nghe nói mày lại ký được một hợp đồng lớn với Khang Nhạc Duệ hả?”
+
+Tô Chấp Duật nghe y nói xong, đôi mắt cũng hơi chuyển động. Hợp đồng này chỉ mới ký ngày hôm kia, mà không ngờ Tô Chấp Thư đã nhanh chóng nhận được tin tức.
+
+Hắn khẽ nhìn lướt qua Trần Bích Uyển.
+
+“Cái lũ cáo già Khang Nhạc Duệ sao lại tốt bụng chia miếng thịt béo bở này cho mày? Mày cẩn thận đừng bị họ lừa gạt.” Tô Chấp Thư nói.
+
+Từ lâu Tô Chấp Duật đã có những cảm xúc phức tạp đối với anh trai của mình.
+
+Hai người chỉ cách nhau hai tuổi, tuổi tác tương đương nên việc tranh giành đồ chơi khi còn nhỏ là điều hết sức bình thường. Nhưng cũng có những lúc họ bỏ qua mâu thuẫn để chơi đùa cùng nhau, dù sao trong căn phòng to lớn ấy cũng chỉ có hai người là con nít.
+
+Cái kiểu cãi vã ồn ào này vẫn tiếp tục cho đến khi hắn tình cờ phát hiện ra rằng mình không phải là con ruột của Trần Bích Uyển. Trước đó hắn chưa bao giờ nhận ra điều gì khác thường, không phải vì không đủ thông minh hay nhạy cảm.
+
+Lúc nhỏ Tô Chấp Thư thực sự nghịch ngợm hơn hắn rất nhiều, Trần Bích Uyển nghiêm khắc nên phạt y rất nhiều lần, mỗi lần Tô Chấp Thư đều khóc lóc thảm thiết đến mức chói tai.
+
+So với số lần bị phạt lên đến hai con số của Tô Chấp Thư, một hoặc hai lần của Tô Chấp Duật đúng là nhỏ xíu không đáng nhắc đến.
+
+Và người anh trai này có lẽ cũng đã dần trưởng thành hơn, thấy Tô Chấp Duật không còn tranh giành đồ chơi với mình nữa cũng dần mất hứng thú với những món đồ chơi đó.
+
+Tô Chấp Thư có lẽ không phải người quá vô dụng, nhưng so với Tô Chấp Duật thì hiển nhiên năng lực của y chỉ ở mức bình thường. Với sự hậu thuẫn của nhà họ Mạnh và nhà mẹ đẻ Trần Bích Uyển thì sự bình thường này cũng đủ dùng rồi.
+
+Có lẽ vì lớn lên dưới cách giáo dục nghiêm khắc của Trần Bích Uyển, Tô Chấp Thư không trở thành một kẻ ăn chơi trác táng như em trai mình tưởng tượng, mà trở thành một người lãnh đạo không quá xuất sắc nhưng cũng đến nỗi không mắc sai lầm lớn.
+
+Cũng có thể vì lý do này mà Tô Nghiệp Đường đã giao cho Tô Chấp Thư nhiều sản nghiệp cũ đã có quy mô nhất định, và giao cho Tô Chấp Duật những sản nghiệp mới đang phát triển. Hắn không phản đối, miễn là y đừng có nhúng tay vào Tập đoàn Công nghệ Tô Đức.
+
+“Anh à, lâu rồi em mới về được một chuyến, hay là chúng ta đừng nói chuyện công việc nữa nhé.” Giọng điệu Tô Chấp Duật bình thường, nhưng ý tứ không muốn nói thêm đã thể hiện rõ ràng.
+
+Tô Chấp Thư tỏ ra không quan tâm: “Tốt bụng nhắc nhở mà còn không biết ơn.”
+
+Lúc này Tô Nghiệp Đường đổi chủ đề, lại hỏi y: “Con về lần này sao không dẫn theo Mạnh Lâm?”
+
+“Mấy hôm nay cô ấy không được khỏe, nên con bảo cô ấy ở nhà nghỉ ngơi.”
+
+Lúc này Trần Bích Uyển nãy giờ vẫn im lặng không nói gì mới lên tiếng: “Con bé bị sao vậy?”
+
+Tô Chấp Thư nói: “Không có sao đâu, trên người đột nhiên hạ nhiệt độ nên bị cảm lạnh nhẹ thôi, không có gì đáng ngại.”
+
+Lúc này Tô Nghiệp Đường lại dời ánh mắt về phía hắn: “Chấp Duật, tuổi tác không còn nhỏ nữa, giờ đây sự nghiệp đã ổn định cũng nên nghĩ đến chuyện hôn nhân rồi.”
+
+“Con mới về được hơn hai năm, chưa vội…”
+
+Ông ta không tiếp lời, mà chuyển sang nói với Trần Bích Uyển: “À đúng rồi, lần trước con gái bạn học cũ của em chẳng phải đã nói năm nay sẽ tốt nghiệp à?”
+
+Tô Chấp Thư vừa nghe xong lập tức nhíu mày: “Ba ơi, cô gái đó suốt ngày cúp học đại học, không chỉ đi đua xe với mấy đứa chơi nhạc rock, bị nhà trường thông báo phê bình mà còn ra nước ngoài đi tiệc tùng, nghe nói hồi trước còn bị bắt giam. Nếu ba bảo Tô Chấp Duật cưới cô ta về nhà, cả nhà mình đừng hòng yên ổn.”
+
+“Vậy người này không hợp rồi.” Tô Nghiệp Đường nghe xong lập tức dẹp bỏ ý định này.
+
+Lúc này Trần Bích Uyển lên tiếng: “Lần trước con gái ông Vương Huệ của Tập đoàn Bất động sản Phú Sinh đến nhà chúng ta chào hỏi, con bé ấy đúng lúc cũng cùng tuổi với Tô Chấp Duật, hơn nữa hai đứa còn học cùng trường đại học…”
+
+Nói đến câu này bà nhìn lướt qua Tô Chấp Duật, nói: “Tất nhiên quan trọng nhất là phải được Chấp Duật thích.”
+
+Tô Nghiệp Đường cười ha hả một tiếng, không tiếp lời vợ nhưng lại nói: “Tập đoàn Bất động sản Phú Sinh mấy năm gần đây chuyển đổi ngành nghề làm ăn cũng khá tốt…”
+
+“Ba mẹ cứ sắp xếp đi.” Lúc này hắn buông chiếc đũa đang cầm trên tay, đứng dậy nói: “Con ăn no rồi, công ty còn việc nên con đi trước.”
+
+“Cái gì mà bận thế! Ngay cả thời gian ăn cơm ở nhà cũng không có?”
+
+Tô Chấp Thư lập tức lên tiếng quở trách với giọng điệu khó chịu, Tô Chấp Duật vẫn vờ như không nghe thấy mà đẩy ghế ra đi về phía cửa.
+
+“Ba xem cái kiểu coi thường anh trai của nó kìa, ra nước ngoài mấy năm mà tính nết cũng hư hỏng rồi…”
+
+Cùng với bước chân rời đi của Tô Chấp Duật, giọng nói của Tô Chấp Thư bị bỏ lại phía sau dần dần không còn nghe rõ.
+
+Lúc này điện thoại của hắn rung lên một cái, lấy ra thấy Giang Trác nhắn tin báo rằng đã gửi báo cáo kiểm tra sức khỏe của Phương Thời Ân vào hộp thư cá nhân.
+
+Tô Chấp Duật ngồi vào trong xe, xem qua báo cáo kiểm tra sức khỏe của cậu xong mới tắt màn hình điện thoại. Một phút sau, hắn một lần nữa mở điện thoại lên tìm số điện thoại gọi cho Phương Thời Ân.
+
+“Anh Chấp Duật?”
+
+Tô Chấp Duật “ừ” một tiếng, sau đó hỏi: “Em đang ở đâu?”
+
+Chương 10
+
+Phương Thời Ân bước vào khách sạn, vừa mở cửa phòng đã nhìn thấy Tô Chấp Duật đang ngồi trên sofa, trước mặt đặt một chiếc laptop. Áo khoác vest của hắn vứt bừa bãi sang một bên nên trên người hắn chỉ mặc sơ mi, cúc tay áo mở ra bị kéo lên trên một chút.
+
+Có lẽ vì nghe thấy tiếng mở cửa của Phương Thời Ân, nên hắn rời mắt khỏi màn hình laptop, lúc đứng dậy khỏi sofa còn thuận tay đóng máy lại.
+
+Gần một tiếng trôi qua kể từ khi Tô Chấp Duật gọi điện cho cậu.
+
+Phương Thời Ân không đoán được hắn đã đợi trong căn phòng này bao lâu, ánh mắt lướt qua Tô Chấp Duật, giọng nói lúng túng: “Ừm… hôm nay, hôm nay đường hơi kẹp.”
+
+Tô Chấp Duật bước đến trước mặt cậu, cúi đầu xuống nhìn cậu.
+
+Mặc dù hắn chưa bao giờ nói lời nào thô lỗ hay quát mắng, nhưng có lẽ do đã quen ở địa vị cao nên cử chỉ và lời nói của hắn luôn khiến Phương Thời Ân cảm nhận được một áp lực vô hình.
+
+Ví dụ như lúc này hắn chỉ nhìn cậu một cách hờ hững cũng đủ khiến cơ thể cậu bất giác cứng đơ.
+
+“Anh Chấp Duật, em xin lỗi, anh đợi lâu không?” Cậu cố gắng mỉm cười như muốn tạo ra bầu không khí thoải mái hơn.
+
+Đôi mắt mèo màu hổ phách của cậu nhìn lên, bất chợt va vào đôi mắt đen kịt của hắn, một đôi mắt dường như không có chút cảm xúc hay nhiệt độ nào.
+
+Tô Chấp Duật ít khi bộc lộ cảm xúc, nhưng lúc này Phương Thời Ân rõ ràng cảm nhận được hắn đang không vui.
+
+“Anh Chấp Duật, em sẽ không tái phạm nữa… hôm nay thực sự là ngoài ý muốn…” Phương Thời Ân cố gắng hết sức để giải thích.
+
+Tô Chấp Duật dường như không hề nghe những gì cậu đang nói, hắn nhìn chằm chằm vào đôi môi đang hé mở của Phương Thời Ân, màu sắc đỏ ửng hơn so với người bình thường. Ngay sau đó hắn từ từ giơ tay lên, những ngón tay thon dài nhẹ nhàng lướt qua gò má rồi dừng lại trên môi cậu.
+
+Cậu im bặt, không nói gì thêm.
+
+Ngón trỏ và ngón giữa của hắn ấn lên môi cậu, hơi dùng lực cọ xát hai lần.
+
+Hành động này nếu xảy ra giữa hai người đã hẹn gặp nhau ở nơi đây nhìn kiểu gì cũng có vẻ hơi mập mờ. Nhưng ánh mắt của Tô Chấp Duật quá lạnh lùng, không có gì trong đó cả.
+
+Phương Thời Ân chỉ cảm thấy những ngón tay ấm áp của hắn nhẹ nhàng chạm vào môi cậu trong chốc lát rồi lại rời đi.
+
+Một lúc sau.
+
+“Không thoa son à?”
+
+Tô Chấp Duật rút tay lại, cúi nhìn những đầu ngón tay sạch sẽ, “Hóa ra là màu bẩm sinh.”
+
+“Sao em lại thoa son chứ!?” Lời nói này có phần khiến Phương Thời Ân bực bội, không nhịn được nói: “Anh tưởng mỗi lần gặp anh, em đều phải trang điểm cầu kỳ ư, em không phải con gái!”
+
+Không phải con gái?
+
+Tô Chấp Duật nghe cậu sốt ruột đáp trả như vậy, lại ngửi thấy mùi nước hoa nồng nặc trên người cậu là loại hương thơm ngọt ngào đến tột cùng.
+
+Rõ ràng đây là mùi nước hoa nữ.
+
+Hắn lại hỏi Phương Thời Ân: “Em dùng nước hoa của chị gái à?”
+
+Lần này Tô Chấp Duật đoán đúng.
+
+Mặt cậu đỏ bừng lên ngay lập tức, nhưng không muốn hắn nghĩ rằng mình là một kẻ ăn bám sau lưng chị nên lại cực lực phủ nhận: “Tất nhiên không phải, đây là nước hoa của em, em thấy nó rất thơm.”
+
+Hắn không bình luận về cái “rất thơm” này, chỉ lùi lại một bước như một khách hàng kén chọn cuối cùng đã kiểm tra xong hàng hóa của mình, nói: “Đi tắm đi.”
+
+Lúc trên giường Tô Chấp Duật không quá thô lỗ đến mức sẽ làm cậu bị thương nhưng cũng không thể nói là dịu dàng, hắn hiếm khi có những cử chỉ âu yếm chứ đừng nói đến những nụ hôn hay ôm ấp.
+
+Khi Phương Thời Ân tắm xong đi đến nằm lên giường, hắn tắt đèn trong phòng sau đó kéo áo choàng tắm của cậu ra.
+
+Cậu cảm thấy một đôi tay to ấm áp đặt lên đùi mình, khi Tô Chấp Duật tiến đến gần cậu rốt cục cũng nhớ ra điều gì đó, đột nhiên đưa tay ấn vào hông hắn để đẩy ra: “Bao cao su, đeo bao cao su…”
+
+Tô Chấp Duật nghe yêu cầu của cậu đành phải không kiên nhẫn dừng lại, lấy một chiếc bao cao su từ tủ đầu giường.
+
+Vào lúc rạng sáng một giờ rưỡi, hắn nằm trên giường nói với cậu: “Không được dễ chịu lắm.”
+
+Lúc này đầu óc của Phương Thời Ân đã hơi mơ màng, nước mắt và mồ hôi lấm lem trên mặt, nghe loáng thoáng tiếng hắn nói chuyện mà vẫn chưa hiểu được ý của hắn.
+
+Cho đến khi hành động tiếp theo, cậu cuối cùng cũng biết hắn đang nói gì không thoải mái, đành phải cố gắng mở mắt ra rồi đưa tay đẩy hắn một lần nữa.
+
+Lần này Tô Chấp Duật có chút không kiên nhẫn nắm lấy tay cổ tay cậu đặt lên đỉnh đầu, tay kia lại đi kéo chân cậu ra, cảm thấy Phương Thời Ân tối nay đã lãng phí quá nhiều thời gian của mình rồi.
+
+“Chẳng phải là không có bệnh sao?”
+
+Hắn thấy cậu đột nhiên lại khóc nức nở nên nghĩ Phương Thời Ân giả vờ làm ra vẻ, nhưng có thể vì thấy cậu khóc quá thảm thương nên vẫn cau mày nói một câu nhỏ nhẹ an ủi, “Dù sao cũng không thể mang thai, sợ gì chứ…”
+
+Sáng hôm sau.
+
+Tô Chấp Duật tắm trong phòng tắm khách sạn.
+
+Phương Thời Ân kiệt sức nằm trên giường, không biết là do tiếng nước trong phòng tắm đánh thức hay thực sự đã có tiến bộ nên từ từ mở mắt tỉnh dậy.
+
+Khi hắn bước ra ngoài thấy khuôn mặt nhỏ nhắn của Phương Thời Ân tiều tụy che trong chăn, mí mắt lim dim hé mở một nửa.
+
+“Tỉnh rồi?” Tô Chấp Duật mặc quần áo xong, đi đến bên giường nói với cậu: “Tôi đã gọi phục vụ phòng, lát nữa họ sẽ mang bữa sáng vào.”
+
+Phương Thời Ân không biết là không có sức để nói chuyện hay thực sự không được khỏe, không mở lời đáp lại hắn.
+
+May mà tâm trạng của Tô Chấp Duật lúc này khá tốt, sẵn lòng dỗ dành cơn cáu kỉnh nhỏ của người tình trên giường sau khi tỉnh dậy.
+
+Hắn lấy ra một chiếc thẻ đặt vào tay Phương Thời Ân.
+
+“Đầu tháng tôi sẽ chuyển 700 triệu vào thẻ này, em có thể dùng thẻ này để chi tiêu.” Tô Chấp Duật ngồi bên giường, nhìn cậu tiếp tục nói: “Nhưng tôi có một số yêu cầu.”
+
+Lúc này Phương Thời Ân nắm chặt thẻ trong tay, cơ thể dường như đã hồi phục một chút sức lực.
+
+Giọng nói vẫn còn khàn khàn hỏi lại: “Yêu cầu gì?”
+
+“Kêu là phải đến.” Tô Chấp Duật nói: “Ngoài ra, tôi không có thói quen dùng chung với người khác, nên trong thời gian chúng ta duy trì mối quan hệ không được dây dưa với người thứ ba.”
+
+Phương Thời Ân không nhịn được mà trợn trắng mắt trong lòng, thầm nghĩ tôi hầu hạ một mình anh đã đủ mệt rồi thì hơi sức đâu mà kiếm người thứ ba chứ!
+
+Nghĩ như vậy trong lòng, cậu lại cầm thẻ vào trong chăn rồi nhỏ giọng hỏi: “Còn yêu cầu nào khác không?”
+
+Tô Chấp Duật suy nghĩ một lúc, ánh mắt lại quay lại khuôn mặt Phương Thời Ân, cuối cùng nói: “Khóc ít lại.”
+`;
