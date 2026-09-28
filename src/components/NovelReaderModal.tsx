@@ -681,7 +681,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
     // 1. Instant load from in-memory cache if available (0ms delay)
     const cached = contentCacheRef.current[chapterNumber];
-    if (cached && cached.trim().length > 500) {
+    if (cached && cached.trim().length > 0) {
       setFirestoreFetchedContent(cached);
       setIsLoadingChapterContent(false);
       return;
@@ -689,7 +689,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
     // 2. Instant load from local chapter data if available
     const localChap = allChapters.find((c) => c.chapterNumber === chapterNumber);
-    if (localChap?.content && localChap.content.trim().length > 500) {
+    if (localChap?.content && localChap.content.trim().length > 0) {
       contentCacheRef.current[chapterNumber] = localChap.content;
       setFirestoreFetchedContent(localChap.content);
       setIsLoadingChapterContent(false);

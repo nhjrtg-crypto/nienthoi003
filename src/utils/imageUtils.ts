@@ -9,7 +9,6 @@ export const NOVEL_ORIGINAL_COVERS: Record<string, string> = {
   'QTMywdfEbQJLVQP7wboP': '/covers/thoi_mien.jpg',
   'zXqsDoGbW3P2uvf93eIS': '/covers/cuong_ep_yeu.jpg',
   'Rr94841TlcKroz8iyzdv': '/covers/ke_thu.jpg',
-  '2liAf62uSgCcMvld5xtA': '/lua_nhau_user_cover.jpg',
   'lua-nhau': '/lua_nhau_user_cover.jpg',
   'me-ke-vua-mem-vua-ngot': '/me_ke_vua_mem_vua_ngot_cover.jpg',
   'e5H5oZGg1sGnFyHjdM5Z': '/me_ke_vua_mem_vua_ngot_cover.jpg',

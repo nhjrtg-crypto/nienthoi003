@@ -79,8 +79,12 @@ export function findNovelByIdOrAlias(novels: Novel[], queryIdOrSlug?: string | n
     const found = novels.find((n) => n.id === 'e5H5oZGg1sGnFyHjdM5Z' || n.id === 'me-ke-vua-mem-vua-ngot');
     if (found) return found;
   }
-  if (qLower === 'lua-nhau' || qLower === '2liaf62usgccmvld5xta') {
-    const found = novels.find((n) => n.id === 'lua-nhau' || n.id === '2liAf62uSgCcMvld5xtA');
+  if (qLower === 'lua-nhau') {
+    const found = novels.find((n) => n.id === 'lua-nhau');
+    if (found) return found;
+  }
+  if (qLower === 'ke-nha-giau-ngu-xuan' || qLower === '2liaf62usgccmvld5xta') {
+    const found = novels.find((n) => n.id === '2liAf62uSgCcMvld5xtA' || normalizeNovelTitle(n.title).includes('kenhagiaunguxuan'));
     if (found) return found;
   }
   if (qLower === 'truc-ma-alpha' || qLower === 's1zjuvan4umw3h7nxo9m') {
@@ -622,11 +626,11 @@ export default function App() {
     }
   }, [isAdmin]);
 
-  // Chỉ gọi fetch 1 lần duy nhất khi khởi động ứng dụng (force = true để lấy danh mục mới nhất)
+  // Tải danh mục truyện từ Firestore khi khởi động (ưu tiên cache trước để bảo toàn 50.000 lượt đọc)
   useEffect(() => {
     if (!hasLoadedCatalogRef.current) {
       hasLoadedCatalogRef.current = true;
-      loadFirestoreTruyens(true);
+      loadFirestoreTruyens(false);
     }
   }, [loadFirestoreTruyens]);
 
@@ -830,7 +834,7 @@ export default function App() {
             setNovels((prev) =>
               prev.map((n) => (n.id === local.id ? { ...n, id: newId, status: 'completed', translator: 'Jouriee65' } : n))
             );
-            await loadFirestoreTruyens(true);
+            await loadFirestoreTruyens(false);
           }
         }
       } catch (syncErr) {

@@ -2,6 +2,21 @@ import { Novel } from '../types';
 import { LUA_NHAU_NOVEL } from './luaNhauData';
 import { TRUC_MA_ALPHA_NOVEL } from './trucMaAlphaData';
 import { ME_KE_VUA_MEM_VUA_NGOT_NOVEL } from './meKeVuaMemVuaNgotData';
+import { CHIEM_HUU_CUC_DO_Q1_NOVEL } from './chiemHuuCucDoQ1Data';
+import { CHIEM_HUU_CUC_DO_Q2_NOVEL } from './chiemHuuCucDoQ2Data';
+import { BI_NAM_CHINH_CUONG_EP_YEU_NOVEL } from './biNamChinhCuongEpYeuData';
+import { NGUNG_DONG_THOI_GIAN_NOVEL } from './ngungDongThoiGianData';
+import { VO_DEP_QUYEN_RU_TOI_NOVEL } from './voDepQuyenRuToiData';
+import { GAP_DOI_LUAN_HAM_NOVEL } from './gapDoiLuanHamData';
+import { KE_NHA_GIAU_NGU_XUAN_NOVEL } from './keNhaGiauNguXuanData';
+import { CUOC_SONG_DAM_LOAN_BO_LAC_NOVEL } from './cuocSongDamLoanBoLacData';
+import { THAI_HAU_XINH_DEP_NOVEL } from './thaiHauXinhDepData';
+import { TU_DUOI_NOVEL } from './tuDuoiData';
+import { DAM_LOAN_GIUA_BAN_NGAY_NOVEL } from './damLoanGiuaBanNgayData';
+import { BETA_PHAN_HOA_LAN_HAI_NOVEL } from './betaPhanHoaLanHaiData';
+import { KE_THU_PHAT_HIEN_VU_NOVEL } from './keThuPhatHienVuData';
+import { HE_THONG_THOI_MIEN_NOVEL } from './heThongThoiMienData';
+import { SERIES_NTR_CAM_DO_NOVEL } from './seriesNtrCamDoData';
 
 export const NOVEL_GENRES = [
   { id: 'all', name: 'Tất Cả Thể Loại', icon: 'Sparkles', color: 'from-purple-500 to-pink-500' },
@@ -18,4 +33,19 @@ export const INITIAL_NOVELS: Novel[] = [
   LUA_NHAU_NOVEL,
   TRUC_MA_ALPHA_NOVEL,
   ME_KE_VUA_MEM_VUA_NGOT_NOVEL,
+  CHIEM_HUU_CUC_DO_Q1_NOVEL,
+  CHIEM_HUU_CUC_DO_Q2_NOVEL,
+  BI_NAM_CHINH_CUONG_EP_YEU_NOVEL,
+  NGUNG_DONG_THOI_GIAN_NOVEL,
+  VO_DEP_QUYEN_RU_TOI_NOVEL,
+  GAP_DOI_LUAN_HAM_NOVEL,
+  KE_NHA_GIAU_NGU_XUAN_NOVEL,
+  CUOC_SONG_DAM_LOAN_BO_LAC_NOVEL,
+  THAI_HAU_XINH_DEP_NOVEL,
+  TU_DUOI_NOVEL,
+  DAM_LOAN_GIUA_BAN_NGAY_NOVEL,
+  BETA_PHAN_HOA_LAN_HAI_NOVEL,
+  KE_THU_PHAT_HIEN_VU_NOVEL,
+  HE_THONG_THOI_MIEN_NOVEL,
+  SERIES_NTR_CAM_DO_NOVEL,
 ];

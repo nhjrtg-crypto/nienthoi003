@@ -2,6 +2,8 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   initializeFirestore,
   getFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   setLogLevel,
   collection,
   doc,
@@ -59,13 +61,16 @@ try {
 // Initialize Firebase App singleton
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// Initialize Firestore with force long-polling to avoid 10-second WebSocket handshake timeout in browser/iframe environments
+// Initialize Firestore with persistent IndexedDB local cache and force long-polling
 const firestoreDbId = firebaseConfigJson.firestoreDatabaseId || '(default)';
 export const db = (() => {
   try {
     return initializeFirestore(app, {
       experimentalForceLongPolling: true,
       ignoreUndefinedProperties: true,
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
     }, firestoreDbId);
   } catch {
     return getFirestore(app, firestoreDbId);
@@ -260,11 +265,15 @@ const BANNED_NOVEL_IDS = new Set([
   'than-ma-tinh-hai',
   'thien-the-truc-tuyen',
   'mua-roi-tren-khe-tay',
+  'vYYGGtLbby7W3KHqSm3U',
 ]);
 
 function isBannedOrDraftFirestore(id: string, tenTruyen?: string, trangThai?: string): boolean {
   if (BANNED_NOVEL_IDS.has(id)) return true;
   if (trangThai === 'nhap') return true;
+  if (tenTruyen && (tenTruyen.trim() === id.trim() || (/^[a-zA-Z0-9]{18,24}$/.test(tenTruyen.trim()) && !tenTruyen.includes(' ')))) {
+    return true;
+  }
   const rawTitle = (tenTruyen || '').toLowerCase().trim();
   if (!rawTitle) return false;
   const bannedKeywords = [
@@ -383,7 +392,6 @@ try {
     safeStorage.removeItem('cosmo_cached_firestore_truyen_v3');
     safeStorage.removeItem('cosmo_cached_firestore_truyen_v4');
     safeStorage.removeItem('cosmo_novels');
-    safeStorage.removeItem('cosmo_cached_chapters_meta_2liAf62uSgCcMvld5xtA');
   }
 } catch {}
 
@@ -416,6 +424,90 @@ export function subscribeWebsiteViews(callback: (views: number) => void): () => 
 }
 
 /**
+ * Bộ lọc nhận diện và chặn bot tự động, crawler, spider, headless scraper
+ * (ByteSpider, PetalBot, Semrush, Ahrefs, Puppeteer, Selenium, Censys, Shodan...)
+ * Ngăn chặn tuyệt đối việc kích hoạt tính lượt xem hoặc tiêu hao hạn mức Firestore.
+ */
+export function isAutomatedBot(): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return true;
+
+  // 1. Kiểm tra cờ tự động hóa (WebDriver / Headless browser flags)
+  if (navigator.webdriver === true) return true;
+  if ((window as any)._phantom || (window as any).__nightmare || (window as any).callPhantom) return true;
+  if ((window as any).domAutomation || (window as any).domAutomationController) return true;
+  if (typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('webdriver')) {
+    return true;
+  }
+
+  // 2. Kiểm tra User Agent đối chiếu với danh sách các bot, crawler, headless scraper
+  const ua = (navigator.userAgent || '').toLowerCase();
+  const botSignatures = [
+    'bot',
+    'crawl',
+    'spider',
+    'slurp',
+    'bytespider',
+    'petalbot',
+    'semrush',
+    'ahrefs',
+    'dotbot',
+    'zoominfobot',
+    'yandex',
+    'baiduspider',
+    'sogou',
+    'exabot',
+    'facebookexternalhit',
+    'facebot',
+    'ia_archiver',
+    'shodan',
+    'censys',
+    'nmap',
+    'curl',
+    'wget',
+    'python',
+    'urllib',
+    'requests',
+    'axios',
+    'headlesschrome',
+    'phantomjs',
+    'selenium',
+    'puppeteer',
+    'playwright',
+    'postman',
+    'preview',
+    'scraper',
+    'applebot',
+    'bingbot',
+    'googlebot',
+    'duckduckbot',
+    'yandexbot',
+    'lighthouse',
+    'gtmetrix',
+    'pingdom',
+    'uptimerobot',
+    'screaming frog',
+    'netcraft',
+    'trendiction',
+    'mj12bot',
+    'rogue',
+    'cyber',
+  ];
+
+  for (const sig of botSignatures) {
+    if (ua.includes(sig)) {
+      return true;
+    }
+  }
+
+  // 3. Thiếu thuộc tính ngôn ngữ của người dùng thật (thường gặp ở script cào dữ liệu rác)
+  if (!navigator.languages || navigator.languages.length === 0) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Ghi nhận LƯỢT XEM WEB của người dùng khi truy cập vào website.
  * Tối ưu hóa chuẩn quốc tế:
  * 1. Mỗi phiên truy cập (Session) chỉ tính duy nhất 1 lượt xem, chống spam/F5.
@@ -424,6 +516,7 @@ export function subscribeWebsiteViews(callback: (views: number) => void): () => 
  */
 export function recordWebsiteVisit(): void {
   if (typeof window === 'undefined') return;
+  if (isAutomatedBot()) return;
 
   const sessionKey = 'cosmo_website_session_visit';
   try {
@@ -497,6 +590,7 @@ export async function recordPageView(
   detailId?: string
 ): Promise<void> {
   if (typeof window === 'undefined') return;
+  if (isAutomatedBot()) return;
 
   // Nếu là trang thông tin truyện, chỉ tăng lượt xem cho bộ truyện đó (1 lần mỗi phiên đọc)
   if (pageType === 'novel-info' && detailId) {
@@ -744,6 +838,8 @@ export async function recordChapterRead(
   chapterNumber: number,
   chapterTitle?: string
 ): Promise<void> {
+  if (typeof window === 'undefined') return;
+  if (isAutomatedBot()) return;
   if (!novelId || chapterNumber === null || chapterNumber === undefined) return;
 
   // 1. Chống đếm trùng khi load lại trang (F5):
@@ -1669,11 +1765,14 @@ export async function saveChaptersToFirestore(
   const truyenRef = doc(db, 'truyen', truyenId);
   try {
     const truyenSnap = await getDoc(truyenRef);
+    const existingTitle = truyenSnap.exists() ? (truyenSnap.data()?.tenTruyen || '') : '';
+    const safeTitle = parentNovelMeta?.tenTruyen?.trim() || existingTitle || 'Tiểu Thuyết';
+
     if (!truyenSnap.exists()) {
       await setDoc(
         truyenRef,
         {
-          tenTruyen: parentNovelMeta?.tenTruyen || truyenId,
+          tenTruyen: safeTitle,
           moTa: parentNovelMeta?.moTa || '',
           anhBia: parentNovelMeta?.anhBia || '',
           theLoai: parentNovelMeta?.theLoai || 'Tiểu Thuyết',
@@ -1700,7 +1799,7 @@ export async function saveChaptersToFirestore(
       {
         soChuong: chapters.length,
         ngayCapNhat: now,
-        tenTruyen: parentNovelMeta?.tenTruyen || truyenId,
+        ...(parentNovelMeta?.tenTruyen?.trim() ? { tenTruyen: parentNovelMeta.tenTruyen.trim() } : {}),
         trangThai: 'daDang',
         adminEmail: ADMIN_EMAIL,
       },
