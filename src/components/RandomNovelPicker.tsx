@@ -35,7 +35,10 @@ export type CenterVisualOption =
   | 'pouring-cup'
   | 'snowflake'
   | 'eclipse'
-  | 'pixel-hourglass';
+  | 'pixel-hourglass'
+  | 'vinyl-player'
+  | 'cassette'
+  | 'liquid-heart';
 
 // 1 theme sử dụng 1 icon theo yêu cầu
 export const getThemeVisualOption = (themeId: NovelThemeId): CenterVisualOption => {
@@ -43,13 +46,13 @@ export const getThemeVisualOption = (themeId: NovelThemeId): CenterVisualOption 
     case 'cosmic':
       return 'stargate'; // Theme Cosmic: Cổng Thời Không
     case 'amethyst-haze':
-      return 'tarot'; // Theme Purple / Amethyst: Lá Bài Vận Mệnh (Flip)
+      return 'cassette'; // Theme Purple / Amethyst: Băng Cassette Retro quay mượt
     case 'mocha':
-      return 'hourglass'; // Theme Mocha: Đồng Hồ Cát
+      return 'vinyl-player'; // Theme Linen: Bàn máy phát đĩa than Vinyl quay 360 độ
     case 'notebook':
       return 'pixel-hourglass'; // Theme White: Đồng Hồ Cát Trái Tim Pixel (Pixel Heart Hourglass)
     case 'sage':
-      return 'pouring-cup'; // Theme Sage: Ly nước rót đầy theo ảnh mẫu IMG_20260916_110833
+      return 'liquid-heart'; // Theme Sage: Bình thủy tinh hình trái tim chất lỏng xanh sage tươi mát
     case 'slate-haze':
     default:
       return 'snowflake'; // Theme Frost: Bông tuyết ❄️ xoay chuyển động mượt mà liên tục
@@ -506,6 +509,566 @@ export const PixelHeartHourglass: React.FC<{ isDarkEffective: boolean }> = ({ is
   );
 };
 
+// =========================================================================
+// MÁY PHÁT ĐĨA THAN VINYL (BẢN GỐC HỒNG & BẢN THEME LINEN / MOCHA)
+// =========================================================================
+
+export const PinkVinylPlayer: React.FC<{ isDark?: boolean }> = ({ isDark = false }) => {
+  return (
+    <div className="relative w-36 h-32 flex items-center justify-center select-none">
+      {/* Vầng sáng hồng */}
+      <div
+        className={`absolute w-30 h-30 rounded-full blur-2xl pointer-events-none ${
+          isDark
+            ? 'bg-gradient-to-r from-pink-600/30 via-rose-500/25 to-pink-600/30'
+            : 'bg-gradient-to-r from-pink-200/50 via-rose-200/40 to-pink-200/50'
+        }`}
+      />
+
+      {/* Bàn máy phát đĩa cố định */}
+      <div
+        className={`relative w-32 h-26 rounded-2xl border-2 p-2 shadow-xl flex items-center justify-center ${
+          isDark
+            ? 'bg-gradient-to-b from-[#2d1422] to-[#1c0a14] border-pink-500/40'
+            : 'bg-gradient-to-b from-[#fff5f9] to-[#ffe5ef] border-pink-200 shadow-rose-100/70'
+        }`}
+      >
+        {/* Đĩa vinyl xoay tròn 360 độ */}
+        <div className="relative w-22 h-22 rounded-full shadow-2xl flex items-center justify-center overflow-hidden animate-[pink-spool-spin_3.5s_linear_infinite]">
+          {/* Rãnh đĩa màu hồng dâu đậm */}
+          <div
+            className="w-full h-full rounded-full border border-pink-400/40 relative flex items-center justify-center"
+            style={{
+              background: 'radial-gradient(circle, #f43f5e 0%, #be123c 35%, #881337 70%, #4c0519 100%)',
+            }}
+          >
+            {/* Các vòng rãnh âm thanh đồng tâm */}
+            <div className="absolute inset-1 rounded-full border border-white/15" />
+            <div className="absolute inset-2.5 rounded-full border border-white/15" />
+            <div className="absolute inset-4 rounded-full border border-white/20" />
+            <div className="absolute inset-6 rounded-full border border-white/20" />
+
+            {/* Vệt phản quang quét qua đĩa vinyl */}
+            <div
+              className="absolute inset-0 rounded-full pointer-events-none opacity-40"
+              style={{
+                background:
+                  'conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.45) 45deg, transparent 90deg, transparent 180deg, rgba(255,255,255,0.45) 225deg, transparent 270deg)',
+              }}
+            />
+
+            {/* Tem giấy tâm đĩa */}
+            <div className="relative w-8 h-8 rounded-full bg-white dark:bg-neutral-900 border border-pink-300 shadow-md flex items-center justify-center z-10">
+              <div className="w-2 h-2 rounded-full bg-rose-500 flex items-center justify-center">
+                <div className="w-0.5 h-0.5 rounded-full bg-white" />
+              </div>
+              <span className="absolute -top-0.5 text-[6px] text-pink-500 font-mono font-bold">♡</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Cần kim phát nhạc (Tone arm) đặt trên rãnh đĩa */}
+        <div className="absolute top-2 right-2 w-7 h-16 pointer-events-none flex flex-col items-end">
+          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-200 via-rose-300 to-amber-400 border border-white shadow-xs z-20" />
+          <div className="w-0.5 h-10 bg-gradient-to-b from-amber-300 to-rose-400 rotate-[-22deg] origin-top-right -mr-1.5 shadow-sm" />
+          <div className="w-2 h-3 bg-rose-500 rounded-xs border border-white rotate-[-22deg] -mr-3 shadow-xs" />
+        </div>
+      </div>
+
+      <div className="absolute -top-1 left-2 text-[10px] text-pink-400 animate-pulse">✦</div>
+      <div className="absolute -bottom-1 right-4 text-[10px] text-rose-300 animate-pulse">♫</div>
+    </div>
+  );
+};
+
+// Áp dụng cho theme Linen (Mocha) - Màu sắc hợp theme Linen mộc mạc ấm áp, giữ nguyên chuyển động
+export const LinenVinylPlayer: React.FC<{ isDark?: boolean }> = ({ isDark = false }) => {
+  return (
+    <div className="relative w-36 h-32 flex items-center justify-center select-none">
+      {/* Vầng sáng hổ phách ấm áp theo theme Linen */}
+      <div
+        className={`absolute w-30 h-30 rounded-full blur-2xl pointer-events-none ${
+          isDark
+            ? 'bg-gradient-to-r from-amber-700/25 via-orange-800/20 to-amber-700/25'
+            : 'bg-gradient-to-r from-amber-200/50 via-orange-100/40 to-amber-200/50'
+        }`}
+      />
+
+      {/* Bàn máy phát đĩa cố định tone Mộc / Linen */}
+      <div
+        className={`relative w-32 h-26 rounded-2xl border-2 p-2 shadow-xl flex items-center justify-center ${
+          isDark
+            ? 'bg-gradient-to-b from-[#2a1d15] to-[#18100b] border-amber-600/40 shadow-stone-950/70'
+            : 'bg-gradient-to-b from-[#fdfbf7] to-[#f4ede3] border-amber-200/90 shadow-amber-900/10'
+        }`}
+      >
+        {/* Đĩa vinyl xoay tròn 360 độ */}
+        <div className="relative w-22 h-22 rounded-full shadow-2xl flex items-center justify-center overflow-hidden animate-[pink-spool-spin_3.5s_linear_infinite]">
+          {/* Rãnh đĩa màu espresso / hổ phách trầm sang trọng */}
+          <div
+            className="w-full h-full rounded-full border border-amber-500/40 relative flex items-center justify-center"
+            style={{
+              background: 'radial-gradient(circle, #b45309 0%, #78350f 35%, #451a03 70%, #1c0e07 100%)',
+            }}
+          >
+            {/* Các vòng rãnh âm thanh đồng tâm */}
+            <div className="absolute inset-1 rounded-full border border-white/15" />
+            <div className="absolute inset-2.5 rounded-full border border-white/15" />
+            <div className="absolute inset-4 rounded-full border border-white/20" />
+            <div className="absolute inset-6 rounded-full border border-white/20" />
+
+            {/* Vệt phản quang quét qua đĩa vinyl */}
+            <div
+              className="absolute inset-0 rounded-full pointer-events-none opacity-40"
+              style={{
+                background:
+                  'conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.45) 45deg, transparent 90deg, transparent 180deg, rgba(255,255,255,0.45) 225deg, transparent 270deg)',
+              }}
+            />
+
+            {/* Tem giấy tâm đĩa */}
+            <div className="relative w-8 h-8 rounded-full bg-white dark:bg-stone-900 border border-amber-300 shadow-md flex items-center justify-center z-10">
+              <div className="w-2 h-2 rounded-full bg-amber-600 flex items-center justify-center">
+                <div className="w-0.5 h-0.5 rounded-full bg-white" />
+              </div>
+              <span className="absolute -top-0.5 text-[6px] text-amber-600 dark:text-amber-400 font-mono font-bold">♡</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Cần kim phát nhạc (Tone arm) đặt trên rãnh đĩa */}
+        <div className="absolute top-2 right-2 w-7 h-16 pointer-events-none flex flex-col items-end">
+          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-100 via-amber-300 to-amber-400 border border-white shadow-xs z-20" />
+          <div className="w-0.5 h-10 bg-gradient-to-b from-amber-300 to-amber-500 rotate-[-22deg] origin-top-right -mr-1.5 shadow-sm" />
+          <div className="w-2 h-3 bg-amber-600 rounded-xs border border-white rotate-[-22deg] -mr-3 shadow-xs" />
+        </div>
+      </div>
+
+      <div className="absolute -top-1 left-2 text-[10px] text-amber-400 animate-pulse">✦</div>
+      <div className="absolute -bottom-1 right-4 text-[10px] text-amber-500/80 animate-pulse">♫</div>
+    </div>
+  );
+};
+
+// =========================================================================
+// BĂNG CASSETTE RETRO (BẢN GỐC HỒNG & BẢN THEME PURPLE / AMETHYST)
+// =========================================================================
+
+export const PinkRetroCassette: React.FC<{ isDark?: boolean }> = ({ isDark = false }) => {
+  return (
+    <div className="relative w-36 h-32 flex items-center justify-center select-none">
+      {/* Vầng sáng nền */}
+      <div
+        className={`absolute w-32 h-24 rounded-2xl blur-2xl pointer-events-none ${
+          isDark
+            ? 'bg-gradient-to-r from-pink-600/30 via-rose-500/25 to-pink-600/30'
+            : 'bg-gradient-to-r from-pink-200/50 via-rose-200/40 to-pink-200/50'
+        }`}
+      />
+
+      {/* Thân băng cassette */}
+      <div
+        className={`relative w-32 h-22 rounded-xl border-2 p-1.5 shadow-xl flex flex-col justify-between overflow-hidden ${
+          isDark
+            ? 'bg-gradient-to-b from-[#301625] via-[#220d19] to-[#180811] border-pink-400/50 shadow-pink-950/60'
+            : 'bg-gradient-to-b from-[#fff0f6] via-[#ffe4ef] to-[#ffd1e3] border-pink-300 shadow-rose-200/60'
+        }`}
+      >
+        {/* Nhãn Mixtape phía trên */}
+        <div
+          className={`w-full h-4.5 rounded-t-md px-2 flex items-center justify-between text-[8px] font-mono tracking-wider border-b ${
+            isDark
+              ? 'bg-pink-950/60 border-pink-500/30 text-pink-300'
+              : 'bg-white/85 border-pink-200 text-rose-600 font-bold'
+          }`}
+        >
+          <span>MIXTAPE ♡</span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+            <span>PLAY</span>
+          </span>
+        </div>
+
+        {/* Ô kính trong suốt chứa 2 bánh răng quay */}
+        <div
+          className={`w-full h-11 rounded-md border flex items-center justify-around px-2 relative overflow-hidden ${
+            isDark
+              ? 'bg-black/60 border-pink-500/25'
+              : 'bg-white/65 border-pink-200/80 shadow-inner'
+          }`}
+        >
+          {/* Dây băng từ tính nối giữa 2 bánh răng */}
+          <div className="absolute inset-x-5 top-1/2 -translate-y-1/2 h-4 bg-gradient-to-r from-rose-900/60 via-pink-900/40 to-rose-900/60 rounded-sm" />
+
+          {/* Bánh răng trái (Quay thuận chiều kim đồng hồ) */}
+          <div className="relative w-8 h-8 rounded-full bg-white dark:bg-neutral-900 border-2 border-pink-400 shadow-md flex items-center justify-center animate-[pink-spool-spin_2.4s_linear_infinite] z-10">
+            <div className="w-2.5 h-2.5 rounded-full bg-pink-500" />
+            <div className="absolute w-full h-0.5 bg-pink-400" />
+            <div className="absolute w-full h-0.5 bg-pink-400 rotate-60" />
+            <div className="absolute w-full h-0.5 bg-pink-400 rotate-120" />
+          </div>
+
+          {/* Đồng hồ số Tape Counter */}
+          <div className="flex flex-col items-center z-10 opacity-70">
+            <span className="text-[7px] font-mono font-bold text-pink-500 dark:text-pink-300">04:20</span>
+            <div className="w-3 h-0.5 bg-pink-400 rounded-full mt-0.5" />
+          </div>
+
+          {/* Bánh răng phải (Quay ngược chiều) */}
+          <div className="relative w-8 h-8 rounded-full bg-white dark:bg-neutral-900 border-2 border-pink-400 shadow-md flex items-center justify-center animate-[pink-spool-spin-reverse_2.4s_linear_infinite] z-10">
+            <div className="w-2.5 h-2.5 rounded-full bg-pink-500" />
+            <div className="absolute w-full h-0.5 bg-pink-400" />
+            <div className="absolute w-full h-0.5 bg-pink-400 rotate-60" />
+            <div className="absolute w-full h-0.5 bg-pink-400 rotate-120" />
+          </div>
+        </div>
+
+        {/* 2 lỗ trục quay nhỏ phía dưới */}
+        <div className="w-full flex items-center justify-around px-5 pb-0.5">
+          <div className="w-2 h-2 rounded-full border border-pink-400/50 bg-black/40 flex items-center justify-center">
+            <div className="w-0.5 h-0.5 rounded-full bg-pink-400" />
+          </div>
+          <div className="w-2 h-2 rounded-full border border-pink-400/50 bg-black/40 flex items-center justify-center">
+            <div className="w-0.5 h-0.5 rounded-full bg-pink-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* Nốt nhạc / hạt lấp lánh trang trí trôi xung quanh */}
+      <div className="absolute -top-1 left-2 text-[10px] text-pink-400 animate-pulse">♫</div>
+      <div className="absolute -bottom-1 right-3 text-[10px] text-rose-300 animate-pulse">♡</div>
+    </div>
+  );
+};
+
+// Áp dụng cho theme Purple (Amethyst) - Màu sắc hợp theme Purple huyền ảo cổ điển, giữ nguyên chuyển động
+export const PurpleRetroCassette: React.FC<{ isDark?: boolean }> = ({ isDark = false }) => {
+  return (
+    <div className="relative w-36 h-32 flex items-center justify-center select-none">
+      {/* Vầng sáng tím thạch anh huyền ảo */}
+      <div
+        className={`absolute w-32 h-24 rounded-2xl blur-2xl pointer-events-none ${
+          isDark
+            ? 'bg-gradient-to-r from-purple-600/30 via-fuchsia-500/25 to-purple-600/30'
+            : 'bg-gradient-to-r from-purple-200/50 via-fuchsia-200/40 to-purple-200/50'
+        }`}
+      />
+
+      {/* Thân băng cassette tone tím cổ điển */}
+      <div
+        className={`relative w-32 h-22 rounded-xl border-2 p-1.5 shadow-xl flex flex-col justify-between overflow-hidden ${
+          isDark
+            ? 'bg-gradient-to-b from-[#261033] via-[#1a0b23] to-[#120719] border-purple-400/50 shadow-purple-950/60'
+            : 'bg-gradient-to-b from-[#faf5ff] via-[#f3e8ff] to-[#eedcfc] border-purple-300 shadow-purple-200/60'
+        }`}
+      >
+        {/* Nhãn Mixtape phía trên */}
+        <div
+          className={`w-full h-4.5 rounded-t-md px-2 flex items-center justify-between text-[8px] font-mono tracking-wider border-b ${
+            isDark
+              ? 'bg-purple-950/60 border-purple-500/30 text-purple-300'
+              : 'bg-white/85 border-purple-200 text-purple-700 font-bold'
+          }`}
+        >
+          <span>MIXTAPE ♡</span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+            <span>PLAY</span>
+          </span>
+        </div>
+
+        {/* Ô kính trong suốt chứa 2 bánh răng quay */}
+        <div
+          className={`w-full h-11 rounded-md border flex items-center justify-around px-2 relative overflow-hidden ${
+            isDark
+              ? 'bg-black/60 border-purple-500/25'
+              : 'bg-white/65 border-purple-200/80 shadow-inner'
+          }`}
+        >
+          {/* Dây băng từ tính nối giữa 2 bánh răng */}
+          <div className="absolute inset-x-5 top-1/2 -translate-y-1/2 h-4 bg-gradient-to-r from-purple-900/60 via-fuchsia-900/40 to-purple-900/60 rounded-sm" />
+
+          {/* Bánh răng trái (Quay thuận chiều kim đồng hồ) */}
+          <div className="relative w-8 h-8 rounded-full bg-white dark:bg-neutral-900 border-2 border-purple-400 shadow-md flex items-center justify-center animate-[pink-spool-spin_2.4s_linear_infinite] z-10">
+            <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+            <div className="absolute w-full h-0.5 bg-purple-400" />
+            <div className="absolute w-full h-0.5 bg-purple-400 rotate-60" />
+            <div className="absolute w-full h-0.5 bg-purple-400 rotate-120" />
+          </div>
+
+          {/* Đồng hồ số Tape Counter */}
+          <div className="flex flex-col items-center z-10 opacity-70">
+            <span className="text-[7px] font-mono font-bold text-purple-600 dark:text-purple-300">04:20</span>
+            <div className="w-3 h-0.5 bg-purple-400 rounded-full mt-0.5" />
+          </div>
+
+          {/* Bánh răng phải (Quay ngược chiều) */}
+          <div className="relative w-8 h-8 rounded-full bg-white dark:bg-neutral-900 border-2 border-purple-400 shadow-md flex items-center justify-center animate-[pink-spool-spin-reverse_2.4s_linear_infinite] z-10">
+            <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+            <div className="absolute w-full h-0.5 bg-purple-400" />
+            <div className="absolute w-full h-0.5 bg-purple-400 rotate-60" />
+            <div className="absolute w-full h-0.5 bg-purple-400 rotate-120" />
+          </div>
+        </div>
+
+        {/* 2 lỗ trục quay nhỏ phía dưới */}
+        <div className="w-full flex items-center justify-around px-5 pb-0.5">
+          <div className="w-2 h-2 rounded-full border border-purple-400/50 bg-black/40 flex items-center justify-center">
+            <div className="w-0.5 h-0.5 rounded-full bg-purple-400" />
+          </div>
+          <div className="w-2 h-2 rounded-full border border-purple-400/50 bg-black/40 flex items-center justify-center">
+            <div className="w-0.5 h-0.5 rounded-full bg-purple-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* Nốt nhạc / hạt lấp lánh trang trí trôi xung quanh */}
+      <div className="absolute -top-1 left-2 text-[10px] text-purple-400 animate-pulse">♫</div>
+      <div className="absolute -bottom-1 right-3 text-[10px] text-fuchsia-300 animate-pulse">♡</div>
+    </div>
+  );
+};
+
+// =========================================================================
+// BÌNH THỦY TINH TRÁI TIM CHẤT LỎNG (BẢN GỐC HỒNG & BẢN THEME SAGE)
+// =========================================================================
+
+export interface PinkLiquidHeartProps {
+  loadingProgress?: number; // Từ 0 đến 100
+  isDark?: boolean;
+}
+
+export const PinkLiquidHeart: React.FC<PinkLiquidHeartProps> = ({
+  loadingProgress = 0,
+  isDark = false,
+}) => {
+  // Mực chất lỏng dâng từ đáy (offset 60px) lên đỉnh (0px)
+  const liquidFillOffset = 60 * (1 - Math.min(100, Math.max(0, loadingProgress)) / 100);
+  return (
+    <div className="relative w-36 h-32 flex items-center justify-center select-none">
+      {/* Vầng sáng hồng phía sau */}
+      <div
+        className={`absolute w-28 h-28 rounded-full blur-2xl pointer-events-none ${
+          isDark
+            ? 'bg-gradient-to-r from-pink-600/35 via-rose-500/30 to-fuchsia-600/35'
+            : 'bg-gradient-to-r from-pink-300/50 via-rose-300/40 to-pink-200/50'
+        }`}
+      />
+
+      {/* Bình thủy tinh hình trái tim cố định */}
+      <div className="relative w-28 h-26 flex items-center justify-center">
+        <svg viewBox="0 0 100 90" className="w-28 h-26 drop-shadow-xl overflow-visible">
+          <defs>
+            {/* Khung cắt hình trái tim */}
+            <clipPath id="pinkHeartLiquidClip">
+              <path d="M50 82 C50 82, 10 52, 10 28 A20 20 0 0 1 50 20 A20 20 0 0 1 90 28 C90 52, 50 82, 50 82 Z" />
+            </clipPath>
+
+            {/* Gradient màu tầng sóng trước */}
+            <linearGradient id="pinkFrontWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ff70a6" />
+              <stop offset="50%" stopColor="#f43f5e" />
+              <stop offset="100%" stopColor="#e11d48" />
+            </linearGradient>
+
+            {/* Gradient màu tầng sóng sau */}
+            <linearGradient id="pinkBackWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ffb5d5" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#fb7185" stopOpacity="0.85" />
+            </linearGradient>
+
+            {/* Viền ánh kim thủy tinh */}
+            <linearGradient id="pinkHeartRimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+              <stop offset="40%" stopColor="#f472b6" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#db2777" stopOpacity="0.8" />
+            </linearGradient>
+          </defs>
+
+          {/* Đáy bình trái tim */}
+          <path
+            d="M50 82 C50 82, 10 52, 10 28 A20 20 0 0 1 50 20 A20 20 0 0 1 90 28 C90 52, 50 82, 50 82 Z"
+            fill={isDark ? '#29101f' : '#fff0f6'}
+          />
+
+          {/* VÙNG CHẤT LỎNG DÂU ĐƯỢC CLIP BÊN TRONG */}
+          <g clipPath="url(#pinkHeartLiquidClip)">
+            <g
+              style={{
+                transform: `translateY(${liquidFillOffset}px)`,
+                transition: 'transform 80ms linear',
+              }}
+            >
+              <g className="animate-[pink-liquid-rise_3.6s_ease-in-out_infinite]">
+                {/* Sóng sau (chạy sang phải) */}
+                <path
+                  d="M-100 16 Q-75 10, -50 16 T0 16 T50 16 T100 16 T150 16 T200 16 V120 H-100 Z"
+                  fill="url(#pinkBackWaveGrad)"
+                  className="animate-[pink-wave-reverse_3.2s_linear_infinite]"
+                />
+
+                {/* Sóng trước (chạy sang trái) */}
+                <path
+                  d="M-100 20 Q-75 14, -50 20 T0 20 T50 20 T100 20 T150 20 T200 20 V120 H-100 Z"
+                  fill="url(#pinkFrontWaveGrad)"
+                  className="animate-[pink-wave-horizontal_2.4s_linear_infinite]"
+                />
+
+                {/* Bọt khí dâu sữa bay lên */}
+                <circle cx="36" cy="32" r="2.2" fill="#ffffff" className="animate-[pink-sparkle-rise_2.2s_infinite]" />
+                <circle cx="50" cy="46" r="1.8" fill="#ffffff" className="animate-[pink-sparkle-rise_2.8s_infinite_400ms]" />
+                <circle cx="64" cy="28" r="2" fill="#ffffff" className="animate-[pink-sparkle-rise_2s_infinite_800ms]" />
+                <circle cx="44" cy="62" r="1.5" fill="#ffffff" className="animate-[pink-sparkle-rise_3s_infinite_1200ms]" />
+                <circle cx="56" cy="38" r="2.2" fill="#ffffff" className="animate-[pink-sparkle-rise_2.5s_infinite_600ms]" />
+              </g>
+            </g>
+          </g>
+
+          {/* Vành thủy tinh 3D */}
+          <path
+            d="M50 82 C50 82, 10 52, 10 28 A20 20 0 0 1 50 20 A20 20 0 0 1 90 28 C90 52, 50 82, 50 82 Z"
+            fill="none"
+            stroke="url(#pinkHeartRimGrad)"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Vết loé sáng bóng bẩy trên mặt kính */}
+          <path
+            d="M20 28 A12 12 0 0 1 42 22"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            opacity="0.85"
+          />
+          <circle cx="46" cy="23" r="1.5" fill="#ffffff" opacity="0.9" />
+        </svg>
+
+        <div className="absolute -top-1 right-1 text-[11px] text-pink-400 animate-pulse">✨</div>
+        <div className="absolute -bottom-1 left-2 text-[10px] text-rose-300 animate-pulse">♡</div>
+      </div>
+    </div>
+  );
+};
+
+// Áp dụng cho theme Sage - Bình thủy tinh hình trái tim chất lỏng xanh sage trung tính, nhẹ nhàng dịu mắt
+export const SageLiquidHeart: React.FC<PinkLiquidHeartProps> = ({
+  loadingProgress = 0,
+  isDark = false,
+}) => {
+  // Mực chất lỏng dâng từ đáy (offset 60px) lên đỉnh (0px)
+  const liquidFillOffset = 60 * (1 - Math.min(100, Math.max(0, loadingProgress)) / 100);
+  return (
+    <div className="relative w-36 h-32 flex items-center justify-center select-none">
+      {/* Vầng sáng xanh sage trung tính, dịu êm phía sau */}
+      <div
+        className={`absolute w-28 h-28 rounded-full blur-2xl pointer-events-none ${
+          isDark
+            ? 'bg-gradient-to-r from-[#466244]/25 via-[#354f34]/20 to-[#466244]/25'
+            : 'bg-gradient-to-r from-[#cad8c6]/45 via-[#dbe7d7]/35 to-[#cad8c6]/45'
+        }`}
+      />
+
+      {/* Bình thủy tinh hình trái tim cố định */}
+      <div className="relative w-28 h-26 flex items-center justify-center">
+        <svg viewBox="0 0 100 90" className="w-28 h-26 drop-shadow-xl overflow-visible">
+          <defs>
+            {/* Khung cắt hình trái tim */}
+            <clipPath id="sageHeartLiquidClip">
+              <path d="M50 82 C50 82, 10 52, 10 28 A20 20 0 0 1 50 20 A20 20 0 0 1 90 28 C90 52, 50 82, 50 82 Z" />
+            </clipPath>
+
+            {/* Gradient màu tầng sóng trước - Tông xanh sage trung tính, êm dịu */}
+            <linearGradient id="sageFrontWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#b5c7b3" />
+              <stop offset="50%" stopColor="#98b894" />
+              <stop offset="100%" stopColor="#557752" />
+            </linearGradient>
+
+            {/* Gradient màu tầng sóng sau - Xanh sage pastel nhẹ nhàng */}
+            <linearGradient id="sageBackWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#dbe7d7" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#b3c7b0" stopOpacity="0.85" />
+            </linearGradient>
+
+            {/* Viền ánh kim thủy tinh - Xanh sage ngọc mờ tao nhã */}
+            <linearGradient id="sageHeartRimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+              <stop offset="40%" stopColor="#cad8c6" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#678564" stopOpacity="0.75" />
+            </linearGradient>
+          </defs>
+
+          {/* Đáy bình trái tim - Màu sắc trung tính dịu nhẹ theo chế độ sáng/tối */}
+          <path
+            d="M50 82 C50 82, 10 52, 10 28 A20 20 0 0 1 50 20 A20 20 0 0 1 90 28 C90 52, 50 82, 50 82 Z"
+            fill={isDark ? '#131e15' : '#f4f7f3'}
+          />
+
+          {/* VÙNG CHẤT LỎNG XANH SAGE ĐƯỢC CLIP BÊN TRONG */}
+          <g clipPath="url(#sageHeartLiquidClip)">
+            <g
+              style={{
+                transform: `translateY(${liquidFillOffset}px)`,
+                transition: 'transform 80ms linear',
+              }}
+            >
+              <g className="animate-[pink-liquid-rise_3.6s_ease-in-out_infinite]">
+                {/* Sóng sau (chạy sang phải) */}
+                <path
+                  d="M-100 16 Q-75 10, -50 16 T0 16 T50 16 T100 16 T150 16 T200 16 V120 H-100 Z"
+                  fill="url(#sageBackWaveGrad)"
+                  className="animate-[pink-wave-reverse_3.2s_linear_infinite]"
+                />
+
+                {/* Sóng trước (chạy sang trái) */}
+                <path
+                  d="M-100 20 Q-75 14, -50 20 T0 20 T50 20 T100 20 T150 20 T200 20 V120 H-100 Z"
+                  fill="url(#sageFrontWaveGrad)"
+                  className="animate-[pink-wave-horizontal_2.4s_linear_infinite]"
+                />
+
+                {/* Bọt khí tinh khiết bay lên */}
+                <circle cx="36" cy="32" r="2.2" fill="#ffffff" className="animate-[pink-sparkle-rise_2.2s_infinite]" />
+                <circle cx="50" cy="46" r="1.8" fill="#ffffff" className="animate-[pink-sparkle-rise_2.8s_infinite_400ms]" />
+                <circle cx="64" cy="28" r="2" fill="#ffffff" className="animate-[pink-sparkle-rise_2s_infinite_800ms]" />
+                <circle cx="44" cy="62" r="1.5" fill="#ffffff" className="animate-[pink-sparkle-rise_3s_infinite_1200ms]" />
+                <circle cx="56" cy="38" r="2.2" fill="#ffffff" className="animate-[pink-sparkle-rise_2.5s_infinite_600ms]" />
+              </g>
+            </g>
+          </g>
+
+          {/* Vành thủy tinh 3D */}
+          <path
+            d="M50 82 C50 82, 10 52, 10 28 A20 20 0 0 1 50 20 A20 20 0 0 1 90 28 C90 52, 50 82, 50 82 Z"
+            fill="none"
+            stroke="url(#sageHeartRimGrad)"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Vết loé sáng bóng bẩy trên mặt kính */}
+          <path
+            d="M20 28 A12 12 0 0 1 42 22"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            opacity="0.85"
+          />
+          <circle cx="46" cy="23" r="1.5" fill="#ffffff" opacity="0.9" />
+        </svg>
+
+        <div className="absolute -top-1 right-1 text-[11px] text-[#98b894] animate-pulse">✨</div>
+        <div className="absolute -bottom-1 left-2 text-[10px] text-[#7d9e7a] animate-pulse">♡</div>
+      </div>
+    </div>
+  );
+};
+
 export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   novels,
   onSelectNovel,
@@ -516,6 +1079,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   const [selectedNovel, setSelectedNovel] = useState<Novel | null>(() => {
     return novels && novels.length > 0 ? novels[0] : null;
   });
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   const autoFinishTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -523,6 +1087,25 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   const activeVisual = getThemeVisualOption(theme);
   const bannerPalette = getBannerThemePalette(theme, isDarkEffective);
   const themePickerStyles = getThemePickerStyles(theme, isDarkEffective);
+
+  // Hiệu ứng dâng chất lỏng mượt mà trong lúc chờ chọn (~4.2s)
+  useEffect(() => {
+    if (scene !== 'waiting') {
+      setLoadingProgress(0);
+      return;
+    }
+    const startTime = Date.now();
+    const duration = 4200;
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(100, Math.floor((elapsed / duration) * 100));
+      setLoadingProgress(progress);
+      if (elapsed >= duration) {
+        clearInterval(interval);
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, [scene]);
 
   // Dọn dẹp timer khi unmount
   useEffect(() => {
@@ -578,6 +1161,14 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   // -------------------------------------------------------------
   const renderThemeIcon = () => {
     switch (activeVisual) {
+      case 'vinyl-player':
+        // THEME LINEN (mocha): Bàn máy phát đĩa than Vinyl quay 360 độ, tone màu mộc/linen ấm áp
+        return <LinenVinylPlayer isDark={isDarkEffective} />;
+
+      case 'cassette':
+        // THEME PURPLE (amethyst-haze): Băng Cassette Retro với 2 bánh răng quay mượt, tone tím thạch anh
+        return <PurpleRetroCassette isDark={isDarkEffective} />;
+
       case 'stargate':
         // CỔNG THỜI KHÔNG (Bỏ biểu tượng ngôi sao trong khối tròn)
         return (
@@ -895,135 +1486,10 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           </div>
         );
 
+      case 'liquid-heart':
       case 'pouring-cup':
-        // THEME SAGE: LY NƯỚC RÓT ĐẦY NHƯ ẢNH MẪU IMG_20260916_110833
-        // Dòng nước xanh sage rót thẳng từ trên cao xuống ly, bên trong có 2 mắt tròn và nụ cười dễ thương
-        return (
-          <div className="relative w-28 h-32 flex items-center justify-center select-none">
-            {/* Vầng sáng môi trường màu sage nhẹ phía sau */}
-            <div
-              className={`absolute -inset-2 rounded-full blur-xl animate-pulse ${
-                isDarkEffective ? 'bg-emerald-600/20' : 'bg-emerald-400/25'
-              }`}
-            />
-
-            <div className="relative z-10 flex flex-col items-center justify-center">
-              <svg
-                viewBox="0 0 100 130"
-                className="w-24 h-32 overflow-visible"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  {/* Cắt góc bo tròn chính xác lòng trong của ly nước */}
-                  <clipPath id="sageCupInnerClip">
-                    <rect x="23" y="52" width="54" height="62" rx="16" />
-                  </clipPath>
-
-                  {/* Gradient dòng nước rót từ trên xuống */}
-                  <linearGradient id="sageStreamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor={isDarkEffective ? '#83b882' : '#8ebb8d'} stopOpacity="0.85" />
-                    <stop offset="100%" stopColor={isDarkEffective ? '#96c895' : '#96c895'} stopOpacity="1" />
-                  </linearGradient>
-
-                  {/* Gradient nước sage matcha bên trong ly */}
-                  <linearGradient id="sageLiquidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor={isDarkEffective ? '#89bf88' : '#a0d19f'} />
-                    <stop offset="100%" stopColor={isDarkEffective ? '#6d9c6c' : '#7fad7e'} />
-                  </linearGradient>
-                </defs>
-
-                {/* 1. Dòng nước rót thẳng đứng từ trên cao xuống ly (Pouring stream) */}
-                <rect
-                  x="47"
-                  y="4"
-                  width="6"
-                  height="60"
-                  rx="3"
-                  fill="url(#sageStreamGrad)"
-                  className="animate-[sageStreamFlow_1.6s_ease-in-out_infinite]"
-                />
-
-                {/* Hạt nước li ti rơi theo dòng rót */}
-                <circle cx="50" cy="18" r="1.4" fill="#ffffff" opacity={isDarkEffective ? '0.6' : '0.8'} />
-                <circle cx="50" cy="38" r="1.2" fill={isDarkEffective ? '#bbf7d0' : '#86efac'} opacity="0.9" />
-
-                {/* 2. Bóng mờ đáy ly (Soft shadow under glass) */}
-                <ellipse
-                  cx="50"
-                  cy="119"
-                  rx="22"
-                  ry="4"
-                  fill={isDarkEffective ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.08)'}
-                />
-
-                {/* 3. Lòng trong của ly: Nền + Nước dâng + Mặt cười đáng yêu */}
-                <g clipPath="url(#sageCupInnerClip)">
-                  {/* Nền trong suốt của ly */}
-                  <rect
-                    x="23"
-                    y="52"
-                    width="54"
-                    height="62"
-                    fill={isDarkEffective ? '#132115' : '#f8faf8'}
-                  />
-
-                  {/* Nước sage rót dâng đầy (Animated Filling Loop) */}
-                  <g className="animate-[sageFillLoop_3.4s_ease-in-out_infinite]">
-                    {/* Thân khối nước */}
-                    <rect
-                      x="20"
-                      y="73"
-                      width="60"
-                      height="50"
-                      fill="url(#sageLiquidGrad)"
-                    />
-                    {/* Mặt thoáng nước lượn sóng nhẹ */}
-                    <path
-                      d="M 20 73 Q 35 70 50 73 T 80 73 L 80 79 L 20 79 Z"
-                      fill={isDarkEffective ? '#a3d8a2' : '#b7e4b6'}
-                      opacity="0.95"
-                    />
-                  </g>
-
-                  {/* Khuôn mặt cười đáng yêu giống hệt ảnh mẫu: 2 mắt tròn và miệng cười cong */}
-                  <circle cx="41" cy="78" r="2.4" fill={isDarkEffective ? '#f1f5f9' : '#39463a'} />
-                  <circle cx="59" cy="78" r="2.4" fill={isDarkEffective ? '#f1f5f9' : '#39463a'} />
-
-                  {/* Miệng cười cong */}
-                  <path
-                    d="M 46 84 Q 50 88 54 84"
-                    stroke={isDarkEffective ? '#f1f5f9' : '#39463a'}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    fill="none"
-                  />
-                </g>
-
-                {/* 4. Đường viền thành ly thủy tinh bo góc tròn đều theo ảnh mẫu */}
-                <rect
-                  x="23"
-                  y="52"
-                  width="54"
-                  height="62"
-                  rx="16"
-                  stroke={isDarkEffective ? '#546b56' : '#cbd5cb'}
-                  strokeWidth="3.4"
-                  fill="none"
-                />
-
-                {/* Phản quang viền ly thủy tinh trong suốt */}
-                <path
-                  d="M 28 62 L 28 96"
-                  stroke="#ffffff"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  opacity={isDarkEffective ? '0.2' : '0.65'}
-                />
-              </svg>
-            </div>
-          </div>
-        );
+        // THEME SAGE: Bình thủy tinh hình trái tim chất lỏng dâng dần theo tiến độ
+        return <SageLiquidHeart loadingProgress={loadingProgress} isDark={isDarkEffective} />;
     }
   };
 
@@ -1161,14 +1627,8 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
               : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
           }}
         >
-          {/* Vùng Icon minh họa của theme — Hốc lõm Neumorphic tinh tế */}
-          <div
-            className={`p-4 sm:p-5 rounded-3xl mb-1 transition-all border ${
-              isDarkEffective
-                ? 'bg-black/25 border-white/[0.06] shadow-[inset_0_2px_5px_rgba(0,0,0,0.5),inset_0_-1px_1px_rgba(255,255,255,0.08)]'
-                : 'bg-black/[0.02] border-black/[0.03] shadow-[inset_0_2px_5px_rgba(0,0,0,0.05),inset_0_-1px_1px_rgba(255,255,255,0.9)]'
-            }`}
-          >
+          {/* Vùng Icon minh họa của theme (Đã bỏ hiệu ứng Neumorphism theo yêu cầu) */}
+          <div className="mb-2 flex items-center justify-center">
             {renderThemeIcon()}
           </div>
 

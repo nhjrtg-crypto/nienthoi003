@@ -318,9 +318,9 @@ const createVoDepQuyenRuToiChapters = (): NovelChapter[] => {
 export const VO_DEP_QUYEN_RU_TOI_NOVEL: Novel = {
   id: 'ncyhhwdAvFncDv9KnIVh',
   title: "Vợ Đẹp Ngày Nào Cũng Tìm Cách Quyến Rũ Tôi",
-  coverImage: "https://drive.google.com/file/d/1WIjsjZk1fpYDJwxWsd4cRaRJPjXodiVA/view?usp=sharing",
-  coverImageUrl: "https://drive.google.com/file/d/1WIjsjZk1fpYDJwxWsd4cRaRJPjXodiVA/view?usp=sharing",
-  bannerImage: "https://drive.google.com/file/d/1WIjsjZk1fpYDJwxWsd4cRaRJPjXodiVA/view?usp=sharing",
+  coverImage: "/covers/vo_dep_quyen_ru_toi.jpg",
+  coverImageUrl: "/covers/vo_dep_quyen_ru_toi.jpg",
+  bannerImage: "/covers/vo_dep_quyen_ru_toi.jpg",
   author: {
     id: 'auth-ncyhhwdAvFncDv9KnIVh',
     name: "Dã Mân Côi Loan",

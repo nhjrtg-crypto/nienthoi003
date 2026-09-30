@@ -1,6 +1,4 @@
 import { Novel, NovelChapter } from '../types';
-import luaNhauCover from '../assets/images/lua_nhau_cover_art_1789278411816.jpg';
-import luaNhauBanner from '../assets/images/lua_nhau_banner_art_1789278426373.jpg';
 
 const createLuaNhauChapters = (): NovelChapter[] => {
   return [
@@ -680,9 +678,9 @@ const createLuaNhauChapters = (): NovelChapter[] => {
 export const LUA_NHAU_NOVEL: Novel = {
   id: 'lua-nhau',
   title: 'Lừa Nhau',
-  coverImage: 'https://drive.google.com/file/d/1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm/view?usp=drivesdk',
-  coverImageUrl: 'https://drive.google.com/file/d/1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm/view?usp=drivesdk',
-  bannerImage: luaNhauBanner,
+  coverImage: '/covers/lua_nhau.jpg',
+  coverImageUrl: '/covers/lua_nhau.jpg',
+  bannerImage: '/covers/lua_nhau.jpg',
   author: {
     id: 'auth-lanh-son-tuu-moc',
     name: 'Lãnh Sơn Tựu Mộc',

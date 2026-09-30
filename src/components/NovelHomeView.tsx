@@ -451,50 +451,50 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         case 'sage':
           return {
             cardBg: 'bg-[#0f1a14]/95',
-            cardBorder: 'border-emerald-500/25',
+            cardBorder: 'border-[#4d6f53]/25',
             cardShadow: 'shadow-[0_16px_40px_rgba(0,0,0,0.45)]',
-            stackedMiddle: 'bg-[#0b1410]/95 border-emerald-500/20 shadow-xs',
-            stackedBottom: 'bg-[#080e0b]/90 border-emerald-500/15 shadow-xs',
-            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(16, 185, 129, 0.05) 24px, rgba(16, 185, 129, 0.05) 25px)',
-            titleText: 'text-emerald-100',
-            novelTitle: 'text-emerald-100',
-            chevronColor: 'text-emerald-300 group-hover:text-emerald-200',
-            badge: 'bg-emerald-950/70 text-emerald-200 border-emerald-500/30',
-            navBtn: 'bg-emerald-950/70 hover:bg-emerald-900/60 text-emerald-200 border-emerald-500/30 shadow-xs',
-            timeSubtext: 'text-emerald-300/70',
-            timeIcon: 'text-emerald-400/80',
+            stackedMiddle: 'bg-[#0b1410]/95 border-[#4d6f53]/20 shadow-xs',
+            stackedBottom: 'bg-[#080e0b]/90 border-[#4d6f53]/15 shadow-xs',
+            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(77, 111, 83, 0.05) 24px, rgba(77, 111, 83, 0.05) 25px)',
+            titleText: 'text-[#eaf2eb]',
+            novelTitle: 'text-[#eaf2eb]',
+            chevronColor: 'text-[#8cb391] group-hover:text-[#bde0c2]',
+            badge: 'bg-[#152317]/80 text-[#d7e6d9] border-[#4d6f53]/35',
+            navBtn: 'bg-[#152317]/80 hover:bg-[#1d3020]/80 text-[#d7e6d9] border-[#4d6f53]/35 shadow-xs',
+            timeSubtext: 'text-[#9db6a1]',
+            timeIcon: 'text-[#8cb391]',
             progressTrack: 'bg-white/10 border border-white/10',
-            progressBar: 'bg-[#3e6041]',
-            progressThumb: 'bg-[#8cb892] border-[#0c1510]',
-            pctText: 'text-emerald-200',
-            continueBtn: 'text-emerald-200 hover:text-emerald-100',
-            divider: 'border-emerald-500/15',
-            coverBorder: 'border-emerald-500/30',
-            coverBg: 'bg-emerald-950/50',
+            progressBar: 'bg-[#4d6f53]',
+            progressThumb: 'bg-[#98b89a] border-[#0c1510]',
+            pctText: 'text-[#d7e6d9]',
+            continueBtn: 'text-[#d7e6d9] hover:text-[#ffffff]',
+            divider: 'border-[#4d6f53]/15',
+            coverBorder: 'border-[#4d6f53]/30',
+            coverBg: 'bg-[#152317]/50',
           };
         case 'mocha':
           return {
             cardBg: 'bg-[#19130e]/95',
-            cardBorder: 'border-amber-600/25',
+            cardBorder: 'border-[#8c6150]/25',
             cardShadow: 'shadow-[0_16px_40px_rgba(0,0,0,0.45)]',
-            stackedMiddle: 'bg-[#130e0a]/95 border-amber-600/20 shadow-xs',
-            stackedBottom: 'bg-[#0e0906]/90 border-amber-600/15 shadow-xs',
-            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(217, 119, 6, 0.05) 24px, rgba(217, 119, 6, 0.05) 25px)',
-            titleText: 'text-amber-100',
-            novelTitle: 'text-amber-100',
-            chevronColor: 'text-amber-300 group-hover:text-amber-200',
-            badge: 'bg-amber-950/70 text-amber-200 border-amber-600/30',
-            navBtn: 'bg-amber-950/70 hover:bg-amber-900/60 text-amber-200 border-amber-600/30 shadow-xs',
-            timeSubtext: 'text-amber-300/70',
-            timeIcon: 'text-amber-400/80',
+            stackedMiddle: 'bg-[#130e0a]/95 border-[#8c6150]/20 shadow-xs',
+            stackedBottom: 'bg-[#0e0906]/90 border-[#8c6150]/15 shadow-xs',
+            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(140, 97, 80, 0.05) 24px, rgba(140, 97, 80, 0.05) 25px)',
+            titleText: 'text-[#f5ece6]',
+            novelTitle: 'text-[#f5ece6]',
+            chevronColor: 'text-[#d4a38c] group-hover:text-[#f0d8cc]',
+            badge: 'bg-[#2a1a14]/80 text-[#e4cec0] border-[#8c6150]/35',
+            navBtn: 'bg-[#2a1a14]/80 hover:bg-[#38231b]/80 text-[#e4cec0] border-[#8c6150]/35 shadow-xs',
+            timeSubtext: 'text-[#c2b0a2]',
+            timeIcon: 'text-[#d4a38c]',
             progressTrack: 'bg-white/10 border border-white/10',
-            progressBar: 'bg-[#8c6046]',
-            progressThumb: 'bg-[#cbb3a3] border-[#15100c]',
-            pctText: 'text-amber-200',
-            continueBtn: 'text-amber-200 hover:text-amber-100',
-            divider: 'border-amber-600/15',
-            coverBorder: 'border-amber-600/30',
-            coverBg: 'bg-amber-950/50',
+            progressBar: 'bg-[#8c6150]',
+            progressThumb: 'bg-[#d8c2b5] border-[#15100c]',
+            pctText: 'text-[#e4cec0]',
+            continueBtn: 'text-[#e4cec0] hover:text-[#ffffff]',
+            divider: 'border-[#8c6150]/15',
+            coverBorder: 'border-[#8c6150]/30',
+            coverBg: 'bg-[#241712]/50',
           };
         case 'cosmic':
           return {
@@ -758,9 +758,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'notebook':
         return 'bg-[#F7F4EE] shadow-[0_0_12px_rgba(247,244,238,0.65)]';
       case 'sage':
-        return 'bg-gradient-to-r from-[#3e6041] to-[#588157]';
+        return 'bg-gradient-to-r from-[#3e5b43] via-[#4d6f53] to-[#5e8264] shadow-[0_0_12px_rgba(77,111,83,0.5)]';
       case 'mocha':
-        return 'bg-gradient-to-r from-[#8c6046] to-[#a67c65]';
+        return 'bg-gradient-to-r from-[#775243] via-[#8c6150] to-[#9f7260] shadow-[0_0_12px_rgba(140,97,80,0.5)]';
       case 'amethyst-haze':
         return 'bg-gradient-to-r from-[#c084fc] to-[#e879f9] shadow-[0_0_12px_rgba(192,132,252,0.8)]';
       case 'slate-haze':
@@ -808,12 +808,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
       case 'sage':
         return isDark
-          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-emerald-400/80 active:border-emerald-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(168,85,247,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
+          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-[#5e8264]/80 active:border-[#4d6f53] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(77,111,83,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
           : `${basePhysics} bg-white/70 hover:bg-white active:bg-[#f0f7ef] border-[#cad8c6] hover:border-[#678564] active:border-[#4a6348] hover:shadow-md active:shadow-xs`;
 
       case 'mocha':
         return isDark
-          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-amber-400/80 active:border-amber-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(245,158,11,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
+          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-[#9f7260]/80 active:border-[#8c6150] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(140,97,80,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
           : `${basePhysics} bg-[#f5f1e6] hover:bg-white active:bg-[#F8F4EE] border-[#E4D9BC] hover:border-[#A37764] active:border-[#A37764] hover:shadow-md active:shadow-xs`;
 
       case 'amethyst-haze':
@@ -838,11 +838,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           : 'bg-[#87909d] text-white border-slate-400/30 shadow-sm';
       case 'sage':
         return isDark
-          ? 'bg-emerald-600 text-white border border-emerald-400/80 shadow-xs font-bold'
+          ? 'bg-[#4d6f53] text-white border border-[#5e8264]/80 shadow-xs font-bold'
           : 'bg-stone-900/80 text-stone-100 border-stone-400/30 shadow-sm';
       case 'mocha':
         return isDark
-          ? 'bg-amber-600 text-white border border-amber-400/80 shadow-xs font-bold'
+          ? 'bg-[#8c6150] text-white border border-[#9f7260]/80 shadow-xs font-bold'
           : 'bg-stone-900/85 text-[#F8F4EE] border-[#A37764]/60 shadow-sm';
       case 'notebook':
         return isDark
@@ -875,18 +875,18 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         return isOngoing
           ? (isDark
-              ? 'bg-emerald-950 text-emerald-200 border border-emerald-600/50 shadow-xs'
+              ? 'bg-[#152317] text-[#d7e6d9] border border-[#4d6f53]/50 shadow-xs'
               : 'bg-[#354b33] text-white border border-[#273826] shadow-xs')
           : (isDark
-              ? 'bg-[#0d2217] text-emerald-300/80 border border-emerald-800/60 shadow-xs'
+              ? 'bg-[#0d1710] text-[#9db6a1] border border-[#4d6f53]/40 shadow-xs'
               : 'bg-[#edf3ec] text-[#344832] border border-[#cad8c6] shadow-xs');
       case 'mocha':
         return isOngoing
           ? (isDark
-              ? 'bg-amber-950 text-amber-200 border border-amber-600/50 shadow-xs'
+              ? 'bg-[#2a1a14] text-[#ebdcd3] border border-[#8c6150]/50 shadow-xs'
               : 'bg-[#805543] text-white border border-[#6b4535] shadow-xs')
           : (isDark
-              ? 'bg-[#25150d] text-[#e0cbbe] border border-[#543b2f]/60 shadow-xs'
+              ? 'bg-[#1a120d] text-[#c2b0a2] border border-[#8c6150]/40 shadow-xs'
               : 'bg-[#f5eee6] text-[#63493c] border border-[#dccdc5] shadow-xs');
       case 'notebook':
         return isOngoing
@@ -931,18 +931,18 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         return isOngoing
           ? (isDark
-              ? 'bg-emerald-950 text-emerald-200 border border-emerald-600/50 shadow-xs'
+              ? 'bg-[#152317] text-[#d7e6d9] border border-[#4d6f53]/50 shadow-xs'
               : 'bg-stone-100 text-stone-800 border-stone-300 shadow-2xs font-semibold')
           : (isDark
-              ? 'bg-[#0d2217] text-emerald-200 border border-emerald-800/60 shadow-xs'
+              ? 'bg-[#0d1710] text-[#d7e6d9] border border-[#4d6f53]/40 shadow-xs'
               : 'bg-stone-50 text-stone-600 border-stone-200 shadow-2xs');
       case 'mocha':
         return isOngoing
           ? (isDark
-              ? 'bg-amber-950 text-amber-200 border border-amber-600/50 shadow-xs'
+              ? 'bg-[#2a1a14] text-[#ebdcd3] border border-[#8c6150]/50 shadow-xs'
               : 'bg-[#F8F4EE] text-[#A37764] border-[#A37764]/40 font-bold shadow-2xs')
           : (isDark
-              ? 'bg-[#25150d] text-[#f5ede4] border border-[#543b2f]/60 shadow-xs'
+              ? 'bg-[#1a120d] text-[#f5ede4] border border-[#8c6150]/40 shadow-xs'
               : 'bg-[#f5f1e6] text-[#8C7A6E] border-[#E4D9BC] shadow-2xs');
       case 'notebook':
         return isOngoing
@@ -994,7 +994,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         if (idx === 0) {
           return isDark
-            ? 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-stone-950 shadow-[0_0_10px_rgba(52,211,153,0.4)]'
+            ? 'bg-gradient-to-tr from-[#3e5b43] to-[#5e8264] text-white shadow-[0_0_10px_rgba(77,111,83,0.4)]'
             : 'bg-gradient-to-tr from-[#52634f] to-[#3e4d3c] text-white shadow-sm ring-1 ring-stone-400/30';
         }
         if (idx === 1) {
@@ -1044,104 +1044,304 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   };
 
   // Helper styling for completed novel category filter tabs (Nút phân loại mục Tiểu Thuyết Đã Hoàn)
-  // - Ở theme frost chế độ sáng: chuyển màu nút thành giống màu nút "BẤM CHỌN" (#87909d)
-  // - Ở tất cả theme ở chế độ tối: màu nút giống màu chủ đạo của từng theme, không dùng gradient, phát sáng mạnh hơn ở hai bên trái phải (horizontal box-shadow)
+  // - Ở theme sáng: Khôi phục lại như cũ trước khi áp dụng 5 hiệu ứng (nền thanh container sáng với shadow-inner, màu nút active chuẩn của theme)
+  // - Ở theme tối: Giữ nguyên 5 hiệu ứng viên thuốc 3D, bỏ đường viền ngoài (border-0), đổi màu ✦ thành màu trắng
   const getCompletedCategoryTabsStyles = (th: NovelThemeId, isDark: boolean) => {
     if (!isDark) {
-      // Theme sáng: Nền sáng cho thanh container với đổ bóng chìm (shadow-inner) chuẩn theo ảnh 097.png, màu nút active là màu chủ đạo của theme
+      // Theme sáng: Nền sáng cho thanh container với đổ bóng chìm (shadow-inner), màu nút active là màu chủ đạo của theme
       switch (th) {
         case 'slate-haze':
           return {
-            container: 'bg-[#f3f7fc] border-[#d8dfe9] shadow-inner',
+            container: 'bg-[#f3f7fc] border border-[#d8dfe9] shadow-inner',
             activePill: 'bg-[#87909d] border border-[#767f8c] shadow-xs',
             activeText: 'text-white',
             inactiveText: 'text-[#64748b] hover:text-[#101723]',
+            getActivePill: () => ({ gradient: '', glow: '' }),
           };
         case 'sage':
           return {
-            container: 'bg-[#f0f4ef] border-[#cad8c6] shadow-inner',
+            container: 'bg-[#f0f4ef] border border-[#cad8c6] shadow-inner',
             activePill: 'bg-[#466244] border border-[#384937] shadow-xs',
             activeText: 'text-white',
             inactiveText: 'text-[#556953] hover:text-[#1c261b]',
+            getActivePill: () => ({ gradient: '', glow: '' }),
           };
         case 'mocha':
           return {
-            container: 'bg-[#f5f1e6] border-[#E4D9BC] shadow-inner',
+            container: 'bg-[#f5f1e6] border border-[#E4D9BC] shadow-inner',
             activePill: 'bg-[#A37764] border border-[#8c5f4d] shadow-xs',
             activeText: 'text-white',
             inactiveText: 'text-[#7d675e] hover:text-[#2a1d17]',
+            getActivePill: () => ({ gradient: '', glow: '' }),
           };
         case 'amethyst-haze':
           return {
-            container: 'bg-[#f7f5fb] border-[#dcd6e8] shadow-inner',
+            container: 'bg-[#f7f5fb] border border-[#dcd6e8] shadow-inner',
             activePill: 'bg-[#6b5f82] border border-[#594d70] shadow-xs',
             activeText: 'text-white',
             inactiveText: 'text-[#6b5e7d] hover:text-[#251d30]',
+            getActivePill: () => ({ gradient: '', glow: '' }),
           };
         case 'notebook':
           return {
-            container: 'bg-[#f5f5f5] border-[#e5e5e5] shadow-inner',
+            container: 'bg-[#f5f5f5] border border-[#e5e5e5] shadow-inner',
             activePill: 'bg-[#262626] border border-[#171717] shadow-xs',
             activeText: 'text-white font-bold',
             inactiveText: 'text-[#525252] hover:text-[#171717]',
+            getActivePill: () => ({ gradient: '', glow: '' }),
           };
         case 'cosmic':
         default:
           return {
-            container: 'bg-[#faf7ff] border-[#e9d5ff] shadow-inner',
+            container: 'bg-[#faf7ff] border border-[#e9d5ff] shadow-inner',
             activePill: 'bg-[#7c3aed] border border-[#6d28d9] shadow-xs',
             activeText: 'text-white',
             inactiveText: 'text-purple-700 hover:text-purple-950',
+            getActivePill: () => ({ gradient: '', glow: '' }),
           };
       }
     }
 
-    // Theme tối: Hiệu ứng Neumorphism tinh tế cho dãy nút, bỏ hoàn toàn phát sáng neon
+    // Theme tối: BỎ HOÀN TOÀN đường viền ngoài (border-0), giữ nguyên hiệu ứng khoang kính mờ và gradient viên thuốc 3D
+    let containerClass = '';
+    let inactiveTextClass = '';
+
     switch (th) {
       case 'slate-haze':
-        return {
-          container: 'bg-[#090d16] border-[#1e293b] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]',
-          activePill: 'bg-[#0284c7] border border-sky-400/30 shadow-[3px_3px_8px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.08),inset_1px_1px_1px_rgba(255,255,255,0.15)]',
-          activeText: 'text-white font-bold',
-          inactiveText: 'text-slate-400 hover:text-cyan-200',
-        };
+        containerClass =
+          'bg-[#0b1320]/80 border-0 shadow-[inset_0_1px_2px_rgba(56,189,248,0.22),0_4px_20px_rgba(0,0,0,0.5)]';
+        inactiveTextClass = 'text-slate-400 hover:text-sky-200';
+        break;
       case 'sage':
-        return {
-          container: 'bg-[#04150f] border-[#064e3b]/70 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]',
-          activePill: 'bg-[#15803d] border border-emerald-400/30 shadow-[3px_3px_8px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.08),inset_1px_1px_1px_rgba(255,255,255,0.15)]',
-          activeText: 'text-white font-bold',
-          inactiveText: 'text-emerald-300/60 hover:text-emerald-200',
-        };
-      case 'amethyst-haze':
-        return {
-          container: 'bg-[#110a1c] border-[#3b1754]/70 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]',
-          activePill: 'bg-[#7e22ce] border border-purple-400/30 shadow-[3px_3px_8px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.08),inset_1px_1px_1px_rgba(255,255,255,0.15)]',
-          activeText: 'text-white font-bold',
-          inactiveText: 'text-purple-300/60 hover:text-purple-200',
-        };
+        containerClass =
+          'bg-[#0e1711]/85 border-0 shadow-[inset_0_1px_2px_rgba(152,184,148,0.18),0_4px_20px_rgba(0,0,0,0.5)]';
+        inactiveTextClass = 'text-[#9db6a1] hover:text-[#e4efe5]';
+        break;
       case 'mocha':
-        return {
-          container: 'bg-[#140b07] border-[#3d2417]/70 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]',
-          activePill: 'bg-[#b45309] border border-amber-400/30 shadow-[3px_3px_8px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.08),inset_1px_1px_1px_rgba(255,255,255,0.15)]',
-          activeText: 'text-white font-bold',
-          inactiveText: 'text-amber-300/60 hover:text-amber-200',
-        };
+        containerClass =
+          'bg-[#1a1410]/85 border-0 shadow-[inset_0_1px_2px_rgba(215,185,160,0.18),0_4px_20px_rgba(0,0,0,0.5)]';
+        inactiveTextClass = 'text-[#c2b0a2] hover:text-[#f3eae4]';
+        break;
+      case 'amethyst-haze':
+        containerClass =
+          'bg-[#140b20]/80 border-0 shadow-[inset_0_1px_2px_rgba(192,132,252,0.22),0_4px_20px_rgba(0,0,0,0.5)]';
+        inactiveTextClass = 'text-purple-300/70 hover:text-purple-200';
+        break;
       case 'notebook':
-        return {
-          container: 'bg-[#0a0d14] border-[#1e293b]/70 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]',
-          activePill: 'bg-[#3f3f46] border border-zinc-500/40 shadow-[3px_3px_8px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.08),inset_1px_1px_1px_rgba(255,255,255,0.15)]',
-          activeText: 'text-white font-bold',
-          inactiveText: 'text-zinc-400 hover:text-zinc-200',
-        };
+        containerClass =
+          'bg-[#131316]/85 border-0 shadow-[inset_0_1px_2px_rgba(255,255,255,0.18),0_4px_20px_rgba(0,0,0,0.5)]';
+        inactiveTextClass = 'text-zinc-400 hover:text-zinc-100';
+        break;
       case 'cosmic':
       default:
-        return {
-          container: 'bg-[#0a0c24] border-[#1e1b4b]/70 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.6),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]',
-          activePill: 'bg-[#7c3aed] border border-indigo-400/30 shadow-[3px_3px_8px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.08),inset_1px_1px_1px_rgba(255,255,255,0.15)]',
-          activeText: 'text-white font-bold',
-          inactiveText: 'text-purple-300/60 hover:text-purple-200',
-        };
+        containerClass =
+          'bg-[#0d0a28]/80 border-0 shadow-[inset_0_1px_2px_rgba(129,140,248,0.25),0_4px_20px_rgba(0,0,0,0.5)]';
+        inactiveTextClass = 'text-indigo-300/70 hover:text-cyan-200';
+        break;
     }
+
+    // 2. Dải màu Gradient 3 điểm dừng & Hào quang phát sáng (Colored Ambient Glow) đồng bộ theo Thể loại & Theme
+    const getActivePill = (catId: NovelCategoryTabId) => {
+      switch (th) {
+        case 'slate-haze':
+          switch (catId) {
+            case 'h-van':
+              return {
+                gradient: 'bg-gradient-to-r from-sky-700 via-cyan-600 to-teal-500',
+                glow: 'shadow-md shadow-cyan-500/35',
+              };
+            case 'h-van-np':
+              return {
+                gradient: 'bg-gradient-to-r from-blue-700 via-sky-600 to-indigo-500',
+                glow: 'shadow-md shadow-blue-500/35',
+              };
+            case 'h-van-ngan':
+              return {
+                gradient: 'bg-gradient-to-r from-cyan-700 via-sky-600 to-blue-500',
+                glow: 'shadow-md shadow-sky-500/35',
+              };
+            case 'dam-my':
+              return {
+                gradient: 'bg-gradient-to-r from-sky-700 via-blue-600 to-cyan-500',
+                glow: 'shadow-md shadow-blue-500/35',
+              };
+            case 'all':
+            default:
+              return {
+                gradient: 'bg-gradient-to-r from-slate-700 via-sky-600 to-cyan-500',
+                glow: 'shadow-md shadow-sky-500/35',
+              };
+          }
+
+        case 'sage':
+          switch (catId) {
+            case 'h-van':
+              return {
+                gradient: 'bg-gradient-to-r from-[#445d47] via-[#557359] to-[#67876b]',
+                glow: 'shadow-md shadow-[#557359]/30',
+              };
+            case 'h-van-np':
+              return {
+                gradient: 'bg-gradient-to-r from-[#395642] via-[#476851] to-[#597c64]',
+                glow: 'shadow-md shadow-[#476851]/30',
+              };
+            case 'h-van-ngan':
+              return {
+                gradient: 'bg-gradient-to-r from-[#3c5949] via-[#4c6c5a] to-[#5e806d]',
+                glow: 'shadow-md shadow-[#4c6c5a]/30',
+              };
+            case 'dam-my':
+              return {
+                gradient: 'bg-gradient-to-r from-[#435c4b] via-[#53725d] to-[#658570]',
+                glow: 'shadow-md shadow-[#53725d]/30',
+              };
+            case 'all':
+            default:
+              return {
+                gradient: 'bg-gradient-to-r from-[#3e5b43] via-[#4d6f53] to-[#5e8264]',
+                glow: 'shadow-md shadow-[#4d6f53]/30',
+              };
+          }
+
+        case 'mocha':
+          switch (catId) {
+            case 'h-van':
+              return {
+                gradient: 'bg-gradient-to-r from-[#824f4a] via-[#975f58] to-[#aa6f68]',
+                glow: 'shadow-md shadow-[#975f58]/30',
+              };
+            case 'h-van-np':
+              return {
+                gradient: 'bg-gradient-to-r from-[#7a5538] via-[#8e6443] to-[#a07451]',
+                glow: 'shadow-md shadow-[#8e6443]/30',
+              };
+            case 'h-van-ngan':
+              return {
+                gradient: 'bg-gradient-to-r from-[#735848] via-[#866856] to-[#9a7b67]',
+                glow: 'shadow-md shadow-[#866856]/30',
+              };
+            case 'dam-my':
+              return {
+                gradient: 'bg-gradient-to-r from-[#7d5040] via-[#925e4d] to-[#a46e5c]',
+                glow: 'shadow-md shadow-[#925e4d]/30',
+              };
+            case 'all':
+            default:
+              return {
+                gradient: 'bg-gradient-to-r from-[#775243] via-[#8c6150] to-[#9f7260]',
+                glow: 'shadow-md shadow-[#8c6150]/30',
+              };
+          }
+
+        case 'notebook':
+          switch (catId) {
+            case 'h-van':
+              return {
+                gradient: isDark
+                  ? 'bg-gradient-to-r from-neutral-700 via-zinc-600 to-slate-500'
+                  : 'bg-gradient-to-r from-neutral-800 via-zinc-700 to-slate-600',
+                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
+              };
+            case 'h-van-np':
+              return {
+                gradient: isDark
+                  ? 'bg-gradient-to-r from-stone-700 via-neutral-600 to-zinc-500'
+                  : 'bg-gradient-to-r from-stone-800 via-neutral-700 to-zinc-600',
+                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
+              };
+            case 'h-van-ngan':
+              return {
+                gradient: isDark
+                  ? 'bg-gradient-to-r from-zinc-700 via-stone-600 to-neutral-500'
+                  : 'bg-gradient-to-r from-zinc-800 via-stone-700 to-neutral-600',
+                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
+              };
+            case 'dam-my':
+              return {
+                gradient: isDark
+                  ? 'bg-gradient-to-r from-slate-700 via-zinc-600 to-stone-500'
+                  : 'bg-gradient-to-r from-slate-800 via-zinc-700 to-stone-600',
+                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
+              };
+            case 'all':
+            default:
+              return {
+                gradient: isDark
+                  ? 'bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-500'
+                  : 'bg-gradient-to-r from-zinc-800 via-neutral-700 to-stone-600',
+                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
+              };
+          }
+
+        case 'cosmic':
+          switch (catId) {
+            case 'h-van':
+              return {
+                gradient: 'bg-gradient-to-r from-fuchsia-600 via-rose-500 to-amber-400',
+                glow: 'shadow-md shadow-rose-500/45',
+              };
+            case 'h-van-np':
+              return {
+                gradient: 'bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500',
+                glow: 'shadow-md shadow-purple-500/45',
+              };
+            case 'h-van-ngan':
+              return {
+                gradient: 'bg-gradient-to-r from-pink-600 via-purple-500 to-cyan-400',
+                glow: 'shadow-md shadow-pink-500/45',
+              };
+            case 'dam-my':
+              return {
+                gradient: 'bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500',
+                glow: 'shadow-md shadow-blue-500/45',
+              };
+            case 'all':
+            default:
+              return {
+                gradient: 'bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400',
+                glow: 'shadow-md shadow-indigo-500/45',
+              };
+          }
+
+        case 'amethyst-haze':
+        default:
+          switch (catId) {
+            case 'h-van':
+              return {
+                gradient: 'bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600',
+                glow: 'shadow-md shadow-rose-500/35',
+              };
+            case 'h-van-np':
+              return {
+                gradient: 'bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-500',
+                glow: 'shadow-md shadow-fuchsia-500/35',
+              };
+            case 'h-van-ngan':
+              return {
+                gradient: 'bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500',
+                glow: 'shadow-md shadow-pink-500/35',
+              };
+            case 'dam-my':
+              return {
+                gradient: 'bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500',
+                glow: 'shadow-md shadow-indigo-500/35',
+              };
+            case 'all':
+            default:
+              return {
+                gradient: 'bg-gradient-to-r from-violet-600 via-purple-600 to-pink-500',
+                glow: 'shadow-md shadow-purple-500/35',
+              };
+          }
+      }
+    };
+
+    return {
+      container: containerClass,
+      activeText: 'text-white font-bold',
+      inactiveText: inactiveTextClass,
+      getActivePill,
+    };
   };
 
   // Helper styling for Theme-Appropriate Pastel & Dot-Grid (Áp dụng cho Hero & Mục Polaroid theo ảnh mẫu)
@@ -1204,57 +1404,57 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           };
         case 'mocha':
           return {
-            dotColor: 'rgba(251, 191, 36, 0.08)',
-            gridColor: 'rgba(251, 191, 36, 0.09)',
+            dotColor: 'rgba(212, 163, 140, 0.08)',
+            gridColor: 'rgba(140, 97, 80, 0.09)',
             heroRimBg: 'bg-[#1b1511]',
             outerBg: 'bg-[#171310]/95',
-            outerBorder: 'border-amber-600/40',
-            heroOuterBorder: 'border border-amber-600/40',
-            heroInnerDashed: 'border border-dashed border-amber-500/35',
-            heroGenreColor: 'text-amber-300/80',
-            heroTitleColor: 'text-amber-100',
-            heroMetaColor: 'text-amber-300/70',
-            heroOrnamentColor: 'text-amber-400/80',
+            outerBorder: 'border-[#8c6150]/40',
+            heroOuterBorder: 'border border-[#8c6150]/40',
+            heroInnerDashed: 'border border-dashed border-[#8c6150]/35',
+            heroGenreColor: 'text-[#d4a38c]',
+            heroTitleColor: 'text-[#f5ece6]',
+            heroMetaColor: 'text-[#c2b0a2]',
+            heroOrnamentColor: 'text-[#d4a38c]',
             cardBg: 'bg-[#1c1713]/95',
-            cardBorder: 'border-amber-600/40',
-            polaroidBg: 'bg-[#271f1a] border-amber-500/40 text-amber-100',
-            starColor: 'text-amber-400/85',
-            ornamentText: 'text-amber-300/70',
-            bowColor: 'text-amber-300/70',
-            tapeColor: 'bg-amber-950/70 border-amber-800/50 text-amber-300',
-            pushpin: 'bg-zinc-800 border-amber-400',
-            dotActive: 'bg-amber-400',
-            dotInactive: 'bg-amber-900',
-            arrowBtn: 'bg-[#261e19] text-amber-100 border-amber-600/50 hover:bg-amber-900/60',
-            badgeBg: 'bg-white/10 text-amber-200 border-white/10',
-            heartColor: 'text-amber-400',
+            cardBorder: 'border-[#8c6150]/40',
+            polaroidBg: 'bg-[#271f1a] border-[#8c6150]/40 text-[#f5ece6]',
+            starColor: 'text-[#d4a38c]',
+            ornamentText: 'text-[#c2b0a2]',
+            bowColor: 'text-[#c2b0a2]',
+            tapeColor: 'bg-[#2a1a14]/80 border-[#8c6150]/50 text-[#d4a38c]',
+            pushpin: 'bg-zinc-800 border-[#8c6150]',
+            dotActive: 'bg-[#8c6150]',
+            dotInactive: 'bg-[#38231b]',
+            arrowBtn: 'bg-[#261e19] text-[#f5ece6] border-[#8c6150]/50 hover:bg-[#38231b]/80',
+            badgeBg: 'bg-white/10 text-[#ebdcd3] border-white/10',
+            heartColor: 'text-[#d4a38c]',
           };
         case 'sage':
           return {
-            dotColor: 'rgba(110, 231, 183, 0.08)',
-            gridColor: 'rgba(52, 211, 153, 0.09)',
+            dotColor: 'rgba(140, 179, 145, 0.08)',
+            gridColor: 'rgba(77, 111, 83, 0.09)',
             heroRimBg: 'bg-[#111c14]',
             outerBg: 'bg-[#0e1711]/95',
-            outerBorder: 'border-emerald-500/40',
-            heroOuterBorder: 'border border-emerald-500/40',
-            heroInnerDashed: 'border border-dashed border-emerald-400/35',
-            heroGenreColor: 'text-emerald-300/80',
-            heroTitleColor: 'text-emerald-100',
-            heroMetaColor: 'text-emerald-300/70',
-            heroOrnamentColor: 'text-emerald-400/80',
+            outerBorder: 'border-[#4d6f53]/40',
+            heroOuterBorder: 'border border-[#4d6f53]/40',
+            heroInnerDashed: 'border border-dashed border-[#4d6f53]/35',
+            heroGenreColor: 'text-[#8cb391]',
+            heroTitleColor: 'text-[#eaf2eb]',
+            heroMetaColor: 'text-[#9db6a1]',
+            heroOrnamentColor: 'text-[#8cb391]',
             cardBg: 'bg-[#111c15]/95',
-            cardBorder: 'border-emerald-500/40',
-            polaroidBg: 'bg-[#17261d] border-emerald-400/40 text-emerald-100',
-            starColor: 'text-emerald-400/85',
-            ornamentText: 'text-emerald-300/70',
-            bowColor: 'text-emerald-300/70',
-            tapeColor: 'bg-emerald-950/70 border-emerald-800/50 text-emerald-300',
-            pushpin: 'bg-zinc-800 border-emerald-400',
-            dotActive: 'bg-emerald-400',
-            dotInactive: 'bg-emerald-900',
-            arrowBtn: 'bg-[#18261e] text-emerald-100 border-emerald-600/50 hover:bg-emerald-900/60',
-            badgeBg: 'bg-white/10 text-emerald-200 border-white/10',
-            heartColor: 'text-emerald-400',
+            cardBorder: 'border-[#4d6f53]/40',
+            polaroidBg: 'bg-[#17261d] border-[#4d6f53]/40 text-[#eaf2eb]',
+            starColor: 'text-[#8cb391]',
+            ornamentText: 'text-[#9db6a1]',
+            bowColor: 'text-[#9db6a1]',
+            tapeColor: 'bg-[#152317]/80 border-[#4d6f53]/50 text-[#8cb391]',
+            pushpin: 'bg-zinc-800 border-[#4d6f53]',
+            dotActive: 'bg-[#4d6f53]',
+            dotInactive: 'bg-[#1d3020]',
+            arrowBtn: 'bg-[#18261e] text-[#eaf2eb] border-[#4d6f53]/50 hover:bg-[#1d3020]/80',
+            badgeBg: 'bg-white/10 text-[#d7e6d9] border-white/10',
+            heartColor: 'text-[#8cb391]',
           };
         case 'cosmic':
           return {
@@ -1711,14 +1911,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         return isDarkEffective
           ? {
-              btnBg: '#04231b',
-              textColor: 'text-emerald-50',
-              borderGradient: 'bg-gradient-to-r from-[#064e3b] via-[#10b981] via-[#34d399] to-[#14b8a6] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(16,185,129,0.4)] hover:shadow-[0_0_12px_rgba(52,211,153,0.65)] group-hover:shadow-[0_0_12px_rgba(52,211,153,0.65)]',
+              btnBg: '#0e1711',
+              textColor: 'text-[#eaf2eb]',
+              borderGradient: 'bg-gradient-to-r from-[#293d2d] via-[#4d6f53] via-[#658570] to-[#4d6f53] animate-gradient-flow',
+              borderShadow: 'shadow-[0_0_8px_rgba(77,111,83,0.4)] hover:shadow-[0_0_12px_rgba(94,130,100,0.65)] group-hover:shadow-[0_0_12px_rgba(94,130,100,0.65)]',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-emerald-600/40 via-teal-500/30 to-green-500/40',
-              dotColor: 'bg-emerald-300',
-              dotPing: 'bg-emerald-400',
+              haloCushion: 'bg-gradient-to-r from-[#4d6f53]/35 via-[#658570]/25 to-[#3e5b43]/35',
+              dotColor: 'bg-[#8cb391]',
+              dotPing: 'bg-[#bde0c2]',
             }
           : {
               btnBg: '#f7faf7',
@@ -1757,14 +1957,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'mocha':
         return isDarkEffective
           ? {
-              btnBg: '#2a1104',
-              textColor: 'text-amber-50',
-              borderGradient: 'bg-gradient-to-r from-[#451a03] via-[#d97706] via-[#f59e0b] to-[#fbbf24] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(245,158,11,0.4)] hover:shadow-[0_0_12px_rgba(251,191,36,0.65)] group-hover:shadow-[0_0_12px_rgba(251,191,36,0.65)]',
+              btnBg: '#1c140f',
+              textColor: 'text-[#f5ece6]',
+              borderGradient: 'bg-gradient-to-r from-[#4d3228] via-[#8c6150] via-[#aa6f68] to-[#8c6150] animate-gradient-flow',
+              borderShadow: 'shadow-[0_0_8px_rgba(140,97,80,0.4)] hover:shadow-[0_0_12px_rgba(170,111,104,0.65)] group-hover:shadow-[0_0_12px_rgba(170,111,104,0.65)]',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-amber-600/40 via-orange-500/30 to-amber-400/40',
-              dotColor: 'bg-amber-300',
-              dotPing: 'bg-orange-400',
+              haloCushion: 'bg-gradient-to-r from-[#8c6150]/35 via-[#975f58]/25 to-[#775243]/35',
+              dotColor: 'bg-[#d4a38c]',
+              dotPing: 'bg-[#f0d8cc]',
             }
           : {
               btnBg: '#faf8f5',
@@ -1841,17 +2041,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       switch (theme) {
         case 'sage':
           return {
-            btnBg: '#064e3b',
-            btnBorder: 'border-emerald-600/60 hover:border-emerald-500',
-            textColor: 'text-emerald-100',
-            shadowColor: '#02261d',
+            btnBg: '#1e3022',
+            btnBorder: 'border-[#4d6f53]/60 hover:border-[#5e8264]',
+            textColor: 'text-[#eaf2eb]',
+            shadowColor: '#0a140d',
           };
         case 'mocha':
           return {
-            btnBg: '#451a03',
-            btnBorder: 'border-amber-700/60 hover:border-amber-600',
-            textColor: 'text-amber-100',
-            shadowColor: '#200b01',
+            btnBg: '#2c1c15',
+            btnBorder: 'border-[#8c6150]/60 hover:border-[#9f7260]',
+            textColor: 'text-[#f5ece6]',
+            shadowColor: '#120b08',
           };
         case 'amethyst-haze':
           return {
@@ -2738,30 +2938,59 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               <div className="max-w-full overflow-x-auto scrollbar-none py-1">
                 <div
                   id="completed-novels-segmented-tabs"
-                  className={`inline-flex items-center p-1 sm:p-1.5 rounded-full border transition-all duration-300 ${completedCategoryTabsStyles.container}`}
+                  className={`inline-flex items-center p-1 sm:p-1.5 rounded-full transition-all duration-300 ${
+                    isDarkEffective ? 'backdrop-blur-xl' : ''
+                  } ${completedCategoryTabsStyles.container}`}
                 >
                   {NOVEL_CATEGORY_TABS.map((tab) => {
                     const isActive = selectedCategory === tab.id;
+                    const pillStyle = completedCategoryTabsStyles.getActivePill(tab.id);
                     return (
-                      <button
+                      <motion.button
                         key={tab.id}
                         id={`btn-tab-${tab.id}`}
+                        whileHover={isDarkEffective ? { scale: 1.04 } : undefined}
+                        whileTap={isDarkEffective ? { scale: 0.94 } : undefined}
+                        transition={{ type: 'spring', stiffness: 450, damping: 26 }}
                         onClick={() => {
                           setSelectedCategory(tab.id);
                         }}
-                        className={`relative px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-200 cursor-pointer whitespace-nowrap rounded-full select-none ${
+                        className={`relative px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors duration-200 cursor-pointer whitespace-nowrap rounded-full select-none ${
                           isActive
                             ? `${completedCategoryTabsStyles.activeText} font-bold`
                             : `${completedCategoryTabsStyles.inactiveText} font-medium`
                         }`}
                       >
                         {isActive && (
-                          <div
-                            className={`absolute inset-0 rounded-full z-0 ${completedCategoryTabsStyles.activePill}`}
-                          />
+                          isDarkEffective ? (
+                            <motion.div
+                              layoutId="activeCompletedCategoryPill"
+                              transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+                              className={`absolute inset-0 rounded-full z-0 overflow-hidden ${pillStyle.gradient} ring-1 ring-white/30 ${pillStyle.glow} shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.45)]`}
+                            >
+                              {/* Vệt sáng cong hình vòm bán nguyệt mô phỏng bề mặt cong bóng láng 3D của vỏ viên thuốc con nhộng */}
+                              <div className="absolute top-0.5 inset-x-1.5 h-[46%] rounded-t-full bg-gradient-to-b from-white/45 to-transparent pointer-events-none" />
+                            </motion.div>
+                          ) : (
+                            <div
+                              className={`absolute inset-0 rounded-full z-0 ${completedCategoryTabsStyles.activePill}`}
+                            />
+                          )
                         )}
-                        <span className="relative z-10">{tab.label}</span>
-                      </button>
+                        <span className="relative z-10 drop-shadow-xs inline-flex items-center gap-1.5">
+                          {isDarkEffective && isActive && (
+                            <motion.span
+                              initial={{ scale: 0, rotate: -45, opacity: 0 }}
+                              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                              className="text-white text-xs sm:text-sm drop-shadow-[0_0_4px_rgba(255,255,255,0.7)] select-none"
+                            >
+                              ✦
+                            </motion.span>
+                          )}
+                          <span>{tab.label}</span>
+                        </span>
+                      </motion.button>
                     );
                   })}
                 </div>

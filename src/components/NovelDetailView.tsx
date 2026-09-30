@@ -66,7 +66,7 @@ import {
   Clapperboard,
   Film,
 } from 'lucide-react';
-import { getDirectImageUrl, handleCoverImageError, getOriginalCoverByNovel } from '../utils/imageUtils';
+import { getDirectImageUrl, handleCoverImageError, getOriginalCoverByNovel, normalizeNovelTitle } from '../utils/imageUtils';
 import { Novel, NovelChapter, NovelComment, DarkBackgroundOption, DARK_BG_OPTIONS } from '../types';
 import {
   NovelThemeId,
@@ -83,6 +83,7 @@ import { SpiralNotebookView, getSpiralPlannerCaroGridStyle } from './SpiralNoteb
 import { safeStorage } from '../utils/safeStorage';
 import { TxtImportModal } from './TxtImportModal';
 import { TxtChapterSplitterModal } from './TxtChapterSplitterModal';
+import { cosmicAudio } from '../utils/audioSynth';
 import {
   fetchChuongMetaList,
   FirestoreChuongMeta,
@@ -313,16 +314,16 @@ export const getThemeLoangConfig = (theme: NovelThemeId, isDark: boolean): Gradi
       return isDark
         ? {
             name: 'Theme Lam Khói (Tối)',
-            description: 'Xanh sương & xám bạc tĩnh lặng dịu nhẹ',
-            preview: 'linear-gradient(135deg, #2563eb, #38bdf8)',
+            description: 'Lam khói trầm & xám bạc tĩnh lặng dịu êm',
+            preview: 'linear-gradient(135deg, #3e566d, #5d7e9d)',
             meshGradient:
-              'radial-gradient(ellipse 95% 75% at 95% 10%, rgba(14, 165, 233, 0.26) 0%, rgba(37, 99, 235, 0.14) 42%, transparent 85%), radial-gradient(ellipse 85% 65% at 5% 90%, rgba(56, 189, 248, 0.22) 0%, rgba(6, 182, 212, 0.12) 45%, transparent 80%), radial-gradient(ellipse 65% 50% at 50% 45%, rgba(14, 165, 233, 0.10) 0%, transparent 72%)',
+              'radial-gradient(ellipse 95% 75% at 95% 10%, rgba(77, 106, 133, 0.26) 0%, rgba(62, 86, 109, 0.14) 42%, transparent 85%), radial-gradient(ellipse 85% 65% at 5% 90%, rgba(93, 126, 157, 0.22) 0%, rgba(45, 65, 84, 0.12) 45%, transparent 80%), radial-gradient(ellipse 65% 50% at 50% 45%, rgba(62, 86, 109, 0.10) 0%, transparent 72%)',
             flowTop:
-              'radial-gradient(ellipse at 70% 30%, rgba(14, 165, 233, 0.32) 0%, rgba(37, 99, 235, 0.16) 40%, transparent 82%)',
+              'radial-gradient(ellipse at 70% 30%, rgba(77, 106, 133, 0.32) 0%, rgba(62, 86, 109, 0.16) 40%, transparent 82%)',
             flowBottom:
-              'radial-gradient(ellipse at 30% 70%, rgba(56, 189, 248, 0.26) 0%, rgba(6, 182, 212, 0.12) 40%, transparent 82%)',
+              'radial-gradient(ellipse at 30% 70%, rgba(93, 126, 157, 0.28) 0%, rgba(45, 65, 84, 0.14) 40%, transparent 82%)',
             flowCenter:
-              'radial-gradient(ellipse at center, rgba(14, 165, 233, 0.18) 0%, transparent 78%)',
+              'radial-gradient(ellipse at center, rgba(77, 106, 133, 0.18) 0%, transparent 78%)',
           }
         : {
             name: 'Theme Lam Khói (Sáng)',
@@ -546,6 +547,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setDetailLayoutOption('option1');
   }, [novel.id]);
 
+  // Thanh Đọc Nổi (Sticky Floating Action Bar): xuất hiện khi cuộn xuống cho trang kiểu chuẩn
+  const [showStickyBottom, setShowStickyBottom] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyBottom(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Firestore chapter metadata state (restored from cache or loaded on-demand, no automatic full read on mount)
   const [firestoreChapters, setFirestoreChapters] = useState<FirestoreChuongMeta[]>(() => {
     try {
@@ -651,8 +662,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const [customCoverUrl, setCustomCoverUrl] = useState<string | null>(() => {
     try {
       const stored = safeStorage.getItem(`cosmo_novel_custom_cover_${novel.id}`);
-      if (novel.id === 'lua-nhau') {
-        if (stored && !stored.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm')) {
+      if (novel.id === 'lua-nhau' || novel.title?.toLowerCase().includes('lừa nhau')) {
+        if (stored && (stored.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || stored.includes('drive.google.com'))) {
           safeStorage.removeItem(`cosmo_novel_custom_cover_${novel.id}`);
           return null;
         }
@@ -682,8 +693,24 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setCustomCoverUrl(newUrl);
     try {
       safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, newUrl);
+      if (novel.title) {
+        safeStorage.setItem(`cosmo_novel_custom_cover_${novel.title}`, newUrl);
+        safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(novel.title)}`, newUrl);
+      }
+      const savedNovelsStr = safeStorage.getItem('cosmo_novels');
+      if (savedNovelsStr) {
+        const parsed: Novel[] = JSON.parse(savedNovelsStr);
+        const norm = normalizeNovelTitle(novel.title);
+        const next = parsed.map((n) =>
+          n.id === novel.id || normalizeNovelTitle(n.title) === norm
+            ? { ...n, coverImage: newUrl, coverImageUrl: newUrl }
+            : n
+        );
+        safeStorage.setItem('cosmo_novels', JSON.stringify(next));
+      }
     } catch {}
     onUpdateCover?.(novel.id, newUrl);
+    onUpdateNovel?.({ ...novel, coverImage: newUrl, coverImageUrl: newUrl });
     try {
       await saveNovelCoverToFirebase(novel.id, newUrl, novel.title);
     } catch (e) {
@@ -743,11 +770,18 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           onUpdateNovel?.({ ...novel, coverImage: dataUrl, coverImageUrl: dataUrl });
           try {
             safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, dataUrl);
+            if (novel.title) {
+              safeStorage.setItem(`cosmo_novel_custom_cover_${novel.title}`, dataUrl);
+              safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(novel.title)}`, dataUrl);
+            }
             const savedNovelsStr = safeStorage.getItem('cosmo_novels');
             if (savedNovelsStr) {
               const parsed: Novel[] = JSON.parse(savedNovelsStr);
+              const norm = normalizeNovelTitle(novel.title);
               const next = parsed.map((n) =>
-                n.id === novel.id ? { ...n, coverImage: dataUrl, coverImageUrl: dataUrl } : n
+                n.id === novel.id || normalizeNovelTitle(n.title) === norm
+                  ? { ...n, coverImage: dataUrl, coverImageUrl: dataUrl }
+                  : n
               );
               safeStorage.setItem('cosmo_novels', JSON.stringify(next));
             }
@@ -1255,79 +1289,79 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         };
       case 'slate-haze':
         return {
-          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#101b27]/50 to-[#080d14]/65 backdrop-blur-2xl border border-white/20 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_20px_rgba(56,189,248,0.1)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
-          cardBgSolid: isDarkEffective ? 'bg-[#090e16]' : 'bg-white',
+          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#121c27]/50 to-[#0b1118]/65 backdrop-blur-2xl border border-white/20 text-[#dce7f0] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
+          cardBgSolid: isDarkEffective ? 'bg-[#0b1118]' : 'bg-white',
           tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'bg-white border-b border-[#d8dfe9]',
-          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
-          activeTabBorderClass: isDarkEffective ? 'border-sky-400' : 'border-[#87909d]',
-          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-md shadow-sky-600/30' : 'bg-[#87909d] text-white',
-          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-slate-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
-          tagPill: isDarkEffective ? 'bg-sky-500/15 backdrop-blur-md text-sky-200 border border-sky-400/30 hover:bg-sky-500/25' : 'bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9] hover:bg-white',
-          authorBadge: isDarkEffective ? 'bg-sky-500/15 backdrop-blur-md text-sky-200 border border-sky-400/30' : 'bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
-          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-white border-[#d8dfe9] text-[#475569]',
-          noteIcon: isDarkEffective ? 'text-sky-400' : 'text-[#87909d]',
-          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-semibold shadow-lg shadow-sky-600/35' : 'bg-[#87909d] hover:bg-[#767f8c] text-white font-semibold',
-          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#abc3d7] border border-white/20' : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
-          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-slate-300 border border-white/15' : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
+          activeTabBorderClass: isDarkEffective ? 'border-[#5d7e9d]' : 'border-[#87909d]',
+          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-[#3e566d] to-[#4d6a85] text-white shadow-md shadow-[#0c141d]/30' : 'bg-[#87909d] text-white',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
+          tagPill: isDarkEffective ? 'bg-[#4d6a85]/20 backdrop-blur-md text-[#dce7f0] border border-[#4d6a85]/35 hover:bg-[#4d6a85]/30' : 'bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9] hover:bg-white',
+          authorBadge: isDarkEffective ? 'bg-[#4d6a85]/20 backdrop-blur-md text-[#dce7f0] border border-[#4d6a85]/35' : 'bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
+          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#cbdde9] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-white border-[#d8dfe9] text-[#475569]',
+          noteIcon: isDarkEffective ? 'text-[#8bb0cf]' : 'text-[#87909d]',
+          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-[#3e566d] via-[#4d6a85] to-[#5d7e9d] hover:from-[#47627d] hover:via-[#577795] hover:to-[#688cae] text-white font-semibold shadow-lg shadow-[#0c141d]/35' : 'bg-[#87909d] hover:bg-[#767f8c] text-white font-semibold',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#cfdce8] border border-white/20' : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#b8cedf] border border-white/15' : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
           coverGradient: isDarkEffective
-            ? 'bg-gradient-to-br from-[#0c2236] via-[#0f2e46] to-[#123e59]'
+            ? 'bg-gradient-to-br from-[#101b27] via-[#162536] to-[#1c2e42]'
             : 'bg-gradient-to-br from-[#d8dfe9] via-[#f3f7fc] to-[#f9fcff]',
           circleTopLeft: isDarkEffective
-            ? 'bg-gradient-to-br from-[#071724] to-[#0d263b] border border-sky-400/20'
+            ? 'bg-gradient-to-br from-[#0c1622] to-[#142332] border border-[#3e566d]/30'
             : 'bg-gradient-to-br from-[#87909d]/15 to-[#475569]/10 border border-[#d8dfe9]',
           circleBehindCover: isDarkEffective
-            ? 'bg-gradient-to-tr from-sky-600/30 via-blue-600/20 to-transparent border border-sky-400/30 shadow-inner'
+            ? 'bg-gradient-to-tr from-[#3e566d]/20 via-[#314659]/15 to-transparent border border-[#3e566d]/30 shadow-inner'
             : 'bg-gradient-to-tr from-[#87909d]/10 via-[#d8dfe9]/40 to-white/40 border border-[#d8dfe9] shadow-inner',
           circleBottomRight: isDarkEffective
-            ? 'bg-gradient-to-tl from-[#195a7a]/60 via-[#103e54]/35 to-transparent'
+            ? 'bg-gradient-to-tl from-[#1c2e42]/40 via-[#142332]/25 to-transparent'
             : 'bg-gradient-to-tl from-[#f3f7fc] via-[#d8dfe9]/40 to-transparent',
           coverOverlay: isDarkEffective
-            ? 'bg-gradient-to-t from-[#090e16]/80 via-[#090e16]/25 to-transparent'
+            ? 'bg-gradient-to-t from-[#0b1118]/80 via-[#0b1118]/25 to-transparent'
             : 'bg-gradient-to-t from-[#f9fcff]/80 via-transparent to-transparent',
-          // Theme-aware poster styles (Đồng bộ Frost nền #f3f7fc, viền #d8dfe9, chủ đạo #f9fcff, nút #87909d)
-          posterCardBorder: isDarkEffective ? 'border border-white/20 shadow-[0_24px_60px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_25px_rgba(56,189,248,0.15)]' : 'border border-[#d8dfe9]',
+          // Theme-aware poster styles (Đồng bộ chuẩn xác màu sắc Frost phong cách Linen dịu mắt)
+          posterCardBorder: isDarkEffective ? 'border border-[#314659]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'border border-[#d8dfe9]',
           posterGradient: isDarkEffective
-            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(16, 27, 39, 0.52) 35%, rgba(8, 13, 20, 0.65) 100%)'
+            ? 'linear-gradient(135deg, rgba(16, 25, 36, 0.9) 0%, rgba(11, 17, 24, 0.95) 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #f9fcff 35%, #f3f7fc 70%, #e2eaf4 100%)',
           posterDiscLeftSeparate: isDarkEffective
-            ? 'radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.4) 0%, rgba(37, 99, 235, 0.15) 60%, transparent 85%)'
+            ? 'radial-gradient(circle at 50% 50%, rgba(77, 106, 133, 0.12) 0%, rgba(45, 65, 84, 0.04) 60%, transparent 85%)'
             : 'radial-gradient(circle at 50% 50%, rgba(216, 223, 233, 0.6) 0%, rgba(216, 223, 233, 0.2) 65%, transparent 88%)',
           posterDiscTopRight: isDarkEffective
-            ? 'radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.4) 0%, rgba(37, 99, 235, 0.15) 60%, transparent 85%)'
+            ? 'radial-gradient(circle at 50% 50%, rgba(77, 106, 133, 0.12) 0%, rgba(45, 65, 84, 0.04) 60%, transparent 85%)'
             : 'radial-gradient(circle at 50% 50%, rgba(216, 223, 233, 0.6) 0%, rgba(216, 223, 233, 0.18) 65%, transparent 88%)',
           posterArcBottomRight: isDarkEffective
-            ? 'radial-gradient(circle at center, rgba(56, 189, 248, 0.35) 0%, rgba(37, 99, 235, 0.15) 50%, transparent 75%)'
+            ? 'radial-gradient(circle at center, rgba(77, 106, 133, 0.1) 0%, rgba(45, 65, 84, 0.03) 50%, transparent 75%)'
             : 'radial-gradient(circle at center, rgba(216, 223, 233, 0.5) 0%, rgba(216, 223, 233, 0.15) 50%, transparent 75%)',
-          posterStatusBadgeBg: isDarkEffective ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white border border-sky-400/30 shadow-md shadow-sky-600/30' : 'bg-[#87909d] text-white',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-[#314659] text-[#dce7f0] border border-[#4d6a85]/40 shadow-xs' : 'bg-[#87909d] text-white',
           posterPrimaryBtn: isDarkEffective
-            ? 'bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-sky-600/35 font-semibold'
+            ? 'bg-[#314659] hover:bg-[#3e566d] text-[#dce7f0] shadow-xs font-semibold'
             : 'bg-[#87909d] hover:bg-[#767f8c] text-white shadow-sm font-semibold',
-          posterTextColor: isDarkEffective ? 'text-[#eaf0f6]' : 'text-[#101723]',
-          posterSubTextColor: isDarkEffective ? 'text-[#c0d3e5]' : 'text-[#475569]',
-          posterMutedText: isDarkEffective ? 'text-[#8299af]' : 'text-[#64748b]',
+          posterTextColor: isDarkEffective ? 'text-[#dce7f0]' : 'text-[#101723]',
+          posterSubTextColor: isDarkEffective ? 'text-[#a6c2d8]' : 'text-[#475569]',
+          posterMutedText: isDarkEffective ? 'text-[#728fa5]' : 'text-[#64748b]',
           posterTagClass: isDarkEffective
-            ? 'bg-sky-500/15 backdrop-blur-md border border-sky-400/30 text-sky-200 hover:border-sky-400/50'
+            ? 'bg-[#182535]/60 backdrop-blur-md border border-[#314659]/40 text-[#cbdde9] hover:border-[#4d6a85]/50'
             : 'bg-[#f3f7fc] hover:bg-white text-[#101723] border border-[#d8dfe9] shadow-2xs',
           posterNoteBox: isDarkEffective
-            ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#adbfd0] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+            ? 'border border-[#314659]/50 bg-[#0e1722]/80 text-[#a6c2d8]'
             : 'border-[#d8dfe9] bg-white text-[#475569] shadow-xs',
-          posterNoteTitle: isDarkEffective ? 'text-[#eaf0f6]' : 'text-[#101723]',
-          posterNoteContent: isDarkEffective ? 'text-[#adbfd0]' : 'text-[#475569]',
+          posterNoteTitle: isDarkEffective ? 'text-[#dce7f0]' : 'text-[#101723]',
+          posterNoteContent: isDarkEffective ? 'text-[#a6c2d8]' : 'text-[#475569]',
           posterReadNextBtn: isDarkEffective
-            ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] border border-white/20 text-[#cfdce8] shadow-md'
+            ? 'bg-[#14212e]/70 backdrop-blur-md hover:bg-[#1c2d3e]/80 border border-[#314659]/40 text-[#cbdde9] shadow-xs'
             : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9] shadow-xs',
           gridPattern: {
             baseGradient: isDarkEffective
-              ? 'linear-gradient(135deg, rgba(16, 27, 39, 0.88) 0%, rgba(8, 13, 20, 0.96) 100%)'
+              ? 'linear-gradient(135deg, rgba(16, 25, 36, 0.85) 0%, rgba(11, 17, 24, 0.95) 100%)'
               : 'linear-gradient(135deg, #ffffff 0%, #f4f8fd 40%, #e6eef7 100%)',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(56, 189, 248, 0.16) 0%, transparent 70%)'
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
               : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(216, 235, 255, 0.75) 0%, transparent 70%)',
             gridLineColor: isDarkEffective
-              ? 'rgba(56, 189, 248, 0.18)'
+              ? 'rgba(186, 208, 230, 0.16)'
               : 'rgba(56, 189, 248, 0.28)',
             gridSubtleColor: isDarkEffective
-              ? 'rgba(56, 189, 248, 0.06)'
+              ? 'rgba(186, 208, 230, 0.06)'
               : 'rgba(125, 143, 166, 0.12)',
           },
         };
@@ -1542,6 +1576,83 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     }
   }, [theme, isDarkEffective]);
 
+  // Màu sắc Thanh Đọc Nổi (Sticky Floating Bar) đồng bộ chuẩn xác theo từng theme & sáng/tối
+  const floatingBarTheme = useMemo(() => {
+    switch (theme) {
+      case 'notebook': // White theme
+        return {
+          container: isDarkEffective
+            ? 'bg-neutral-900/95 border-neutral-700/80 text-white shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-white/95 border-neutral-300 text-neutral-900 shadow-[0_12px_36px_rgba(0,0,0,0.12)]',
+          avatarBorder: isDarkEffective ? 'border-neutral-600' : 'border-neutral-300',
+          title: isDarkEffective ? 'text-neutral-100' : 'text-neutral-900',
+          subtitle: isDarkEffective ? 'text-neutral-400' : 'text-neutral-500',
+          btn: isDarkEffective
+            ? 'bg-white hover:bg-neutral-100 text-neutral-950 font-bold shadow-md shadow-white/20'
+            : 'bg-[#737373] hover:bg-[#525252] text-white font-bold shadow-md shadow-neutral-700/25',
+        };
+      case 'slate-haze': // Frost theme
+        return {
+          container: isDarkEffective
+            ? 'bg-[#0f1722]/95 border-[#4d6a85]/50 text-[#dce7f0] shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-[#f4f8fd]/95 border-[#cddff1] text-[#1e293b] shadow-[0_12px_36px_rgba(77,106,133,0.15)]',
+          avatarBorder: isDarkEffective ? 'border-[#4d6a85]' : 'border-[#cddff1]',
+          title: isDarkEffective ? 'text-[#f0f5fa]' : 'text-[#101723]',
+          subtitle: isDarkEffective ? 'text-[#8bb0cf]' : 'text-[#5d7e9d]',
+          btn: isDarkEffective
+            ? 'bg-gradient-to-r from-[#3e566d] via-[#4d6a85] to-[#5d7e9d] hover:from-[#47627d] hover:via-[#577795] hover:to-[#688cae] text-white font-bold shadow-md shadow-[#0c141d]/40'
+            : 'bg-gradient-to-r from-[#3e566d] to-[#5d7e9d] hover:from-[#47627d] hover:to-[#688cae] text-white font-bold shadow-md shadow-[#4d6a85]/30',
+        };
+      case 'sage': // Sage theme
+        return {
+          container: isDarkEffective
+            ? 'bg-[#131c14]/95 border-[#466244]/50 text-[#d7e6d9] shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-[#f5f9f4]/95 border-[#cde0ca] text-[#223824] shadow-[0_12px_36px_rgba(70,98,68,0.15)]',
+          avatarBorder: isDarkEffective ? 'border-[#466244]' : 'border-[#cde0ca]',
+          title: isDarkEffective ? 'text-[#eef5ee]' : 'text-[#1c2e1e]',
+          subtitle: isDarkEffective ? 'text-[#98b894]' : 'text-[#466244]',
+          btn: isDarkEffective
+            ? 'bg-gradient-to-r from-[#3a5238] via-[#466244] to-[#5a7d57] hover:from-[#446042] hover:via-[#52734f] hover:to-[#668c63] text-white font-bold shadow-md shadow-[#131c14]/50'
+            : 'bg-gradient-to-r from-[#466244] to-[#5a7d57] hover:from-[#395037] hover:to-[#4d6b4a] text-white font-bold shadow-md shadow-[#466244]/30',
+        };
+      case 'mocha': // Linen theme
+        return {
+          container: isDarkEffective
+            ? 'bg-[#18120e]/95 border-[#8c6150]/50 text-[#ebdcd3] shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-[#fbf7f2]/95 border-[#e8d7c8] text-[#3d2b20] shadow-[0_12px_36px_rgba(163,119,100,0.15)]',
+          avatarBorder: isDarkEffective ? 'border-[#8c6150]' : 'border-[#e8d7c8]',
+          title: isDarkEffective ? 'text-[#f5ece6]' : 'text-[#3A2A2A]',
+          subtitle: isDarkEffective ? 'text-[#d4a38c]' : 'text-[#8C7A6E]',
+          btn: isDarkEffective
+            ? 'bg-gradient-to-r from-[#775243] via-[#8c6150] to-[#9f7260] hover:from-[#825b4b] hover:via-[#986b59] hover:to-[#a77a67] text-white font-bold shadow-md shadow-[#231812]/50'
+            : 'bg-gradient-to-r from-[#8c6150] to-[#a37764] hover:from-[#7b5444] hover:to-[#916654] text-white font-bold shadow-md shadow-[#8c6150]/30',
+        };
+      case 'cosmic': // Cosmic theme
+        return {
+          container: isDarkEffective
+            ? 'bg-[#150d24]/95 border-purple-500/40 text-purple-100 shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-[#faf5ff]/95 border-purple-200 text-[#3b185f] shadow-[0_12px_36px_rgba(147,51,234,0.15)]',
+          avatarBorder: isDarkEffective ? 'border-purple-500/50' : 'border-purple-300',
+          title: isDarkEffective ? 'text-white' : 'text-purple-950',
+          subtitle: isDarkEffective ? 'text-pink-300' : 'text-purple-600',
+          btn: 'bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-500 hover:to-rose-400 text-white font-bold shadow-md shadow-pink-600/30',
+        };
+      case 'amethyst-haze': // Purple (Default)
+      default:
+        return {
+          container: isDarkEffective
+            ? 'bg-[#191128]/95 border-purple-500/40 text-purple-100 shadow-[0_12px_40px_rgba(0,0,0,0.6)]'
+            : 'bg-[#faf6fe]/95 border-[#ded7eb] text-[#2b1f42] shadow-[0_12px_36px_rgba(106,91,138,0.15)]',
+          avatarBorder: isDarkEffective ? 'border-purple-500/50' : 'border-purple-300',
+          title: isDarkEffective ? 'text-white' : 'text-[#2b1f42]',
+          subtitle: isDarkEffective ? 'text-purple-300' : 'text-[#6a5b8a]',
+          btn: isDarkEffective
+            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold shadow-md shadow-purple-600/40'
+            : 'bg-gradient-to-r from-[#6a5b8a] to-[#7e739f] hover:from-[#5b4d7a] hover:to-[#6f648e] text-white font-bold shadow-md shadow-[#6a5b8a]/30',
+        };
+    }
+  }, [theme, isDarkEffective]);
+
   const readingChapter = useMemo(() => {
     try {
       const history = safeStorage.getItem(`novel_history_${novel.id}`);
@@ -1550,8 +1661,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         if (parsed.lastReadChapterNumber) return parsed.lastReadChapterNumber;
       }
     } catch {}
-    return novel.chapters.length > 1 ? 2 : 1;
-  }, [novel.id, novel.chapters.length]);
+    return 1;
+  }, [novel.id]);
 
   const [likeCount, setLikeCount] = useState(novel.bookmarks || 12450);
   const [hasLiked, setHasLiked] = useState(false);
@@ -4145,9 +4256,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                           )}
                           <div className="min-w-0 flex-1">
                             {(() => {
-                              const { chapterLabel, isExtra, restTitle } = getChapterDisplayParts(chap);
+                              const { chapterLabel, restTitle } = getChapterDisplayParts(chap);
                               return (
-                                <div className="flex items-center gap-2 flex-wrap">
+                                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                                   <span
                                     className={`text-[14px] sm:text-[16px] md:text-[17px] font-bold shrink-0 transition-colors ${
                                       isJournalStyle
@@ -4167,29 +4278,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                                   >
                                     {chapterLabel}
                                   </span>
-                                  {isExtra && (
-                                    <span
-                                      className={`px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold border shrink-0 transition-colors ${
-                                        isJournalStyle
-                                          ? isDarkEffective
-                                            ? 'bg-purple-950/50 text-purple-300 border-purple-800/60 font-sans'
-                                            : 'bg-[#F6EEF7] text-[#6B3F78] border-[#E6D4EC] font-sans'
-                                          : isNoteStyle
-                                          ? 'bg-amber-500/15 border-amber-400/40 text-amber-800 dark:text-amber-300 font-sans'
-                                          : isCinemaStyle
-                                          ? 'bg-neutral-800 text-neutral-200 border-neutral-700 font-mono text-[10px]'
-                                          : isCyberStyle
-                                          ? 'bg-cyan-500/15 border-cyan-400/40 text-cyan-800 dark:text-cyan-300 font-mono'
-                                          : isWaxSealStyle
-                                          ? 'bg-red-800/15 border-red-700/40 text-red-900 dark:text-red-300 font-serif'
-                                          : isEditorialStyle
-                                          ? 'bg-stone-200 dark:bg-zinc-800 border-stone-300 dark:border-zinc-700 text-stone-800 dark:text-zinc-200 font-mono text-[10px]'
-                                          : getExtraChapterBadgeStyle(theme, isDarkEffective)
-                                      }`}
-                                    >
-                                      Ngoại truyện
-                                    </span>
-                                  )}
                                   {restTitle && (
                                     <span
                                       className={`text-[14px] sm:text-[16px] md:text-[17px] font-medium truncate transition-colors ${
@@ -5597,6 +5685,57 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           } catch {}
         }}
       />
+
+      {/* ===================================================================== */}
+      {/* FLOATING STICKY ACTION BAR ON SCROLL (DÀNH CHO TRANG KIỂU CHUẨN)     */}
+      {/* ===================================================================== */}
+      <AnimatePresence>
+        {!isSpiralStyle && showStickyBottom && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.2 }}
+            className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-lg p-2.5 rounded-full backdrop-blur-xl border ${floatingBarTheme.container} flex items-center justify-between gap-3`}
+          >
+            {/* Thông tin truyện thu nhỏ (Đã bỏ tiến độ đọc theo yêu cầu) */}
+            <div className="flex items-center gap-2.5 min-w-0 pl-1">
+              <div className={`w-9 h-9 rounded-full overflow-hidden border shrink-0 ${floatingBarTheme.avatarBorder}`}>
+                <img
+                  src={getDirectImageUrl(activeCoverImage, novel.id || novel.title)}
+                  alt={novel.title}
+                  onError={handleCoverImageError}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="min-w-0">
+                <h4 className={`text-xs sm:text-sm font-bold truncate ${floatingBarTheme.title}`}>
+                  {novel.title}
+                </h4>
+                <p className={`text-[10px] sm:text-[11px] font-semibold truncate ${floatingBarTheme.subtitle}`}>
+                  {novel.author?.name || 'Tác giả'}
+                </p>
+              </div>
+            </div>
+
+            {/* Nút hành động: Chỉ còn nút Đọc Ngay */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => {
+                  try {
+                    cosmicAudio.playChime('sparkle');
+                  } catch {}
+                  onReadChapter(readingChapter);
+                }}
+                className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer ${floatingBarTheme.btn}`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Đọc Ngay</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Themed Footer preserving theme background */}
       <Footer

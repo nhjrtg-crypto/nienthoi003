@@ -320,35 +320,35 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
           };
         case 'slate-haze':
           return {
-            glowA: 'rgba(56, 189, 248, 0.36)',
-            glowB: 'rgba(37, 99, 235, 0.22)',
-            glowC: 'rgba(14, 165, 233, 0.14)',
-            discHighlight: 'rgba(241, 245, 249, 0.75)',
-            discGlow: 'rgba(125, 211, 252, 0.50)',
-            rimRing: 'rgba(186, 230, 253, 0.38)',
-            innerRim: 'rgba(186, 230, 253, 0.16)',
-            overlayGrad: ['rgba(9, 14, 22, 0.82)', 'rgba(16, 27, 39, 0.45)', 'rgba(9, 14, 22, 0.90)'],
+            glowA: 'rgba(60, 85, 110, 0.12)',
+            glowB: 'rgba(45, 65, 88, 0.08)',
+            glowC: 'rgba(30, 45, 62, 0.05)',
+            discHighlight: 'rgba(200, 214, 229, 0.30)',
+            discGlow: 'rgba(135, 160, 185, 0.18)',
+            rimRing: 'rgba(135, 160, 185, 0.15)',
+            innerRim: 'rgba(135, 160, 185, 0.08)',
+            overlayGrad: ['rgba(11, 17, 24, 0.88)', 'rgba(18, 27, 38, 0.55)', 'rgba(11, 17, 24, 0.94)'],
             clay: {
-              highlight: 'rgba(240, 249, 255, 0.80)',
-              bodyLight: 'rgba(186, 230, 253, 0.68)',
-              bodyMid: 'rgba(56, 189, 248, 0.52)',
-              shadow: 'rgba(3, 105, 161, 0.60)',
-              dropShadow: 'rgba(6, 19, 36, 0.45)',
-              bounceLight: 'rgba(186, 230, 253, 0.28)',
+              highlight: 'rgba(200, 214, 229, 0.35)',
+              bodyLight: 'rgba(145, 170, 195, 0.28)',
+              bodyMid: 'rgba(90, 118, 145, 0.22)',
+              shadow: 'rgba(22, 35, 48, 0.35)',
+              dropShadow: 'rgba(0, 0, 0, 0.35)',
+              bounceLight: 'rgba(145, 170, 195, 0.12)',
             },
             vividOrbs: [
-              { top: '#ECFEFF', mid: '#06B6D4', dark: '#0E7490', glow: '#0891B2' }, // Cyan Điện Tử
-              { top: '#EFF6FF', mid: '#2563EB', dark: '#1E40AF', glow: '#1D4ED8' }, // Xanh Biển Sâu
-              { top: '#F5F3FF', mid: '#8B5CF6', dark: '#6D28D9', glow: '#7C3AED' }, // Tím Thạch Anh
-              { top: '#ECFDF5', mid: '#10B981', dark: '#047857', glow: '#059669' }, // Bạc Hà Sáng
-              { top: '#FFF7ED', mid: '#FB923C', dark: '#C2410C', glow: '#EA580C' }, // Cam San Hô
+              { top: '#C8D6E5', mid: '#4B6584', dark: '#1E2B37', glow: '#384C63' }, // Băng Lam Dịu
+              { top: '#D1D8E0', mid: '#576574', dark: '#222831', glow: '#3D4752' }, // Sương Xám Mờ
+              { top: '#B5C4D3', mid: '#41556C', dark: '#182430', glow: '#304154' }, // Lam Khói Dịu Mắt
+              { top: '#CBD5E1', mid: '#475569', dark: '#1E293B', glow: '#334155' }, // Bạc Phấn Dịu
+              { top: '#A8BDD1', mid: '#385068', dark: '#15212C', glow: '#283B4D' }, // Băng Tuyết Trầm
             ],
-            sphereTop: '#E0F2FE',
-            sphereMid: '#0284C7',
-            sphereDark: '#08162A',
-            sphereRim: 'rgba(186, 230, 253, 0.88)',
-            sphereGlint: '#F0F9FF',
-            sphereRing: 'rgba(125, 211, 252, 0.75)',
+            sphereTop: '#C8D6E5',
+            sphereMid: '#4B6584',
+            sphereDark: '#121A23',
+            sphereRim: 'rgba(181, 196, 211, 0.40)',
+            sphereGlint: '#EBF1F7',
+            sphereRing: 'rgba(181, 196, 211, 0.25)',
           };
         case 'sage':
           return {

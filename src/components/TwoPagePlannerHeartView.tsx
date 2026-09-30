@@ -650,6 +650,12 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                           Vui lòng không công kích hay xúc phạm nhân vật trong truyện.
                         </span>
                       </p>
+                      <p className="flex items-start gap-2">
+                        <span className="text-purple-500 font-bold text-base inline-block">♡</span>
+                        <span>
+                          Không nhắc đến tên của nhân vật và bộ truyện không liên quan.
+                        </span>
+                      </p>
                     </div>
                   </div>
 

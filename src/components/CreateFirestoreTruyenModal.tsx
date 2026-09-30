@@ -178,7 +178,7 @@ export const CreateFirestoreTruyenModal: React.FC<CreateFirestoreTruyenModalProp
                 type="url"
                 value={anhBia}
                 onChange={(e) => setAnhBia(e.target.value)}
-                placeholder="https://... hoặc /chiem_huu_cuc_do_cover.jpg"
+                placeholder="https://... hoặc /covers/chiem_huu_cuc_do_q1.jpg"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700 text-white text-sm focus:outline-none focus:border-purple-500 transition-colors"
               />
               <p className="text-[11px] text-zinc-400">

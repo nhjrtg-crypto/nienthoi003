@@ -1,5 +1,4 @@
 import { Novel, NovelChapter } from '../types';
-import meKeCover from '../assets/images/me_ke_vua_mem_vua_ngot_cover.jpg';
 
 const createMeKeChapters = (): NovelChapter[] => {
   return [
@@ -409,9 +408,9 @@ const createMeKeChapters = (): NovelChapter[] => {
 export const ME_KE_VUA_MEM_VUA_NGOT_NOVEL: Novel = {
   id: 'e5H5oZGg1sGnFyHjdM5Z',
   title: 'Mẹ Kế Vừa Mềm Vừa Ngọt',
-  coverImage: meKeCover,
-  coverImageUrl: "https://drive.google.com/file/d/1vV28SfEQgsfOrVa8mIVCaEmXmDBYe2Bf/view?usp=sharing",
-  bannerImage: meKeCover,
+  coverImage: '/covers/me_ke_vua_mem_vua_ngot.jpg',
+  coverImageUrl: '/covers/me_ke_vua_mem_vua_ngot.jpg',
+  bannerImage: '/covers/me_ke_vua_mem_vua_ngot.jpg',
   author: {
     id: 'auth-nhat-dieu-tien-hoat',
     name: 'Nhất Điều Tiên Hoạt Đích Ngư Nhi A',

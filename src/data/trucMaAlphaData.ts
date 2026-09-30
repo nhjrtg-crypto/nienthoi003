@@ -1,5 +1,4 @@
 import { Novel, NovelChapter } from '../types';
-import trucMaAlphaCover from '../assets/images/truc_ma_alpha_cover.jpg';
 
 const createTrucMaAlphaChapters = (): NovelChapter[] => {
   return [
@@ -569,9 +568,9 @@ const createTrucMaAlphaChapters = (): NovelChapter[] => {
 export const TRUC_MA_ALPHA_NOVEL: Novel = {
   id: 's1zJUVAn4uMW3h7NXO9M',
   title: 'Trúc Mã Alpha Của Tôi Có Độc',
-  coverImage: trucMaAlphaCover,
-  coverImageUrl: trucMaAlphaCover,
-  bannerImage: trucMaAlphaCover,
+  coverImage: '/covers/truc_ma_alpha.jpg',
+  coverImageUrl: '/covers/truc_ma_alpha.jpg',
+  bannerImage: '/covers/truc_ma_alpha.jpg',
   author: {
     id: 'auth-nhan-chi',
     name: 'Nhân Chi',

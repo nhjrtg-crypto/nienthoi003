@@ -43,6 +43,7 @@ import {
 } from '../services/firebase';
 import { ChapterEditorModal } from './ChapterEditorModal';
 import { ChapterPasswordModal, isChapterPasswordUnlocked } from './ChapterPasswordModal';
+import { INITIAL_NOVELS } from '../data/novelData';
 
 interface NovelReaderModalProps {
   novel: Novel | null;
@@ -696,6 +697,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       return;
     }
 
+    // 2b. Lookup from INITIAL_NOVELS static source data
+    const staticNovel = INITIAL_NOVELS.find((n) => n.id === novel.id || n.title.toLowerCase().trim() === novel.title.toLowerCase().trim());
+    const staticChap = staticNovel?.chapters?.find((c) => c.chapterNumber === chapterNumber);
+    if (staticChap?.content && staticChap.content.trim().length > 0) {
+      contentCacheRef.current[chapterNumber] = staticChap.content;
+      setFirestoreFetchedContent(staticChap.content);
+      setIsLoadingChapterContent(false);
+      return;
+    }
+
     // 3. Otherwise fetch from Firestore on-demand
     setIsLoadingChapterContent(true);
     let isMounted = true;
@@ -1053,11 +1064,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                           className="flex-1 font-medium text-left cursor-pointer text-[11.5px] flex items-center gap-1.5 min-w-0 overflow-hidden py-0.5"
                         >
                           <span className="font-semibold shrink-0">{chapterLabel}</span>
-                          {isExtra && (
-                            <span className={`text-[9.5px] px-1.5 py-0.5 rounded-full font-medium border shrink-0 ${getExtraChapterBadgeStyle(readerTheme, isDarkEffective)}`}>
-                              Ngoại truyện
-                            </span>
-                          )}
                           {restTitle && (
                             <span className="truncate opacity-85">{restTitle}</span>
                           )}
@@ -1454,13 +1460,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               title: `Chương ${chapterNumber || 1}`
             });
             return (
-              <h1 className={`text-2xl sm:text-3xl md:text-4xl font-novel-title mt-4 tracking-tight flex items-center justify-center gap-2.5 flex-wrap ${tStyles.heroTitle}`}>
+              <h1 className={`text-2xl sm:text-3xl md:text-4xl font-novel-title mt-4 tracking-tight flex items-center justify-center gap-2 flex-wrap ${tStyles.heroTitle}`}>
                 <span>{currentDisplay.chapterLabel}</span>
-                {currentDisplay.isExtra && (
-                  <span className={`text-xs sm:text-sm px-2.5 py-0.5 rounded-full font-sans font-medium border shrink-0 ${getExtraChapterBadgeStyle(readerTheme, isDarkEffective)}`}>
-                    Ngoại truyện
-                  </span>
-                )}
                 {currentDisplay.restTitle && (
                   <span>{currentDisplay.restTitle}</span>
                 )}

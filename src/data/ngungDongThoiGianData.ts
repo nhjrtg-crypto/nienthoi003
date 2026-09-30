@@ -918,9 +918,9 @@ const createNgungDongThoiGianChapters = (): NovelChapter[] => {
 export const NGUNG_DONG_THOI_GIAN_NOVEL: Novel = {
   id: 'oj576lz3BPegHboJZ8WG',
   title: "Sau Khi Xuyên Sách Bị Ngưng Đọng Thời Gian",
-  coverImage: "https://drive.google.com/file/d/1Q1AHKionIs0-ND_P2Am4Fa1OGMSqaij1/view?usp=sharing",
-  coverImageUrl: "https://drive.google.com/file/d/1Q1AHKionIs0-ND_P2Am4Fa1OGMSqaij1/view?usp=sharing",
-  bannerImage: "https://drive.google.com/file/d/1Q1AHKionIs0-ND_P2Am4Fa1OGMSqaij1/view?usp=sharing",
+  coverImage: "/covers/ngung_dong_thoi_gian.jpg",
+  coverImageUrl: "/covers/ngung_dong_thoi_gian.jpg",
+  bannerImage: "/covers/ngung_dong_thoi_gian.jpg",
   author: {
     id: 'auth-oj576lz3BPegHboJZ8WG',
     name: "Nhất Chỉ Bạch Thỏ Đường",

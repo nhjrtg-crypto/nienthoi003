@@ -9,9 +9,7 @@ import {
   Server, 
   MessageCircle, 
   Bookmark,
-  X,
-  Sun,
-  Moon
+  X
 } from 'lucide-react';
 import { safeStorage } from '../utils/safeStorage';
 import {
@@ -49,25 +47,46 @@ interface AboutLightTamagotchiViewProps {
   onToggleDarkMode?: () => void;
 }
 
+/**
+ * Chuỗi dây treo móc khóa hạt cườm kẹo thạch 3D Jelly trên máy Tamagotchi
+ */
+export const TamagotchiCharmBeads: React.FC = () => {
+  return (
+    <div className="absolute -top-7 left-8 flex flex-col items-center select-none pointer-events-none z-20">
+      {/* 1. Vòng khoen kim loại bóng loáng (Metallic Keyring Eyelet) */}
+      <div className="w-5 h-5 rounded-full border-2 border-pink-200 bg-gradient-to-tr from-white via-pink-100 to-white shadow-xs flex items-center justify-center">
+        {/* Lỗ khuyên rỗng ở giữa */}
+        <div className="w-2.5 h-2.5 rounded-full border border-pink-300 bg-pink-50" />
+      </div>
+
+      {/* 2. Dây nối bạc ánh hồng (Metallic Silver-Pink Link Wire) */}
+      <div className="w-[1.5px] h-3 bg-gradient-to-b from-pink-300 to-rose-400" />
+
+      {/* 3. Bông hoa anh đào kẹo thạch 3D Jelly lắc lư đung đưa nhịp nhàng */}
+      <motion.div
+        animate={{ rotate: [-4, 5, -4] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ transformOrigin: 'top center' }}
+        className="flex flex-col items-center"
+      >
+        {/* Bông hoa anh đào kẹo thạch 3D Jelly (Translucent Sakura Gumdrop) */}
+        <div className="w-7 h-7 rounded-full border-2 border-white/90 bg-gradient-to-br from-[#ffffff] via-[#ffb4c8] to-[#f43f5e] flex items-center justify-center text-xs shadow-[0_3px_8px_rgba(244,63,94,0.35),inset_0_2px_4px_rgba(255,255,255,0.9)] relative overflow-hidden">
+          {/* Vệt bóng cong lưỡi liềm phản chiếu mặt thạch */}
+          <div className="jelly-crescent-sheen" />
+          <span className="relative z-10">🌸</span>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> = ({
   onBackToNovels,
   currentOption = 'style2',
   onChangeOption,
-  isDarkMode = false,
-  onToggleDarkMode,
 }) => {
-  // Trang giới thiệu Style 2 (Máy Trứng Tamagotchi Pastel) mặc định chế độ sáng theo yêu cầu người dùng
-  const [internalDarkMode, setInternalDarkMode] = useState<boolean>(false);
-
-  const isDarkEffective = isDarkMode !== undefined ? isDarkMode : internalDarkMode;
-
-  const toggleDarkMode = () => {
-    if (onToggleDarkMode) {
-      onToggleDarkMode();
-    } else {
-      setInternalDarkMode((prev) => !prev);
-    }
-  };
+  // Trang giới thiệu Style 2 (Máy Trứng Tamagotchi Pastel) bỏ hoàn toàn chế độ darkmode, mặc định chỉ có chế độ sáng
+  const isDarkEffective = false;
 
   // 1. Quản lý Tab & Nút bấm
   const [activeTab, setActiveTab] = useState<TamaTabId>('welcome');
@@ -326,75 +345,78 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
         </div>
       </header>
 
+      {/* TOAST NOTIFICATION THÔNG BÁO NỔI PHONG CÁCH TIỆM BÁNH (FONT ITIM, CỠ 12PX) - ĐỒNG BỘ STYLE 1 */}
+      {cuteToastMessage && (
+        <div className="fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-[100] transition-all duration-300 pointer-events-none">
+          <div className="cute-toast-pill px-4 py-2 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 text-white text-[12px] shadow-[0_12px_32px_rgba(244,114,182,0.45)] border-2 border-white/70 flex items-center gap-2 select-none tracking-wide">
+            <span className="text-sm select-none">🎀</span>
+            <span className="font-itim text-[12px] leading-none">{cuteToastMessage}</span>
+          </div>
+        </div>
+      )}
+
       {/* COMPONENT TAMAGOTCHI */}
       <div className="relative max-w-[490px] mx-auto mt-8 sm:mt-12 py-2 transition-all z-10">
-        {/* Toast thông báo nổi */}
-        <AnimatePresence>
-          {cuteToastMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.9 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-400 text-white text-[12px] font-semibold shadow-xl border border-white/30 flex items-center gap-1.5 pointer-events-none select-none tracking-wide"
-              style={{ fontFamily: "'Itim', cursive, sans-serif", fontSize: '12px' }}
-            >
-              <span>{cuteToastMessage}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* VỎ MÁY QUẢ TRỨNG (Outer Shell): Dáng máy bo tròn, viền pastel, hiệu ứng nổi khối Neumorphism */}
+        {/* VỎ MÁY QUẢ TRỨNG (Outer Shell): Hiệu ứng nổi khối 3D với góc bo tròn, viền dập nổi và đổ bóng nhẹ nhàng */}
         <div
-          className={`rounded-[3.8rem] p-5 sm:p-8 border-[5px] sm:border-[6px] relative transition-all ${
+          className={`rounded-[4.2rem] p-5 sm:p-8 border-[5px] sm:border-[6px] relative select-none ${
             isDarkEffective
-              ? 'border-[#83425a] bg-[#291e2b] shadow-[16px_16px_36px_#110c14,-16px_-16px_36px_#3d2e41]'
-              : 'border-[#FBCFE8] bg-[#FFF0F3] shadow-[16px_16px_36px_#f2cad6,-16px_-16px_36px_#ffffff]'
+              ? 'border-[#83425a] bg-[#291e2b] shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_3px_6px_rgba(255,255,255,0.2),inset_0_-8px_16px_rgba(0,0,0,0.4)]'
+              : 'border-[#FBCFE8] bg-gradient-to-b from-[#FFF7FA] via-[#FFE6ED] to-[#FFD8E3] shadow-[0_20px_45px_-12px_rgba(244,114,182,0.20),0_10px_22px_-6px_rgba(0,0,0,0.06),0_4px_10px_rgba(244,114,182,0.10),inset_0_3px_6px_rgba(255,255,255,0.9),inset_0_-8px_18px_rgba(225,29,72,0.08),inset_0_0_0_2px_rgba(255,255,255,0.7)]'
           }`}
         >
-          {/* Dây hạt cườm móc khóa bên trên */}
-          <div className="absolute -top-6 left-10 flex flex-col items-center select-none pointer-events-none z-20">
-            <div className="w-6 h-6 rounded-full border-2 border-pink-300 bg-pink-100 flex items-center justify-center text-xs shadow-sm">
-              🌸
-            </div>
-            <div className="w-0.5 h-3 bg-pink-300" />
-            <div className="w-2.5 h-2.5 rounded-full bg-rose-300" />
-          </div>
+          {/* Vệt phản quang vòm máy 3D lồi cong (Curved 3D Dome Highlight) */}
+          <div className="absolute top-2 left-6 right-6 h-32 rounded-t-[3.8rem] bg-gradient-to-b from-white/75 via-white/20 to-transparent pointer-events-none select-none z-10" />
 
-          {/* Thẻ nhãn phong cách retro */}
-          <div className="text-center pb-2">
-            <div className={`inline-flex items-center px-3.5 py-1 rounded-full text-[11px] font-mono font-black border ${
+          {/* Vệt bóng sáng viền cạnh 3D (Subtle Side Rim Highlights) */}
+          <div className="absolute inset-x-5 top-1 h-1.5 rounded-full bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none select-none z-10" />
+
+          {/* Chuỗi dây treo móc khóa hạt cườm kẹo thạch 3D Jelly */}
+          <TamagotchiCharmBeads />
+
+          {/* Thẻ nhãn phong cách retro 3D dập nổi */}
+          <div className="text-center pb-2 relative z-20">
+            <div className={`inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-mono font-black border ${
               isDarkEffective
                 ? 'bg-[#3b2738] text-pink-300 border-pink-900/60 shadow-[2px_2px_6px_#17101a]'
-                : 'bg-white/90 text-[#9d3b5d] border-white shadow-[2px_2px_6px_#f2cad6,-2px_-2px_6px_#ffffff]'
+                : 'bg-gradient-to-b from-white via-pink-50 to-pink-100 text-[#9d3b5d] border-white shadow-[0_3px_6px_rgba(244,63,94,0.18),inset_0_1px_2px_#ffffff,inset_0_-1px_2px_rgba(225,75,123,0.15)]'
             }`}>
-              <span>MY SWEET PHONE</span>
+              <span className="tracking-wider">MY SWEET PHONE</span>
             </div>
           </div>
 
-          {/* CỤM LOA THOẠI & CAMERA TRƯỚC */}
-          <div className="flex items-center justify-center gap-2.5 pb-2.5 select-none">
-            <div className="w-12 sm:w-14 h-1.5 rounded-full bg-[#cbbecc] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.22)] border border-white/60" />
-            <div className="w-2.5 h-2.5 rounded-full bg-[#b5a3b7] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.3)] border border-white/70 flex items-center justify-center">
-              <div className="w-0.5 h-0.5 rounded-full bg-cyan-200/80 shadow-xs" />
+          {/* CỤM LOA THOẠI & CAMERA TRƯỚC 3D KHẮC CHÌM */}
+          <div className="flex items-center justify-center gap-3 pb-2.5 select-none relative z-20">
+            {/* Loa thoại vát mép chìm */}
+            <div className="w-14 sm:w-16 h-2 rounded-full bg-[#baa6b8] shadow-[inset_0_2px_3px_rgba(0,0,0,0.35),0_1px_2px_#ffffff] border border-pink-200/60" />
+            {/* Camera trước dạng thấu kính 3D có giác lồi */}
+            <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-b from-[#8c748e] to-[#453147] shadow-[inset_0_1px_2px_rgba(0,0,0,0.5),0_1.5px_3px_#ffffff] border border-white/80 flex items-center justify-center relative">
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_4px_rgba(34,211,238,0.9)]" />
+              <div className="absolute top-0.5 left-0.5 w-1 h-0.5 bg-white/80 rounded-full" />
             </div>
           </div>
 
-          {/* MÀN HÌNH MA TRẬN LCD LÕM (Sunken LCD Screen) */}
-          <div
-            className={`rounded-3xl p-4 sm:p-6 space-y-4 relative overflow-hidden border tamagotchi-screen-lcd ${
-              isDarkEffective
-                ? 'bg-[#201724] border-[#6b354b] text-[#ebd4e0] shadow-[inset_4px_4px_10px_#110c14,inset_-4px_-4px_10px_#2e2133]'
-                : 'bg-[#fffbfc] border-[#f7c2d2] text-[#543b49] shadow-[inset_4px_4px_10px_#eec3d1,inset_-4px_-4px_10px_#ffffff]'
-            }`}
-            style={{
-              fontFamily: "'Be Vietnam Pro', 'JetBrains Mono', 'Comfortaa', -apple-system, BlinkMacSystemFont, sans-serif",
-              backgroundImage: isDarkEffective
-                ? 'radial-gradient(rgba(244,114,182,0.08) 1px, transparent 0)'
-                : 'radial-gradient(rgba(180,90,130,0.06) 1px, transparent 0)',
-              backgroundSize: '4px 4px',
-            }}
-          >
+          {/* KHUNG VIỀN MÀN HÌNH NỔI 3D (Raised Outer Bezel) */}
+          <div className="relative rounded-[2.2rem] p-1 bg-gradient-to-b from-white/95 via-pink-200/90 to-[#f9a8d4] shadow-[0_8px_20px_rgba(244,63,94,0.2),inset_0_2px_4px_#ffffff,inset_0_-2px_4px_rgba(225,29,72,0.16)] border border-white/80">
+            {/* MÀN HÌNH MA TRẬN LCD LÕM 3D (Sunken LCD Screen with Real Glass Reflection) */}
+            <div
+              className={`rounded-3xl p-4 sm:p-6 space-y-4 relative overflow-hidden border tamagotchi-screen-lcd ${
+                isDarkEffective
+                  ? 'bg-[#201724] border-[#6b354b] text-[#ebd4e0] shadow-[inset_5px_5px_14px_#110c14,inset_-5px_-5px_14px_#2e2133]'
+                  : 'bg-[#fffbfc] border-[#f7c2d2] text-[#543b49] shadow-[inset_5px_5px_14px_rgba(180,90,120,0.24),inset_-5px_-5px_14px_rgba(255,255,255,0.95),inset_0_0_0_1px_rgba(244,114,182,0.2)]'
+              }`}
+              style={{
+                fontFamily: "'Be Vietnam Pro', 'JetBrains Mono', 'Comfortaa', -apple-system, BlinkMacSystemFont, sans-serif",
+                backgroundImage: isDarkEffective
+                  ? 'radial-gradient(rgba(244,114,182,0.08) 1px, transparent 0)'
+                  : 'radial-gradient(rgba(180,90,130,0.06) 1px, transparent 0)',
+                backgroundSize: '4px 4px',
+              }}
+            >
+              {/* Vệt chói mặt kính nghiêng 3D (3D Diagonal Glass Glare Reflection) */}
+              <div className="absolute -top-20 -left-20 w-[150%] h-48 bg-gradient-to-br from-white/40 via-white/10 to-transparent rotate-[-22deg] pointer-events-none select-none z-20" />
+              {/* Viền sáng mép trên mặt kính */}
+              <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/95 to-transparent pointer-events-none select-none z-20" />
             {/* THANH TRẠNG THÁI STATUS BAR */}
             <div className={`flex items-center justify-between px-1 text-[11px] sm:text-xs font-bold select-none border-b pb-2 ${
               isDarkEffective ? 'border-pink-900/40 text-[#ebd4e0]' : 'border-pink-100/80 text-[#543b49]'
@@ -426,108 +448,110 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
               </div>
             </div>
 
-            {/* KHUNG PHÁT NHẠC ĐĨA THAN VINYL */}
-            <div className={`py-2.5 px-3.5 rounded-2xl flex items-center justify-between gap-2.5 border select-none ${
-              isDarkEffective
-                ? 'bg-[#2b1f30]/90 border-pink-900/40 shadow-sm'
-                : 'bg-white/95 border-pink-100 shadow-[0_4px_16px_rgba(244,114,182,0.12),inset_0_1px_0_rgba(255,255,255,0.8)]'
-            }`}>
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="relative shrink-0 flex items-center justify-center">
-                  {isVinylPlaying && (
+            {/* KHUNG PHÁT NHẠC ĐĨA THAN VINYL (Ẩn hoàn toàn khi đang mở giao diện hòm thư) */}
+            {activeTab !== 'messages' && (
+              <div className={`py-2.5 px-3.5 rounded-2xl flex items-center justify-between gap-2.5 border select-none ${
+                isDarkEffective
+                  ? 'bg-[#2b1f30]/90 border-pink-900/40 shadow-sm'
+                  : 'bg-white/95 border-pink-100 shadow-[0_4px_16px_rgba(244,114,182,0.12),inset_0_1px_0_rgba(255,255,255,0.8)]'
+              }`}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative shrink-0 flex items-center justify-center">
+                    {isVinylPlaying && (
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.16, 1],
+                          opacity: [0.35, 0.7, 0.35],
+                        }}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 3,
+                          ease: 'easeInOut',
+                        }}
+                        className="absolute -inset-1 rounded-full bg-gradient-to-r from-pink-300 via-rose-300 to-purple-300 blur-sm pointer-events-none"
+                      />
+                    )}
                     <motion.div
-                      animate={{
-                        scale: [1, 1.16, 1],
-                        opacity: [0.35, 0.7, 0.35],
-                      }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 3,
-                        ease: 'easeInOut',
-                      }}
-                      className="absolute -inset-1 rounded-full bg-gradient-to-r from-pink-300 via-rose-300 to-purple-300 blur-sm pointer-events-none"
-                    />
-                  )}
-                  <motion.div
-                    animate={isVinylPlaying ? { rotate: 360 } : { rotate: 0 }}
-                    transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
-                    className="w-12 h-12 rounded-full bg-gradient-to-tr from-zinc-950 via-zinc-800 to-zinc-950 border border-white/40 shadow-sm flex items-center justify-center relative overflow-hidden cursor-pointer z-10"
-                    onClick={() => setIsVinylPlaying((prev) => !prev)}
-                    title={isVinylPlaying ? 'Chạm để tạm dừng xoay đĩa' : 'Chạm để tiếp tục xoay đĩa'}
-                  >
-                    <div className="absolute inset-1 rounded-full border border-white/10" />
-                    <div className="absolute inset-2 rounded-full border border-white/10" />
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/15 to-transparent pointer-events-none" />
-                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-pink-200 to-rose-300 border border-white/80 flex items-center justify-center z-10">
-                      <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                    </div>
-                  </motion.div>
-                </div>
-
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-pink-500 text-sm font-black leading-none">♫</span>
-                    <span
-                      className={`text-base sm:text-lg font-bold tracking-wider truncate ${
-                        isDarkEffective ? 'text-pink-100' : 'text-stone-800'
-                      }`}
-                      style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', monospace" }}
+                      animate={isVinylPlaying ? { rotate: 360 } : { rotate: 0 }}
+                      transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
+                      className="w-12 h-12 rounded-full bg-gradient-to-tr from-zinc-950 via-zinc-800 to-zinc-950 border border-white/40 shadow-sm flex items-center justify-center relative overflow-hidden cursor-pointer z-10"
+                      onClick={() => setIsVinylPlaying((prev) => !prev)}
+                      title={isVinylPlaying ? 'Chạm để tạm dừng xoay đĩa' : 'Chạm để tiếp tục xoay đĩa'}
                     >
-                      Pocketful of Love
-                    </span>
+                      <div className="absolute inset-1 rounded-full border border-white/10" />
+                      <div className="absolute inset-2 rounded-full border border-white/10" />
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/15 to-transparent pointer-events-none" />
+                      <div className="w-4 h-4 rounded-full bg-gradient-to-br from-pink-200 to-rose-300 border border-white/80 flex items-center justify-center z-10">
+                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+                      </div>
+                    </motion.div>
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className={`text-[11px] font-sans truncate ${isDarkEffective ? 'text-stone-400' : 'text-stone-500'}`}>
-                      Đang phát bài hát
-                    </span>
-                    <div className="flex items-end gap-[2px] h-3 px-0.5 shrink-0" title="Sóng nhịp điệu">
-                      {[
-                        { heights: [3, 7, 4, 8, 3], duration: 1.8 },
-                        { heights: [5, 3, 8, 4, 5], duration: 1.6 },
-                        { heights: [4, 8, 3, 7, 4], duration: 2.0 },
-                        { heights: [6, 4, 7, 3, 6], duration: 1.7 },
-                      ].map((bar, i) => (
-                        <motion.div
-                          key={i}
-                          animate={isVinylPlaying ? { height: bar.heights } : { height: 3 }}
-                          transition={{
-                            repeat: Infinity,
-                            repeatType: 'reverse',
-                            duration: bar.duration,
-                            ease: 'easeInOut',
-                          }}
-                          className="w-[2.5px] rounded-full bg-pink-400"
-                        />
-                      ))}
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-pink-500 text-sm font-black leading-none">♫</span>
+                      <span
+                        className={`text-base sm:text-lg font-bold tracking-wider truncate ${
+                          isDarkEffective ? 'text-pink-100' : 'text-stone-800'
+                        }`}
+                        style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', monospace" }}
+                      >
+                        Pocketful of Love
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className={`text-[11px] font-sans truncate ${isDarkEffective ? 'text-stone-400' : 'text-stone-500'}`}>
+                        Đang phát bài hát
+                      </span>
+                      <div className="flex items-end gap-[2px] h-3 px-0.5 shrink-0" title="Sóng nhịp điệu">
+                        {[
+                          { heights: [3, 7, 4, 8, 3], duration: 1.8 },
+                          { heights: [5, 3, 8, 4, 5], duration: 1.6 },
+                          { heights: [4, 8, 3, 7, 4], duration: 2.0 },
+                          { heights: [6, 4, 7, 3, 6], duration: 1.7 },
+                        ].map((bar, i) => (
+                          <motion.div
+                            key={i}
+                            animate={isVinylPlaying ? { height: bar.heights } : { height: 3 }}
+                            transition={{
+                              repeat: Infinity,
+                              repeatType: 'reverse',
+                              duration: bar.duration,
+                              ease: 'easeInOut',
+                            }}
+                            className="w-[2.5px] rounded-full bg-pink-400"
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Nút Bật/Tắt BGM */}
-              <motion.button
-                whileTap={{ scale: 0.94 }}
-                onClick={() => setIsVinylPlaying((prev) => !prev)}
-                className={`rounded-full px-3 py-1.5 border flex items-center gap-1.5 cursor-pointer text-xs font-mono font-bold shrink-0 select-none transition-colors ${
-                  isDarkEffective
-                    ? 'bg-[#35253b] hover:bg-[#43304a] text-stone-200 border-pink-900/50'
-                    : 'bg-[#fdfbfc] hover:bg-pink-50 text-stone-700 border-stone-200/80 shadow-[2px_2px_5px_#ebd8df,-2px_-2px_5px_#ffffff]'
-                }`}
-                title={isVinylPlaying ? 'Bấm để ngừng chuyển động BGM' : 'Bấm để bật chuyển động BGM'}
-              >
-                {isVinylPlaying ? (
-                  <svg width="11" height="12" viewBox="0 0 11 12" fill="none" className="text-[#de5b8e] shrink-0">
-                    <rect x="0.75" y="0.75" width="3.2" height="10.5" rx="1.6" stroke="currentColor" strokeWidth="1.3" />
-                    <rect x="6.8" y="0.75" width="3.2" height="10.5" rx="1.6" stroke="currentColor" strokeWidth="1.3" />
-                  </svg>
-                ) : (
-                  <svg width="11" height="12" viewBox="0 0 11 12" fill="none" className="text-[#de5b8e] shrink-0">
-                    <path d="M1.5 1.5L9.5 6L1.5 10.5V1.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-                  </svg>
-                )}
-                <span>{isVinylPlaying ? 'Tắt BGM' : 'Bật BGM'}</span>
-              </motion.button>
-            </div>
+                {/* Nút Bật/Tắt BGM */}
+                <motion.button
+                  whileTap={{ scale: 0.94 }}
+                  onClick={() => setIsVinylPlaying((prev) => !prev)}
+                  className={`rounded-full px-3 py-1.5 border flex items-center gap-1.5 cursor-pointer text-xs font-mono font-bold shrink-0 select-none transition-colors ${
+                    isDarkEffective
+                      ? 'bg-[#35253b] hover:bg-[#43304a] text-stone-200 border-pink-900/50'
+                      : 'bg-[#fdfbfc] hover:bg-pink-50 text-stone-700 border-stone-200/80 shadow-[2px_2px_5px_#ebd8df,-2px_-2px_5px_#ffffff]'
+                  }`}
+                  title={isVinylPlaying ? 'Bấm để ngừng chuyển động BGM' : 'Bấm để bật chuyển động BGM'}
+                >
+                  {isVinylPlaying ? (
+                    <svg width="11" height="12" viewBox="0 0 11 12" fill="none" className="text-[#de5b8e] shrink-0">
+                      <rect x="0.75" y="0.75" width="3.2" height="10.5" rx="1.6" stroke="currentColor" strokeWidth="1.3" />
+                      <rect x="6.8" y="0.75" width="3.2" height="10.5" rx="1.6" stroke="currentColor" strokeWidth="1.3" />
+                    </svg>
+                  ) : (
+                    <svg width="11" height="12" viewBox="0 0 11 12" fill="none" className="text-[#de5b8e] shrink-0">
+                      <path d="M1.5 1.5L9.5 6L1.5 10.5V1.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                  <span>{isVinylPlaying ? 'Tắt BGM' : 'Bật BGM'}</span>
+                </motion.button>
+              </div>
+            )}
 
             {/* KHU VỰC NỘI DUNG CUỘN CỦA MÀN HÌNH LCD */}
             <div className="space-y-3 max-h-[380px] sm:max-h-[440px] overflow-y-auto pr-1.5 text-left tamagotchi-scrollbar">
@@ -774,12 +798,8 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                     </span>
                   </div>
 
-                  <div className={`p-3 rounded-xl border text-xs leading-relaxed font-sans ${
-                    isDarkEffective
-                      ? 'bg-[#1e1429] border-purple-900/50 text-purple-100'
-                      : 'bg-purple-50/80 border-purple-200 text-stone-800'
-                  }`}>
-                    Web mở cổng bình luận tự do (không cần đăng nhập tài khoản). Tuy nhiên, để giữ gìn một không gian đọc truyện văn minh, xin hãy tôn trọng nhân vật / tác giả / editor. Không bình luận mắng chửi, xúc phạm nhân vật trong truyện hay người dịch.
+                  <div className="p-3 rounded-xl border border-purple-200 bg-purple-50/80 text-stone-800 text-xs leading-relaxed font-sans">
+                    Web mở cổng bình luận tự do, không cần đăng nhập tài khoản. Tuy nhiên, để giữ gìn một không gian đọc truyện văn minh, không bình luận mắng chửi, xúc phạm nhân vật trong truyện. Không nhắc đến tên của nhân vật và bộ truyện không liên quan.
                   </div>
                 </div>
               )}
@@ -1036,96 +1056,99 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
 
 
-            {/* 2 NÚT ĐIỀU KHIỂN DƯỚI MÀN HÌNH: THẢ TIM & MỞ HÒM THƯ */}
-            <div className="pt-2.5 border-t border-pink-200/90 dark:border-pink-900/50 flex items-center justify-between gap-2 select-none">
-              {/* Nút Thả tim */}
-              <motion.button
-                whileTap={{ scale: 0.93 }}
-                whileHover={{ scale: 1.02, y: -1 }}
-                onClick={handlePressB}
-                className={`flex-1 py-2 px-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 select-none ${
-                  isHeartFlashing
-                    ? 'bg-gradient-to-r from-pink-300 via-rose-200 to-pink-300 text-stone-900 shadow-[0_6px_20px_rgba(244,114,182,0.4)] scale-[1.03] ring-2 ring-pink-400 border border-white/80 font-black'
-                    : hasLiked
-                    ? isDarkEffective
-                      ? 'bg-[#3b2738] text-rose-300 border border-rose-900/60 shadow-2xs'
-                      : 'bg-gradient-to-r from-rose-100 via-pink-100 to-rose-100 text-rose-800 border border-rose-300/80 shadow-2xs'
-                    : isDarkEffective
-                    ? 'bg-[#2f2032] hover:bg-[#3a283e] text-stone-300 border border-pink-900/50 shadow-2xs'
-                    : 'bg-gradient-to-r from-rose-50 via-pink-50 to-rose-100 hover:from-rose-100 hover:to-pink-100 text-stone-700 border border-pink-200/80 shadow-2xs hover:shadow-[0_4px_14px_rgba(244,114,182,0.25)] hover:border-pink-300'
-                }`}
-                title={hasLiked ? 'Bạn đã thả tim rồi (giới hạn 1 lượt/trình duyệt)' : 'Bấm để thả tim cho góc nhỏ'}
-              >
-                <motion.span
-                  animate={isHeartFlashing ? { scale: [1, 1.45, 1] } : { scale: [1, 1.15, 1] }}
-                  transition={{ duration: isHeartFlashing ? 0.35 : 1.6, repeat: isHeartFlashing ? 0 : Infinity }}
-                  className={`text-base leading-none ${hasLiked ? 'text-rose-600 dark:text-rose-400' : 'text-rose-500'}`}
-                >
-                  ♥
-                </motion.span>
-                <span
-                  className={`text-sm tracking-wide ${
+            {/* 2 NÚT ĐIỀU KHIỂN DƯỚI MÀN HÌNH: THẢ TIM & MỞ HÒM THƯ (Ẩn hoàn toàn trong giao diện Chào mừng) */}
+            {activeTab !== 'welcome' && (
+              <div className="pt-2.5 border-t border-pink-200/90 dark:border-pink-900/50 flex items-center justify-between gap-2 select-none">
+                {/* Nút Thả tim */}
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  onClick={handlePressB}
+                  className={`flex-1 py-2 px-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 select-none ${
                     isHeartFlashing
-                      ? 'text-stone-900 font-black'
+                      ? 'bg-gradient-to-r from-pink-300 via-rose-200 to-pink-300 text-stone-900 shadow-[0_6px_20px_rgba(244,114,182,0.4)] scale-[1.03] ring-2 ring-pink-400 border border-white/80 font-black'
                       : hasLiked
-                      ? isDarkEffective ? 'text-rose-300 font-bold' : 'text-rose-900 font-bold'
-                      : isDarkEffective ? 'text-stone-200' : 'text-stone-800'
+                      ? isDarkEffective
+                        ? 'bg-[#3b2738] text-rose-300 border border-rose-900/60 shadow-2xs'
+                        : 'bg-gradient-to-r from-rose-100 via-pink-100 to-rose-100 text-rose-800 border border-rose-300/80 shadow-2xs'
+                      : isDarkEffective
+                      ? 'bg-[#2f2032] hover:bg-[#3a283e] text-stone-300 border border-pink-900/50 shadow-2xs'
+                      : 'bg-gradient-to-r from-rose-50 via-pink-50 to-rose-100 hover:from-rose-100 hover:to-pink-100 text-stone-700 border border-pink-200/80 shadow-2xs hover:shadow-[0_4px_14px_rgba(244,114,182,0.25)] hover:border-pink-300'
                   }`}
-                  style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', sans-serif", fontWeight: 850 }}
+                  title={hasLiked ? 'Bạn đã thả tim rồi (giới hạn 1 lượt/trình duyệt)' : 'Bấm để thả tim cho góc nhỏ'}
                 >
-                  {hasLiked ? 'Đã thả tim' : 'Thả tim'}
-                </span>
-                <span
-                  className={`px-1.5 py-0.5 rounded-full text-xs border shadow-2xs ${
-                    hasLiked
-                      ? isDarkEffective ? 'bg-[#201524] text-rose-300 border-rose-900/60' : 'bg-white/95 text-rose-700 border-rose-200'
-                      : isDarkEffective ? 'bg-[#201524] text-pink-300 border-pink-900/60' : 'bg-white/95 text-pink-700 border-pink-200'
-                  }`}
-                  style={{ fontFamily: "'Handjet', 'JetBrains Mono', monospace", fontWeight: 850 }}
-                >
-                  {tamaHearts}
-                </span>
-              </motion.button>
+                  <motion.span
+                    animate={isHeartFlashing ? { scale: [1, 1.45, 1] } : { scale: [1, 1.15, 1] }}
+                    transition={{ duration: isHeartFlashing ? 0.35 : 1.6, repeat: isHeartFlashing ? 0 : Infinity }}
+                    className={`text-base leading-none ${hasLiked ? 'text-rose-600 dark:text-rose-400' : 'text-rose-500'}`}
+                  >
+                    ♥
+                  </motion.span>
+                  <span
+                    className={`text-sm tracking-wide ${
+                      isHeartFlashing
+                        ? 'text-stone-900 font-black'
+                        : hasLiked
+                        ? isDarkEffective ? 'text-rose-300 font-bold' : 'text-rose-900 font-bold'
+                        : isDarkEffective ? 'text-stone-200' : 'text-stone-800'
+                    }`}
+                    style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', sans-serif", fontWeight: 850 }}
+                  >
+                    {hasLiked ? 'Đã thả tim' : 'Thả tim'}
+                  </span>
+                  <span
+                    className={`px-1.5 py-0.5 rounded-full text-xs border shadow-2xs ${
+                      hasLiked
+                        ? isDarkEffective ? 'bg-[#201524] text-rose-300 border-rose-900/60' : 'bg-white/95 text-rose-700 border-rose-200'
+                        : isDarkEffective ? 'bg-[#201524] text-pink-300 border-pink-900/60' : 'bg-white/95 text-pink-700 border-pink-200'
+                    }`}
+                    style={{ fontFamily: "'Handjet', 'JetBrains Mono', monospace", fontWeight: 850 }}
+                  >
+                    {tamaHearts}
+                  </span>
+                </motion.button>
 
-              {/* Nút Mở Hòm thư */}
-              <motion.button
-                whileTap={{ scale: 0.93 }}
-                whileHover={{ scale: 1.02, y: -1 }}
-                onClick={() => {
-                  if (activeTab === 'messages') {
-                    setActiveTab('welcome');
-                    showToast('Đã đóng hòm thư lời nhắn 🌸');
-                  } else {
-                    setActiveTab('messages');
-                    showToast('Đã mở hòm thư lời nhắn 💌');
-                  }
-                }}
-                className={`flex-1 py-2 px-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 select-none ${
-                  activeTab === 'messages'
-                    ? 'bg-gradient-to-r from-purple-200 via-pink-200 to-rose-200 text-stone-900 shadow-[0_6px_20px_rgba(244,114,182,0.4)] scale-[1.03] ring-2 ring-pink-400 border border-white/80 font-black'
-                    : isDarkEffective
-                    ? 'bg-[#2f2032] hover:bg-[#3a283e] text-stone-300 border border-pink-900/50 shadow-2xs'
-                    : 'bg-gradient-to-r from-rose-50 via-pink-50 to-rose-100 hover:from-rose-100 hover:to-pink-100 text-stone-700 border border-pink-200/80 shadow-2xs hover:shadow-[0_4px_14px_rgba(244,114,182,0.25)] hover:border-pink-300'
-                }`}
-                title={activeTab === 'messages' ? 'Đang mở hòm thư lời nhắn' : 'Bấm để mở hòm thư lời nhắn'}
-              >
-                <span className="text-sm leading-none">💌</span>
-                <span
-                  className={`text-sm tracking-wide ${
+                {/* Nút Mở Hòm thư */}
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  onClick={() => {
+                    if (activeTab === 'messages') {
+                      setActiveTab('welcome');
+                      showToast('Đã đóng hòm thư lời nhắn 🌸');
+                    } else {
+                      setActiveTab('messages');
+                      showToast('Đã mở hòm thư lời nhắn 💌');
+                    }
+                  }}
+                  className={`flex-1 py-2 px-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 select-none ${
                     activeTab === 'messages'
-                      ? 'text-stone-900 font-black'
-                      : isDarkEffective ? 'text-stone-200' : 'text-stone-800'
+                      ? 'bg-gradient-to-r from-purple-200 via-pink-200 to-rose-200 text-stone-900 shadow-[0_3px_0_#d946ef,0_8px_18px_rgba(217,70,239,0.35),inset_0_2px_3px_#ffffff] scale-[1.03] ring-2 ring-purple-400 border border-white font-black'
+                      : isDarkEffective
+                      ? 'bg-[#2f2032] hover:bg-[#3a283e] text-stone-300 border border-pink-900/50 shadow-[0_2px_0_#1a101d]'
+                      : 'bg-gradient-to-r from-rose-50 via-pink-50 to-rose-100 hover:from-rose-100 hover:to-pink-100 text-stone-700 border border-pink-200/80 shadow-[0_3px_0_#f472b6,0_6px_12px_rgba(244,114,182,0.22),inset_0_2px_2px_#ffffff] hover:shadow-[0_4px_0_#f472b6,0_8px_16px_rgba(244,114,182,0.28)]'
                   }`}
-                  style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', sans-serif", fontWeight: 850 }}
+                  title={activeTab === 'messages' ? 'Đang mở' : 'Bấm để mở hòm thư lời nhắn'}
                 >
-                  {activeTab === 'messages' ? 'Đang mở hòm thư' : 'Mở hòm thư'}
-                </span>
-              </motion.button>
-            </div>
+                  <span className="text-sm leading-none">💌</span>
+                  <span
+                    className={`text-sm tracking-wide ${
+                      activeTab === 'messages'
+                        ? 'text-stone-900 font-black'
+                        : isDarkEffective ? 'text-stone-200' : 'text-stone-800'
+                    }`}
+                    style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', sans-serif", fontWeight: 850 }}
+                  >
+                    {activeTab === 'messages' ? 'Đang mở ' : 'Mở hòm thư'}
+                  </span>
+                </motion.button>
+              </div>
+            )}
+          </div>
           </div>
 
-          {/* BƯỚC 3: CỤM 3 NÚT BẤM VẬT LÝ [A], [B], [C] ĐỐI XỨNG */}
-          <div className="pt-6 pb-2">
+          {/* BƯỚC 3: CỤM 3 NÚT BẤM VẬT LÝ [A], [B], [C] ĐỐI XỨNG 3D */}
+          <div className="pt-6 pb-2 relative z-20">
             <div className="grid grid-cols-3 items-start justify-items-center max-w-[280px] sm:max-w-[310px] mx-auto">
               
               {/* NÚT A: ĐỌC TIẾP */}
@@ -1145,17 +1168,20 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                   )}
                 </AnimatePresence>
 
-                <motion.button
-                  whileTap={{ scale: 0.92 }}
-                  onClick={handlePressA}
-                  className={`w-13 h-13 rounded-full cursor-pointer flex items-center justify-center font-mono font-black text-base select-none border transition-all ${
-                    isDarkEffective
-                      ? 'bg-gradient-to-b from-[#462d3a] to-[#2e1d27] text-rose-300 border-pink-900/60 shadow-[4px_4px_10px_#140d17,-4px_-4px_10px_#3d2837]'
-                      : 'bg-gradient-to-b from-[#ffffff] to-[#ffdce4] text-[#9f1239] border-white/90 shadow-[5px_5px_12px_#eeb2c2,-5px_-5px_12px_#ffffff] active:shadow-[inset_2px_2px_5px_#e59fb2,inset_-2px_-2px_5px_#ffffff]'
-                  }`}
-                >
-                  A
-                </motion.button>
+                {/* Đế lồi/lõm 3D xung quanh nút A */}
+                <div className="p-1 sm:p-1.5 rounded-full bg-gradient-to-b from-[#eec2cf] to-white/95 shadow-[inset_0_3px_5px_rgba(180,90,120,0.38),0_1.5px_2px_#ffffff] border border-pink-300/50 flex items-center justify-center">
+                  <motion.button
+                    whileTap={{ y: 4, scale: 0.96 }}
+                    onClick={handlePressA}
+                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-full cursor-pointer flex items-center justify-center font-mono font-black text-base select-none border transition-all ${
+                      isDarkEffective
+                        ? 'bg-gradient-to-b from-[#462d3a] to-[#2e1d27] text-rose-300 border-pink-900/60 shadow-[0_4px_0_#1e1219,0_6px_12px_rgba(0,0,0,0.5)] active:shadow-[0_1px_0_#1e1219]'
+                        : 'bg-gradient-to-b from-[#ffffff] via-[#ffe8ee] to-[#fca5b9] text-[#9f1239] border-t-2 border-white border-b border-rose-300 shadow-[0_5px_0_#db2777,0_8px_14px_rgba(219,39,119,0.35),inset_0_2px_3px_#ffffff,inset_0_-2px_3px_rgba(219,39,119,0.2)] active:shadow-[0_1px_0_#db2777,0_3px_6px_rgba(219,39,119,0.25)]'
+                    }`}
+                  >
+                    A
+                  </motion.button>
+                </div>
                 <span
                   className={`text-[10px] font-bold mt-1.5 whitespace-nowrap tracking-wide ${
                     isDarkEffective ? 'text-pink-300' : 'text-[#8d2a4a]'
@@ -1168,18 +1194,21 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
               {/* NÚT B: THẢ TIM (Tím lavender) */}
               <div className="flex flex-col items-center justify-center w-full">
-                <motion.button
-                  whileTap={{ scale: 0.92 }}
-                  onClick={handlePressB}
-                  className={`w-13 h-13 rounded-full cursor-pointer flex items-center justify-center font-mono font-black text-base select-none border transition-all ${
-                    isDarkEffective
-                      ? 'bg-gradient-to-b from-[#3a2846] to-[#25192e] text-purple-300 border-purple-900/60 shadow-[4px_4px_10px_#140d17,-4px_-4px_10px_#3d2837]'
-                      : 'bg-gradient-to-b from-[#ffffff] to-[#ede0fa] text-[#6b21a8] border-white/90 shadow-[5px_5px_12px_#eeb2c2,-5px_-5px_12px_#ffffff] active:shadow-[inset_2px_2px_5px_#e59fb2,inset_-2px_-2px_5px_#ffffff]'
-                  }`}
-                  title="Nút B: Giai Điệu Yêu Thương (Thả Tim)"
-                >
-                  B
-                </motion.button>
+                {/* Đế lồi/lõm 3D xung quanh nút B */}
+                <div className="p-1 sm:p-1.5 rounded-full bg-gradient-to-b from-[#eec2cf] to-white/95 shadow-[inset_0_3px_5px_rgba(180,90,120,0.38),0_1.5px_2px_#ffffff] border border-pink-300/50 flex items-center justify-center">
+                  <motion.button
+                    whileTap={{ y: 4, scale: 0.96 }}
+                    onClick={handlePressB}
+                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-full cursor-pointer flex items-center justify-center font-mono font-black text-base select-none border transition-all ${
+                      isDarkEffective
+                        ? 'bg-gradient-to-b from-[#3a2846] to-[#25192e] text-purple-300 border-purple-900/60 shadow-[0_4px_0_#140d1a,0_6px_12px_rgba(0,0,0,0.5)] active:shadow-[0_1px_0_#140d1a]'
+                        : 'bg-gradient-to-b from-[#ffffff] via-[#f5edff] to-[#d8b4fe] text-[#6b21a8] border-t-2 border-white border-b border-purple-300 shadow-[0_5px_0_#7e22ce,0_8px_14px_rgba(126,34,206,0.35),inset_0_2px_3px_#ffffff,inset_0_-2px_3px_rgba(126,34,206,0.2)] active:shadow-[0_1px_0_#7e22ce,0_3px_6px_rgba(126,34,206,0.25)]'
+                    }`}
+                    title="Nút B: Giai Điệu Yêu Thương (Thả Tim)"
+                  >
+                    B
+                  </motion.button>
+                </div>
                 <span
                   className={`text-[10px] font-bold text-center mt-1.5 whitespace-nowrap tracking-wide ${
                     isDarkEffective ? 'text-purple-300' : 'text-[#5c1d8f]'
@@ -1192,17 +1221,20 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
               {/* NÚT C: TRANG ĐẦU (Xanh mint) */}
               <div className="flex flex-col items-center justify-center w-full">
-                <motion.button
-                  whileTap={{ scale: 0.92 }}
-                  onClick={handlePressC}
-                  className={`w-13 h-13 rounded-full cursor-pointer flex items-center justify-center font-mono font-black text-base select-none border transition-all ${
-                    isDarkEffective
-                      ? 'bg-gradient-to-b from-[#253d36] to-[#152520] text-emerald-300 border-emerald-900/60 shadow-[4px_4px_10px_#140d17,-4px_-4px_10px_#3d2837]'
-                      : 'bg-gradient-to-b from-[#ffffff] to-[#d6fae7] text-[#065f46] border-white/90 shadow-[5px_5px_12px_#eeb2c2,-5px_-5px_12px_#ffffff] active:shadow-[inset_2px_2px_5px_#e59fb2,inset_-2px_-2px_5px_#ffffff]'
-                  }`}
-                >
-                  C
-                </motion.button>
+                {/* Đế lồi/lõm 3D xung quanh nút C */}
+                <div className="p-1 sm:p-1.5 rounded-full bg-gradient-to-b from-[#eec2cf] to-white/95 shadow-[inset_0_3px_5px_rgba(180,90,120,0.38),0_1.5px_2px_#ffffff] border border-pink-300/50 flex items-center justify-center">
+                  <motion.button
+                    whileTap={{ y: 4, scale: 0.96 }}
+                    onClick={handlePressC}
+                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-full cursor-pointer flex items-center justify-center font-mono font-black text-base select-none border transition-all ${
+                      isDarkEffective
+                        ? 'bg-gradient-to-b from-[#253d36] to-[#152520] text-emerald-300 border-emerald-900/60 shadow-[0_4px_0_#0a1612,0_6px_12px_rgba(0,0,0,0.5)] active:shadow-[0_1px_0_#0a1612]'
+                        : 'bg-gradient-to-b from-[#ffffff] via-[#ecfdf5] to-[#86efac] text-[#065f46] border-t-2 border-white border-b border-emerald-300 shadow-[0_5px_0_#059669,0_8px_14px_rgba(5,150,105,0.35),inset_0_2px_3px_#ffffff,inset_0_-2px_3px_rgba(5,150,105,0.2)] active:shadow-[0_1px_0_#059669,0_3px_6px_rgba(5,150,105,0.25)]'
+                    }`}
+                  >
+                    C
+                  </motion.button>
+                </div>
                 <span
                   className={`text-[10px] font-bold mt-1.5 whitespace-nowrap tracking-wide ${
                     isDarkEffective ? 'text-emerald-300' : 'text-[#065f46]'
@@ -1235,6 +1267,9 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
           </div>
 
         </div>
+
+        {/* Bóng đổ tiếp xúc mặt bàn nhẹ nhàng */}
+        <div className="w-[80%] h-6 mx-auto -mt-1 bg-gradient-to-r from-transparent via-pink-300/20 to-transparent blur-md rounded-full pointer-events-none" />
       </div>
     </div>
   );

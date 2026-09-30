@@ -46,7 +46,7 @@ import {
   recordWebsiteVisit,
 } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { getOriginalCoverByNovel } from './utils/imageUtils';
+import { getOriginalCoverByNovel, getCustomCoverFromStorage } from './utils/imageUtils';
 
 interface SavedViewState {
   viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
@@ -87,8 +87,8 @@ export function findNovelByIdOrAlias(novels: Novel[], queryIdOrSlug?: string | n
     const found = novels.find((n) => n.id === '2liAf62uSgCcMvld5xtA' || normalizeNovelTitle(n.title).includes('kenhagiaunguxuan'));
     if (found) return found;
   }
-  if (qLower === 'truc-ma-alpha' || qLower === 's1zjuvan4umw3h7nxo9m') {
-    const found = novels.find((n) => n.id === 'truc-ma-alpha' || n.id === 's1zJUVAn4uMW3h7NXO9M');
+  if (qLower === 'truc-ma-alpha' || qLower === 's1zjuvan4umw3h7nxo9m' || qLower === 'wt9smt1plovfgoqzmrh6') {
+    const found = novels.find((n) => n.id === 'truc-ma-alpha' || n.id === 's1zJUVAn4uMW3h7NXO9M' || n.id === 'Wt9SMT1pLOVFGoQZMrH6');
     if (found) return found;
   }
 
@@ -100,31 +100,46 @@ export function findNovelByIdOrAlias(novels: Novel[], queryIdOrSlug?: string | n
   return undefined;
 }
 
-const LUA_NHAU_EXACT_COVER =
-  'https://drive.google.com/file/d/1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm/view?usp=drivesdk';
+const LUA_NHAU_EXACT_COVER = '/covers/lua_nhau.jpg';
 
 function convertFirestoreTruyenToNovel(ft: FirestoreTruyen): Novel {
   const genres = ft.theLoai
     ? ft.theLoai.split(',').map((g) => g.trim()).filter(Boolean)
     : ['Tiểu Thuyết'];
   const originalCover = getOriginalCoverByNovel(ft.id, ft.tenTruyen);
-  const resolvedCover = ft.anhBia || originalCover || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop';
+
+  // Check if a custom cover was set by user in safeStorage (synced across all views)
+  const customCover = getCustomCoverFromStorage(ft.id) || getCustomCoverFromStorage(ft.tenTruyen);
+
+  let cleanCover = customCover || ft.anhBia;
+  if (cleanCover && (cleanCover.startsWith('/assets/') || cleanCover.includes('assets/') || cleanCover.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || cleanCover.includes('drive.google.com'))) {
+    cleanCover = customCover || originalCover || cleanCover;
+  }
+  const resolvedCover = cleanCover || originalCover || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop';
+
+  const normT = normalizeNovelTitle(ft.tenTruyen);
+  const isLuaNhau = ft.id === 'lua-nhau' || normT.includes('luanhau');
+  const isTrucMa = ft.id === 's1zJUVAn4uMW3h7NXO9M' || ft.id === 'Wt9SMT1pLOVFGoQZMrH6' || normT.includes('trucmaalpha');
+
+  // If user uploaded a new cover, always prioritize it!
+  const finalCover = customCover || (cleanCover && cleanCover !== originalCover ? cleanCover : (isTrucMa ? (originalCover || '/covers/truc_ma_alpha.jpg') : (isLuaNhau ? LUA_NHAU_EXACT_COVER : resolvedCover)));
+
   return {
     id: ft.id,
     title: ft.tenTruyen,
-    coverImage: resolvedCover,
-    coverImageUrl: resolvedCover,
+    coverImage: finalCover,
+    coverImageUrl: finalCover,
     author: {
       id: 'admin',
-      name: ft.tacGia || 'Tác giả',
+      name: isLuaNhau ? LUA_NHAU_NOVEL.author.name : (ft.tacGia || 'Tác giả'),
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop',
       title: 'Tác Giả',
       totalNovels: 1,
       followers: 120,
     },
     translator: ft.translator || 'Jouriee65',
-    synopsis: ft.moTa || '',
-    genres,
+    synopsis: isLuaNhau ? LUA_NHAU_NOVEL.synopsis : (ft.moTa || ''),
+    genres: isLuaNhau ? LUA_NHAU_NOVEL.genres : genres,
     status: 'completed',
     rating: 5.0,
     ratingCount: 1,
@@ -148,10 +163,10 @@ function convertFirestoreTruyenToNovel(ft: FirestoreTruyen): Novel {
     },
     trangThai: ft.trangThai === 'nhap' ? 'nhap' : 'daDang',
     isFirestore: true,
-    tags: genres.map((g) => (g.startsWith('#') ? g : `#${g}`)),
+    tags: (isLuaNhau ? LUA_NHAU_NOVEL.genres : genres).map((g) => (g.startsWith('#') ? g : `#${g}`)),
     adminUid: ft.adminUid,
-    uploaderNote: ft.uploaderNote || 'Đọc kỹ tất cả các tags và giới thiệu truyện, chúc mọi người có khoảng thời gian đọc truyện vui vẻ.',
-    worldLore: ft.worldLore || undefined,
+    uploaderNote: isLuaNhau ? LUA_NHAU_NOVEL.uploaderNote : (ft.uploaderNote || 'Đọc kỹ tất cả các tags và giới thiệu truyện, chúc mọi người có khoảng thời gian đọc truyện vui vẻ.'),
+    worldLore: isLuaNhau ? LUA_NHAU_NOVEL.worldLore : (ft.worldLore || undefined),
   };
 }
 
@@ -305,24 +320,54 @@ function getInitialNovels(): Novel[] {
             translator: withCleanChapters.translator || 'Jouriee65',
             comments: (withCleanChapters.comments || []).filter((c) => !isBotComment(c)),
           };
-          if (withDefaults.id === 'lua-nhau') {
+          const customCover = getCustomCoverFromStorage(withDefaults.id) || getCustomCoverFromStorage(withDefaults.title);
+          if (customCover) {
+            withDefaults.coverImage = customCover;
+            withDefaults.coverImageUrl = customCover;
+          }
+
+          if (withDefaults.id === 'lua-nhau' || normalizeNovelTitle(withDefaults.title).includes('luanhau')) {
             const preservedChapters =
               withDefaults.chapters && withDefaults.chapters.length > 0
                 ? withDefaults.chapters
                 : (LUA_NHAU_NOVEL.chapters || []);
             const res: Novel = {
               ...withDefaults,
+              id: 'lua-nhau',
+              title: 'Lừa Nhau',
               chapters: preservedChapters,
               totalChaptersCount: preservedChapters.length,
               comments: (withDefaults.comments || []).filter((c) => !isBotComment(c)),
+              synopsis: LUA_NHAU_NOVEL.synopsis,
               worldLore: LUA_NHAU_NOVEL.worldLore,
               uploaderNote: LUA_NHAU_NOVEL.uploaderNote,
-              coverImage: LUA_NHAU_EXACT_COVER,
-              coverImageUrl: LUA_NHAU_EXACT_COVER,
+              genres: LUA_NHAU_NOVEL.genres,
+              tags: LUA_NHAU_NOVEL.tags,
+              author: LUA_NHAU_NOVEL.author,
+              coverImage: customCover || withDefaults.coverImage || LUA_NHAU_EXACT_COVER,
+              coverImageUrl: customCover || withDefaults.coverImageUrl || LUA_NHAU_EXACT_COVER,
               status: 'completed',
               translator: 'Jouriee65',
             };
             return res;
+          }
+          if (
+            withDefaults.id === 's1zJUVAn4uMW3h7NXO9M' ||
+            withDefaults.id === 'Wt9SMT1pLOVFGoQZMrH6' ||
+            withDefaults.id === 'truc-ma-alpha' ||
+            normalizeNovelTitle(withDefaults.title).includes('trucmaalpha')
+          ) {
+            const trucMaRes: Novel = {
+              ...withDefaults,
+              id: 's1zJUVAn4uMW3h7NXO9M',
+              title: 'Trúc Mã Alpha Của Tôi Có Độc',
+              coverImage: customCover || withDefaults.coverImage || '/covers/truc_ma_alpha.jpg',
+              coverImageUrl: customCover || withDefaults.coverImageUrl || '/covers/truc_ma_alpha.jpg',
+              bannerImage: customCover || withDefaults.bannerImage || '/covers/truc_ma_alpha.jpg',
+              status: 'completed',
+              translator: 'Jouriee65',
+            };
+            return trucMaRes;
           }
           return withDefaults;
         });
@@ -332,12 +377,19 @@ function getInitialNovels(): Novel[] {
         const deduplicated: Novel[] = [];
         for (const n of processed) {
           const normTitle = normalizeNovelTitle(n.title);
-          const isMeKe = normTitle.includes('mekevuamemvuangot') || n.id === 'me-ke-vua-mem-vua-ngot' || n.id === 'e5H5oZGg1sGnFyHjdM5Z';
-          const key = isMeKe ? 'me-ke-vua-mem-vua-ngot' : normTitle;
+          const isMeKe = normTitle.includes('mekevuamemvuangot') || n.id === 'me-ke-vua-mem-vua-ngot' || n.id === 'e5H5oZGg1sGnFyHjdM5Z' || n.id === 'yme8xnS09QjO5nYF8Jsz';
+          const isTrucMa = normTitle.includes('trucmaalpha') || n.id === 'truc-ma-alpha' || n.id === 's1zJUVAn4uMW3h7NXO9M' || n.id === 'Wt9SMT1pLOVFGoQZMrH6';
+          const isLuaNhau = normTitle.includes('luanhau') || n.id === 'lua-nhau';
+          const key = isMeKe ? 'me-ke-vua-mem-vua-ngot' : (isTrucMa ? 'truc-ma-alpha' : (isLuaNhau ? 'lua-nhau' : normTitle));
 
           if (seen.has(key)) {
             const idx = deduplicated.findIndex((d) => {
-              const dKey = (normalizeNovelTitle(d.title).includes('mekevuamemvuangot') || d.id === 'me-ke-vua-mem-vua-ngot' || d.id === 'e5H5oZGg1sGnFyHjdM5Z') ? 'me-ke-vua-mem-vua-ngot' : normalizeNovelTitle(d.title);
+              const dNorm = normalizeNovelTitle(d.title);
+              const dKey = (dNorm.includes('mekevuamemvuangot') || d.id === 'me-ke-vua-mem-vua-ngot' || d.id === 'e5H5oZGg1sGnFyHjdM5Z')
+                ? 'me-ke-vua-mem-vua-ngot'
+                : (dNorm.includes('trucmaalpha') || d.id === 'truc-ma-alpha' || d.id === 's1zJUVAn4uMW3h7NXO9M'
+                  ? 'truc-ma-alpha'
+                  : (dNorm.includes('luanhau') || d.id === 'lua-nhau' ? 'lua-nhau' : dNorm));
               return dKey === key;
             });
             if (idx !== -1 && (!deduplicated[idx].chapters || deduplicated[idx].chapters.length === 0) && n.chapters && n.chapters.length > 0) {
@@ -652,6 +704,8 @@ export default function App() {
         findNovelByIdOrAlias(novels, ft.id) ||
         novels.find((n) => normalizeNovelTitle(n.title) === normalizeNovelTitle(ft.tenTruyen));
 
+      const customCover = getCustomCoverFromStorage(ft.id) || getCustomCoverFromStorage(ft.tenTruyen);
+
       if (existingLocal) {
         return {
           ...converted,
@@ -667,11 +721,13 @@ export default function App() {
               : converted.chapters,
           totalChaptersCount: Math.max(ft.soChuong || 0, existingLocal.chapters?.length || 0),
           coverImage:
+            customCover ||
             ft.anhBia ||
             existingLocal.coverImage ||
             getOriginalCoverByNovel(ft.id, ft.tenTruyen) ||
             converted.coverImage,
           coverImageUrl:
+            customCover ||
             ft.anhBia ||
             existingLocal.coverImageUrl ||
             getOriginalCoverByNovel(ft.id, ft.tenTruyen) ||
@@ -733,21 +789,32 @@ export default function App() {
         });
         if (existingIdx !== -1) {
           const existing = deduplicated[existingIdx];
-          if ((!existing.chapters || existing.chapters.length === 0) && novel.chapters && novel.chapters.length > 0) {
-            deduplicated[existingIdx] = {
-              ...existing,
-              chapters: novel.chapters,
-              totalChaptersCount: Math.max(existing.totalChaptersCount || 0, novel.chapters.length),
-            };
-          }
+          const customCover =
+            getCustomCoverFromStorage(novel.id) ||
+            getCustomCoverFromStorage(novel.title) ||
+            getCustomCoverFromStorage(existing.id) ||
+            getCustomCoverFromStorage(existing.title);
+          const nextCover =
+            customCover ||
+            (novel.coverImage && !novel.coverImage.includes('unsplash') ? novel.coverImage : existing.coverImage);
+          deduplicated[existingIdx] = {
+            ...existing,
+            coverImage: nextCover,
+            coverImageUrl: nextCover,
+            chapters: (existing.chapters && existing.chapters.length > 0) ? existing.chapters : (novel.chapters || []),
+            totalChaptersCount: Math.max(existing.totalChaptersCount || 0, novel.chapters?.length || 0),
+          };
         }
         continue;
       }
 
       seenTitles.add(dedupeKey);
       seenIds.add(novel.id);
+      const customCover = getCustomCoverFromStorage(novel.id) || getCustomCoverFromStorage(novel.title);
       deduplicated.push({
         ...novel,
+        coverImage: customCover || novel.coverImage,
+        coverImageUrl: customCover || novel.coverImageUrl || novel.coverImage,
         status: 'completed' as const,
         translator: novel.translator || 'Jouriee65',
       });
@@ -1109,6 +1176,16 @@ export default function App() {
   };
 
   const handleUpdateNovelCover = (novelId: string, newCoverUrl: string) => {
+    // 1. Persist to safeStorage immediately so NovelHomeView, NovelDetailView, and all components sync instantly
+    try {
+      safeStorage.setItem(`cosmo_novel_custom_cover_${novelId}`, newCoverUrl);
+      const matched = novels.find((n) => n.id === novelId);
+      if (matched?.title) {
+        safeStorage.setItem(`cosmo_novel_custom_cover_${matched.title}`, newCoverUrl);
+        safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(matched.title)}`, newCoverUrl);
+      }
+    } catch {}
+
     // Persist to Firestore
     try {
       saveNovelCoverToFirebase(novelId, newCoverUrl);
