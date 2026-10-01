@@ -39,6 +39,7 @@ import { Novel, NovelGenre, DarkBackgroundOption, DARK_BG_OPTIONS } from '../typ
 import { AdminUserLike } from '../services/firebase';
 import { NOVEL_GENRES } from '../data/novelData';
 import { NovelThemeId, NOVEL_THEME_OPTIONS, getNovelThemeStyles } from '../utils/themeStyles';
+import { ClayThemeToggle } from './ClayThemeToggle';
 import { WebLogo } from './WebLogo';
 import { RandomNovelPicker } from './RandomNovelPicker';
 import { useHeaderScroll } from '../utils/useHeaderScroll';
@@ -290,8 +291,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   }, []);
 
   const toggleDarkMode = () => {
-    // Ở theme cosmic giữ duy nhất 1 chế độ tối, khi bấm vào dark mode thì không thay đổi màu sắc gì hết
+    // Nếu đang ở theme cosmic thì chuyển sang amethyst-haze sáng
     if (theme === 'cosmic') {
+      setTheme('amethyst-haze');
+      setIsDarkMode(false);
+      safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
+      safeStorage.setItem('cosmo_darkmode', JSON.stringify(false));
       return;
     }
     setIsDarkMode((prev) => {
@@ -427,26 +432,26 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         case 'slate-haze':
           return {
             cardBg: 'bg-[#101726]/95',
-            cardBorder: 'border-sky-500/25',
+            cardBorder: 'border-[#4d6a85]/35',
             cardShadow: 'shadow-[0_16px_40px_rgba(0,0,0,0.45)]',
-            stackedMiddle: 'bg-[#0c121e]/95 border-sky-500/20 shadow-xs',
-            stackedBottom: 'bg-[#080d16]/90 border-sky-500/15 shadow-xs',
-            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(56, 189, 248, 0.08) 24px, rgba(56, 189, 248, 0.08) 25px)',
-            titleText: 'text-sky-100',
-            novelTitle: 'text-sky-100',
-            chevronColor: 'text-sky-400 group-hover:text-sky-300',
-            badge: 'bg-sky-950/70 text-sky-200 border-sky-500/30',
-            navBtn: 'bg-sky-950/70 hover:bg-sky-900/60 text-sky-200 border-sky-500/30 shadow-xs',
-            timeSubtext: 'text-sky-300/70',
-            timeIcon: 'text-sky-400/80',
-            progressTrack: 'bg-sky-950/80 border border-sky-800/40',
-            progressBar: 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.4)]',
-            progressThumb: 'bg-sky-300 border-sky-950 ring-2 ring-sky-400/40',
-            pctText: 'text-sky-200',
-            continueBtn: 'text-sky-200 hover:text-sky-100',
-            divider: 'border-sky-500/15',
-            coverBorder: 'border-sky-500/30',
-            coverBg: 'bg-sky-950/50',
+            stackedMiddle: 'bg-[#0c121e]/95 border-[#4d6a85]/25 shadow-xs',
+            stackedBottom: 'bg-[#080d16]/90 border-[#4d6a85]/20 shadow-xs',
+            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(77, 106, 133, 0.08) 24px, rgba(77, 106, 133, 0.08) 25px)',
+            titleText: 'text-[#edf4fa]',
+            novelTitle: 'text-[#edf4fa]',
+            chevronColor: 'text-[#8bb0cf] group-hover:text-[#b8d4ec]',
+            badge: 'bg-[#162332] text-[#dce7f0] border border-[#4d6a85]/40',
+            navBtn: 'bg-[#162332] hover:bg-[#1e2f42] text-[#dce7f0] border-[#4d6a85]/40 shadow-xs',
+            timeSubtext: 'text-[#8ba0b5]',
+            timeIcon: 'text-[#8bb0cf]',
+            progressTrack: 'bg-[#121c27] border border-[#2d455d]/40',
+            progressBar: 'bg-[#5d7e9d] shadow-[0_0_6px_rgba(77,106,133,0.3)]',
+            progressThumb: 'bg-[#a3c2dc] border-[#101726] ring-2 ring-[#5d7e9d]/40',
+            pctText: 'text-[#dce7f0]',
+            continueBtn: 'text-[#8bb0cf] hover:text-[#dce7f0]',
+            divider: 'border-[#4d6a85]/20',
+            coverBorder: 'border-[#4d6a85]/35',
+            coverBg: 'bg-[#141e2a]/50',
           };
         case 'sage':
           return {
@@ -524,26 +529,26 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         default:
           return {
             cardBg: 'bg-[#171223]/95',
-            cardBorder: 'border-purple-500/25',
+            cardBorder: 'border-[#6e5585]/35',
             cardShadow: 'shadow-[0_16px_40px_rgba(0,0,0,0.45)]',
-            stackedMiddle: 'bg-[#120d1c]/95 border-purple-500/20 shadow-xs',
-            stackedBottom: 'bg-[#0e0a16]/90 border-purple-500/15 shadow-xs',
-            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(216, 180, 254, 0.08) 24px, rgba(216, 180, 254, 0.08) 25px)',
-            titleText: 'text-purple-100',
-            novelTitle: 'text-purple-100',
-            chevronColor: 'text-purple-400 group-hover:text-purple-300',
-            badge: 'bg-purple-950/70 text-purple-200 border-purple-500/30',
-            navBtn: 'bg-purple-950/70 hover:bg-purple-900/60 text-purple-200 border-purple-500/30 shadow-xs',
-            timeSubtext: 'text-purple-300/70',
-            timeIcon: 'text-purple-400/80',
-            progressTrack: 'bg-purple-950/80 border border-purple-800/40',
-            progressBar: 'bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.4)]',
-            progressThumb: 'bg-purple-300 border-purple-950 ring-2 ring-purple-400/40',
-            pctText: 'text-purple-200',
-            continueBtn: 'text-purple-200 hover:text-purple-100',
-            divider: 'border-purple-500/15',
-            coverBorder: 'border-purple-500/30',
-            coverBg: 'bg-purple-950/50',
+            stackedMiddle: 'bg-[#120d1c]/95 border-[#6e5585]/25 shadow-xs',
+            stackedBottom: 'bg-[#0e0a16]/90 border-[#6e5585]/20 shadow-xs',
+            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(167, 149, 190, 0.08) 24px, rgba(167, 149, 190, 0.08) 25px)',
+            titleText: 'text-[#f0edf7]',
+            novelTitle: 'text-[#f0edf7]',
+            chevronColor: 'text-[#bdaed3] group-hover:text-[#ded6e8]',
+            badge: 'bg-[#251a33] text-[#ded6e8] border border-[#6e5585]/40',
+            navBtn: 'bg-[#251a33] hover:bg-[#342445] text-[#ded6e8] border border-[#6e5585]/40 shadow-xs',
+            timeSubtext: 'text-[#a795be]',
+            timeIcon: 'text-[#bdaed3]',
+            progressTrack: 'bg-[#191124] border border-[#3b284f]/40',
+            progressBar: 'bg-[#7a6493] shadow-[0_0_6px_rgba(122,100,147,0.25)]',
+            progressThumb: 'bg-[#cfc2de] border-[#120d1c] ring-2 ring-[#7a6493]/40',
+            pctText: 'text-[#ded6e8]',
+            continueBtn: 'text-[#bdaed3] hover:text-[#ded6e8]',
+            divider: 'border-[#6e5585]/20',
+            coverBorder: 'border-[#6e5585]/35',
+            coverBg: 'bg-[#211630]/50',
           };
       }
     }
@@ -704,7 +709,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return 'bg-gradient-to-r from-purple-500 to-pink-500';
       case 'slate-haze':
         return isDark
-          ? 'bg-gradient-to-r from-[#0284c7] via-[#38bdf8] to-[#90a1b9] shadow-[0_0_8px_rgba(56,189,248,0.45)]'
+          ? 'bg-gradient-to-r from-[#44627d] via-[#567a9c] to-[#7595b3] shadow-[0_0_6px_rgba(77,106,133,0.25)]'
           : 'bg-gradient-to-r from-[#64748b] via-[#7b92ad] to-[#90a1b9]';
       case 'sage':
         return isDark
@@ -720,7 +725,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           : 'bg-gradient-to-r from-[#737373] to-[#a3a3a3]';
       case 'amethyst-haze':
         return isDark
-          ? 'bg-gradient-to-r from-[#c084fc] to-[#e879f9] shadow-[0_0_8px_rgba(192,132,252,0.45)]'
+          ? 'bg-gradient-to-r from-[#624b7a] via-[#785f94] to-[#967fae] shadow-[0_0_6px_rgba(115,90,143,0.25)]'
           : 'bg-gradient-to-r from-[#8a5b9e] to-[#ba89cf]';
       default:
         return 'bg-gradient-to-r from-[#64748b] to-[#90a1b9]';
@@ -762,11 +767,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'mocha':
         return 'bg-gradient-to-r from-[#775243] via-[#8c6150] to-[#9f7260] shadow-[0_0_12px_rgba(140,97,80,0.5)]';
       case 'amethyst-haze':
-        return 'bg-gradient-to-r from-[#c084fc] to-[#e879f9] shadow-[0_0_12px_rgba(192,132,252,0.8)]';
+        return 'bg-gradient-to-r from-[#735a8f] via-[#856b9e] to-[#9c84b5] shadow-[0_0_8px_rgba(133,107,158,0.4)]';
       case 'slate-haze':
       default:
-        // Thanh neon cyan phát sáng đặc trưng đúng như hình mẫu
-        return 'bg-gradient-to-r from-[#00f2fe] to-[#38bdf8] shadow-[0_0_14px_rgba(0,242,254,0.9)]';
+        return 'bg-gradient-to-r from-[#4d6a85] via-[#5d7e9d] to-[#7b9cb8] shadow-[0_0_8px_rgba(93,126,157,0.4)]';
     }
   };
 
@@ -818,13 +822,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
       case 'amethyst-haze':
         return isDark
-          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-purple-400/80 active:border-fuchsia-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(168,85,247,0.28),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
+          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-[#856b9e]/70 active:border-[#6f5487] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(115,90,143,0.22),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
           : `${basePhysics} bg-[#fbf9fc] hover:bg-white active:bg-[#f4edf9] border-[#d8d3e2] hover:border-[#7e739f] active:border-[#5f547d] hover:shadow-md active:shadow-xs`;
 
       case 'slate-haze':
       default:
         return isDark
-          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-sky-400/80 active:border-sky-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(56,189,248,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
+          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-[#5d7e9d]/70 active:border-[#476685] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(77,106,133,0.22),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
           : `${basePhysics} bg-[#f9fcff] hover:bg-white active:bg-[#f3f7fc] border-[#d8dfe9] hover:border-[#87909d]/60 active:border-[#87909d] hover:shadow-md active:shadow-xs`;
     }
   };
@@ -834,7 +838,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     switch (th) {
       case 'slate-haze':
         return isDark
-          ? 'bg-sky-600 text-white border border-sky-400/80 shadow-xs font-bold'
+          ? 'bg-[#3e566d] text-white border border-[#5d7e9d]/70 shadow-xs font-bold'
           : 'bg-[#87909d] text-white border-slate-400/30 shadow-sm';
       case 'sage':
         return isDark
@@ -850,7 +854,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           : 'bg-[#737373] text-white border-[#e5e5e5]/50 shadow-sm';
       case 'amethyst-haze':
         return isDark
-          ? 'bg-purple-600 text-white border border-purple-400/80 shadow-xs font-bold'
+          ? 'bg-[#624b7a] text-white border border-[#856b9e]/70 shadow-xs font-bold'
           : 'bg-stone-900/80 text-stone-100 border-stone-400/30 shadow-sm';
       case 'cosmic':
       default:
@@ -867,10 +871,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'slate-haze':
         return isOngoing
           ? (isDark
-              ? 'bg-sky-950 text-sky-200 border border-sky-600/50 shadow-xs'
+              ? 'bg-[#182635] text-[#cfdce8] border border-[#4d6a85]/40 shadow-xs'
               : 'bg-[#1e293b] text-white border border-[#0f172a] shadow-xs')
           : (isDark
-              ? 'bg-slate-900 text-slate-300 border border-slate-700 shadow-xs'
+              ? 'bg-[#101924] text-[#a6c2d8] border border-[#3b546b]/40 shadow-xs'
               : 'bg-slate-100 text-slate-700 border border-slate-300 shadow-xs');
       case 'sage':
         return isOngoing
@@ -899,10 +903,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'amethyst-haze':
         return isOngoing
           ? (isDark
-              ? 'bg-purple-950 text-purple-200 border border-purple-600/50 shadow-xs'
+              ? 'bg-[#251a33] text-[#ded6e8] border border-[#6e5585]/40 shadow-xs'
               : 'bg-[#594970] text-white border border-[#443657] shadow-xs')
           : (isDark
-              ? 'bg-[#1e122d] text-purple-200/80 border border-purple-800/60 shadow-xs'
+              ? 'bg-[#1a1226] text-[#bdaed3] border border-[#523d66]/40 shadow-xs'
               : 'bg-[#f0ecf7] text-[#4d3d63] border border-[#d5cce3] shadow-xs');
       case 'cosmic':
       default:
@@ -923,10 +927,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'slate-haze':
         return isOngoing
           ? (isDark
-              ? 'bg-sky-950 text-sky-200 border border-sky-600/50 shadow-xs'
+              ? 'bg-[#182635] text-[#cfdce8] border border-[#4d6a85]/40 shadow-xs'
               : 'bg-slate-100 text-slate-800 border-slate-300 shadow-2xs font-semibold')
           : (isDark
-              ? 'bg-slate-900 text-slate-200 border border-slate-700 shadow-xs'
+              ? 'bg-[#101924] text-[#a6c2d8] border border-[#3b546b]/40 shadow-xs'
               : 'bg-slate-50 text-slate-600 border-slate-200 shadow-2xs');
       case 'sage':
         return isOngoing
@@ -955,10 +959,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'amethyst-haze':
         return isOngoing
           ? (isDark
-              ? 'bg-purple-950 text-purple-200 border border-purple-600/50 shadow-xs'
+              ? 'bg-[#251a33] text-[#ded6e8] border border-[#6e5585]/40 shadow-xs'
               : 'bg-stone-100 text-stone-800 border-stone-300 shadow-2xs font-semibold')
           : (isDark
-              ? 'bg-[#1e122d] text-purple-200 border border-purple-800/60 shadow-xs'
+              ? 'bg-[#1a1226] text-[#ded6e8] border border-[#523d66]/40 shadow-xs'
               : 'bg-stone-50 text-stone-600 border-stone-200 shadow-2xs');
       case 'cosmic':
       default:
@@ -979,7 +983,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'slate-haze':
         if (idx === 0) {
           return isDark
-            ? 'bg-gradient-to-tr from-cyan-400 to-sky-300 text-slate-950 shadow-[0_0_10px_rgba(6,182,212,0.4)]'
+            ? 'bg-gradient-to-tr from-[#4d6a85] to-[#6d8fae] text-white shadow-[0_0_8px_rgba(77,106,133,0.35)]'
             : 'bg-gradient-to-tr from-[#87909d] to-[#6c7684] text-white shadow-sm ring-1 ring-[#d8dfe9]';
         }
         if (idx === 1) {
@@ -1023,7 +1027,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'amethyst-haze':
         if (idx === 0) {
           return isDark
-            ? 'bg-gradient-to-tr from-purple-500 to-fuchsia-400 text-stone-950 shadow-[0_0_10px_rgba(192,132,252,0.4)]'
+            ? 'bg-gradient-to-tr from-[#735a8f] to-[#9980b8] text-white shadow-[0_0_8px_rgba(115,90,143,0.35)]'
             : 'bg-gradient-to-tr from-[#6b5f82] to-[#4f4464] text-white shadow-sm ring-1 ring-stone-400/30';
         }
         if (idx === 1) {
@@ -1044,11 +1048,15 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   };
 
   // Helper styling for completed novel category filter tabs (Nút phân loại mục Tiểu Thuyết Đã Hoàn)
-  // - Ở theme sáng: Khôi phục lại như cũ trước khi áp dụng 5 hiệu ứng (nền thanh container sáng với shadow-inner, màu nút active chuẩn của theme)
-  // - Ở theme tối: Giữ nguyên 5 hiệu ứng viên thuốc 3D, bỏ đường viền ngoài (border-0), đổi màu ✦ thành màu trắng
-  const getCompletedCategoryTabsStyles = (th: NovelThemeId, isDark: boolean) => {
+  // - Ở theme sáng: Khôi phục lại như cũ trước khi áp dụng 5 hiệu ứng (nền thanh container sáng với shadow-inner, màu nút active chuẩn của theme) - GIỮ NGUYÊN
+  // - Ở theme tối: Chuyển sắc rõ ràng, mỗi nút mang một sắc thái riêng biệt nổi bật, toàn bộ thanh biến chuyển màu sắc hài hòa khi bấm nút khác nhau
+  const getCompletedCategoryTabsStyles = (
+    th: NovelThemeId,
+    isDark: boolean,
+    activeCat: NovelCategoryTabId = 'all'
+  ) => {
     if (!isDark) {
-      // Theme sáng: Nền sáng cho thanh container với đổ bóng chìm (shadow-inner), màu nút active là màu chủ đạo của theme
+      // Theme sáng: Nền sáng cho thanh container với đổ bóng chìm (shadow-inner), màu nút active là màu chủ đạo của theme (GIỮ NGUYÊN)
       switch (th) {
         case 'slate-haze':
           return {
@@ -1057,6 +1065,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             activeText: 'text-white',
             inactiveText: 'text-[#64748b] hover:text-[#101723]',
             getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-[#64748b] hover:text-[#101723]',
           };
         case 'sage':
           return {
@@ -1065,6 +1074,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             activeText: 'text-white',
             inactiveText: 'text-[#556953] hover:text-[#1c261b]',
             getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-[#556953] hover:text-[#1c261b]',
           };
         case 'mocha':
           return {
@@ -1073,6 +1083,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             activeText: 'text-white',
             inactiveText: 'text-[#7d675e] hover:text-[#2a1d17]',
             getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-[#7d675e] hover:text-[#2a1d17]',
           };
         case 'amethyst-haze':
           return {
@@ -1081,6 +1092,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             activeText: 'text-white',
             inactiveText: 'text-[#6b5e7d] hover:text-[#251d30]',
             getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-[#6b5e7d] hover:text-[#251d30]',
           };
         case 'notebook':
           return {
@@ -1089,6 +1101,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             activeText: 'text-white font-bold',
             inactiveText: 'text-[#525252] hover:text-[#171717]',
             getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-[#525252] hover:text-[#171717]',
           };
         case 'cosmic':
         default:
@@ -1098,249 +1111,211 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             activeText: 'text-white',
             inactiveText: 'text-purple-700 hover:text-purple-950',
             getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-purple-700 hover:text-purple-950',
           };
       }
     }
 
-    // Theme tối: BỎ HOÀN TOÀN đường viền ngoài (border-0), giữ nguyên hiệu ứng khoang kính mờ và gradient viên thuốc 3D
-    let containerClass = '';
-    let inactiveTextClass = '';
+    // Theme tối: BỎ HOÀN TOÀN đường viền ngoài (border-0)
+    // SẮC THÁI DỊU NHẸ, TRUNG TÍNH, KHÔNG CHÓI MẮT NHƯNG VẪN CÓ SỰ CHUYỂN SẮC TINH TẾ THEO TỪNG THEME:
+    let containerBase = 'bg-[#151518]/90 border-0';
+    const containerAura = 'shadow-md ring-1 ring-white/5';
 
     switch (th) {
-      case 'slate-haze':
-        containerClass =
-          'bg-[#0b1320]/80 border-0 shadow-[inset_0_1px_2px_rgba(56,189,248,0.22),0_4px_20px_rgba(0,0,0,0.5)]';
-        inactiveTextClass = 'text-slate-400 hover:text-sky-200';
-        break;
       case 'sage':
-        containerClass =
-          'bg-[#0e1711]/85 border-0 shadow-[inset_0_1px_2px_rgba(152,184,148,0.18),0_4px_20px_rgba(0,0,0,0.5)]';
-        inactiveTextClass = 'text-[#9db6a1] hover:text-[#e4efe5]';
+        containerBase = 'bg-[#131a15]/90 border-0';
+        break;
+      case 'slate-haze':
+        containerBase = 'bg-[#121822]/90 border-0';
         break;
       case 'mocha':
-        containerClass =
-          'bg-[#1a1410]/85 border-0 shadow-[inset_0_1px_2px_rgba(215,185,160,0.18),0_4px_20px_rgba(0,0,0,0.5)]';
-        inactiveTextClass = 'text-[#c2b0a2] hover:text-[#f3eae4]';
-        break;
-      case 'amethyst-haze':
-        containerClass =
-          'bg-[#140b20]/80 border-0 shadow-[inset_0_1px_2px_rgba(192,132,252,0.22),0_4px_20px_rgba(0,0,0,0.5)]';
-        inactiveTextClass = 'text-purple-300/70 hover:text-purple-200';
+        containerBase = 'bg-[#1a1512]/90 border-0';
         break;
       case 'notebook':
-        containerClass =
-          'bg-[#131316]/85 border-0 shadow-[inset_0_1px_2px_rgba(255,255,255,0.18),0_4px_20px_rgba(0,0,0,0.5)]';
-        inactiveTextClass = 'text-zinc-400 hover:text-zinc-100';
+        containerBase = 'bg-[#161619]/90 border-0';
         break;
+      case 'amethyst-haze':
       case 'cosmic':
       default:
-        containerClass =
-          'bg-[#0d0a28]/80 border-0 shadow-[inset_0_1px_2px_rgba(129,140,248,0.25),0_4px_20px_rgba(0,0,0,0.5)]';
-        inactiveTextClass = 'text-indigo-300/70 hover:text-cyan-200';
+        containerBase = th === 'cosmic' ? 'bg-[#0f0c24]/90 border-0' : 'bg-[#16121f]/90 border-0';
         break;
     }
 
-    // 2. Dải màu Gradient 3 điểm dừng & Hào quang phát sáng (Colored Ambient Glow) đồng bộ theo Thể loại & Theme
+    // Dải màu gradient viên thuốc dịu nhẹ, trung tính, chuyển sắc êm dịu, không chói lóa
     const getActivePill = (catId: NovelCategoryTabId) => {
-      switch (th) {
-        case 'slate-haze':
-          switch (catId) {
-            case 'h-van':
-              return {
-                gradient: 'bg-gradient-to-r from-sky-700 via-cyan-600 to-teal-500',
-                glow: 'shadow-md shadow-cyan-500/35',
-              };
-            case 'h-van-np':
-              return {
-                gradient: 'bg-gradient-to-r from-blue-700 via-sky-600 to-indigo-500',
-                glow: 'shadow-md shadow-blue-500/35',
-              };
-            case 'h-van-ngan':
-              return {
-                gradient: 'bg-gradient-to-r from-cyan-700 via-sky-600 to-blue-500',
-                glow: 'shadow-md shadow-sky-500/35',
-              };
-            case 'dam-my':
-              return {
-                gradient: 'bg-gradient-to-r from-sky-700 via-blue-600 to-cyan-500',
-                glow: 'shadow-md shadow-blue-500/35',
-              };
-            case 'all':
-            default:
-              return {
-                gradient: 'bg-gradient-to-r from-slate-700 via-sky-600 to-cyan-500',
-                glow: 'shadow-md shadow-sky-500/35',
-              };
-          }
+      // 1. THEME SAGE (Xanh lá / Botanical / Sage - Tone rêu, ngải cứu & lá xám trung tính dịu nhẹ)
+      if (th === 'sage') {
+        switch (catId) {
+          case 'h-van':
+            return {
+              gradient: 'bg-gradient-to-r from-[#313b2d] via-[#3c4736] to-[#465440]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-np':
+            return {
+              gradient: 'bg-gradient-to-r from-[#263733] via-[#2f423d] to-[#394d47]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-ngan':
+            return {
+              gradient: 'bg-gradient-to-r from-[#363b2d] via-[#414736] to-[#4c5440]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'dam-my':
+            return {
+              gradient: 'bg-gradient-to-r from-[#283832] via-[#32453e] to-[#3c524a]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'all':
+          default:
+            return {
+              gradient: 'bg-gradient-to-r from-[#2a362e] via-[#334238] to-[#3c4e43]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+        }
+      }
 
-        case 'sage':
-          switch (catId) {
-            case 'h-van':
-              return {
-                gradient: 'bg-gradient-to-r from-[#445d47] via-[#557359] to-[#67876b]',
-                glow: 'shadow-md shadow-[#557359]/30',
-              };
-            case 'h-van-np':
-              return {
-                gradient: 'bg-gradient-to-r from-[#395642] via-[#476851] to-[#597c64]',
-                glow: 'shadow-md shadow-[#476851]/30',
-              };
-            case 'h-van-ngan':
-              return {
-                gradient: 'bg-gradient-to-r from-[#3c5949] via-[#4c6c5a] to-[#5e806d]',
-                glow: 'shadow-md shadow-[#4c6c5a]/30',
-              };
-            case 'dam-my':
-              return {
-                gradient: 'bg-gradient-to-r from-[#435c4b] via-[#53725d] to-[#658570]',
-                glow: 'shadow-md shadow-[#53725d]/30',
-              };
-            case 'all':
-            default:
-              return {
-                gradient: 'bg-gradient-to-r from-[#3e5b43] via-[#4d6f53] to-[#5e8264]',
-                glow: 'shadow-md shadow-[#4d6f53]/30',
-              };
-          }
+      // 2. THEME SLATE-HAZE (Frost / Xanh đá / Steel Slate trung tính dịu nhẹ)
+      if (th === 'slate-haze') {
+        switch (catId) {
+          case 'h-van':
+            return {
+              gradient: 'bg-gradient-to-r from-[#23333b] via-[#2a3d47] to-[#324753]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-np':
+            return {
+              gradient: 'bg-gradient-to-r from-[#2a2d42] via-[#323650] to-[#3b405e]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-ngan':
+            return {
+              gradient: 'bg-gradient-to-r from-[#253544] via-[#2c3e50] to-[#34485d]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'dam-my':
+            return {
+              gradient: 'bg-gradient-to-r from-[#283241] via-[#303d4f] to-[#39485e]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'all':
+          default:
+            return {
+              gradient: 'bg-gradient-to-r from-[#26313e] via-[#2e3b4b] to-[#374659]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+        }
+      }
 
-        case 'mocha':
-          switch (catId) {
-            case 'h-van':
-              return {
-                gradient: 'bg-gradient-to-r from-[#824f4a] via-[#975f58] to-[#aa6f68]',
-                glow: 'shadow-md shadow-[#975f58]/30',
-              };
-            case 'h-van-np':
-              return {
-                gradient: 'bg-gradient-to-r from-[#7a5538] via-[#8e6443] to-[#a07451]',
-                glow: 'shadow-md shadow-[#8e6443]/30',
-              };
-            case 'h-van-ngan':
-              return {
-                gradient: 'bg-gradient-to-r from-[#735848] via-[#866856] to-[#9a7b67]',
-                glow: 'shadow-md shadow-[#866856]/30',
-              };
-            case 'dam-my':
-              return {
-                gradient: 'bg-gradient-to-r from-[#7d5040] via-[#925e4d] to-[#a46e5c]',
-                glow: 'shadow-md shadow-[#925e4d]/30',
-              };
-            case 'all':
-            default:
-              return {
-                gradient: 'bg-gradient-to-r from-[#775243] via-[#8c6150] to-[#9f7260]',
-                glow: 'shadow-md shadow-[#8c6150]/30',
-              };
-          }
+      // 3. THEME MOCHA (Linen / Nâu ấm / Cacao taupe & Cà phê ấm trung tính dịu nhẹ)
+      if (th === 'mocha') {
+        switch (catId) {
+          case 'h-van':
+            return {
+              gradient: 'bg-gradient-to-r from-[#3b2b23] via-[#48352c] to-[#564035]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-np':
+            return {
+              gradient: 'bg-gradient-to-r from-[#322520] via-[#3e2e28] to-[#4b3831]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-ngan':
+            return {
+              gradient: 'bg-gradient-to-r from-[#3a3023] via-[#473b2c] to-[#554736]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'dam-my':
+            return {
+              gradient: 'bg-gradient-to-r from-[#382b25] via-[#44352e] to-[#514037]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'all':
+          default:
+            return {
+              gradient: 'bg-gradient-to-r from-[#362923] via-[#42332c] to-[#4f3e35]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+        }
+      }
 
-        case 'notebook':
-          switch (catId) {
-            case 'h-van':
-              return {
-                gradient: isDark
-                  ? 'bg-gradient-to-r from-neutral-700 via-zinc-600 to-slate-500'
-                  : 'bg-gradient-to-r from-neutral-800 via-zinc-700 to-slate-600',
-                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
-              };
-            case 'h-van-np':
-              return {
-                gradient: isDark
-                  ? 'bg-gradient-to-r from-stone-700 via-neutral-600 to-zinc-500'
-                  : 'bg-gradient-to-r from-stone-800 via-neutral-700 to-zinc-600',
-                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
-              };
-            case 'h-van-ngan':
-              return {
-                gradient: isDark
-                  ? 'bg-gradient-to-r from-zinc-700 via-stone-600 to-neutral-500'
-                  : 'bg-gradient-to-r from-zinc-800 via-stone-700 to-neutral-600',
-                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
-              };
-            case 'dam-my':
-              return {
-                gradient: isDark
-                  ? 'bg-gradient-to-r from-slate-700 via-zinc-600 to-stone-500'
-                  : 'bg-gradient-to-r from-slate-800 via-zinc-700 to-stone-600',
-                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
-              };
-            case 'all':
-            default:
-              return {
-                gradient: isDark
-                  ? 'bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-500'
-                  : 'bg-gradient-to-r from-zinc-800 via-neutral-700 to-stone-600',
-                glow: isDark ? 'shadow-md shadow-zinc-400/25' : 'shadow-md shadow-zinc-800/35',
-              };
-          }
+      // 4. THEME NOTEBOOK (White / Monochrome / Graphite & Than chì trung tính dịu nhẹ)
+      if (th === 'notebook') {
+        switch (catId) {
+          case 'h-van':
+            return {
+              gradient: 'bg-gradient-to-r from-[#2f3137] via-[#393c43] to-[#444750]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-np':
+            return {
+              gradient: 'bg-gradient-to-r from-[#252528] via-[#2f2f33] to-[#3a3a3f]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'h-van-ngan':
+            return {
+              gradient: 'bg-gradient-to-r from-[#31302e] via-[#3c3b39] to-[#484644]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'dam-my':
+            return {
+              gradient: 'bg-gradient-to-r from-[#292c32] via-[#33373e] to-[#3e424b]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+          case 'all':
+          default:
+            return {
+              gradient: 'bg-gradient-to-r from-[#2b2b30] via-[#35353b] to-[#404047]',
+              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            };
+        }
+      }
 
-        case 'cosmic':
-          switch (catId) {
-            case 'h-van':
-              return {
-                gradient: 'bg-gradient-to-r from-fuchsia-600 via-rose-500 to-amber-400',
-                glow: 'shadow-md shadow-rose-500/45',
-              };
-            case 'h-van-np':
-              return {
-                gradient: 'bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500',
-                glow: 'shadow-md shadow-purple-500/45',
-              };
-            case 'h-van-ngan':
-              return {
-                gradient: 'bg-gradient-to-r from-pink-600 via-purple-500 to-cyan-400',
-                glow: 'shadow-md shadow-pink-500/45',
-              };
-            case 'dam-my':
-              return {
-                gradient: 'bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500',
-                glow: 'shadow-md shadow-blue-500/45',
-              };
-            case 'all':
-            default:
-              return {
-                gradient: 'bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400',
-                glow: 'shadow-md shadow-indigo-500/45',
-              };
-          }
-
-        case 'amethyst-haze':
+      // 5. THEME AMETHYST-HAZE & COSMIC (Tím hoàng hôn mờ / Thạch anh tro / Dusty Mauve trung tính dịu nhẹ)
+      switch (catId) {
+        case 'h-van':
+          return {
+            gradient: 'bg-gradient-to-r from-[#392535] via-[#452e41] to-[#52384e]',
+            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+          };
+        case 'h-van-np':
+          return {
+            gradient: 'bg-gradient-to-r from-[#2c243d] via-[#362c4a] to-[#413559]',
+            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+          };
+        case 'h-van-ngan':
+          return {
+            gradient: 'bg-gradient-to-r from-[#3a2531] via-[#472e3d] to-[#55384a]',
+            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+          };
+        case 'dam-my':
+          return {
+            gradient: 'bg-gradient-to-r from-[#312940] via-[#3c324e] to-[#483d5d]',
+            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+          };
+        case 'all':
         default:
-          switch (catId) {
-            case 'h-van':
-              return {
-                gradient: 'bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600',
-                glow: 'shadow-md shadow-rose-500/35',
-              };
-            case 'h-van-np':
-              return {
-                gradient: 'bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-500',
-                glow: 'shadow-md shadow-fuchsia-500/35',
-              };
-            case 'h-van-ngan':
-              return {
-                gradient: 'bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500',
-                glow: 'shadow-md shadow-pink-500/35',
-              };
-            case 'dam-my':
-              return {
-                gradient: 'bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500',
-                glow: 'shadow-md shadow-indigo-500/35',
-              };
-            case 'all':
-            default:
-              return {
-                gradient: 'bg-gradient-to-r from-violet-600 via-purple-600 to-pink-500',
-                glow: 'shadow-md shadow-purple-500/35',
-              };
-          }
+          return {
+            gradient: 'bg-gradient-to-r from-[#32253f] via-[#3d2e4d] to-[#49385c]',
+            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+          };
       }
     };
 
+    // Màu sắc chữ hover khi chưa active: Tone màu trung tính dịu mắt, hòa nhã
+    const getInactiveText = (catId: NovelCategoryTabId) => {
+      if (th === 'notebook') {
+        return 'text-zinc-400 hover:text-zinc-200';
+      }
+      return 'text-stone-400 hover:text-stone-200';
+    };
+
     return {
-      container: containerClass,
-      activeText: 'text-white font-bold',
-      inactiveText: inactiveTextClass,
+      container: `${containerBase} ${containerAura}`,
+      activeText: 'text-white font-medium',
+      inactiveText: 'text-stone-400 hover:text-stone-200',
       getActivePill,
+      getInactiveText,
     };
   };
 
@@ -1378,29 +1353,29 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         case 'slate-haze':
           return {
             dotColor: 'rgba(186, 230, 253, 0.08)',
-            gridColor: 'rgba(56, 189, 248, 0.09)',
+            gridColor: 'rgba(77, 106, 133, 0.08)',
             heroRimBg: 'bg-[#0f1724]',
             outerBg: 'bg-[#0d1520]/95',
-            outerBorder: 'border-sky-500/40',
-            heroOuterBorder: 'border border-sky-500/40',
-            heroInnerDashed: 'border border-dashed border-sky-400/35',
-            heroGenreColor: 'text-sky-300/80',
-            heroTitleColor: 'text-sky-100',
-            heroMetaColor: 'text-sky-300/70',
-            heroOrnamentColor: 'text-sky-400/80',
+            outerBorder: 'border-[#4d6a85]/35',
+            heroOuterBorder: 'border border-[#4d6a85]/35',
+            heroInnerDashed: 'border border-dashed border-[#5d7e9d]/30',
+            heroGenreColor: 'text-[#8ba0b5]',
+            heroTitleColor: 'text-[#edf4fa]',
+            heroMetaColor: 'text-[#8ba0b5]',
+            heroOrnamentColor: 'text-[#7a9bb8]',
             cardBg: 'bg-[#0f1926]/95',
-            cardBorder: 'border-sky-500/40',
-            polaroidBg: 'bg-[#152233] border-sky-400/40 text-sky-100',
-            starColor: 'text-sky-400/85',
-            ornamentText: 'text-sky-300/70',
-            bowColor: 'text-sky-300/70',
-            tapeColor: 'bg-sky-950/70 border-sky-800/50 text-sky-300',
-            pushpin: 'bg-zinc-800 border-sky-400',
-            dotActive: 'bg-sky-400',
-            dotInactive: 'bg-sky-900',
-            arrowBtn: 'bg-[#162232] text-sky-100 border-sky-600/50 hover:bg-sky-900/60',
-            badgeBg: 'bg-white/10 text-sky-200 border-white/10',
-            heartColor: 'text-sky-400',
+            cardBorder: 'border-[#4d6a85]/30',
+            polaroidBg: 'bg-[#152233] border-[#4d6a85]/35 text-[#edf4fa]',
+            starColor: 'text-[#7a9bb8]/75',
+            ornamentText: 'text-[#8ba0b5]/70',
+            bowColor: 'text-[#8ba0b5]/70',
+            tapeColor: 'bg-[#1a2838]/80 border-[#4d6a85]/40 text-[#8ba0b5]',
+            pushpin: 'bg-zinc-800 border-[#5d7e9d]',
+            dotActive: 'bg-[#5d7e9d]',
+            dotInactive: 'bg-[#1c2c3d]',
+            arrowBtn: 'bg-[#162332] text-[#dce7f0] border-[#4d6a85]/40 hover:bg-[#1e2f42]',
+            badgeBg: 'bg-white/10 text-[#dce7f0] border-white/10',
+            heartColor: 'text-[#7a9bb8]',
           };
         case 'mocha':
           return {
@@ -1487,29 +1462,29 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         default:
           return {
             dotColor: 'rgba(216, 180, 254, 0.08)',
-            gridColor: 'rgba(192, 132, 252, 0.09)',
+            gridColor: 'rgba(133, 107, 158, 0.08)',
             heroRimBg: 'bg-[#161322]',
             outerBg: 'bg-[#13111c]/95',
-            outerBorder: 'border-purple-500/40',
-            heroOuterBorder: 'border border-purple-500/45',
-            heroInnerDashed: 'border border-dashed border-purple-400/35',
-            heroGenreColor: 'text-purple-300/80',
-            heroTitleColor: 'text-purple-100',
-            heroMetaColor: 'text-purple-300/70',
-            heroOrnamentColor: 'text-purple-400/80',
+            outerBorder: 'border-[#6e5585]/35',
+            heroOuterBorder: 'border border-[#6e5585]/35',
+            heroInnerDashed: 'border border-dashed border-[#82699c]/30',
+            heroGenreColor: 'text-[#9c89b2]',
+            heroTitleColor: 'text-[#f2f0f7]',
+            heroMetaColor: 'text-[#9c89b2]',
+            heroOrnamentColor: 'text-[#a795be]',
             cardBg: 'bg-[#161322]/95',
-            cardBorder: 'border-purple-500/40',
-            polaroidBg: 'bg-[#1e192c] border-purple-400/40 text-purple-100',
-            starColor: 'text-purple-400/85',
-            ornamentText: 'text-purple-300/60',
-            bowColor: 'text-purple-300/70',
-            tapeColor: 'bg-purple-950/70 border-purple-800/40 text-purple-300',
-            pushpin: 'bg-zinc-800 border-purple-400',
-            dotActive: 'bg-purple-400',
-            dotInactive: 'bg-zinc-700',
-            arrowBtn: 'bg-zinc-800/90 text-zinc-200 border-zinc-700 hover:bg-zinc-700',
-            badgeBg: 'bg-white/10 text-zinc-200 border-white/10',
-            heartColor: 'text-purple-400',
+            cardBorder: 'border-[#6e5585]/30',
+            polaroidBg: 'bg-[#1e192c] border-[#6e5585]/35 text-[#f2f0f7]',
+            starColor: 'text-[#a795be]/75',
+            ornamentText: 'text-[#9c89b2]/70',
+            bowColor: 'text-[#9c89b2]/70',
+            tapeColor: 'bg-[#21192e]/80 border-[#6e5585]/40 text-[#9c89b2]',
+            pushpin: 'bg-zinc-800 border-[#82699c]',
+            dotActive: 'bg-[#82699c]',
+            dotInactive: 'bg-[#291e38]',
+            arrowBtn: 'bg-[#1e172a] text-[#ded6e8] border-[#6e5585]/40 hover:bg-[#282038]',
+            badgeBg: 'bg-white/10 text-[#ded6e8] border-white/10',
+            heartColor: 'text-[#a795be]',
           };
       }
     }
@@ -1809,7 +1784,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   const isCurrentBookmarked = bookmarkedIds.includes(currentHeroNovel?.id);
 
   // Centralized Theme Color & Typography Styles
-  const isCosmic = theme === 'cosmic' || (theme === 'amethyst-haze' && isDarkMode);
+  const isCosmic = theme === 'cosmic';
   const isDarkEffective = isCosmic || isDarkMode;
   const tStyles = useMemo(() => getNovelThemeStyles(theme, isDarkEffective), [theme, isDarkEffective]);
 
@@ -1896,14 +1871,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   const introButtonStyles = useMemo(() => {
     if (isCosmic) {
       return {
-        btnBg: '#1f0b3b',
+        btnBg: '#4e287e',
         textColor: 'text-white',
-        borderGradient: 'bg-gradient-to-r from-[#2e1065] via-[#a855f7] via-[#ec4899] to-[#06b6d4] animate-gradient-flow',
-        borderShadow: 'shadow-[0_0_8px_rgba(168,85,247,0.45)] hover:shadow-[0_0_12px_rgba(236,72,153,0.7)] group-hover:shadow-[0_0_12px_rgba(236,72,153,0.7)]',
+        borderGradient: 'bg-transparent',
+        borderShadow: 'shadow-none',
         innerShadow: 'shadow-xs',
-        haloCushion: 'bg-gradient-to-r from-purple-600/40 via-fuchsia-500/30 to-cyan-500/40',
-        dotColor: 'bg-cyan-300',
-        dotPing: 'bg-pink-400',
+        haloCushion: 'bg-gradient-to-r from-purple-600/35 via-violet-500/25 to-indigo-500/35',
+        dotColor: 'bg-purple-300',
+        dotPing: 'bg-purple-400',
       };
     }
 
@@ -1911,14 +1886,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         return isDarkEffective
           ? {
-              btnBg: '#0e1711',
-              textColor: 'text-[#eaf2eb]',
-              borderGradient: 'bg-gradient-to-r from-[#293d2d] via-[#4d6f53] via-[#658570] to-[#4d6f53] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(77,111,83,0.4)] hover:shadow-[0_0_12px_rgba(94,130,100,0.65)] group-hover:shadow-[0_0_12px_rgba(94,130,100,0.65)]',
+              btnBg: '#3b5c43',
+              textColor: 'text-white',
+              borderGradient: 'bg-transparent',
+              borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-[#4d6f53]/35 via-[#658570]/25 to-[#3e5b43]/35',
-              dotColor: 'bg-[#8cb391]',
-              dotPing: 'bg-[#bde0c2]',
+              dotColor: 'bg-[#b2ceae]',
+              dotPing: 'bg-[#cad8c6]',
             }
           : {
               btnBg: '#f7faf7',
@@ -1934,12 +1909,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'notebook':
         return isDarkEffective
           ? {
-              btnBg: '#18181b',
-              textColor: 'text-zinc-100',
-              borderGradient: 'bg-gradient-to-r from-[#27272a] via-[#71717a] via-[#a1a1aa] to-[#e4e4e7] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(212,212,216,0.35)] hover:shadow-[0_0_12px_rgba(244,244,245,0.6)] group-hover:shadow-[0_0_12px_rgba(244,244,245,0.6)]',
+              btnBg: '#44444c',
+              textColor: 'text-white',
+              borderGradient: 'bg-transparent',
+              borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-zinc-500/35 via-zinc-400/25 to-zinc-600/35',
+              haloCushion: 'bg-gradient-to-r from-zinc-500/30 via-zinc-400/20 to-zinc-600/30',
               dotColor: 'bg-zinc-200',
               dotPing: 'bg-zinc-400',
             }
@@ -1957,13 +1932,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'mocha':
         return isDarkEffective
           ? {
-              btnBg: '#1c140f',
-              textColor: 'text-[#f5ece6]',
-              borderGradient: 'bg-gradient-to-r from-[#4d3228] via-[#8c6150] via-[#aa6f68] to-[#8c6150] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(140,97,80,0.4)] hover:shadow-[0_0_12px_rgba(170,111,104,0.65)] group-hover:shadow-[0_0_12px_rgba(170,111,104,0.65)]',
+              btnBg: '#5c3e30',
+              textColor: 'text-white',
+              borderGradient: 'bg-transparent',
+              borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-[#8c6150]/35 via-[#975f58]/25 to-[#775243]/35',
-              dotColor: 'bg-[#d4a38c]',
+              dotColor: 'bg-[#e4cec0]',
               dotPing: 'bg-[#f0d8cc]',
             }
           : {
@@ -1980,14 +1955,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'amethyst-haze':
         return isDarkEffective
           ? {
-              btnBg: '#23053d',
-              textColor: 'text-purple-50',
-              borderGradient: 'bg-gradient-to-r from-[#3b0764] via-[#9333ea] via-[#c084fc] to-[#e879f9] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(168,85,247,0.4)] hover:shadow-[0_0_12px_rgba(192,132,252,0.65)] group-hover:shadow-[0_0_12px_rgba(192,132,252,0.65)]',
+              btnBg: '#4e287e',
+              textColor: 'text-white',
+              borderGradient: 'bg-transparent',
+              borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-purple-600/40 via-fuchsia-600/30 to-purple-400/40',
-              dotColor: 'bg-purple-300',
-              dotPing: 'bg-fuchsia-400',
+              haloCushion: 'bg-gradient-to-r from-[#5a3978]/30 via-[#714d94]/25 to-[#5a3978]/30',
+              dotColor: 'bg-[#d1c2e4]',
+              dotPing: 'bg-[#e2d7f0]',
             }
           : {
               btnBg: '#faf8fc',
@@ -2004,14 +1979,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       default:
         return isDarkEffective
           ? {
-              btnBg: '#052233',
-              textColor: 'text-sky-50',
-              borderGradient: 'bg-gradient-to-r from-[#0c4a6e] via-[#0284c7] via-[#38bdf8] to-[#67e8f9] animate-gradient-flow',
-              borderShadow: 'shadow-[0_0_8px_rgba(56,189,248,0.4)] hover:shadow-[0_0_12px_rgba(103,232,249,0.65)] group-hover:shadow-[0_0_12px_rgba(103,232,249,0.65)]',
+              btnBg: '#344e68',
+              textColor: 'text-white',
+              borderGradient: 'bg-transparent',
+              borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-sky-600/40 via-cyan-500/30 to-blue-400/40',
-              dotColor: 'bg-sky-300',
-              dotPing: 'bg-cyan-400',
+              haloCushion: 'bg-gradient-to-r from-[#34526f]/30 via-[#456b90]/25 to-[#34526f]/30',
+              dotColor: 'bg-[#b6cee0]',
+              dotPing: 'bg-[#d4e4ef]',
             }
           : {
               btnBg: '#f8fafc',
@@ -2026,14 +2001,48 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   }, [theme, isDarkEffective, isCosmic]);
 
+  // Màu sắc cho 3 nút chuyển trang & đổi bìa của mục "TRUYỆN VỪA MỚI ĐĂNG" đồng bộ theo theme
+  const getPolaroidNavBtnClass = (th: NovelThemeId, isDark: boolean) => {
+    if (isDark) {
+      switch (th) {
+        case 'slate-haze':
+          return 'bg-[#1e2f42] text-[#dce7f0] border border-[#4d6a85]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#283e56] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+        case 'sage':
+          return 'bg-[#1e3325] text-[#eaf2eb] border border-[#4d6f53]/55 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#274230] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+        case 'mocha':
+          return 'bg-[#2d211b] text-[#f5ece6] border border-[#8c6150]/55 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#3d2c24] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+        case 'notebook':
+          return 'bg-[#28282e] text-zinc-100 border border-zinc-500/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#34343d] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+        case 'cosmic':
+          return 'bg-[#251b42] text-indigo-100 border border-indigo-500/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#322459] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+        case 'amethyst-haze':
+        default:
+          return 'bg-[#2a1e3b] text-[#ded6e8] border border-[#6e5585]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#37274e] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+      }
+    }
+    switch (th) {
+      case 'slate-haze':
+        return 'bg-[#f3f7fc] text-[#3e566d] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+      case 'sage':
+        return 'bg-[#f0f4ef] text-[#3f573d] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+      case 'mocha':
+        return 'bg-[#f7f3ed] text-[#6d4d3c] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+      case 'notebook':
+        return 'bg-[#f5f5f5] text-[#2c2c2c] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+      case 'amethyst-haze':
+      default:
+        return 'bg-[#f7f5fb] text-[#4d3d63] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+    }
+  };
+
   // Cấu hình phong cách cho nút "XEM THÊM / THU GỌN" với cơ chế vật lý 3D chân thực (.hv-11__btn--stack)
   const expandButtonStyles = useMemo(() => {
     if (isCosmic) {
       return {
-        btnBg: '#2a1154',
-        btnBorder: 'border-purple-500/60 hover:border-purple-400',
-        textColor: 'text-purple-100',
-        shadowColor: '#120529',
+        btnBg: '#4e287e',
+        btnBorder: 'border-0 border-transparent',
+        textColor: 'text-white',
+        shadowColor: '#240d42',
       };
     }
 
@@ -2041,39 +2050,39 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       switch (theme) {
         case 'sage':
           return {
-            btnBg: '#1e3022',
-            btnBorder: 'border-[#4d6f53]/60 hover:border-[#5e8264]',
-            textColor: 'text-[#eaf2eb]',
-            shadowColor: '#0a140d',
+            btnBg: '#3b5c43',
+            btnBorder: 'border-0 border-transparent',
+            textColor: 'text-white',
+            shadowColor: '#1e3324',
           };
         case 'mocha':
           return {
-            btnBg: '#2c1c15',
-            btnBorder: 'border-[#8c6150]/60 hover:border-[#9f7260]',
-            textColor: 'text-[#f5ece6]',
-            shadowColor: '#120b08',
+            btnBg: '#5c3e30',
+            btnBorder: 'border-0 border-transparent',
+            textColor: 'text-white',
+            shadowColor: '#2e1c14',
           };
         case 'amethyst-haze':
           return {
-            btnBg: '#3b0764',
-            btnBorder: 'border-purple-700/60 hover:border-purple-600',
-            textColor: 'text-purple-100',
-            shadowColor: '#1c0330',
+            btnBg: '#4e287e',
+            btnBorder: 'border-0 border-transparent',
+            textColor: 'text-white',
+            shadowColor: '#2b1c3d',
           };
         case 'notebook':
           return {
-            btnBg: '#27272a',
-            btnBorder: 'border-zinc-600 hover:border-zinc-500',
-            textColor: 'text-zinc-100',
-            shadowColor: '#121215',
+            btnBg: '#44444c',
+            btnBorder: 'border-0 border-transparent',
+            textColor: 'text-white',
+            shadowColor: '#202026',
           };
         case 'slate-haze':
         default:
           return {
-            btnBg: '#0c4a6e',
-            btnBorder: 'border-sky-700/60 hover:border-sky-600',
-            textColor: 'text-sky-100',
-            shadowColor: '#032438',
+            btnBg: '#344e68',
+            btnBorder: 'border-0 border-transparent',
+            textColor: 'text-white',
+            shadowColor: '#1c2d3d',
           };
       }
     } else {
@@ -2120,8 +2129,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   }, [theme, isDarkEffective, isCosmic]);
   const currentThemeOption = NOVEL_THEME_OPTIONS.find((t) => t.id === theme) || NOVEL_THEME_OPTIONS[0];
   const completedCategoryTabsStyles = useMemo(
-    () => getCompletedCategoryTabsStyles(theme, isDarkEffective),
-    [theme, isDarkEffective]
+    () => getCompletedCategoryTabsStyles(theme, isDarkEffective, selectedCategory),
+    [theme, isDarkEffective, selectedCategory]
   );
   // All novel titles use Source Serif 4 typography
   const themeFontHeading = 'font-source-serif';
@@ -2272,30 +2281,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
           {/* Action Buttons & Theme Selector */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
-            {/* Dark Mode Button */}
-            <button
-              onClick={toggleDarkMode}
-              className={`p-2 rounded-full text-xs font-semibold border transition-all cursor-pointer shadow-xs ${tStyles.buttonDarkMode}`}
-              title={
-                isDarkEffective
-                  ? 'Tắt Dark Mode (Trở lại màu sáng)'
-                  : 'Bật Dark Mode (Chuyển sang chế độ tối)'
-              }
-            >
-              {isDarkEffective ? (
-                <Moon className="w-3.5 h-3.5 text-amber-300 fill-amber-300/30" />
-              ) : (
-                <Sun className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
-              )}
-            </button>
-
-            {/* Theme Selector Popover (5 Themes) - Thu gọn lại, bỏ icon mũi tên chỉa xuống */}
+            {/* Theme Selector Popover (5 Themes) - Tích hợp nút toggle chế độ sáng/tối vào trong bảng màu */}
             <div className="relative" ref={themeMenuRef}>
               <button
                 onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
                 className={`p-2 sm:px-3 sm:py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer shadow-xs flex items-center gap-1.5 ${tStyles.themeSelectorBtn}`}
-                title="Thay đổi giao diện màu sắc"
-                aria-label="Thay đổi giao diện màu sắc"
+                title="Thay đổi giao diện màu sắc & chế độ sáng tối"
+                aria-label="Thay đổi giao diện màu sắc & chế độ sáng tối"
               >
                 <Palette className="w-3.5 h-3.5" />
                 <span className="hidden md:inline">{currentThemeOption.name}</span>
@@ -2303,13 +2295,15 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
               {isThemeMenuOpen && (
                 <div
-                  className={`absolute right-0 mt-2 w-64 rounded-xl p-2 shadow-xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
-                    isDarkEffective ? 'bg-[#181a20] border-zinc-700 text-zinc-100' : 'bg-white border-zinc-200 text-zinc-900'
+                  className={`absolute right-0 mt-2 w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                    isDarkEffective
+                      ? 'bg-[#181a20] border-zinc-700 text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
+                      : 'bg-white border-zinc-200 text-zinc-900 shadow-[0_10px_30px_rgba(0,0,0,0.15)]'
                   }`}
                 >
                   <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                     <span>Màu Giao Diện</span>
-                    <span className="text-[9px] font-normal normal-case opacity-70">Sáng / Tối</span>
+                    <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
                   </div>
                   <div className="mt-1 space-y-0.5">
                     {NOVEL_THEME_OPTIONS.map((opt) => {
@@ -2352,9 +2346,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     })}
                   </div>
 
-                  {/* Toggle tắt/bật Hiệu ứng nền của chế độ tối theme Purple */}
+                  {/* Tắt/bật Hiệu ứng nền của chế độ tối theme Purple (Thay nút toggle bằng Bật/Tắt) */}
                   {(theme === 'amethyst-haze' || theme === 'cosmic') && isDarkEffective && (
-                    <div className="mt-2 pt-2 border-t border-zinc-500/20">
+                    <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
                       <button
                         type="button"
                         onClick={(e) => {
@@ -2366,25 +2360,37 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             ? 'hover:bg-zinc-800/60 text-zinc-200'
                             : 'hover:bg-zinc-100 text-zinc-800'
                         }`}
-                        title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền của chế độ tối theme Purple' : 'Nhấn để bật hiệu ứng nền của chế độ tối theme Purple'}
+                        title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
                       >
                         <div className="flex items-center">
                           <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
                         </div>
-                        <div
-                          className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors duration-200 ${
-                            purpleBgEffectsEnabled ? 'bg-purple-600' : 'bg-zinc-700'
+                        <span
+                          className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-all select-none ${
+                            purpleBgEffectsEnabled
+                              ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
+                              : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                           }`}
                         >
-                          <div
-                            className={`bg-white w-3.5 h-3.5 rounded-full shadow-xs transform transition-transform duration-200 ${
-                              purpleBgEffectsEnabled ? 'translate-x-3.5' : 'translate-x-0'
-                            }`}
-                          />
-                        </div>
+                          {purpleBgEffectsEnabled ? 'Bật' : 'Tắt'}
+                        </span>
                       </button>
                     </div>
                   )}
+
+                  {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Không nền hồng bao bọc, không icon minh họa, không dòng nền tối dịu mắt) */}
+                  <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
+                    <span className="text-xs font-semibold select-none">
+                      Chế độ tối
+                    </span>
+                    <ClayThemeToggle
+                      id="clay-toggle-home"
+                      isOn={isDarkEffective}
+                      onToggle={toggleDarkMode}
+                      theme={theme}
+                      title={isDarkEffective ? 'Gạt để chuyển sang chế độ sáng' : 'Gạt để chuyển sang chế độ tối'}
+                    />
+                  </div>
                 </div>
               )}
             </div>
@@ -2553,7 +2559,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     onBackToPortfolio();
                   }
                 }}
-                className={`relative z-10 p-[1px] rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer select-none ${introButtonStyles.borderGradient} ${introButtonStyles.borderShadow}`}
+                className={`relative z-10 ${
+                  isDarkEffective ? 'p-0 border-0' : 'p-[1px]'
+                } rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer select-none ${
+                  isDarkEffective ? 'bg-transparent shadow-none' : `${introButtonStyles.borderGradient} ${introButtonStyles.borderShadow}`
+                }`}
                 title="Khám phá giới thiệu về trang web và hồ sơ tác giả sáng lập"
               >
                 {/* Lớp ruột của nút mang màu nền theo theme + lớp đổ bóng shadow-xs -> group-hover:shadow-sm */}
@@ -2762,10 +2772,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         <div className="lg:col-span-3 space-y-8">
           
           {/* MỤC: TRUYỆN ĐỌC GẦN ĐÂY - THIẾT KẾ CHUẨN THEO ẢNH MẪU IMG_20260916_124252 */}
-          {activeRecentReads.length > 0 && (() => {
-            const currentRecent = activeRecentReads[recentIndex] || activeRecentReads[0];
-            const estimate = getReadingEstimate(currentRecent.novel, currentRecent.record);
+          {(() => {
             const recentCardTheme = getRecentReadingCardTheme(theme, isDarkEffective);
+            const hasRecentReads = activeRecentReads.length > 0;
+            const currentRecent = hasRecentReads ? (activeRecentReads[recentIndex] || activeRecentReads[0]) : null;
+            const estimate = currentRecent ? getReadingEstimate(currentRecent.novel, currentRecent.record) : null;
 
             return (
               <section
@@ -2793,133 +2804,157 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     backgroundRepeat: 'repeat-y',
                   }}
                 >
-                  {/* Hàng trên cùng: Đang đọc > và Chỉ số trang + Nút điều hướng (không lấy icon bảng màu) */}
+                  {/* Hàng trên cùng: Đang đọc > và Chỉ số trang + Nút điều hướng */}
                   <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
-                    {/* Bên trái: Đang đọc > */}
+                    {/* Bên trái: Đang đọc */}
                     <div
-                      onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                      className="flex items-center gap-1.5 cursor-pointer select-none group"
-                      title="Xem chi tiết truyện đang đọc"
+                      onClick={() => {
+                        if (currentRecent) {
+                          handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber);
+                        }
+                      }}
+                      className={`flex items-center gap-1.5 select-none ${currentRecent ? 'cursor-pointer group' : ''}`}
+                      title={currentRecent ? 'Xem chi tiết truyện đang đọc' : 'Đang đọc'}
                     >
-                      <h3 className={`font-bold text-base sm:text-lg md:text-xl transition-opacity group-hover:opacity-80 ${recentCardTheme.titleText}`}>
+                      <h3 className={`font-bold text-base sm:text-lg md:text-xl transition-opacity ${currentRecent ? 'group-hover:opacity-80' : ''} ${recentCardTheme.titleText}`}>
                         Đang đọc
                       </h3>
-                      <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${recentCardTheme.chevronColor}`} />
+                      {currentRecent && (
+                        <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${recentCardTheme.chevronColor}`} />
+                      )}
                     </div>
 
-                    {/* Bên phải: 1/5 và Nút điều hướng < > (KHÔNG có icon bảng màu) */}
-                    <div className="flex items-center gap-2 select-none">
-                      {/* Badge chỉ số trang (tối đa 10 bộ) */}
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-medium border ${recentCardTheme.badge}`}>
-                        {recentIndex + 1}/{activeRecentReads.length}
-                      </span>
+                    {/* Bên phải: 1/5 và Nút điều hướng < > (Chỉ hiện khi có truyện đang đọc) */}
+                    {hasRecentReads && (
+                      <div className="flex items-center gap-2 select-none">
+                        {/* Badge chỉ số trang (tối đa 10 bộ) */}
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-medium border ${recentCardTheme.badge}`}>
+                          {recentIndex + 1}/{activeRecentReads.length}
+                        </span>
 
-                      {/* Nút lùi truyện < */}
-                      <button
-                        onClick={handlePrevRecent}
-                        disabled={activeRecentReads.length <= 1}
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${recentCardTheme.navBtn}`}
-                        title="Truyện trước"
-                        aria-label="Truyện trước"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </button>
-
-                      {/* Nút tiến truyện > */}
-                      <button
-                        onClick={handleNextRecent}
-                        disabled={activeRecentReads.length <= 1}
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${recentCardTheme.navBtn}`}
-                        title="Truyện tiếp theo"
-                        aria-label="Truyện tiếp theo"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Hiệu ứng Chuyển cảnh Tuần tự (Sequential / Without Overlap - Chế độ mode="wait") */}
-                  {/* Nguyên lý: "Thoát hoàn tất rồi mới Xuất hiện" (Exit first, then enter) */}
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                      key={currentRecent.novel.id || `recent-${recentIndex}`}
-                      initial={{ opacity: 0, y: 7 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -7 }}
-                      transition={{ duration: 0.22, ease: [0.25, 1, 0.5, 1] }}
-                    >
-                      {/* Phần thân: Ảnh bìa bên trái + Tiêu đề, Thời gian còn lại, Thanh tiến độ bên phải */}
-                      <div className="flex items-center gap-4 sm:gap-6">
-                        {/* Bìa truyện bo tròn thanh lịch */}
-                        <div
-                          onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                          className={`w-20 h-28 sm:w-24 sm:h-32 md:w-28 md:h-38 shrink-0 rounded-[18px] sm:rounded-[22px] overflow-hidden shadow-md border cursor-pointer group/cover relative ${recentCardTheme.coverBorder} ${recentCardTheme.coverBg}`}
-                          title={`Đọc tiếp: ${currentRecent.novel.title}`}
-                        >
-                          <img
-                            src={getDirectImageUrl(currentRecent.novel.coverImage, currentRecent.novel.id || currentRecent.novel.title)}
-                            onError={(e) => handleCoverImageError(e, currentRecent.novel.id || currentRecent.novel.title)}
-                            alt={currentRecent.novel.title}
-                            className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-
-                        {/* Khung thông tin truyện */}
-                        <div className="flex-1 min-w-0 flex flex-col justify-center space-y-2 sm:space-y-3">
-                          {/* Tiêu đề truyện */}
-                          <h4
-                            onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                            className={`text-base sm:text-lg md:text-xl font-bold font-lora line-clamp-1 cursor-pointer hover:opacity-80 transition-opacity leading-snug ${recentCardTheme.novelTitle}`}
-                            title={currentRecent.novel.title}
-                          >
-                            {currentRecent.novel.title}
-                          </h4>
-
-                          {/* Thời gian còn lại và Tỷ lệ phần trăm % */}
-                          <div className={`flex items-center justify-between text-xs sm:text-sm font-medium ${recentCardTheme.timeSubtext}`}>
-                            <span>{estimate.remainingStr}</span>
-                            <span className={`font-semibold ${recentCardTheme.pctText}`}>{estimate.pct}%</span>
-                          </div>
-
-                          {/* Thanh tiến độ có núm tròn định vị */}
-                          <div
-                            onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                            className={`relative w-full h-2 sm:h-2.5 rounded-full cursor-pointer select-none ${recentCardTheme.progressTrack}`}
-                            title={`Tiến độ: ${estimate.pct}% (Chương ${currentRecent.record.chapterNumber})`}
-                          >
-                            {/* Phần trăm đã đi qua */}
-                            <div
-                              className={`h-full rounded-full transition-all duration-300 ${recentCardTheme.progressBar}`}
-                              style={{ width: `${estimate.pct}%` }}
-                            />
-                            {/* Nốt chấm tròn thanh trượt */}
-                            <div
-                              className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full shadow-md border-2 transition-all pointer-events-none ${recentCardTheme.progressThumb}`}
-                              style={{ left: `calc(${estimate.pct}% - 7px)` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Hàng dưới cùng: Đã đọc X giờ Y phút (bên trái) và Tiếp tục đọc → (bên phải) */}
-                      <div className={`pt-3.5 sm:pt-4 mt-4 sm:mt-5 border-t flex items-center justify-between ${recentCardTheme.divider}`}>
-                        {/* Đã đọc ... */}
-                        <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium ${recentCardTheme.timeSubtext}`}>
-                          <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${recentCardTheme.timeIcon}`} />
-                          <span>{estimate.readStr}</span>
-                        </div>
-
-                        {/* Nút bấm Tiếp tục đọc → */}
+                        {/* Nút lùi truyện < */}
                         <button
-                          onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                          className={`flex items-center gap-1.5 text-xs sm:text-sm font-semibold group/btn cursor-pointer transition-colors ${recentCardTheme.continueBtn}`}
+                          onClick={handlePrevRecent}
+                          disabled={activeRecentReads.length <= 1}
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${recentCardTheme.navBtn}`}
+                          title="Truyện trước"
+                          aria-label="Truyện trước"
                         >
-                          <span>Tiếp tục đọc</span>
-                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:translate-x-1 transition-transform" />
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+
+                        {/* Nút tiến truyện > */}
+                        <button
+                          onClick={handleNextRecent}
+                          disabled={activeRecentReads.length <= 1}
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${recentCardTheme.navBtn}`}
+                          title="Truyện tiếp theo"
+                          aria-label="Truyện tiếp theo"
+                        >
+                          <ChevronRight className="w-4 h-4" />
                         </button>
                       </div>
-                    </motion.div>
-                  </AnimatePresence>
+                    )}
+                  </div>
+
+                  {/* NỘI DUNG MỤC ĐANG ĐỌC */}
+                  {!hasRecentReads || !currentRecent || !estimate ? (
+                    /* Dành cho ai lần đầu tiên bấm vào trang web thì mục sẽ để trống, không hiện truyện */
+                    <div className="py-7 sm:py-9 flex flex-col items-center justify-center text-center px-4">
+                      <div
+                        className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl mb-3 flex items-center justify-center border shadow-2xs ${
+                          isDarkEffective ? 'bg-white/5 border-white/10 text-zinc-400' : 'bg-black/5 border-black/10 text-stone-500'
+                        }`}
+                      >
+                        <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 opacity-60" />
+                      </div>
+                      <p className={`text-sm sm:text-base font-medium ${recentCardTheme.novelTitle}`}>
+                        Chưa có tiến độ đọc truyện trên trình duyệt
+                      </p>
+                    </div>
+                  ) : (
+                    /* Hiển thị truyện khi đã có tiến độ đọc */
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={currentRecent.novel.id || `recent-${recentIndex}`}
+                        initial={{ opacity: 0, y: 7 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -7 }}
+                        transition={{ duration: 0.22, ease: [0.25, 1, 0.5, 1] }}
+                      >
+                        {/* Phần thân: Ảnh bìa bên trái + Tiêu đề, Thời gian còn lại, Thanh tiến độ bên phải */}
+                        <div className="flex items-center gap-4 sm:gap-6">
+                          {/* Bìa truyện bo tròn thanh lịch */}
+                          <div
+                            onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
+                            className={`w-20 h-28 sm:w-24 sm:h-32 md:w-28 md:h-38 shrink-0 rounded-[18px] sm:rounded-[22px] overflow-hidden shadow-md border cursor-pointer group/cover relative ${recentCardTheme.coverBorder} ${recentCardTheme.coverBg}`}
+                            title={`Đọc tiếp: ${currentRecent.novel.title}`}
+                          >
+                            <img
+                              src={getDirectImageUrl(currentRecent.novel.coverImage, currentRecent.novel.id || currentRecent.novel.title)}
+                              onError={(e) => handleCoverImageError(e, currentRecent.novel.id || currentRecent.novel.title)}
+                              alt={currentRecent.novel.title}
+                              className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+
+                          {/* Khung thông tin truyện */}
+                          <div className="flex-1 min-w-0 flex flex-col justify-center space-y-2 sm:space-y-3">
+                            {/* Tiêu đề truyện */}
+                            <h4
+                              onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
+                              className={`text-base sm:text-lg md:text-xl font-bold font-lora line-clamp-1 cursor-pointer hover:opacity-80 transition-opacity leading-snug ${recentCardTheme.novelTitle}`}
+                              title={currentRecent.novel.title}
+                            >
+                              {currentRecent.novel.title}
+                            </h4>
+
+                            {/* Thời gian còn lại và Tỷ lệ phần trăm % */}
+                            <div className={`flex items-center justify-between text-xs sm:text-sm font-medium ${recentCardTheme.timeSubtext}`}>
+                              <span>{estimate.remainingStr}</span>
+                              <span className={`font-semibold ${recentCardTheme.pctText}`}>{estimate.pct}%</span>
+                            </div>
+
+                            {/* Thanh tiến độ có núm tròn định vị */}
+                            <div
+                              onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
+                              className={`relative w-full h-2 sm:h-2.5 rounded-full cursor-pointer select-none ${recentCardTheme.progressTrack}`}
+                              title={`Tiến độ: ${estimate.pct}% (Chương ${currentRecent.record.chapterNumber})`}
+                            >
+                              {/* Phần trăm đã đi qua */}
+                              <div
+                                className={`h-full rounded-full transition-all duration-300 ${recentCardTheme.progressBar}`}
+                                style={{ width: `${estimate.pct}%` }}
+                              />
+                              {/* Nốt chấm tròn thanh trượt */}
+                              <div
+                                className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full shadow-md border-2 transition-all pointer-events-none ${recentCardTheme.progressThumb}`}
+                                style={{ left: `calc(${estimate.pct}% - 7px)` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Hàng dưới cùng: Đã đọc X giờ Y phút (bên trái) và Tiếp tục đọc → (bên phải) */}
+                        <div className={`pt-3.5 sm:pt-4 mt-4 sm:mt-5 border-t flex items-center justify-between ${recentCardTheme.divider}`}>
+                          {/* Đã đọc ... */}
+                          <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium ${recentCardTheme.timeSubtext}`}>
+                            <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${recentCardTheme.timeIcon}`} />
+                            <span>{estimate.readStr}</span>
+                          </div>
+
+                          {/* Nút bấm Tiếp tục đọc → */}
+                          <button
+                            onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
+                            className={`flex items-center gap-1.5 text-xs sm:text-sm font-semibold group/btn cursor-pointer transition-colors ${recentCardTheme.continueBtn}`}
+                          >
+                            <span>Tiếp tục đọc</span>
+                            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:translate-x-1 transition-transform" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  )}
                 </div>
               </section>
             );
@@ -2938,13 +2973,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               <div className="max-w-full overflow-x-auto scrollbar-none py-1">
                 <div
                   id="completed-novels-segmented-tabs"
-                  className={`inline-flex items-center p-1 sm:p-1.5 rounded-full transition-all duration-300 ${
+                  className={`inline-flex items-center p-1 sm:p-1.5 rounded-full transition-all duration-500 ${
                     isDarkEffective ? 'backdrop-blur-xl' : ''
                   } ${completedCategoryTabsStyles.container}`}
                 >
                   {NOVEL_CATEGORY_TABS.map((tab) => {
                     const isActive = selectedCategory === tab.id;
                     const pillStyle = completedCategoryTabsStyles.getActivePill(tab.id);
+                    const inactiveClass =
+                      isDarkEffective && completedCategoryTabsStyles.getInactiveText
+                        ? completedCategoryTabsStyles.getInactiveText(tab.id)
+                        : completedCategoryTabsStyles.inactiveText;
                     return (
                       <motion.button
                         key={tab.id}
@@ -2958,7 +2997,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         className={`relative px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors duration-200 cursor-pointer whitespace-nowrap rounded-full select-none ${
                           isActive
                             ? `${completedCategoryTabsStyles.activeText} font-bold`
-                            : `${completedCategoryTabsStyles.inactiveText} font-medium`
+                            : `${inactiveClass} font-medium`
                         }`}
                       >
                         {isActive && (
@@ -2966,10 +3005,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             <motion.div
                               layoutId="activeCompletedCategoryPill"
                               transition={{ type: 'spring', stiffness: 500, damping: 32 }}
-                              className={`absolute inset-0 rounded-full z-0 overflow-hidden ${pillStyle.gradient} ring-1 ring-white/30 ${pillStyle.glow} shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.45)]`}
+                              className={`absolute inset-0 rounded-full z-0 overflow-hidden ${pillStyle.gradient} ring-1 ring-white/10 ${pillStyle.glow} shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)]`}
                             >
-                              {/* Vệt sáng cong hình vòm bán nguyệt mô phỏng bề mặt cong bóng láng 3D của vỏ viên thuốc con nhộng */}
-                              <div className="absolute top-0.5 inset-x-1.5 h-[46%] rounded-t-full bg-gradient-to-b from-white/45 to-transparent pointer-events-none" />
+                              {/* Vệt sáng cong hình vòm bán nguyệt nhẹ nhàng mô phỏng bề mặt cong bóng láng 3D */}
+                              <div className="absolute top-0.5 inset-x-1.5 h-[36%] rounded-t-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
                             </motion.div>
                           ) : (
                             <div
@@ -2983,7 +3022,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                               initial={{ scale: 0, rotate: -45, opacity: 0 }}
                               animate={{ scale: 1, rotate: 0, opacity: 1 }}
                               transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                              className="text-white text-xs sm:text-sm drop-shadow-[0_0_4px_rgba(255,255,255,0.7)] select-none"
+                              className="text-white/90 text-xs select-none"
                             >
                               ✦
                             </motion.span>
@@ -3143,7 +3182,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     onClick={() => {
                       setIsGridExpanded(!isGridExpanded);
                     }}
-                    className={`hv-11__btn--stack relative px-6 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border select-none ${expandButtonStyles.btnBorder} ${expandButtonStyles.textColor}`}
+                    className={`hv-11__btn--stack relative px-6 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                      isDarkEffective ? 'border-0 border-transparent' : `border ${expandButtonStyles.btnBorder}`
+                    } select-none ${expandButtonStyles.textColor}`}
                     style={{
                       backgroundColor: expandButtonStyles.btnBg,
                       ['--btn-stack-shadow' as any]: expandButtonStyles.shadowColor,
@@ -3274,10 +3315,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   </svg>
                 </div>
 
-                {/* Tiêu đề mục: TRUYỆN VỪA MỚI ĐĂNG (Kích thước nhỏ lại, phông Lora in nghiêng thanh lịch) */}
+                {/* Tiêu đề mục: BẢNG TRUYỆN (Kích thước nhỏ lại, phông Lora in nghiêng thanh lịch) */}
                 <div className="text-center mb-5 sm:mb-8 relative z-10">
                   <h3 className={`font-lora italic !font-normal text-xs sm:text-[13px] md:text-sm tracking-[0.18em] uppercase ${tStyles.cardTitle}`}>
-                    TRUYỆN VỪA MỚI ĐĂNG
+                    BẢNG TRUYỆN
                   </h3>
                 </div>
 
@@ -3430,11 +3471,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setPolaroidPage((prev) => (prev > 0 ? prev - 1 : totalPages - 1))}
-                    className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:translate-y-[1px] ${
-                      isDarkEffective
-                        ? 'bg-[#221b2f] text-purple-200 border border-white/[0.08] shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40'
-                        : 'bg-[#f7f5fb] text-[#4d3d63] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]'
-                    }`}
+                    className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:translate-y-[1px] ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
                     title="Trang trước"
                     aria-label="Trang trước"
                   >
@@ -3445,11 +3482,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
-                    className={`px-3 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-medium tracking-wide flex items-center gap-1.5 transition-all cursor-pointer select-none active:translate-y-[1px] ${
-                      isDarkEffective
-                        ? 'bg-[#221b2f] text-purple-200 border border-white/[0.08] shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40'
-                        : 'bg-[#f7f5fb] text-[#4d3d63] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]'
-                    }`}
+                    className={`px-3 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-medium tracking-wide flex items-center gap-1.5 transition-all cursor-pointer select-none active:translate-y-[1px] ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
                     title="Đổi bộ bìa truyện khác"
                   >
                     <Shuffle className="w-3 h-3 sm:w-3.5 sm:h-3.5 opacity-80" />
@@ -3465,11 +3498,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
-                    className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:translate-y-[1px] ${
-                      isDarkEffective
-                        ? 'bg-[#221b2f] text-purple-200 border border-white/[0.08] shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40'
-                        : 'bg-[#f7f5fb] text-[#4d3d63] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]'
-                    }`}
+                    className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:translate-y-[1px] ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
                     title="Trang tiếp"
                     aria-label="Trang tiếp"
                   >
@@ -3496,12 +3525,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             isDarkMode={isDarkEffective}
           />
 
-          {/* Leaderboard Card */}
+          {/* Khối Truyện Vừa Mới Đăng */}
           <div className={`p-6 rounded-3xl space-y-4 transition-colors duration-200 ${tStyles.sideCard}`}>
             <div className="flex items-center justify-between">
               <h3 className={`text-sm font-bold ${themeFontHeading} flex items-center gap-2 ${tStyles.cardTitle}`}>
-                <Trophy className="w-4 h-4 text-yellow-400" />
-                <span>Bảng Xếp Hạng Truyện</span>
+                <Clock className={`w-4 h-4 ${tStyles.sectionIcon}`} />
+                <span>Truyện Vừa Mới Đăng</span>
               </h3>
             </div>
 

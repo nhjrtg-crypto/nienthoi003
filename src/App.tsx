@@ -15,6 +15,7 @@ import { AboutLightTamagotchiView } from './components/AboutLightTamagotchiView'
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { CreateFirestoreTruyenModal } from './components/CreateFirestoreTruyenModal';
 import { DailyLimitExceededModal } from './components/DailyLimitExceededModal';
+import { ModernLoadingScreen } from './components/ModernLoadingScreen';
 import { Novel, NovelChapter, Project } from './types';
 import { INITIAL_NOVELS } from './data/novelData';
 import { LUA_NHAU_NOVEL } from './data/luaNhauData';
@@ -597,6 +598,17 @@ export default function App() {
   const [readingChapterNumber, setReadingChapterNumber] = useState<number | null>(initialView.readingChapterNumber);
   const [pendingNovelId, setPendingNovelId] = useState<string | null>(initialView.targetNovelId || null);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+
+  // Trạng thái màn hình tải trang hiện đại (ModernLoadingScreen)
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
+  useEffect(() => {
+    // Fallback an toàn nếu màn hình loading chưa đóng sau 3.2s
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 3200);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Admin & Firestore States
   const [currentUser, setCurrentUser] = useState<AdminUserLike | null>(() => getStoredAdminSession());
@@ -1335,6 +1347,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#060713] text-slate-200 relative selection:bg-purple-500/30 selection:text-white font-jakarta">
+      {/* GIAO DIỆN LOADING TẢI TRANG HIỆN ĐẠI (ModernLoadingScreen) */}
+      {isPageLoading && (
+        <ModernLoadingScreen
+          isFullScreen={true}
+          onClosePreview={() => setIsPageLoading(false)}
+          showCloseButton={false}
+          simulateAutoProgress={true}
+        />
+      )}
+
       {/* VIEW 1: PORTFOLIO LANDING PAGE */}
       {viewMode === 'portfolio' && (
         <>

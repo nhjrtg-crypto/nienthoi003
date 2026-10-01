@@ -535,7 +535,11 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                     </div>
 
                     <p className="text-sm sm:text-[15px] md:text-[14px] text-purple-950/90 leading-relaxed md:leading-snug font-medium font-itim">
-                      Web được vận hành hoàn toàn bằng máy chủ miễn phí vì mục đích phi thương mại. Hệ thống sẽ bị giới hạn lượt đọc trong 1 ngày.
+                      Web được vận hành hoàn toàn bằng máy chủ miễn phí vì mục đích phi thương mại.
+                    </p>
+
+                    <p className="text-sm sm:text-[15px] md:text-[14px] text-purple-950/90 leading-relaxed md:leading-snug font-medium font-itim">
+                      Vui lòng không sử dụng để đăng lại hoặc chuyển ver.
                     </p>
 
                     <div className="neumorph-memo-inner p-3 md:py-2 md:px-3 rounded-xl bg-white/95 border border-purple-200 text-sm sm:text-[14.5px] md:text-[13px] font-medium text-purple-900 hover:shadow-sm transition-shadow font-itim">
@@ -779,7 +783,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
 
                         <button
                           type="submit"
-                          className="neumorph-pink-btn-soft w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center cursor-pointer active:scale-98 hover:scale-[1.01] transition-all tracking-wide select-none font-itim"
+                          className="neumorph-pastel-pink-action-btn w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center cursor-pointer active:scale-98 hover:scale-[1.01] transition-all tracking-wide select-none font-itim"
                         >
                           <span>Gửi Tin Nhắn Vào Sổ</span>
                         </button>
@@ -856,7 +860,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                       if (onBackToNovels) onBackToNovels();
                       else showToast('Vào trang đọc truyện ngay! ✨');
                     }}
-                    className="neumorph-pink-btn inline-flex items-center justify-center px-6 py-2.5 rounded-2xl text-xs sm:text-sm font-bold cursor-pointer select-none hover:scale-105 active:scale-95 transition-all group"
+                    className="neumorph-pastel-pink-action-btn inline-flex items-center justify-center px-6 py-2.5 rounded-2xl text-xs sm:text-sm font-bold cursor-pointer select-none hover:scale-105 active:scale-95 transition-all group"
                   >
                     <span className="group-hover:translate-x-0.5 transition-transform">
                       Vào Đọc Truyện Ngay
@@ -999,6 +1003,39 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
             0 5px 14px rgba(244, 114, 182, 0.26),
             inset 0 2px 2px rgba(255, 255, 255, 1) !important;
           transform: translateY(-1.5px);
+        }
+
+        /* Nút nền hồng nhạt pastel cho "Vào Đọc Truyện Ngay" & "Gửi Tin Nhắn Vào Sổ" */
+        .neumorph-pastel-pink-action-btn {
+          background: #fce7f3 !important; /* Nền hồng nhạt pastel ngọt ngào */
+          color: #831843 !important;
+          font-weight: 700 !important;
+          border: 1px solid rgba(244, 114, 182, 0.45) !important;
+          border-bottom: 3px solid #f472b6 !important;
+          box-shadow: 
+            0 3.5px 10px rgba(244, 114, 182, 0.18),
+            -1.5px -1.5px 5px rgba(255, 255, 255, 0.95),
+            inset 0 1.5px 1.5px #ffffff,
+            inset 0 -1.5px 2px rgba(244, 114, 182, 0.15) !important;
+          transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .neumorph-pastel-pink-action-btn:hover {
+          background: #fbcfe8 !important; /* Hồng phấn tươi hơn khi hover */
+          color: #700c35 !important;
+          border-color: rgba(244, 114, 182, 0.6) !important;
+          border-bottom: 3.5px solid #ec4899 !important;
+          box-shadow: 
+            0 5px 14px rgba(244, 114, 182, 0.26),
+            -2px -2px 6px rgba(255, 255, 255, 1),
+            inset 0 2px 2px rgba(255, 255, 255, 1) !important;
+          transform: translateY(-1.5px);
+        }
+        .neumorph-pastel-pink-action-btn:active {
+          background: #f9a8d4 !important;
+          border-bottom-width: 1px !important;
+          box-shadow: 
+            inset 0 2px 4px rgba(244, 114, 182, 0.28) !important;
+          transform: translateY(2px) scale(0.98);
         }
 
         /* Ô nhập liệu Inset 3D */

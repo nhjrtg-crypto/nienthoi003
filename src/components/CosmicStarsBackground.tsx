@@ -183,7 +183,6 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
     const triggerMeteorWave = () => {
       const isCosmicActive = themeRef.current === 'cosmic' || (themeRef.current === 'amethyst-haze' && isDarkModeRef.current);
       if (!isCosmicActive) return;
-      if (themeRef.current === 'amethyst-haze' && !purpleBgEffectsEnabledRef.current) return;
       if (meteors.length >= 2) return;
 
       // Xác suất xuất hiện 1 hoặc 2 dải sao cùng lúc
@@ -288,35 +287,35 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
       switch (t) {
         case 'amethyst-haze':
           return {
-            glowA: 'rgba(168, 85, 247, 0.38)',
-            glowB: 'rgba(147, 51, 234, 0.26)',
-            glowC: 'rgba(99, 102, 241, 0.16)',
-            discHighlight: 'rgba(250, 245, 255, 0.75)',
-            discGlow: 'rgba(192, 132, 252, 0.50)',
-            rimRing: 'rgba(216, 180, 254, 0.40)',
-            innerRim: 'rgba(216, 180, 254, 0.18)',
-            overlayGrad: ['rgba(14, 10, 27, 0.82)', 'rgba(26, 18, 46, 0.45)', 'rgba(14, 10, 27, 0.90)'],
+            glowA: 'rgba(115, 90, 143, 0.15)',
+            glowB: 'rgba(90, 69, 112, 0.10)',
+            glowC: 'rgba(65, 47, 84, 0.06)',
+            discHighlight: 'rgba(235, 228, 245, 0.35)',
+            discGlow: 'rgba(163, 140, 188, 0.22)',
+            rimRing: 'rgba(163, 140, 188, 0.18)',
+            innerRim: 'rgba(163, 140, 188, 0.10)',
+            overlayGrad: ['rgba(17, 10, 28, 0.88)', 'rgba(26, 18, 44, 0.55)', 'rgba(17, 10, 28, 0.94)'],
             clay: {
-              highlight: 'rgba(250, 245, 255, 0.80)',
-              bodyLight: 'rgba(216, 180, 254, 0.68)',
-              bodyMid: 'rgba(168, 85, 247, 0.52)',
-              shadow: 'rgba(88, 28, 135, 0.60)',
-              dropShadow: 'rgba(24, 9, 44, 0.45)',
-              bounceLight: 'rgba(216, 180, 254, 0.28)',
+              highlight: 'rgba(235, 228, 245, 0.40)',
+              bodyLight: 'rgba(180, 160, 205, 0.30)',
+              bodyMid: 'rgba(133, 107, 158, 0.25)',
+              shadow: 'rgba(35, 20, 52, 0.40)',
+              dropShadow: 'rgba(0, 0, 0, 0.40)',
+              bounceLight: 'rgba(180, 160, 205, 0.15)',
             },
             vividOrbs: [
-              { top: '#FDF4FF', mid: '#D946EF', dark: '#86198F', glow: '#C026D3' }, // Tím Neon
-              { top: '#FFF7ED', mid: '#F97316', dark: '#C2410C', glow: '#EA580C' }, // Cam Hoàng Hôn
-              { top: '#EFF6FF', mid: '#3B82F6', dark: '#1D4ED8', glow: '#2563EB' }, // Xanh Cobalt Điện
-              { top: '#FFF1F2', mid: '#F43F5E', dark: '#BE123C', glow: '#E11D48' }, // Hồng Sen Sáng
-              { top: '#FEFCE8', mid: '#EAB308', dark: '#A16207', glow: '#CA8A04' }, // Vàng Mật Hổ Phách
+              { top: '#e6def2', mid: '#735a8f', dark: '#2d1e3d', glow: '#594470' }, // Tím Oải Hương Dịu
+              { top: '#eee7f8', mid: '#856b9e', dark: '#37264a', glow: '#6a5380' }, // Tím Thạch Anh Trầm
+              { top: '#dfd5eb', mid: '#664d80', dark: '#241633', glow: '#4e3863' }, // Tím Mận Dịu Mắt
+              { top: '#f3eef9', mid: '#967fae', dark: '#3e2c54', glow: '#786191' }, // Khói Tím Nhẹ
+              { top: '#dcd2e8', mid: '#5f4778', dark: '#1f132b', glow: '#47335c' }, // Tím Than Trầm Ấm
             ],
-            sphereTop: '#F3E8FF',
-            sphereMid: '#7E22CE',
-            sphereDark: '#1E0B36',
-            sphereRim: 'rgba(216, 180, 254, 0.88)',
-            sphereGlint: '#FAF5FF',
-            sphereRing: 'rgba(192, 132, 252, 0.75)',
+            sphereTop: '#e6def2',
+            sphereMid: '#735a8f',
+            sphereDark: '#1b1226',
+            sphereRim: 'rgba(180, 160, 205, 0.45)',
+            sphereGlint: '#f5f0fb',
+            sphereRing: 'rgba(163, 140, 188, 0.35)',
           };
         case 'slate-haze':
           return {
@@ -487,8 +486,7 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
       const my = Number.isFinite(mousePos.current.y) ? Math.max(-2, Math.min(2, mousePos.current.y)) : 0;
 
       if (activeIsCosmic) {
-        const isPurpleEffectDisabled =
-          (activeTheme === 'amethyst-haze' || activeTheme === 'cosmic') && !purpleBgEffectsEnabledRef.current;
+        const isPurpleEffectDisabled = (activeTheme === 'cosmic' || activeTheme === 'amethyst-haze') && !purpleBgEffectsEnabledRef.current;
 
         if (!isPurpleEffectDisabled) {
           // === COSMIC THEME / PURPLE DARK MODE: Luminous Atmospheric Nebulae ===

@@ -80,6 +80,7 @@ import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { Footer } from './Footer';
 import { CosmicStarsBackground } from './CosmicStarsBackground';
 import { SpiralNotebookView, getSpiralPlannerCaroGridStyle } from './SpiralNotebookView';
+import { ClayThemeToggle } from './ClayThemeToggle';
 import { safeStorage } from '../utils/safeStorage';
 import { TxtImportModal } from './TxtImportModal';
 import { TxtChapterSplitterModal } from './TxtChapterSplitterModal';
@@ -1103,8 +1104,12 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   }, []);
 
   const toggleDarkMode = () => {
-    // Ở theme cosmic giữ duy nhất 1 chế độ tối, khi bấm vào dark mode thì không thay đổi màu sắc gì hết
+    // Nếu đang ở theme cosmic thì chuyển sang amethyst-haze sáng
     if (theme === 'cosmic') {
+      setTheme('amethyst-haze');
+      setIsDarkMode(false);
+      safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
+      safeStorage.setItem('cosmo_darkmode', JSON.stringify(false));
       return;
     }
     setIsDarkMode((prev) => {
@@ -2369,12 +2374,12 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Theme Selector Popover (Trình bày giống ngoài trang chủ) */}
+          {/* Theme Selector Popover (Trình bày đồng bộ như ngoài trang chủ) */}
           <div className="relative" ref={themeMenuRef}>
             <button
               onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
               className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer shadow-xs ${tStyles.themeSelectorBtn}`}
-              title="Thay đổi giao diện màu sắc"
+              title="Thay đổi giao diện màu sắc & chế độ sáng tối"
             >
               <Palette className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{currentThemeOption.name}</span>
@@ -2383,13 +2388,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
             {isThemeMenuOpen && (
               <div
-                className={`absolute right-0 mt-2 w-60 rounded-xl p-1.5 shadow-xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
-                  isDarkEffective ? 'bg-[#181a20] border-zinc-700 text-zinc-100' : 'bg-white border-zinc-200 text-zinc-900'
+                className={`absolute right-0 mt-2 w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                  isDarkEffective
+                    ? 'bg-[#181a20] border-zinc-700 text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
+                    : 'bg-white border-zinc-200 text-zinc-900 shadow-[0_10px_30px_rgba(0,0,0,0.15)]'
                 }`}
               >
                 <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                   <span>Màu Giao Diện</span>
-                  <span className="text-[9px] font-normal normal-case opacity-70">Sáng / Tối</span>
+                  <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
                 </div>
                 <div className="mt-1 space-y-0.5">
                   {NOVEL_THEME_OPTIONS.map((opt) => {
@@ -2432,7 +2439,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   })}
                 </div>
 
-                {/* Toggle tắt/bật Hiệu ứng nền của chế độ tối theme Purple */}
+                {/* Tắt/bật Hiệu ứng nền của chế độ tối theme Purple (Thay nút toggle bằng Bật/Tắt) */}
                 {(theme === 'amethyst-haze' || theme === 'cosmic') && isDarkEffective && (
                   <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
                     <button
@@ -2447,47 +2454,40 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                           ? 'hover:bg-zinc-800/60 text-zinc-200'
                           : 'hover:bg-zinc-100 text-zinc-800'
                       }`}
-                      title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền của chế độ tối theme Purple' : 'Nhấn để bật hiệu ứng nền của chế độ tối theme Purple'}
+                      title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
                     >
                       <div className="flex items-center">
                         <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
                       </div>
-                      <div
-                        className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors duration-200 ${
-                          purpleBgEffectsEnabled ? 'bg-purple-600' : 'bg-zinc-700'
+                      <span
+                        className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-all select-none ${
+                          purpleBgEffectsEnabled
+                            ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
+                            : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                         }`}
                       >
-                        <div
-                          className={`bg-white w-3.5 h-3.5 rounded-full shadow-xs transform transition-transform duration-200 ${
-                            purpleBgEffectsEnabled ? 'translate-x-3.5' : 'translate-x-0'
-                          }`}
-                        />
-                      </div>
+                        {purpleBgEffectsEnabled ? 'Bật' : 'Tắt'}
+                      </span>
                     </button>
                   </div>
                 )}
+
+                {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Không nền hồng bao bọc, không icon minh họa, không dòng nền tối dịu mắt) */}
+                <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
+                  <span className="text-xs font-semibold select-none">
+                    Chế độ tối
+                  </span>
+                  <ClayThemeToggle
+                    id="clay-toggle-detail"
+                    isOn={isDarkEffective}
+                    onToggle={toggleDarkMode}
+                    theme={theme}
+                    title={isDarkEffective ? 'Gạt để chuyển sang chế độ sáng' : 'Gạt để chuyển sang chế độ tối'}
+                  />
+                </div>
               </div>
             )}
           </div>
-
-          {/* Dark Mode Toggle Button (Ẩn ở theme cosmic theo yêu cầu) */}
-          {!isCosmic && (
-            <button
-              onClick={toggleDarkMode}
-              className={`p-2 rounded-full border transition-all cursor-pointer shadow-2xs ${tStyles.buttonDarkMode}`}
-              title={
-                isDarkEffective
-                  ? 'Tắt Dark Mode (Trở lại màu sáng)'
-                  : 'Bật Dark Mode (Chuyển theme sáng sang màu tối)'
-              }
-            >
-              {isDarkEffective ? (
-                <Moon className="w-4 h-4 text-amber-300 fill-amber-300/30" />
-              ) : (
-                <Sun className="w-4 h-4 text-amber-500 fill-amber-500/20" />
-              )}
-            </button>
-          )}
 
           {/* Share Button & Popover */}
           <div className="relative" ref={shareRef}>

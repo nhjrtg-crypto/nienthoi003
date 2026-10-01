@@ -2681,6 +2681,179 @@
   background-color: var(--scrollbar-thumb, #9333ea) !important;
 }
 
+/* ==========================================================
+   NÚT TOGGLE CLAYMORPHISM CHUYỂN CHẾ ĐỘ SÁNG / TỐI (A11Y)
+   ========================================================== */
+/* 1. ẨN CHECKBOX NGUYÊN BẢN */
+.cl-10__in {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+.cl-10__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* 2. RÃNH TRƯỢT TOGGLE (TRẠNG THÁI TẮT - HỒNG PASTEL NHẠT) */
+.cl-10__switch {
+  position: relative;
+  flex: none;
+  display: block;
+  width: 46px;
+  height: 26px;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+  background: #fce4ed; /* Nền kem hồng phấn dịu mắt */
+  /* Bóng lõm Neumorphic tạo chiều sâu cho rãnh */
+  box-shadow: inset 0 5px 10px -3px rgba(225, 95, 140, 0.3),
+              inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+  transition: all 0.3s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+
+/* 3. NÚM TRÒN ĐẤT NẶN (KNOB NỔI 3D MARSHMALLOW) */
+.cl-10__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  /* Đổ bóng kép: bóng ngoài nổi khối + bóng phản quang lòng trong */
+  box-shadow: 0 4px 8px -2px rgba(225, 95, 140, 0.35),
+              inset 0 -2px 4px -2px rgba(225, 95, 140, 0.25),
+              inset 0 3px 4px -1px #ffffff;
+  transition: translate 0.3s cubic-bezier(0.34, 1.5, 0.5, 1),
+              scale 0.3s cubic-bezier(0.34, 1.5, 0.5, 1),
+              background 0.3s,
+              box-shadow 0.3s;
+}
+
+/* 4. TRẠNG THÁI BẬT (:CHECKED) - MÀU HỒNG DÂU TƯƠI SÁNG */
+.cl-10__in:checked + .cl-10__switch {
+  background: linear-gradient(135deg, #fb7185 0%, #f43f8e 50%, #f472b6 100%);
+  box-shadow: inset 0 2px 5px -2px rgba(180, 20, 80, 0.4),
+              inset 0 -2px 5px -2px rgba(255, 255, 255, 0.5),
+              0 3px 10px -2px rgba(244, 63, 142, 0.45);
+}
+
+/* Núm trượt sang phải 20px và nảy nhẹ đàn hồi (scale: 1.05) */
+.cl-10__in:checked + .cl-10__switch .cl-10__knob {
+  translate: 20px 0;
+  scale: 1.05;
+  background: #ffffff;
+  box-shadow: 0 4px 10px -2px rgba(190, 20, 90, 0.4),
+              inset 0 -2px 4px -2px rgba(244, 63, 142, 0.3),
+              inset 0 3px 4px -1px #ffffff;
+}
+
+/* 5. HIỆU ỨNG FOCUS KHI DÙNG BÀN PHÍM (TAB KEY) */
+.cl-10__in:focus-visible + .cl-10__switch {
+  outline: 2px solid #f43f8e;
+  outline-offset: 2px;
+}
+
+/* 6. BIẾN THỂ MÀU SẮC HÀI HÒA TỪNG THEME GIAO DIỆN */
+/* Theme Sage (Xanh lá Thảo mộc) */
+.cl-10__switch.theme-sage {
+  background: #e8f5e9;
+  box-shadow: inset 0 5px 10px -3px rgba(34, 197, 94, 0.25), inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+}
+.cl-10__switch.theme-sage .cl-10__knob {
+  box-shadow: 0 4px 8px -2px rgba(34, 197, 94, 0.3), inset 0 -2px 4px -2px rgba(34, 197, 94, 0.2), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:checked + .cl-10__switch.theme-sage {
+  background: linear-gradient(135deg, #4ade80 0%, #16a34a 50%, #15803d 100%);
+  box-shadow: inset 0 2px 5px -2px rgba(20, 83, 45, 0.4), inset 0 -2px 5px -2px rgba(255, 255, 255, 0.5), 0 3px 10px -2px rgba(34, 197, 94, 0.45);
+}
+.cl-10__in:checked + .cl-10__switch.theme-sage .cl-10__knob {
+  box-shadow: 0 4px 10px -2px rgba(20, 83, 45, 0.4), inset 0 -2px 4px -2px rgba(34, 197, 94, 0.3), inset 0 3px 4px -1px #ffffff;
+}
+
+/* Theme Slate-Haze (Xanh Băng Tuyết) */
+.cl-10__switch.theme-slate-haze {
+  background: #e0f2fe;
+  box-shadow: inset 0 5px 10px -3px rgba(2, 132, 199, 0.25), inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+}
+.cl-10__switch.theme-slate-haze .cl-10__knob {
+  box-shadow: 0 4px 8px -2px rgba(2, 132, 199, 0.3), inset 0 -2px 4px -2px rgba(2, 132, 199, 0.2), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:checked + .cl-10__switch.theme-slate-haze {
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
+  box-shadow: inset 0 2px 5px -2px rgba(12, 74, 110, 0.4), inset 0 -2px 5px -2px rgba(255, 255, 255, 0.5), 0 3px 10px -2px rgba(2, 132, 199, 0.45);
+}
+.cl-10__in:checked + .cl-10__switch.theme-slate-haze .cl-10__knob {
+  box-shadow: 0 4px 10px -2px rgba(12, 74, 110, 0.4), inset 0 -2px 4px -2px rgba(2, 132, 199, 0.3), inset 0 3px 4px -1px #ffffff;
+}
+
+/* Theme Mocha (Nâu Ấm & Cà Phê) */
+.cl-10__switch.theme-mocha {
+  background: #fef3c7;
+  box-shadow: inset 0 5px 10px -3px rgba(217, 119, 6, 0.25), inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+}
+.cl-10__switch.theme-mocha .cl-10__knob {
+  box-shadow: 0 4px 8px -2px rgba(217, 119, 6, 0.3), inset 0 -2px 4px -2px rgba(217, 119, 6, 0.2), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:checked + .cl-10__switch.theme-mocha {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 50%, #b45309 100%);
+  box-shadow: inset 0 2px 5px -2px rgba(120, 53, 15, 0.4), inset 0 -2px 5px -2px rgba(255, 255, 255, 0.5), 0 3px 10px -2px rgba(217, 119, 6, 0.45);
+}
+.cl-10__in:checked + .cl-10__switch.theme-mocha .cl-10__knob {
+  box-shadow: 0 4px 10px -2px rgba(120, 53, 15, 0.4), inset 0 -2px 4px -2px rgba(217, 119, 6, 0.3), inset 0 3px 4px -1px #ffffff;
+}
+
+/* Theme Notebook (Monochrome / Giấy than Bạc) */
+.cl-10__switch.theme-notebook {
+  background: #f4f4f5;
+  box-shadow: inset 0 5px 10px -3px rgba(82, 82, 91, 0.2), inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+}
+.cl-10__switch.theme-notebook .cl-10__knob {
+  box-shadow: 0 4px 8px -2px rgba(82, 82, 91, 0.3), inset 0 -2px 4px -2px rgba(82, 82, 91, 0.2), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:checked + .cl-10__switch.theme-notebook {
+  background: linear-gradient(135deg, #a1a1aa 0%, #52525b 50%, #27272a 100%);
+  box-shadow: inset 0 2px 5px -2px rgba(24, 24, 27, 0.5), inset 0 -2px 5px -2px rgba(255, 255, 255, 0.3), 0 3px 10px -2px rgba(82, 82, 91, 0.45);
+}
+.cl-10__in:checked + .cl-10__switch.theme-notebook .cl-10__knob {
+  box-shadow: 0 4px 10px -2px rgba(24, 24, 27, 0.5), inset 0 -2px 4px -2px rgba(82, 82, 91, 0.3), inset 0 3px 4px -1px #ffffff;
+}
+
+/* Theme Purple (Amethyst-Haze & Cosmic - Tím Thạch Anh Hoàng Gia) */
+.cl-10__switch.theme-amethyst-haze,
+.cl-10__switch.theme-cosmic {
+  background: #f3e8ff; /* Nền tím phấn lavender dịu mắt */
+  box-shadow: inset 0 5px 10px -3px rgba(147, 51, 234, 0.25), inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+}
+.cl-10__switch.theme-amethyst-haze .cl-10__knob,
+.cl-10__switch.theme-cosmic .cl-10__knob {
+  box-shadow: 0 4px 8px -2px rgba(147, 51, 234, 0.3), inset 0 -2px 4px -2px rgba(147, 51, 234, 0.2), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:checked + .cl-10__switch.theme-amethyst-haze,
+.cl-10__in:checked + .cl-10__switch.theme-cosmic {
+  background: linear-gradient(135deg, #c084fc 0%, #9333ea 50%, #7e22ce 100%);
+  box-shadow: inset 0 2px 5px -2px rgba(88, 28, 135, 0.45), inset 0 -2px 5px -2px rgba(255, 255, 255, 0.4), 0 3px 10px -2px rgba(147, 51, 234, 0.5);
+}
+.cl-10__in:checked + .cl-10__switch.theme-amethyst-haze .cl-10__knob,
+.cl-10__in:checked + .cl-10__switch.theme-cosmic .cl-10__knob {
+  box-shadow: 0 4px 10px -2px rgba(88, 28, 135, 0.45), inset 0 -2px 4px -2px rgba(147, 51, 234, 0.3), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:focus-visible + .cl-10__switch.theme-amethyst-haze,
+.cl-10__in:focus-visible + .cl-10__switch.theme-cosmic {
+  outline: 2px solid #a855f7;
+  outline-offset: 2px;
+}
+
+
 
 
 

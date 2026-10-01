@@ -9,14 +9,21 @@ export interface RecentReadRecord {
   updatedAt: number;
 }
 
-const STORAGE_KEY = 'cosmo_recent_reads';
+const STORAGE_KEY = 'cosmo_recent_reads_v2';
+const REAL_READ_KEY = 'cosmo_has_real_read_v1';
 
 /**
- * Lấy danh sách truyện đọc gần đây, kết hợp với dữ liệu tiểu thuyết hiện có.
- * Nếu chưa từng có lịch sử, khởi tạo 2-3 truyện mẫu với tiến độ dở dang để người dùng trải nghiệm ngay.
+ * Lấy danh sách truyện đọc gần đây.
+ * Dành cho ai lần đầu tiên bấm vào trang web thì mục sẽ để trống, không hiện truyện.
  */
 export function getRecentReads(availableNovels: Novel[]): { novel: Novel; record: RecentReadRecord }[] {
   if (!availableNovels || availableNovels.length === 0) return [];
+
+  // Nếu người dùng chưa từng thực sự đọc truyện nào trong Reader, trả về mảng rỗng để mục Đang Đọc để trống
+  const hasRealRead = safeStorage.getItem(REAL_READ_KEY);
+  if (!hasRealRead) {
+    return [];
+  }
 
   let records: RecentReadRecord[] = [];
 
@@ -26,10 +33,10 @@ export function getRecentReads(availableNovels: Novel[]): { novel: Novel; record
       records = JSON.parse(saved);
     }
   } catch (e) {
-    console.warn('Không thể đọc lịch sử cosmo_recent_reads', e);
+    console.warn('Không thể đọc lịch sử cosmo_recent_reads_v2', e);
   }
 
-  // Quét thêm lịch sử lẻ từng truyện (novel_history_${id}) nếu có
+  // Quét thêm lịch sử lẻ từng truyện nếu có
   availableNovels.forEach((novel) => {
     try {
       const singleHistory = safeStorage.getItem(`novel_history_${novel.id}`);
@@ -37,8 +44,8 @@ export function getRecentReads(availableNovels: Novel[]): { novel: Novel; record
         const parsed = JSON.parse(singleHistory);
         const chapNum = parsed.lastReadChapterNumber || 1;
         const exists = records.some((r) => r.novelId === novel.id);
-        if (!exists) {
-          const totalChapters = novel.chapters.length || novel.totalChaptersCount || 1;
+        if (!exists && parsed.lastReadChapterNumber) {
+          const totalChapters = novel.chapters?.length || novel.totalChaptersCount || 1;
           const pct = Math.min(100, Math.max(1, Math.round((chapNum / totalChapters) * 100)));
           records.push({
             novelId: novel.id,
@@ -50,89 +57,6 @@ export function getRecentReads(availableNovels: Novel[]): { novel: Novel; record
       }
     } catch {}
   });
-
-  // Nếu vẫn chưa có truyện nào (người dùng mới tinh), khởi tạo 2 truyện mặc định với tiến độ dở dang
-  if (records.length === 0 && availableNovels.length >= 2) {
-    const first = availableNovels[0];
-    const second = availableNovels[1];
-
-    const defaultRecords: RecentReadRecord[] = [
-      {
-        novelId: first.id,
-        chapterNumber: first.chapters.length > 1 ? 2 : 1,
-        progressPercent: 45,
-        scrollY: 480,
-        updatedAt: Date.now() - 1000 * 60 * 30, // 30 phút trước
-      },
-      {
-        novelId: second.id,
-        chapterNumber: 1,
-        progressPercent: 68,
-        scrollY: 750,
-        updatedAt: Date.now() - 1000 * 60 * 120, // 2 tiếng trước
-      },
-    ];
-
-    if (availableNovels.length >= 3) {
-      const third = availableNovels[2];
-      defaultRecords.push({
-        novelId: third.id,
-        chapterNumber: 1,
-        progressPercent: 25,
-        scrollY: 320,
-        updatedAt: Date.now() - 1000 * 60 * 240,
-      });
-    }
-
-    if (availableNovels.length >= 4) {
-      const fourth = availableNovels[3];
-      defaultRecords.push({
-        novelId: fourth.id,
-        chapterNumber: fourth.chapters.length > 2 ? 3 : 1,
-        progressPercent: 82,
-        scrollY: 520,
-        updatedAt: Date.now() - 1000 * 60 * 360,
-      });
-    }
-
-    if (availableNovels.length >= 5) {
-      const fifth = availableNovels[4];
-      defaultRecords.push({
-        novelId: fifth.id,
-        chapterNumber: 1,
-        progressPercent: 15,
-        scrollY: 180,
-        updatedAt: Date.now() - 1000 * 60 * 480,
-      });
-    }
-
-    if (availableNovels.length >= 6) {
-      const sixth = availableNovels[5];
-      defaultRecords.push({
-        novelId: sixth.id,
-        chapterNumber: 2,
-        progressPercent: 50,
-        scrollY: 400,
-        updatedAt: Date.now() - 1000 * 60 * 600,
-      });
-    }
-
-    try {
-      safeStorage.setItem(STORAGE_KEY, JSON.stringify(defaultRecords));
-      // Lưu luôn vị trí scroll cho các truyện mặc định này để khi bấm vào sẽ cuộn đúng vị trí
-      defaultRecords.forEach((rec) => {
-        if (rec.scrollY) {
-          safeStorage.setItem(`novel_scroll_${rec.novelId}_${rec.chapterNumber}`, rec.scrollY.toString());
-          safeStorage.setItem(
-            `novel_history_${rec.novelId}`,
-            JSON.stringify({ lastReadChapterNumber: rec.chapterNumber, lastReadAt: rec.updatedAt })
-          );
-        }
-      });
-    } catch {}
-
-    records = defaultRecords;
-  }
 
   // Map sang danh sách Novel hợp lệ
   const result: { novel: Novel; record: RecentReadRecord }[] = [];
@@ -157,6 +81,9 @@ export function saveRecentRead(
   scrollY?: number
 ): void {
   try {
+    // Đánh dấu người dùng đã có tiến độ đọc thực tế
+    safeStorage.setItem(REAL_READ_KEY, 'true');
+
     let records: RecentReadRecord[] = [];
     const saved = safeStorage.getItem(STORAGE_KEY);
     if (saved) {
