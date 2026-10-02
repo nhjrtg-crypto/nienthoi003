@@ -9,7 +9,10 @@ import {
   Server, 
   MessageCircle, 
   Bookmark,
-  X
+  X,
+  ArrowLeft,
+  Pause,
+  Play
 } from 'lucide-react';
 import { safeStorage } from '../utils/safeStorage';
 import {
@@ -283,7 +286,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
   return (
     <div
-      className={`relative min-h-screen text-stone-800 pb-28 pt-4 px-3 sm:px-6 transition-colors duration-500 overflow-x-hidden ${
+      className={`relative min-h-screen text-stone-800 pb-28 pt-10 sm:pt-14 px-3 sm:px-6 transition-colors duration-500 overflow-x-hidden ${
         isDarkEffective ? 'bg-[#18131d] text-stone-200' : 'bg-[#fff5f8]'
       }`}
       style={{
@@ -292,6 +295,8 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     >
       {/* CẤU HÌNH HIỆU ỨNG CLAYMORPHISM NỔI KHỐI 3D MỀM DẺO PASTEL CHO STYLE 2 */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+
         /* 1. BẢNG MÀU CHUẨN (HỆ MÀU OKLCH & MÃ HEX TƯƠNG ĐƯƠNG) */
         :root {
           --cl-10-bg: oklch(0.942 0.038 348);        /* #fae4ed - Hồng nhạt pastel nền vỏ máy */
@@ -304,30 +309,30 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
           --cl-10-ink: oklch(0.30 0.065 348);        /* #4a2233 - Màu chữ nâu berry ngọt ngào */
         }
 
-        /* 2. THÔNG SỐ HIỆU ỨNG VỎ TAMAGOTCHI (OUTER SHELL) */
+        /* 2. THÔNG SỐ HIỆU ỨNG VỎ TAMAGOTCHI (OUTER SHELL) CÓ VIỀN 1PX HỒNG BAO QUANH */
         /* A. Phong cách Claymorphism Gốc (.cl-10-egg-shell) */
         .cl-10-egg-shell {
           border-radius: 4rem;
           background: #fae4ed;
           background: color-mix(in oklch, var(--cl-10-bg) 96%, var(--cl-10-clay) 4%);
-          border: 4px solid color-mix(in oklch, var(--cl-10-clay) 85%, white);
+          border: 1px solid #f9a8d4 !important;
           box-shadow: 
-            0 28px 56px -20px var(--cl-10-shade),        /* Bóng đổ nổi khối xuống nền */
+            0 16px 36px -16px rgba(223, 177, 192, 0.55), /* Bóng đổ nổi khối ngoài vỏ nhạt hơn */
             inset 0 -18px 28px -14px var(--cl-10-shade), /* Bóng tối lòng đáy vỏ trứng */
             inset 0 18px 28px -12px var(--cl-10-light);  /* Vệt sáng phồng xốp marshmallow đỉnh vỏ */
           transition: box-shadow .4s cubic-bezier(.34,1.3,.5,1), translate .3s;
         }
 
-        /* B. Phong cách Clay + Neu Không Viền (.tama-clay-neu-shell) */
+        /* B. Phong cách Clay + Neu Viền 1px Hồng (.tama-clay-neu-shell) */
         .tama-clay-neu-shell {
           border-radius: 4rem;
-          border: none;
+          border: 1px solid #f9a8d4 !important;
           background: #fae4ed;
           background: color-mix(in oklch, var(--cl-10-bg) 96%, var(--cl-10-clay) 4%);
           box-shadow: 
-            16px 16px 36px #dfb1c0,                      /* Bóng Neumorphic góc tối */
-            -8px -8px 24px rgba(255, 255, 255, 0.45),   /* Phản quang nhẹ góc sáng không gắt */
-            0 28px 56px -20px var(--cl-10-shade),        /* Khối nổi Claymorphism */
+            10px 10px 24px rgba(223, 177, 192, 0.45),   /* Bóng Neumorphic góc tối ngoài vỏ nhạt hơn */
+            -6px -6px 18px rgba(255, 255, 255, 0.5),    /* Phản quang nhẹ góc sáng không gắt */
+            0 16px 36px -16px rgba(223, 177, 192, 0.45), /* Khối nổi Claymorphism ngoài vỏ nhạt hơn */
             inset 0 -18px 28px -14px var(--cl-10-shade), /* Đáy trũng đất nặn */
             inset 0 18px 28px -12px var(--cl-10-light);  /* Đỉnh mềm marshmallow */
           transition: box-shadow .4s cubic-bezier(.34,1.3,.5,1), translate .3s;
@@ -584,6 +589,174 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
             0 2px 6px rgba(244, 114, 182, 0.20),
             inset 0 2px 4px rgba(0, 0, 0, 0.12);
         }
+
+        /* 11. PHONG CÁCH SPLIT GLOSS GRADIENT THEO CÔNG THỨC CHUẨN (ĐỔ BÓNG CẮT NGANG Ở 48% - 50%) */
+        .split-gloss-btn,
+        .jelly-glossy-btn,
+        .jelly-glossy-btn-pink {
+          padding: 8px 4px;                /* py-2 px-1 */
+          border-radius: 12px;             /* rounded-xl */
+          border: 1px solid rgba(244, 114, 182, 0.4); /* border-pink-300/40 */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+
+          /* Dải màu Split Gloss Gradient */
+          background: linear-gradient(
+            to bottom,
+            #ffd8e7 0%,    /* Đỉnh nút: hồng phấn rất nhạt */
+            #fbb9d4 48%,   /* Mép trên đường cắt ánh sáng */
+            #f896be 50%,   /* Đường cắt gắt: bắt đầu khối màu đáy */
+            #f376a5 100%   /* Đáy nút: hồng dâu tây đậm */
+          );
+
+          /* Hiệu ứng đổ bóng nổi khối */
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.8),  /* Viền bóng sáng mép trên */
+            0 1px 2px rgba(190, 18, 60, 0.15);         /* Đổ bóng nhẹ phía dưới */
+
+          /* Chữ & Icon */
+          color: #831e45 !important;                  /* Màu hồng mận chín đậm */
+          font-size: 10px;
+          font-weight: 700;                /* In đậm */
+          text-transform: uppercase;
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .split-gloss-btn:hover,
+        .jelly-glossy-btn:hover,
+        .jelly-glossy-btn-pink:hover {
+          transform: translateY(-1px);
+          box-shadow: 
+            inset 0 1px 1.5px rgba(255, 255, 255, 0.9),
+            0 2px 5px rgba(190, 18, 60, 0.2);
+        }
+
+        .split-gloss-btn:active,
+        .jelly-glossy-btn:active,
+        .jelly-glossy-btn-pink:active {
+          transform: translateY(1px);
+          box-shadow: 
+            inset 0 1.5px 2px rgba(0, 0, 0, 0.12),
+            0 1px 1px rgba(190, 18, 60, 0.1);
+        }
+
+        /* 2. Trạng thái khi được chọn (Active - Dạng trắng sứ ngọc trai pha hồng nhẹ) */
+        .split-gloss-btn-active,
+        .split-gloss-active {
+          padding: 8px 4px;
+          border-radius: 12px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+
+          /* Dải màu nền trắng ngọc trai */
+          background: linear-gradient(
+            to bottom,
+            #ffffff 0%,    /* Trắng tinh khiết */
+            #fffbfd 50%,   /* Trắng pha hồng phấn siêu nhạt */
+            #ffeef5 100%   /* Đáy hồng sữa pastel */
+          ) !important;
+
+          /* Viền & Đổ bóng nổi */
+          border: 1px solid #f3b1ca !important;
+          box-shadow: 
+            0 2px 8px rgba(244, 114, 182, 0.35),       /* Hào quang hồng nhẹ */
+            inset 0 1px 2px #ffffff !important;        /* Ánh gương bóng trên đỉnh */
+
+          /* Chữ & Icon khi Active */
+          color: #9e2a56 !important;                  /* Hồng quả mọng nổi bật */
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .split-gloss-btn-active:hover,
+        .split-gloss-active:hover {
+          transform: translateY(-1px);
+          box-shadow: 
+            0 3px 10px rgba(244, 114, 182, 0.42),
+            inset 0 1px 2px #ffffff !important;
+        }
+
+        /* Biến thể Tím Lavender dịu nhạt cho nút Hòm Thư theo Split Gloss Gradient */
+        .split-gloss-btn-purple,
+        .jelly-glossy-btn-purple {
+          padding: 8px 4px;
+          border-radius: 12px;
+          border: 1px solid rgba(192, 132, 252, 0.4);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          background: linear-gradient(
+            to bottom,
+            #fbf5ff 0%,    /* Đỉnh nút: tím phấn rất nhạt */
+            #ebdcfc 48%,   /* Mép trên đường cắt ánh sáng */
+            #dcbbfb 50%,   /* Đường cắt gắt: bắt đầu khối màu đáy */
+            #c497f5 100%   /* Đáy nút: tím hoa cà nhạt */
+          );
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.8),
+            0 1px 2px rgba(147, 51, 234, 0.15);
+          color: #5b21b6 !important;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .split-gloss-btn-purple:hover,
+        .jelly-glossy-btn-purple:hover {
+          transform: translateY(-1px);
+          box-shadow: 
+            inset 0 1px 1.5px rgba(255, 255, 255, 0.9),
+            0 2px 5px rgba(147, 51, 234, 0.2);
+        }
+
+        /* Biến thể Pearl / Ngang cho nút Tiện ích nhỏ (BGM, Copy, Back) */
+        .jelly-glossy-btn-pearl {
+          padding: 6px 10px;
+          border-radius: 12px;
+          border: 1px solid rgba(244, 114, 182, 0.35);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          background: linear-gradient(
+            to bottom,
+            #ffffff 0%,
+            #fff5f8 48%,
+            #fedce6 50%,
+            #fbbcd0 100%
+          );
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.8),
+            0 1px 2px rgba(190, 18, 60, 0.12);
+          color: #831e45 !important;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          user-select: none;
+        }
+        .jelly-glossy-btn-pearl:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 10px rgba(244, 114, 182, 0.20), inset 0 1.5px 2px #ffffff;
+        }
       `}</style>
 
       {/* NỀN KHĂN TRẢI BÀN CARO DÂU TÂY PASTEL */}
@@ -599,7 +772,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
       />
 
       {/* TOP HEADER BAR: Back Button & Style Switcher (Claymorphism) */}
-      <header className="relative z-30 max-w-lg mx-auto mb-4 px-2">
+      <header className="relative z-30 max-w-lg mx-auto mb-6 sm:mb-8 px-2">
         <div className={`clay-header p-2.5 rounded-full flex items-center justify-between transition-all ${
           isDarkEffective
             ? 'bg-[#241c2c]/90 border-pink-900/40 text-stone-200'
@@ -660,29 +833,40 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
         </div>
       )}
 
-      {/* COMPONENT TAMAGOTCHI */}
-      <div className={`relative max-w-[490px] mx-auto mt-8 sm:mt-12 py-2 transition-all z-10 ${
+      {/* COMPONENT TAMAGOTCHI / ĐIỆN THOẠI PASTEL - Dời xuống dưới tạo khoảng cách thông thoáng */}
+      <div className={`relative max-w-[490px] mx-auto mt-24 sm:mt-32 py-2 transition-all z-10 ${
         isTamaShaking ? 'tama-shaking' : ''
       }`}>
-        {/* VỎ MÁY QUẢ TRỨNG (Outer Shell): Hiệu ứng nổi khối Claymorphism & Neumorphic không viền chuẩn bảng màu OKLCH */}
+        {/* VỎ MÁY QUẢ TRỨNG (Outer Shell): Hiệu ứng nổi khối Claymorphism & Neumorphic viền 1px hồng chuẩn bảng màu OKLCH */}
         <div
           className={`tama-clay-neu-shell cl-10-egg-shell p-5 sm:p-8 relative select-none ${
             isDarkEffective
-              ? 'border-[#83425a] bg-[#291e2b] shadow-[0_20px_40px_rgba(0,0,0,0.5),inset_0_3px_6px_rgba(255,255,255,0.2),inset_0_-8px_16px_rgba(0,0,0,0.4)]'
+              ? 'bg-[#291e2b] shadow-[0_14px_28px_rgba(0,0,0,0.35),inset_0_3px_6px_rgba(255,255,255,0.2),inset_0_-8px_16px_rgba(0,0,0,0.4)]'
               : ''
           }`}
+          style={{
+            border: '1px solid #f9a8d4',
+          }}
         >
           {/* Chuỗi dây treo móc khóa hạt cườm kẹo thạch 3D Claymorphism */}
           <TamagotchiCharmBeads />
 
-          {/* Thẻ nhãn phong cách retro 3D dập nổi */}
+          {/* Thẻ nhãn phong cách retro 3D dập nổi: ★MY SWEET PHONE★ */}
           <div className="text-center pb-2 relative z-20">
-            <div className={`inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-mono font-black border ${
+            <div className={`inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-black border ${
               isDarkEffective
                 ? 'bg-[#3b2738] text-pink-300 border-pink-900/60 shadow-[2px_2px_6px_#17101a]'
                 : 'bg-gradient-to-b from-white via-pink-50 to-pink-100 text-[#9d3b5d] border-white shadow-[0_4px_10px_rgba(244,63,94,0.20),inset_0_2px_3px_#ffffff,inset_0_-2px_3px_rgba(225,75,123,0.18)]'
             }`}>
-              <span className="tracking-wider">MY SWEET PHONE</span>
+              <span
+                className="tracking-wider"
+                style={{
+                  fontFamily: "'Pixelify Sans', cursive, monospace, sans-serif",
+                  textShadow: '0 1px 0 rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(190, 18, 60, 0.2)',
+                }}
+              >
+                ★MY SWEET PHONE★
+              </span>
             </div>
           </div>
 
@@ -749,8 +933,8 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
               </div>
             </div>
 
-            {/* KHUNG PHÁT NHẠC ĐĨA THAN VINYL (Xuất hiện ở các trang Chào mừng, Hạ tầng máy chủ và Bình luận văn minh) */}
-            {(activeTab === 'welcome' || activeTab === 'server' || activeTab === 'comments') && (
+            {/* KHUNG PHÁT NHẠC ĐĨA THAN VINYL (Xuất hiện ở các trang Chào mừng, Mục đích hoạt động, Hạ tầng máy chủ và Bình luận văn minh) */}
+            {(activeTab === 'welcome' || activeTab === 'purpose' || activeTab === 'server' || activeTab === 'comments') && (
               <div className="clay-card py-2.5 px-3.5 flex items-center justify-between gap-2.5 select-none">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="relative shrink-0 flex items-center justify-center">
@@ -824,24 +1008,21 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                   </div>
                 </div>
 
-                {/* Nút Bật/Tắt BGM */}
+                {/* Nút Bật/Tắt BGM theo phong cách Pearl Split Gloss Gradient (Đồng bộ màu sắc) */}
                 <motion.button
                   whileTap={{ scale: 0.94 }}
                   onClick={() => setIsVinylPlaying((prev) => !prev)}
-                  className="clay-action-pill px-3 py-1.5 flex items-center gap-1.5 cursor-pointer text-xs font-mono font-bold shrink-0 select-none text-stone-700"
+                  className="jelly-glossy-btn-pearl px-3 py-1.5 flex items-center gap-1.5 cursor-pointer text-[10px] font-bold shrink-0 select-none"
                   title={isVinylPlaying ? 'Bấm để ngừng chuyển động BGM' : 'Bấm để bật chuyển động BGM'}
                 >
-                  {isVinylPlaying ? (
-                    <svg width="11" height="12" viewBox="0 0 11 12" fill="none" className="text-[#de5b8e] shrink-0">
-                      <rect x="0.75" y="0.75" width="3.2" height="10.5" rx="1.6" stroke="currentColor" strokeWidth="1.3" />
-                      <rect x="6.8" y="0.75" width="3.2" height="10.5" rx="1.6" stroke="currentColor" strokeWidth="1.3" />
-                    </svg>
-                  ) : (
-                    <svg width="11" height="12" viewBox="0 0 11 12" fill="none" className="text-[#de5b8e] shrink-0">
-                      <path d="M1.5 1.5L9.5 6L1.5 10.5V1.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-                    </svg>
-                  )}
-                  <span>{isVinylPlaying ? 'Tắt BGM' : 'Bật BGM'}</span>
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    {isVinylPlaying ? (
+                      <Pause className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+                    ) : (
+                      <Play className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+                    )}
+                    <span>{isVinylPlaying ? 'Tắt BGM' : 'Bật BGM'}</span>
+                  </span>
                 </motion.button>
               </div>
             )}
@@ -1011,7 +1192,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                   </p>
 
                   <div className="clay-card p-3 text-xs font-sans leading-relaxed space-y-1 bg-white/90 border-rose-200 text-rose-950">
-                    <p className="font-bold text-rose-800">⚠️ LƯU Ý QUAN TRỌNG:</p>
+                    <p className="font-bold text-rose-800">LƯU Ý QUAN TRỌNG:</p>
                     <p>
                       Tất cả tình tiết, nhân vật và sự kiện hoàn toàn là <strong>HƯ CẤU</strong> và không phản ánh tiêu chuẩn đạo đức xã hội thực tế.
                     </p>
@@ -1060,7 +1241,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                   </div>
 
                   <div className="clay-card p-3 border border-purple-200 bg-purple-50/80 text-stone-800 text-xs leading-relaxed font-sans">
-                    Web mở cổng bình luận tự do, không cần đăng nhập tài khoản. Tuy nhiên, để giữ gìn một không gian đọc truyện văn minh, không bình luận mắng chửi, xúc phạm nhân vật trong truyện. Không nhắc đến tên của nhân vật và bộ truyện không liên quan.
+                    Web mở cổng bình luận tự do, không cần đăng nhập tài khoản. Tuy nhiên, mọi người lưu ý không không bình luận mẳng chửi, xúc phạm nhân vật trong truyện. Không nhắc đến tên của nhân vật và bộ truyện không liên quan.
                   </div>
                 </div>
               )}
@@ -1092,10 +1273,12 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                         <button
                           type="button"
                           onClick={() => copyToClipboard('https://www.wattpad.com/user/Qingxiya52', 'wattpad')}
-                          className="clay-action-pill p-1.5 flex items-center justify-center cursor-pointer text-amber-800 rounded-full hover:scale-105 active:scale-95 transition-transform"
+                          className="jelly-glossy-btn-pearl p-1.5 flex items-center justify-center cursor-pointer rounded-full"
                           title={copiedWattpad ? 'Đã sao chép liên kết' : 'Sao chép liên kết'}
                         >
-                          {copiedWattpad ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span className="relative z-10">
+                            {copiedWattpad ? <Check className="w-3.5 h-3.5 stroke-[2.5] text-emerald-600" /> : <Copy className="w-3.5 h-3.5 stroke-[2.2]" />}
+                          </span>
                         </button>
                       </div>
                       <a
@@ -1117,10 +1300,12 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                         <button
                           type="button"
                           onClick={() => copyToClipboard('https://nienthoi003.wordpress.com/', 'wordpress')}
-                          className="clay-action-pill p-1.5 flex items-center justify-center cursor-pointer text-sky-800 rounded-full hover:scale-105 active:scale-95 transition-transform"
+                          className="jelly-glossy-btn-pearl p-1.5 flex items-center justify-center cursor-pointer rounded-full"
                           title={copiedWordpress ? 'Đã sao chép liên kết' : 'Sao chép liên kết'}
                         >
-                          {copiedWordpress ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span className="relative z-10">
+                            {copiedWordpress ? <Check className="w-3.5 h-3.5 stroke-[2.5] text-emerald-600" /> : <Copy className="w-3.5 h-3.5 stroke-[2.2]" />}
+                          </span>
                         </button>
                       </div>
                       <a
@@ -1136,24 +1321,37 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                 </div>
               )}
 
-              {/* TRANG RIÊNG BIỆT: HÒM THƯ LỜI NHẮN */}
+              {/* TRANG RIÊNG BIỆT: HÒM THƯ */}
               {activeTab === 'messages' && (
                 <div className="clay-card p-4 space-y-3.5">
                   <div className="flex items-center justify-between border-b border-dashed border-pink-200 pb-2.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-base">💌</span>
+                      <svg
+                        className="w-4 h-4 text-rose-600 dark:text-pink-400 fill-rose-100 dark:fill-rose-950/40 transition-colors duration-300 shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect width="20" height="16" x="2" y="4" rx="3" />
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                      </svg>
                       <div>
-                        <span className="text-xs font-black uppercase block tracking-tight font-mono text-rose-800">
-                          HÒM THƯ LỜI NHẮN
+                        <span className="text-xs font-black uppercase block tracking-tight font-mono text-rose-800 dark:text-pink-300">
+                          HÒM THƯ
                         </span>
                       </div>
                     </div>
                     <button
                       onClick={() => setActiveTab('purpose')}
-                      className="clay-action-pill px-2.5 py-1 text-xs font-bold flex items-center justify-center cursor-pointer text-pink-700 shrink-0"
+                      className="jelly-glossy-btn-pearl p-1.5 text-xs font-bold flex items-center justify-center cursor-pointer shrink-0 rounded-full"
                       title="Quay lại"
                     >
-                      <span>◀</span>
+                      <span className="relative z-10">
+                        <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </span>
                     </button>
                   </div>
 
@@ -1215,14 +1413,12 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                       <motion.button
                         whileTap={{ scale: 0.94 }}
                         onClick={handleSendMessage}
-                        style={{
-                          background: 'linear-gradient(135deg, #e11d48 0%, #db2777 100%)',
-                          color: '#ffffff',
-                          boxShadow: '0 4px 12px rgba(225, 29, 72, 0.32), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
-                        }}
-                        className="px-4 py-1.5 rounded-full text-xs font-black font-sans flex items-center justify-center cursor-pointer active:scale-95 transition-transform shrink-0"
+                        className="jelly-glossy-btn-pink px-3.5 py-1.5 rounded-full text-xs font-bold font-sans flex items-center gap-1.5 justify-center cursor-pointer shrink-0"
                       >
-                        <span className="text-white font-black drop-shadow-xs">Gửi 💌</span>
+                        <span className="relative z-10 flex items-center gap-1.5">
+                          <Send className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+                          <span>Gửi</span>
+                        </span>
                       </motion.button>
                     </div>
 
@@ -1288,72 +1484,50 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
 
 
-            {/* 2 NÚT ĐIỀU KHIỂN DƯỚI MÀN HÌNH: THẢ TIM & MỞ HÒM THƯ (Ẩn hoàn toàn trong giao diện Chào mừng) */}
-            {activeTab !== 'welcome' && (
-              <div className="pt-2.5 border-t border-pink-200/90 dark:border-pink-900/50 flex items-center justify-between gap-2 select-none">
-                {/* Nút Thả tim Claymorphism */}
-                <motion.button
-                  whileTap={{ scale: 0.94, y: 2 }}
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  onClick={handlePressB}
-                  className={`clay-action-pill flex-1 py-2 px-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 select-none ${
-                    isHeartFlashing
-                      ? 'scale-[1.04] ring-2 ring-pink-400 font-black'
-                      : ''
-                  }`}
-                  title={hasLiked ? 'Bạn đã thả tim rồi (giới hạn 1 lượt/trình duyệt)' : 'Bấm để thả tim cho góc nhỏ'}
-                >
-                  <motion.span
-                    animate={isHeartFlashing ? { scale: [1, 1.45, 1] } : { scale: [1, 1.15, 1] }}
-                    transition={{ duration: isHeartFlashing ? 0.35 : 1.6, repeat: isHeartFlashing ? 0 : Infinity }}
-                    className={`text-base leading-none ${hasLiked ? 'text-rose-600' : 'text-rose-500'}`}
-                  >
-                    ♥
-                  </motion.span>
-                  <span
-                    className="text-sm tracking-wide text-stone-800"
-                    style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', sans-serif", fontWeight: 850 }}
-                  >
-                    {hasLiked ? 'Đã thả tim' : 'Thả tim'}
+            {/* 2 NÚT ĐIỀU KHIỂN DƯỚI MÀN HÌNH: THẢ TIM & MỞ HÒM THƯ (Chữ và số lượng trên cùng một dòng, không xuống dòng, không icon) */}
+            <div className="pt-2.5 border-t border-pink-200/90 dark:border-pink-900/50 flex items-center justify-between gap-2.5 select-none">
+              {/* Nút Thả tim / Đã thả tim: Bỏ icon, chữ và số lượng nằm trên cùng một dòng */}
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                onClick={handlePressB}
+                className="split-gloss-btn flex-1 transition-all !flex-row !py-2.5 !px-2 whitespace-nowrap"
+                title={hasLiked ? 'Bạn đã thả tim rồi (giới hạn 1 lượt/trình duyệt)' : 'Bấm để thả tim cho góc nhỏ'}
+              >
+                <div className="flex items-center justify-center gap-1.5 w-full whitespace-nowrap">
+                  <span className="text-[10px] font-bold tracking-wider uppercase">
+                    {hasLiked ? 'ĐÃ THẢ TIM' : 'THẢ TIM'}
                   </span>
-                  <span
-                    className="px-1.5 py-0.5 rounded-full text-xs border border-pink-200 bg-white/95 text-pink-700 shadow-2xs"
-                    style={{ fontFamily: "'Handjet', 'JetBrains Mono', monospace", fontWeight: 850 }}
-                  >
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/80 text-[#831e45]">
                     {tamaHearts}
                   </span>
-                </motion.button>
+                </div>
+              </motion.button>
 
-                {/* Nút Mở Hòm thư Claymorphism */}
-                <motion.button
-                  whileTap={{ scale: 0.94, y: 2 }}
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  onClick={() => {
-                    if (activeTab === 'messages') {
-                      setActiveTab('welcome');
-                      showToast('Đã đóng hòm thư lời nhắn 🌸');
-                    } else {
-                      setActiveTab('messages');
-                      showToast('Đã mở hòm thư lời nhắn 💌');
-                    }
-                  }}
-                  className={`clay-action-pill flex-1 py-2 px-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 select-none ${
-                    activeTab === 'messages'
-                      ? 'scale-[1.04] ring-2 ring-purple-400 font-black'
-                      : ''
-                  }`}
-                  title={activeTab === 'messages' ? 'Đang mở' : 'Bấm để mở hòm thư lời nhắn'}
-                >
-                  <span className="text-sm leading-none">💌</span>
-                  <span
-                    className="text-sm tracking-wide text-stone-800"
-                    style={{ fontFamily: "'Handjet', 'Be Vietnam Pro', sans-serif", fontWeight: 850 }}
-                  >
-                    {activeTab === 'messages' ? 'Đang mở' : 'Mở hòm thư'}
+              {/* Nút Hòm thư / Mở hòm thư: Bỏ icon, chữ và số lượng nằm trên cùng một dòng */}
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                onClick={() => {
+                  if (activeTab === 'messages') {
+                    setActiveTab('welcome');
+                    showToast('Đã đóng hòm thư 🌸');
+                  } else {
+                    setActiveTab('messages');
+                    showToast('Đã mở hòm thư 💌');
+                  }
+                }}
+                className="split-gloss-btn flex-1 transition-all !flex-row !py-2.5 !px-2 whitespace-nowrap"
+                title={activeTab === 'messages' ? 'Bấm để đóng hòm thư' : 'Bấm để mở hòm thư'}
+              >
+                <div className="flex items-center justify-center gap-1.5 w-full whitespace-nowrap">
+                  <span className="text-[10px] font-bold tracking-wider uppercase">
+                    {activeTab === 'messages' ? 'MỞ HÒM THƯ' : 'HÒM THƯ'}
                   </span>
-                </motion.button>
-              </div>
-            )}
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/80 text-[#831e45]">
+                    {recentMessages.length}
+                  </span>
+                </div>
+              </motion.button>
+            </div>
           </div>
           </div>
 

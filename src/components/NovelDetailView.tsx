@@ -889,7 +889,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   });
   const [newCommentText, setNewCommentText] = useState('');
   const [userRating, setUserRating] = useState(5);
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState(() => {
+    try {
+      return safeStorage.getItem('cosmo_comment_author_name') || '';
+    } catch {
+      return '';
+    }
+  });
 
   // Synchronize and subscribe to comments in real-time from Firestore & safeStorage
   useEffect(() => {
@@ -1698,6 +1704,11 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     if (!newCommentText.trim()) return;
 
     const finalAuthor = userName.trim() || 'Bạn Đọc';
+    if (userName.trim()) {
+      try {
+        safeStorage.setItem('cosmo_comment_author_name', userName.trim());
+      } catch {}
+    }
     const formattedDate = formatCommentDate();
 
     const tempComment: NovelComment = {
@@ -2579,6 +2590,11 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             onToggleBookmark={toggleBookmark}
             onReadChapter={onReadChapter}
             onPostComment={(author, content) => {
+              if (author.trim()) {
+                try {
+                  safeStorage.setItem('cosmo_comment_author_name', author.trim());
+                } catch {}
+              }
               const formattedDate = formatCommentDate();
               const tempComment: NovelComment = {
                 id: `cm-${Date.now()}`,

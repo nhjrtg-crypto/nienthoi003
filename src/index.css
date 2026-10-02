@@ -2590,13 +2590,13 @@
   /* 4 lớp gradient đan chéo tạo thành lưới caro sổ còng đa tầng */
   background-image:
     /* Lớp 1: Đường kẻ dọc 1px ô nhỏ (32px) */
-    linear-gradient(90deg, rgba(186, 147, 230, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(186, 147, 230, 0.25) 1px, transparent 1px),
     /* Lớp 2: Đường kẻ ngang 1px ô nhỏ (32px) */
-    linear-gradient(0deg, rgba(186, 147, 230, 0.28) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(186, 147, 230, 0.25) 1px, transparent 1px),
     /* Lớp 3: Dải kẻ dọc bản dày 16px ô lớn (64px) */
-    linear-gradient(90deg, rgba(224, 204, 247, 0.20) 16px, transparent 16px),
+    linear-gradient(90deg, rgba(224, 204, 247, 0.18) 16px, transparent 16px),
     /* Lớp 4: Dải kẻ ngang bản dày 16px ô lớn (64px) */
-    linear-gradient(0deg, rgba(224, 204, 247, 0.20) 16px, transparent 16px);
+    linear-gradient(0deg, rgba(224, 204, 247, 0.18) 16px, transparent 16px);
 
   /* Kích thước bước lặp: ô con 32x32px và ô mẹ 64x64px */
   background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
@@ -2608,8 +2608,8 @@
   background-image:
     linear-gradient(90deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
     linear-gradient(0deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(203, 213, 225, 0.16) 16px, transparent 16px),
-    linear-gradient(0deg, rgba(203, 213, 225, 0.16) 16px, transparent 16px);
+    linear-gradient(90deg, rgba(203, 213, 225, 0.14) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(203, 213, 225, 0.14) 16px, transparent 16px);
   background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
 }
 
@@ -2617,10 +2617,10 @@
   /* Màu nền giấy xanh mây baby pastel (Frost) */
   background-color: #f4f8fd;
   background-image:
-    linear-gradient(90deg, rgba(147, 197, 253, 0.30) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(147, 197, 253, 0.30) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(191, 219, 254, 0.18) 16px, transparent 16px),
-    linear-gradient(0deg, rgba(191, 219, 254, 0.18) 16px, transparent 16px);
+    linear-gradient(90deg, rgba(147, 197, 253, 0.25) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(147, 197, 253, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(191, 219, 254, 0.16) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(191, 219, 254, 0.16) 16px, transparent 16px);
   background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
 }
 
@@ -2628,10 +2628,10 @@
   /* Màu nền giấy trà sữa matcha pastel (Sage) */
   background-color: #f5f9f4;
   background-image:
-    linear-gradient(90deg, rgba(167, 209, 163, 0.32) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(167, 209, 163, 0.32) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(198, 228, 195, 0.18) 16px, transparent 16px),
-    linear-gradient(0deg, rgba(198, 228, 195, 0.18) 16px, transparent 16px);
+    linear-gradient(90deg, rgba(167, 209, 163, 0.26) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(167, 209, 163, 0.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 228, 195, 0.16) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(198, 228, 195, 0.16) 16px, transparent 16px);
   background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
 }
 
@@ -2639,10 +2639,10 @@
   /* Màu nền giấy kem caramel vani pastel (Linen / Mocha) */
   background-color: #fbf7f2;
   background-image:
-    linear-gradient(90deg, rgba(214, 185, 160, 0.30) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(214, 185, 160, 0.30) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(235, 215, 196, 0.18) 16px, transparent 16px),
-    linear-gradient(0deg, rgba(235, 215, 196, 0.18) 16px, transparent 16px);
+    linear-gradient(90deg, rgba(214, 185, 160, 0.25) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(214, 185, 160, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(235, 215, 196, 0.16) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(235, 215, 196, 0.16) 16px, transparent 16px);
   background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
 }
 
@@ -2650,10 +2650,10 @@
   /* Màu nền giấy cực quang ngân hà pastel (Cosmic) */
   background-color: #fbf7ff;
   background-image:
-    linear-gradient(90deg, rgba(232, 166, 244, 0.28) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(180, 166, 244, 0.28) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(244, 198, 235, 0.18) 16px, transparent 16px),
-    linear-gradient(0deg, rgba(210, 198, 248, 0.18) 16px, transparent 16px);
+    linear-gradient(90deg, rgba(232, 166, 244, 0.24) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(180, 166, 244, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 198, 235, 0.15) 16px, transparent 16px),
+    linear-gradient(0deg, rgba(210, 198, 248, 0.15) 16px, transparent 16px);
   background-size: 32px 32px, 32px 32px, 64px 64px, 64px 64px;
 }
 

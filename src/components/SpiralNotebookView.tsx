@@ -117,7 +117,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         bannerDivider: 'bg-gradient-to-r from-[#dfcef5] via-[#caa4ec] to-[#f4c8e3]',
         coverBg: 'bg-[#f7f2fd]',
         coverBorder: 'border-[#e5d5f6]',
-        coverShadow: 'shadow-[0_16px_45px_rgba(175,130,225,0.13)]',
+        coverShadow: 'shadow-[0_14px_36px_rgba(175,130,225,0.22),0_4px_12px_rgba(175,130,225,0.12)]',
         ringsGradient: 'bg-gradient-to-r from-[#d9c4f0] via-[#fbf7ff] to-[#f0c8e4]',
         ringsBorder: 'border-[#caa7e8]',
         holesBg: 'bg-[#ecdcf7]',
@@ -381,7 +381,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-200',
       coverBg: 'bg-[#f8f9fa]',
       coverBorder: 'border-zinc-200/90',
-      coverShadow: 'shadow-[0_16px_45px_rgba(0,0,0,0.05)]',
+      coverShadow: 'shadow-[0_14px_36px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.06)]',
       ringsGradient: 'bg-gradient-to-r from-zinc-300 via-zinc-100 to-zinc-300',
       ringsBorder: 'border-zinc-300/80',
       holesBg: 'bg-zinc-200',
@@ -558,7 +558,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-[#cce0f2] via-[#94bede] to-[#cce0f2]',
       coverBg: 'bg-[#edf4fb]',
       coverBorder: 'border-[#d4e5f4]',
-      coverShadow: 'shadow-[0_16px_45px_rgba(110,155,195,0.12)]',
+      coverShadow: 'shadow-[0_14px_36px_rgba(110,155,195,0.22),0_4px_12px_rgba(110,155,195,0.12)]',
       ringsGradient: 'bg-gradient-to-r from-[#c4daf0] via-[#f5f9fd] to-[#c4daf0]',
       ringsBorder: 'border-[#aecde8]',
       holesBg: 'bg-[#dbe9f6]',
@@ -736,7 +736,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-[#d0e3cd] via-[#9ec698] to-[#d0e3cd]',
       coverBg: 'bg-[#eef5ed]',
       coverBorder: 'border-[#d6e6d3]',
-      coverShadow: 'shadow-[0_16px_45px_rgba(105,145,100,0.11)]',
+      coverShadow: 'shadow-[0_14px_36px_rgba(105,145,100,0.22),0_4px_12px_rgba(105,145,100,0.12)]',
       ringsGradient: 'bg-gradient-to-r from-[#c7ddc3] via-[#f6faf5] to-[#c7ddc3]',
       ringsBorder: 'border-[#b4cfb0]',
       holesBg: 'bg-[#deecdb]',
@@ -914,7 +914,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-[#e7d5c2] via-[#cca787] to-[#e7d5c2]',
       coverBg: 'bg-[#f8f1e8]',
       coverBorder: 'border-[#e7d8c7]',
-      coverShadow: 'shadow-[0_16px_45px_rgba(160,120,85,0.11)]',
+      coverShadow: 'shadow-[0_14px_36px_rgba(160,120,85,0.22),0_4px_12px_rgba(160,120,85,0.12)]',
       ringsGradient: 'bg-gradient-to-r from-[#dfcebc] via-[#fbf7f1] to-[#dfcebc]',
       ringsBorder: 'border-[#d1bdab]',
       holesBg: 'bg-[#efe0d0]',
@@ -1091,7 +1091,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     bannerDivider: 'bg-gradient-to-r from-[#dfcef5] via-[#b89cd9] to-[#dfcef5]',
     coverBg: 'bg-[#f6f0fc]',
     coverBorder: 'border-[#e4d5f4]',
-    coverShadow: 'shadow-[0_16px_45px_rgba(155,124,194,0.12)]',
+    coverShadow: 'shadow-[0_14px_36px_rgba(155,124,194,0.22),0_4px_12px_rgba(155,124,194,0.12)]',
     ringsGradient: 'bg-gradient-to-r from-[#d8c5ed] via-[#f8f2fd] to-[#d8c5ed]',
     ringsBorder: 'border-[#cbb3e6]',
     holesBg: 'bg-[#e9dcf5]',
@@ -1190,8 +1190,8 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
         backgroundImage: `
           linear-gradient(90deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
           linear-gradient(0deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(203, 213, 225, 0.16) 16px, transparent 16px),
-          linear-gradient(0deg, rgba(203, 213, 225, 0.16) 16px, transparent 16px)
+          linear-gradient(90deg, rgba(203, 213, 225, 0.14) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(203, 213, 225, 0.14) 16px, transparent 16px)
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };
@@ -1199,10 +1199,10 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
       return {
         backgroundColor: '#f4f8fd',
         backgroundImage: `
-          linear-gradient(90deg, rgba(147, 197, 253, 0.30) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(147, 197, 253, 0.30) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(191, 219, 254, 0.18) 16px, transparent 16px),
-          linear-gradient(0deg, rgba(191, 219, 254, 0.18) 16px, transparent 16px)
+          linear-gradient(90deg, rgba(147, 197, 253, 0.25) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(147, 197, 253, 0.25) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(191, 219, 254, 0.16) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(191, 219, 254, 0.16) 16px, transparent 16px)
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };
@@ -1210,10 +1210,10 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
       return {
         backgroundColor: '#f5f9f4',
         backgroundImage: `
-          linear-gradient(90deg, rgba(167, 209, 163, 0.32) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(167, 209, 163, 0.32) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(198, 228, 195, 0.18) 16px, transparent 16px),
-          linear-gradient(0deg, rgba(198, 228, 195, 0.18) 16px, transparent 16px)
+          linear-gradient(90deg, rgba(167, 209, 163, 0.26) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(167, 209, 163, 0.26) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(198, 228, 195, 0.16) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(198, 228, 195, 0.16) 16px, transparent 16px)
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };
@@ -1221,10 +1221,10 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
       return {
         backgroundColor: '#fbf7f2',
         backgroundImage: `
-          linear-gradient(90deg, rgba(214, 185, 160, 0.30) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(214, 185, 160, 0.30) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(235, 215, 196, 0.18) 16px, transparent 16px),
-          linear-gradient(0deg, rgba(235, 215, 196, 0.18) 16px, transparent 16px)
+          linear-gradient(90deg, rgba(214, 185, 160, 0.25) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(214, 185, 160, 0.25) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(235, 215, 196, 0.16) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(235, 215, 196, 0.16) 16px, transparent 16px)
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };
@@ -1232,10 +1232,10 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
       return {
         backgroundColor: '#fbf7ff',
         backgroundImage: `
-          linear-gradient(90deg, rgba(232, 166, 244, 0.28) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(180, 166, 244, 0.28) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(244, 198, 235, 0.18) 16px, transparent 16px),
-          linear-gradient(0deg, rgba(210, 198, 248, 0.18) 16px, transparent 16px)
+          linear-gradient(90deg, rgba(232, 166, 244, 0.24) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(180, 166, 244, 0.24) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(244, 198, 235, 0.15) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(210, 198, 248, 0.15) 16px, transparent 16px)
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };
@@ -1244,10 +1244,10 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
       return {
         backgroundColor: '#faf6fe',
         backgroundImage: `
-          linear-gradient(90deg, rgba(186, 147, 230, 0.28) 1px, transparent 1px),
-          linear-gradient(0deg, rgba(186, 147, 230, 0.28) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(224, 204, 247, 0.20) 16px, transparent 16px),
-          linear-gradient(0deg, rgba(224, 204, 247, 0.20) 16px, transparent 16px)
+          linear-gradient(90deg, rgba(186, 147, 230, 0.25) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(186, 147, 230, 0.25) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(224, 204, 247, 0.18) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(224, 204, 247, 0.18) 16px, transparent 16px)
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };

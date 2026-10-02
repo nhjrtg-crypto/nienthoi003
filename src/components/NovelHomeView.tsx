@@ -34,6 +34,7 @@ import {
   Shuffle,
   CircleDot,
   ArrowRight,
+  Users,
 } from 'lucide-react';
 import { Novel, NovelGenre, DarkBackgroundOption, DARK_BG_OPTIONS } from '../types';
 import { AdminUserLike } from '../services/firebase';
@@ -1141,179 +1142,217 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         break;
     }
 
-    // Dải màu gradient viên thuốc dịu nhẹ, trung tính, chuyển sắc êm dịu, không chói lóa
+    // Dải màu gradient viên thuốc nổi bật, chuyển sắc sống động và bóng đổ 3D chiều sâu theo từng theme tối
     const getActivePill = (catId: NovelCategoryTabId) => {
-      // 1. THEME SAGE (Xanh lá / Botanical / Sage - Tone rêu, ngải cứu & lá xám trung tính dịu nhẹ)
+      // 1. THEME SAGE (Xanh thảo mộc / Sage: Bạc hà ngọc bích #34d399 sang trà xanh xô thơm tươi mát #2dd4bf)
       if (th === 'sage') {
+        const sageGlow = 'shadow-[0_4px_16px_rgba(52,211,153,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
         switch (catId) {
           case 'h-van':
             return {
-              gradient: 'bg-gradient-to-r from-[#313b2d] via-[#3c4736] to-[#465440]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#4ade80] to-[#2dd4bf]',
+              glow: sageGlow,
             };
           case 'h-van-np':
             return {
-              gradient: 'bg-gradient-to-r from-[#263733] via-[#2f423d] to-[#394d47]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#4ade80] to-[#34d399]',
+              glow: sageGlow,
             };
           case 'h-van-ngan':
             return {
-              gradient: 'bg-gradient-to-r from-[#363b2d] via-[#414736] to-[#4c5440]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#2dd4bf] to-[#34d399]',
+              glow: sageGlow,
             };
           case 'dam-my':
             return {
-              gradient: 'bg-gradient-to-r from-[#283832] via-[#32453e] to-[#3c524a]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#34d399] via-[#2dd4bf] to-[#6ee7b7]',
+              glow: sageGlow,
             };
           case 'all':
           default:
             return {
-              gradient: 'bg-gradient-to-r from-[#2a362e] via-[#334238] to-[#3c4e43]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#34d399] to-[#2dd4bf]',
+              glow: sageGlow,
             };
         }
       }
 
-      // 2. THEME SLATE-HAZE (Frost / Xanh đá / Steel Slate trung tính dịu nhẹ)
+      // 2. THEME SLATE-HAZE (Frost / Xanh băng tuyết: Xanh da trời baby #38bdf8 sang lam băng mát lạnh #60a5fa)
       if (th === 'slate-haze') {
+        const frostGlow = 'shadow-[0_4px_16px_rgba(56,189,248,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
         switch (catId) {
           case 'h-van':
             return {
-              gradient: 'bg-gradient-to-r from-[#23333b] via-[#2a3d47] to-[#324753]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#22d3ee] to-[#38bdf8]',
+              glow: frostGlow,
             };
           case 'h-van-np':
             return {
-              gradient: 'bg-gradient-to-r from-[#2a2d42] via-[#323650] to-[#3b405e]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#0284c7] to-[#38bdf8]',
+              glow: frostGlow,
             };
           case 'h-van-ngan':
             return {
-              gradient: 'bg-gradient-to-r from-[#253544] via-[#2c3e50] to-[#34485d]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#60a5fa] to-[#38bdf8]',
+              glow: frostGlow,
             };
           case 'dam-my':
             return {
-              gradient: 'bg-gradient-to-r from-[#283241] via-[#303d4f] to-[#39485e]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#38bdf8] via-[#60a5fa] to-[#818cf8]',
+              glow: frostGlow,
             };
           case 'all':
           default:
             return {
-              gradient: 'bg-gradient-to-r from-[#26313e] via-[#2e3b4b] to-[#374659]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#38bdf8] to-[#60a5fa]',
+              glow: frostGlow,
             };
         }
       }
 
-      // 3. THEME MOCHA (Linen / Nâu ấm / Cacao taupe & Cà phê ấm trung tính dịu nhẹ)
+      // 3. THEME MOCHA (Caramel / Hổ phách: Cam đào ấm #fb923c sang caramel vàng mật ong rực rỡ #f59e0b)
       if (th === 'mocha') {
+        const mochaGlow = 'shadow-[0_4px_16px_rgba(251,146,60,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
         switch (catId) {
           case 'h-van':
             return {
-              gradient: 'bg-gradient-to-r from-[#3b2b23] via-[#48352c] to-[#564035]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#f97316] to-[#fbbf24]',
+              glow: mochaGlow,
             };
           case 'h-van-np':
             return {
-              gradient: 'bg-gradient-to-r from-[#322520] via-[#3e2e28] to-[#4b3831]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#fb923c] to-[#f472b6]',
+              glow: mochaGlow,
             };
           case 'h-van-ngan':
             return {
-              gradient: 'bg-gradient-to-r from-[#3a3023] via-[#473b2c] to-[#554736]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#f59e0b] to-[#fb923c]',
+              glow: mochaGlow,
             };
           case 'dam-my':
             return {
-              gradient: 'bg-gradient-to-r from-[#382b25] via-[#44352e] to-[#514037]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#fb923c] via-[#f59e0b] to-[#fcd34d]',
+              glow: mochaGlow,
             };
           case 'all':
           default:
             return {
-              gradient: 'bg-gradient-to-r from-[#362923] via-[#42332c] to-[#4f3e35]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#fb923c] to-[#f59e0b]',
+              glow: mochaGlow,
             };
         }
       }
 
-      // 4. THEME NOTEBOOK (White / Monochrome / Graphite & Than chì trung tính dịu nhẹ)
+      // 4. THEME NOTEBOOK (Monochrome / Bạc titan: Xám bạc ánh kim #94a3b8 sang bạch kim ngọc trai #cbd5e1)
       if (th === 'notebook') {
+        const silverGlow = 'shadow-[0_4px_16px_rgba(148,163,184,0.4),inset_0_1px_1.5px_rgba(255,255,255,0.6),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
         switch (catId) {
           case 'h-van':
             return {
-              gradient: 'bg-gradient-to-r from-[#2f3137] via-[#393c43] to-[#444750]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#64748b] to-[#94a3b8]',
+              glow: silverGlow,
             };
           case 'h-van-np':
             return {
-              gradient: 'bg-gradient-to-r from-[#252528] via-[#2f2f33] to-[#3a3a3f]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#475569] to-[#94a3b8]',
+              glow: silverGlow,
             };
           case 'h-van-ngan':
             return {
-              gradient: 'bg-gradient-to-r from-[#31302e] via-[#3c3b39] to-[#484644]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#64748b] to-[#cbd5e1]',
+              glow: silverGlow,
             };
           case 'dam-my':
             return {
-              gradient: 'bg-gradient-to-r from-[#292c32] via-[#33373e] to-[#3e424b]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#94a3b8] via-[#cbd5e1] to-[#e2e8f0]',
+              glow: silverGlow,
             };
           case 'all':
           default:
             return {
-              gradient: 'bg-gradient-to-r from-[#2b2b30] via-[#35353b] to-[#404047]',
-              glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+              gradient: 'bg-gradient-to-r from-[#94a3b8] to-[#cbd5e1]',
+              glow: silverGlow,
             };
         }
       }
 
-      // 5. THEME AMETHYST-HAZE & COSMIC (Tím hoàng hôn mờ / Thạch anh tro / Dusty Mauve trung tính dịu nhẹ)
+      // 5. THEME COSMIC (Cực quang ngân hà: Lam tím cực quang #818cf8 qua tím #c084fc sang hồng rực #e879f9)
+      if (th === 'cosmic') {
+        const cosmicGlow = 'shadow-[0_4px_16px_rgba(168,85,247,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
+        switch (catId) {
+          case 'h-van':
+            return {
+              gradient: 'bg-gradient-to-r from-[#a855f7] to-[#f472b6]',
+              glow: cosmicGlow,
+            };
+          case 'h-van-np':
+            return {
+              gradient: 'bg-gradient-to-r from-[#c084fc] to-[#f43f5e]',
+              glow: cosmicGlow,
+            };
+          case 'h-van-ngan':
+            return {
+              gradient: 'bg-gradient-to-r from-[#818cf8] to-[#c084fc]',
+              glow: cosmicGlow,
+            };
+          case 'dam-my':
+            return {
+              gradient: 'bg-gradient-to-r from-[#6366f1] via-[#a855f7] to-[#ec4899]',
+              glow: cosmicGlow,
+            };
+          case 'all':
+          default:
+            return {
+              gradient: 'bg-gradient-to-r from-[#818cf8] via-[#c084fc] to-[#e879f9]',
+              glow: cosmicGlow,
+            };
+        }
+      }
+
+      // 6. THEME AMETHYST-HAZE / PURPLE (Chuẩn công thức: Tím tử đinh hương #c084fc sang hồng tím hoa cà #e879f9)
+      const purpleGlow = 'shadow-[0_4px_16px_rgba(192,132,252,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
       switch (catId) {
         case 'h-van':
           return {
-            gradient: 'bg-gradient-to-r from-[#392535] via-[#452e41] to-[#52384e]',
-            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            gradient: 'bg-gradient-to-r from-[#d946ef] to-[#c084fc]',
+            glow: purpleGlow,
           };
         case 'h-van-np':
           return {
-            gradient: 'bg-gradient-to-r from-[#2c243d] via-[#362c4a] to-[#413559]',
-            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            gradient: 'bg-gradient-to-r from-[#c084fc] to-[#f472b6]',
+            glow: purpleGlow,
           };
         case 'h-van-ngan':
           return {
-            gradient: 'bg-gradient-to-r from-[#3a2531] via-[#472e3d] to-[#55384a]',
-            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            gradient: 'bg-gradient-to-r from-[#a855f7] to-[#e879f9]',
+            glow: purpleGlow,
           };
         case 'dam-my':
           return {
-            gradient: 'bg-gradient-to-r from-[#312940] via-[#3c324e] to-[#483d5d]',
-            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            gradient: 'bg-gradient-to-r from-[#c084fc] via-[#d946ef] to-[#e879f9]',
+            glow: purpleGlow,
           };
         case 'all':
         default:
           return {
-            gradient: 'bg-gradient-to-r from-[#32253f] via-[#3d2e4d] to-[#49385c]',
-            glow: 'shadow-[0_2px_8px_rgba(0,0,0,0.35)]',
+            gradient: 'bg-gradient-to-r from-[#c084fc] to-[#e879f9]',
+            glow: purpleGlow,
           };
       }
     };
 
-    // Màu sắc chữ hover khi chưa active: Tone màu trung tính dịu mắt, hòa nhã
+    // Màu sắc chữ hover khi chưa active: Tone màu trung tính sáng nhẹ, thanh thoát
     const getInactiveText = (catId: NovelCategoryTabId) => {
       if (th === 'notebook') {
-        return 'text-zinc-400 hover:text-zinc-200';
+        return 'text-zinc-400 hover:text-zinc-100';
       }
-      return 'text-stone-400 hover:text-stone-200';
+      return 'text-stone-400 hover:text-stone-100';
     };
 
     return {
       container: `${containerBase} ${containerAura}`,
-      activeText: 'text-white font-medium',
-      inactiveText: 'text-stone-400 hover:text-stone-200',
+      activeText: th === 'notebook' ? 'text-zinc-950 font-bold' : 'text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]',
+      inactiveText: 'text-stone-400 hover:text-stone-100',
       getActivePill,
       getInactiveText,
     };
@@ -1629,8 +1668,16 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   };
 
   const featuredNovels = useMemo(() => {
-    // Tối đa 5 truyện cho mục Hero trang chủ theo yêu cầu của người dùng
-    return novels.slice(0, 5);
+    // Mục hero chỉ dành cho những bộ truyện có lượt xem cao nhất web (tối đa 5 truyện)
+    const sorted = [...novels].sort((a, b) => {
+      const viewsA = Number(a.views ?? (a as any).luotDoc ?? 0);
+      const viewsB = Number(b.views ?? (b as any).luotDoc ?? 0);
+      if (viewsB !== viewsA) {
+        return viewsB - viewsA;
+      }
+      return 0;
+    });
+    return sorted.slice(0, 5);
   }, [novels]);
 
   const currentHeroNovel = featuredNovels[featuredIndex] || novels[0];
@@ -2000,6 +2047,251 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             };
     }
   }, [theme, isDarkEffective, isCosmic]);
+
+  // Cấu hình giao diện vé máy bay / tàu hỏa (Boarding Pass Ticket) đồng bộ theo Theme và Chế độ Sáng / Tối
+  const ticketTheme = useMemo(() => {
+    if (isDarkEffective) {
+      switch (theme) {
+        case 'sage':
+          return {
+            outer: 'border-[#2d4432]/80 bg-[#111c14]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
+            inner: 'bg-[#131d15]/60 backdrop-blur-md border-[#2d4432]/60 shadow-md',
+            divider: 'border-[#2d4432]',
+            dashedDivider: 'border-[#2d4432]',
+            cutout: 'bg-[#111c14]/80 backdrop-blur-md border border-[#2d4432] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-[#8cb391]/80',
+            title: 'text-[#eaf2eb] hover:text-[#a3d4a9]',
+            meta: 'text-[#9db6a1]',
+            author: 'text-[#eaf2eb]',
+            synopsis: 'text-[#b8cebc]',
+            btnPrimary: 'bg-gradient-to-r from-[#2a362e] via-[#334238] to-[#3c4e43] hover:from-[#334238] hover:to-[#485d50] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
+            btnSecondary: 'border-[#2d4432] bg-[#162218]/80 hover:bg-[#1f3022] text-[#cee0d1]',
+            dotActive: 'bg-[#8cb391] ring-1 ring-[#8cb391]/50 shadow-xs',
+            dotInactive: 'bg-[#233527]',
+            barcode: 'bg-[#3f5f46]',
+            coverBorder: 'border-[#2d4432] bg-[#1a271c]',
+            borderHeroLine: 'border-[#2d4432]',
+            fullBadge: 'bg-[#334238] text-white border border-white/15',
+          };
+        case 'mocha':
+          return {
+            outer: 'border-[#543b2f]/80 bg-[#1b1511]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
+            inner: 'bg-[#191410]/60 backdrop-blur-md border-[#543b2f]/60 shadow-md',
+            divider: 'border-[#543b2f]',
+            dashedDivider: 'border-[#543b2f]',
+            cutout: 'bg-[#1b1511]/80 backdrop-blur-md border border-[#543b2f] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-[#d4a38c]/80',
+            title: 'text-[#f5ece6] hover:text-[#e8b9a2]',
+            meta: 'text-[#c2b0a2]',
+            author: 'text-[#f5ece6]',
+            synopsis: 'text-[#d6c7bc]',
+            btnPrimary: 'bg-gradient-to-r from-[#362923] via-[#42332c] to-[#4f3e35] hover:from-[#42332c] hover:to-[#5c493f] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
+            btnSecondary: 'border-[#543b2f] bg-[#221a15]/80 hover:bg-[#2e231c] text-[#e0d3c9]',
+            dotActive: 'bg-[#d4a38c] ring-1 ring-[#d4a38c]/50 shadow-xs',
+            dotInactive: 'bg-[#38261e]',
+            barcode: 'bg-[#735241]',
+            coverBorder: 'border-[#543b2f] bg-[#221914]',
+            borderHeroLine: 'border-[#543b2f]',
+            fullBadge: 'bg-[#42332c] text-white border border-white/15',
+          };
+        case 'slate-haze':
+          return {
+            outer: 'border-[#334b63]/80 bg-[#0f1724]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
+            inner: 'bg-[#121c2c]/60 backdrop-blur-md border-[#334b63]/60 shadow-md',
+            divider: 'border-[#334b63]',
+            dashedDivider: 'border-[#334b63]',
+            cutout: 'bg-[#0f1724]/80 backdrop-blur-md border border-[#334b63] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-[#8ba0b5]/80',
+            title: 'text-[#edf4fa] hover:text-[#b4d2ed]',
+            meta: 'text-[#8ba0b5]',
+            author: 'text-[#edf4fa]',
+            synopsis: 'text-[#b9cddf]',
+            btnPrimary: 'bg-gradient-to-r from-[#26313e] via-[#2e3b4b] to-[#374659] hover:from-[#2e3b4b] hover:to-[#43556c] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
+            btnSecondary: 'border-[#334b63] bg-[#162334]/80 hover:bg-[#1e2f46] text-[#cee0d1]',
+            dotActive: 'bg-[#7bb0e0] ring-1 ring-[#7bb0e0]/50 shadow-xs',
+            dotInactive: 'bg-[#1c2c3e]',
+            barcode: 'bg-[#486380]',
+            coverBorder: 'border-[#334b63] bg-[#131e2e]',
+            borderHeroLine: 'border-[#334b63]',
+            fullBadge: 'bg-[#2e3b4b] text-white border border-white/15',
+          };
+        case 'notebook':
+          return {
+            outer: 'border-stone-700/80 bg-stone-900/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
+            inner: 'bg-[#181a20]/60 backdrop-blur-md border-stone-800/80 shadow-md',
+            divider: 'border-stone-700',
+            dashedDivider: 'border-stone-700',
+            cutout: 'bg-stone-900/80 backdrop-blur-md border border-stone-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-neutral-500',
+            title: 'text-neutral-100 hover:text-rose-400',
+            meta: 'text-neutral-400',
+            author: 'text-neutral-200',
+            synopsis: 'text-neutral-300',
+            btnPrimary: 'bg-gradient-to-r from-[#2b2b30] via-[#35353b] to-[#404047] hover:from-[#35353b] hover:to-[#4d4d57] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
+            btnSecondary: 'border-stone-700 bg-stone-800/80 hover:bg-stone-800 text-stone-200',
+            dotActive: 'bg-neutral-200 ring-1 ring-white/40 shadow-xs',
+            dotInactive: 'bg-neutral-700',
+            barcode: 'bg-stone-600',
+            coverBorder: 'border-stone-700 bg-stone-800',
+            borderHeroLine: 'border-stone-700',
+            fullBadge: 'bg-[#35353b] text-white border border-white/15',
+          };
+        case 'cosmic':
+          return {
+            outer: 'border-[#5c3a8a]/80 bg-[#120a24]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
+            inner: 'bg-[#180e30]/60 backdrop-blur-md border-[#5c3a8a]/60 shadow-md',
+            divider: 'border-[#5c3a8a]',
+            dashedDivider: 'border-[#5c3a8a]',
+            cutout: 'bg-[#120a24]/80 backdrop-blur-md border border-[#5c3a8a] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-indigo-300/80',
+            title: 'text-neutral-100 hover:text-indigo-300',
+            meta: 'text-indigo-300/70',
+            author: 'text-neutral-100',
+            synopsis: 'text-indigo-200/80',
+            btnPrimary: 'bg-gradient-to-r from-[#392257] via-[#482b6e] to-[#593687] hover:from-[#482b6e] hover:to-[#653d99] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
+            btnSecondary: 'border-[#5c3a8a] bg-[#1d1238]/80 hover:bg-[#27184b] text-indigo-200',
+            dotActive: 'bg-[#a78bfa] ring-1 ring-[#a78bfa]/50 shadow-xs',
+            dotInactive: 'bg-[#291748]',
+            barcode: 'bg-[#7a4eb8]',
+            coverBorder: 'border-[#5c3a8a] bg-[#1a0f33]',
+            borderHeroLine: 'border-[#5c3a8a]',
+            fullBadge: 'bg-[#482b6e] text-white border border-white/15',
+          };
+        case 'amethyst-haze':
+        default:
+          return {
+            outer: 'border-[#4c356e]/80 bg-[#181224]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
+            inner: 'bg-[#1a1427]/60 backdrop-blur-md border-[#4c356e]/60 shadow-md',
+            divider: 'border-[#4c356e]',
+            dashedDivider: 'border-[#4c356e]',
+            cutout: 'bg-[#181224]/80 backdrop-blur-md border border-[#4c356e] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-neutral-400',
+            title: 'text-neutral-100 hover:text-purple-400',
+            meta: 'text-neutral-400',
+            author: 'text-neutral-100',
+            synopsis: 'text-neutral-300',
+            btnPrimary: 'bg-gradient-to-r from-[#32253f] via-[#3d2e4d] to-[#49385c] hover:from-[#3d2e4d] hover:to-[#55426b] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
+            btnSecondary: 'border-stone-700 bg-stone-800/80 hover:bg-stone-800 text-stone-200',
+            dotActive: 'bg-[#a78bfa] ring-1 ring-[#a78bfa]/50 shadow-xs',
+            dotInactive: 'bg-stone-800',
+            barcode: 'bg-[#6b4c9a]',
+            coverBorder: 'border-[#4c356e] bg-[#1f172e]',
+            borderHeroLine: 'border-[#4c356e]',
+            fullBadge: 'bg-[#3d2e4d] text-white border border-white/15',
+          };
+      }
+    }
+
+    // Light mode (ở chế độ sáng vẫn giữ nguyên)
+    switch (theme) {
+      case 'sage':
+        return {
+          outer: 'border-[#cad8c6] bg-[#f4f8f2]/90 shadow-lg',
+          inner: 'bg-white border-[#dce6d9] shadow-md',
+          divider: 'border-stone-200',
+          dashedDivider: 'border-stone-300',
+          cutout: 'bg-[#e3ede1] border-[#b2c6ad] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
+          kicker: 'text-[#6b8268]',
+          title: 'text-[#1c291e] hover:text-[#3e5b43]',
+          meta: 'text-[#4d664a]',
+          author: 'text-[#1c291e]',
+          synopsis: 'text-[#394a3b]',
+          btnPrimary: 'bg-[#466244] hover:bg-[#384937] border border-[#384937] text-white shadow-xs',
+          btnSecondary: 'border-[#cad8c6] bg-[#f4f8f2] hover:bg-[#eaf1e8] text-[#2c3d2e]',
+          dotActive: 'bg-[#466244] ring-1 ring-[#466244]/30 shadow-xs',
+          dotInactive: 'bg-[#cad8c6]',
+          barcode: 'bg-neutral-800',
+          coverBorder: 'border-black/10 bg-white',
+          borderHeroLine: 'border-stone-200/80',
+          fullBadge: 'bg-[#466244] text-white',
+        };
+      case 'mocha':
+        return {
+          outer: 'border-[#e4d9bc] bg-[#f8f4ee]/90 shadow-lg',
+          inner: 'bg-[#fdfcf9] border-[#e8ddc2] shadow-md',
+          divider: 'border-stone-200',
+          dashedDivider: 'border-stone-300',
+          cutout: 'bg-[#ede5d8] border-[#d5c7ab] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
+          kicker: 'text-[#a37764]',
+          title: 'text-[#3a2a2a] hover:text-[#8c6150]',
+          meta: 'text-[#8c7a6e]',
+          author: 'text-[#3a2a2a]',
+          synopsis: 'text-[#614b43]',
+          btnPrimary: 'bg-[#A37764] hover:bg-[#8c5f4d] border border-[#8c5f4d] text-white shadow-xs',
+          btnSecondary: 'border-[#e4d9bc] bg-[#f8f4ee] hover:bg-[#ede5da] text-[#3a2a2a]',
+          dotActive: 'bg-[#A37764] ring-1 ring-[#A37764]/30 shadow-xs',
+          dotInactive: 'bg-[#e4d9bc]',
+          barcode: 'bg-neutral-800',
+          coverBorder: 'border-black/10 bg-white',
+          borderHeroLine: 'border-stone-200/80',
+          fullBadge: 'bg-[#A37764] text-white',
+        };
+      case 'slate-haze':
+        return {
+          outer: 'border-[#c8d6e5] bg-[#f2f6fa]/90 shadow-lg',
+          inner: 'bg-white border-[#d8e3ed] shadow-md',
+          divider: 'border-stone-200',
+          dashedDivider: 'border-stone-300',
+          cutout: 'bg-[#e2ebf4] border-[#b8c9dc] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
+          kicker: 'text-[#5d7e9d]',
+          title: 'text-[#192635] hover:text-[#3b5979]',
+          meta: 'text-[#58738e]',
+          author: 'text-[#192635]',
+          synopsis: 'text-[#38516b]',
+          btnPrimary: 'bg-[#87909d] hover:bg-[#767f8c] border border-[#767f8c] text-white shadow-xs',
+          btnSecondary: 'border-[#c8d6e5] bg-[#f2f6fa] hover:bg-[#e4edf5] text-[#192635]',
+          dotActive: 'bg-[#87909d] ring-1 ring-[#87909d]/30 shadow-xs',
+          dotInactive: 'bg-[#c8d6e5]',
+          barcode: 'bg-neutral-800',
+          coverBorder: 'border-black/10 bg-white',
+          borderHeroLine: 'border-stone-200/80',
+          fullBadge: 'bg-[#87909d] text-white',
+        };
+      case 'notebook':
+        return {
+          outer: 'border-stone-200 bg-stone-100/70 shadow-lg',
+          inner: 'bg-white border-stone-200/80 shadow-md',
+          divider: 'border-stone-200',
+          dashedDivider: 'border-stone-300',
+          cutout: 'bg-[#e8e6e3] border-stone-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
+          kicker: 'text-neutral-400',
+          title: 'text-neutral-900 hover:text-rose-600',
+          meta: 'text-neutral-500',
+          author: 'text-neutral-800',
+          synopsis: 'text-neutral-600',
+          btnPrimary: 'bg-[#262626] hover:bg-[#171717] border border-[#171717] text-white shadow-xs',
+          btnSecondary: 'border-stone-300 bg-stone-50 hover:bg-stone-100 text-stone-700',
+          dotActive: 'bg-[#262626] ring-1 ring-black/20 shadow-xs',
+          dotInactive: 'bg-neutral-300',
+          barcode: 'bg-neutral-800',
+          coverBorder: 'border-black/10 bg-white',
+          borderHeroLine: 'border-stone-200/80',
+          fullBadge: 'bg-[#262626] text-white',
+        };
+      case 'amethyst-haze':
+      default:
+        return {
+          outer: 'border-[#ded8ea] bg-[#f7f3fb]/90 shadow-lg',
+          inner: 'bg-white border-[#e9e3f3] shadow-md',
+          divider: 'border-[#ded8ea]',
+          dashedDivider: 'border-stone-300',
+          cutout: 'bg-[#ede8f4] border-[#cbbfe0] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
+          kicker: 'text-neutral-400 dark:text-neutral-500',
+          title: 'text-stone-900 dark:text-stone-100 hover:text-purple-700 dark:hover:text-purple-400',
+          meta: 'text-neutral-600 dark:text-neutral-400',
+          author: 'text-stone-900 dark:text-stone-100 font-semibold',
+          synopsis: 'text-stone-700 dark:text-stone-300',
+          btnPrimary: 'bg-[#6b5f82] hover:bg-[#594d70] border border-[#594d70] text-white shadow-xs',
+          btnSecondary: 'border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-200',
+          dotActive: 'bg-[#6b5f82] ring-1 ring-[#6b5f82]/30 shadow-xs',
+          dotInactive: 'bg-stone-300 dark:bg-stone-700',
+          barcode: 'bg-neutral-800',
+          coverBorder: 'border-black/10 bg-white',
+          borderHeroLine: 'border-stone-200/80',
+          fullBadge: 'bg-[#6b5f82] text-white',
+        };
+    }
+  }, [theme, isDarkEffective]);
 
   // Màu sắc cho 3 nút chuyển trang & đổi bìa của mục "TRUYỆN VỪA MỚI ĐĂNG" đồng bộ theo theme
   const getPolaroidNavBtnClass = (th: NovelThemeId, isDark: boolean) => {
@@ -2535,21 +2827,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         </div>
 
       {/* ========================================================================= */}
-      {/* HERO FEATURED BANNER - EXACT REPLICA OF THE DESIGN & MULTI-THEME SUPPORT  */}
-      {/* Desktop: Cover on the Right. Mobile: Cover at the very Top                */}
+      {/* HERO FEATURED BANNER - BOARDING PASS / TICKET STYLE (THEME ADAPTIVE)       */}
       {/* ========================================================================= */}
       {currentHeroNovel && (
-        <section className="relative pt-4 sm:pt-6 pb-8 sm:pb-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="relative pt-4 sm:pt-6 pb-8 sm:pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Nút GIỚI THIỆU VỀ TRANG WEB nằm trên mục truyện nổi bật (Animated Gradient Flow Border, Halo Cushion, Tactile Active Scale & Adaptive Theming) */}
+          {/* Nút GIỚI THIỆU VỀ TRANG WEB nằm trên mục truyện nổi bật */}
           <div className="mb-4 sm:mb-5 pt-1 pb-2 flex items-center justify-between">
             <div className="group relative inline-flex items-center">
-              {/* 2. Hiệu ứng Lớp đệm hào quang nhịp thở (Motion Halo Cushion) */}
+              {/* Hiệu ứng Lớp đệm hào quang nhịp thở (Motion Halo Cushion) */}
               <div 
                 className={`absolute -inset-0.5 rounded-full pointer-events-none animate-halo-cushion blur-xs transition duration-500 ${introButtonStyles.haloCushion}`}
               />
 
-              {/* 1. Nút với Khung viền chuyển sắc động 1px (Animated Gradient Flow Border) + 5. Phản hồi nén cơ học khi nhấn (Tactile Active Scale) */}
+              {/* Nút Khám phá giới thiệu về trang web */}
               <button
                 id="btn-intro-about-website"
                 onClick={() => {
@@ -2566,19 +2857,16 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                 }`}
                 title="Khám phá giới thiệu về trang web và hồ sơ tác giả sáng lập"
               >
-                {/* Lớp ruột của nút mang màu nền theo theme + lớp đổ bóng shadow-xs -> group-hover:shadow-sm */}
                 <span
                   className={`relative flex items-center gap-2.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide overflow-hidden ${introButtonStyles.textColor} ${introButtonStyles.innerShadow}`}
                   style={{
                     backgroundColor: introButtonStyles.btnBg,
                   }}
                 >
-                  {/* Hiệu ứng Vệt sáng lướt ngang (Soft Shimmer Sweep) */}
                   <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
                     <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
                   </span>
 
-                  {/* Chấm tròn phát tín hiệu Live Ping Dot (2 lớp mượt mà) */}
                   <span className="relative flex h-2.5 w-2.5 shrink-0 z-30">
                     <span
                       className={`animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-75 ${introButtonStyles.dotPing}`}
@@ -2586,7 +2874,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     <span className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-xs ${introButtonStyles.dotColor}`} />
                   </span>
 
-                  {/* Tiêu đề nút */}
                   <span className="relative z-30 font-bold tracking-wider uppercase">
                     GIỚI THIỆU VỀ TRANG WEB
                   </span>
@@ -2595,171 +2882,183 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             </div>
           </div>
 
-          {/* Khung Hero Section: Mobile giữ nguyên kích thước, Máy tính kéo rộng tối đa */}
-          <div className="relative w-full max-w-4xl md:max-w-none mx-auto px-2 sm:px-4 md:px-0">
-            {/* Nút mũi tên điều hướng Trái */}
-            <button
-              id="hero-prev-btn"
-              onClick={handlePrevFeatured}
-              aria-label="Truyện trước"
-              className={`absolute -left-2 sm:-left-6 md:-left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-95 border ${getThemePastelPalette(theme, isDarkEffective).arrowBtn}`}
-              style={{
-                boxShadow: isDarkEffective
-                  ? '4px 6px 16px rgba(0, 0, 0, 0.4), -3px -3px 10px rgba(255, 255, 255, 0.04)'
-                  : '4px 6px 14px rgba(0, 0, 0, 0.08), -4px -4px 12px rgba(255, 255, 255, 0.95)',
-              }}
-              title="Truyện trước"
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-
-            {/* Nút mũi tên điều hướng Phải */}
-            <button
-              id="hero-next-btn"
-              onClick={handleNextFeatured}
-              aria-label="Truyện tiếp theo"
-              className={`absolute -right-2 sm:-right-6 md:-right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer active:scale-95 border ${getThemePastelPalette(theme, isDarkEffective).arrowBtn}`}
-              style={{
-                boxShadow: isDarkEffective
-                  ? '4px 6px 16px rgba(0, 0, 0, 0.4), -3px -3px 10px rgba(255, 255, 255, 0.04)'
-                  : '4px 6px 14px rgba(0, 0, 0, 0.08), -4px -4px 12px rgba(255, 255, 255, 0.95)',
-              }}
-              title="Truyện tiếp theo"
-            >
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-
-            {/* Container chính của Hero Card: Nền giữa viền ngoài và viền nét đứt linh hoạt theo theme (sáng: trắng, tối: màu tối theo theme), hiệu ứng Neumorphism nhẹ */}
-            <div
-              className={`relative rounded-[28px] sm:rounded-[36px] p-2 sm:p-2.5 md:p-3.5 lg:p-4 transition-all duration-300 ${getThemePastelPalette(theme, isDarkEffective).heroRimBg} ${getThemePastelPalette(theme, isDarkEffective).heroOuterBorder}`}
-              style={{
-                boxShadow: isDarkEffective
-                  ? '10px 16px 36px -4px rgba(0, 0, 0, 0.5), -6px -6px 20px rgba(255, 255, 255, 0.04), inset 1px 1px 1px rgba(255, 255, 255, 0.08)'
-                  : '10px 18px 36px -4px rgba(0, 0, 0, 0.07), -10px -10px 28px rgba(255, 255, 255, 0.95), inset 1px 1px 2px rgba(255, 255, 255, 0.9)',
-              }}
-            >
-              {/* Khung viền đứt đoạn ở bên trong đường viền nét liền, cách đều, có họa tiết dấu chấm mờ */}
-              <div
-                className={`relative rounded-[20px] sm:rounded-[28px] p-4 sm:p-6 md:p-8 lg:p-10 ${getThemePastelPalette(theme, isDarkEffective).outerBg} ${getThemePastelPalette(theme, isDarkEffective).heroInnerDashed}`}
-                style={{
-                  backgroundImage: `linear-gradient(to right, ${getThemePastelPalette(theme, isDarkEffective).gridColor} 1px, transparent 1px), linear-gradient(to bottom, ${getThemePastelPalette(theme, isDarkEffective).gridColor} 1px, transparent 1px)`,
-                  backgroundSize: '20px 20px',
-                  boxShadow: isDarkEffective
-                    ? 'inset 2px 2px 8px rgba(0, 0, 0, 0.3)'
-                    : 'inset 2px 2px 8px rgba(0, 0, 0, 0.03), inset -2px -2px 8px rgba(255, 255, 255, 0.6)',
-                }}
-              >
-                {/* 4 Ngôi sao trang trí ở 4 góc như ảnh mẫu */}
-                <span className={`absolute top-2.5 left-3 text-xs sm:text-sm select-none pointer-events-none ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>✧</span>
-                <span className={`absolute top-2.5 right-3 text-xs sm:text-sm select-none pointer-events-none ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>✧</span>
-                <span className={`absolute bottom-2.5 left-3 text-xs sm:text-sm select-none pointer-events-none ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>✧</span>
-                <span className={`absolute bottom-2.5 right-3 text-xs sm:text-sm select-none pointer-events-none ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>✧</span>
-
-                {/* Cánh bướm trang trí 2 bên mép */}
-                <span className={`absolute left-2.5 top-1/2 -translate-y-1/2 text-xs select-none pointer-events-none hidden sm:inline ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>ʚïɞ</span>
-                <span className={`absolute right-2.5 top-1/2 -translate-y-1/2 text-xs select-none pointer-events-none hidden sm:inline ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>ʚïɞ</span>
-
-                {/* Bố cục: Trên điện thoại xếp dọc (bìa trên, nội dung dưới), trên máy tính bìa bên trái, nội dung dời sang phải */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-around lg:justify-between gap-5 sm:gap-7 md:gap-8 lg:gap-12">
-                  
-                  {/* Khung bìa dạng Polaroid / Ảnh chụp kỷ niệm */}
-                  <div className="w-full md:w-auto max-w-[280px] sm:max-w-[320px] md:max-w-[340px] lg:max-w-[360px] mx-auto md:mx-0 flex flex-col items-center shrink-0">
-                    {/* Icon nơ ୨୧ nằm hẳn ở phía trên bìa, không đụng vào bìa, bỏ màu bao bọc, giữ lại icon */}
-                    <div className="mb-2 sm:mb-2.5 flex items-center justify-center select-none pointer-events-none">
-                      <span className={`text-base sm:text-lg font-serif tracking-widest ${getThemePastelPalette(theme, isDarkEffective).heroOrnamentColor}`}>
-                        ୨୧
+          {/* KHUNG BAO NGOÀI PHONG CÁCH VÉ LÊN MÁY BAY / TÀU HỎA */}
+          <div className={`relative p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 ${ticketTheme.outer}`}>
+            
+            {/* KHỐI THẺ CHÍNH (Desktop: 2 cột ngang, Mobile: Xếp dọc ảnh trên thông tin dưới) */}
+            <div className={`relative rounded-xl sm:rounded-2xl border overflow-hidden flex flex-col md:flex-row items-stretch transition-all duration-300 ${ticketTheme.inner}`}>
+              
+              {/* ================================================================= */}
+              {/* CỘT TRÁI (Desktop) / PHẦN TRÊN (Mobile): BÌA TRUYỆN + NÚT SLIDER */}
+              {/* ================================================================= */}
+              <div className="order-1 md:w-[280px] lg:w-[320px] xl:w-[350px] shrink-0 p-3.5 sm:p-4 md:p-5 flex flex-col items-center justify-center bg-black/[0.02] dark:bg-white/[0.02] relative">
+                
+                {/* Khung Bìa Truyện */}
+                <div
+                  onClick={() => onSelectNovel(currentHeroNovel)}
+                  className={`group relative cursor-pointer w-full aspect-square sm:aspect-4/3 md:aspect-square rounded-lg overflow-hidden border p-1 shadow-xs transition-colors duration-300 ${ticketTheme.coverBorder}`}
+                >
+                  <div className="relative w-full h-full overflow-hidden rounded">
+                    <img
+                      src={getDirectImageUrl(currentHeroNovel.coverImage, currentHeroNovel.id || currentHeroNovel.title)}
+                      onError={(e) => handleCoverImageError(e, currentHeroNovel.id || currentHeroNovel.title)}
+                      alt={currentHeroNovel.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    
+                    {/* Badge FULL góc trên bên trái bìa đồng bộ màu theo theme */}
+                    <div className="absolute top-2 left-2 z-10">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-black tracking-wider uppercase shadow-xs ${ticketTheme.fullBadge}`}>
+                        FULL
                       </span>
                     </div>
 
-                    <div
-                      onClick={() => onSelectNovel(currentHeroNovel)}
-                      className={`group relative w-full rounded-[22px] sm:rounded-[26px] p-2.5 sm:p-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border transition-all duration-300 cursor-pointer ${getThemePastelPalette(theme, isDarkEffective).polaroidBg}`}
-                      title={`Đọc truyện: ${currentHeroNovel.title}`}
-                    >
-                      {/* Badge Ngày ở góc trên bên phải khung ảnh */}
-                      <div className="absolute top-3.5 right-3.5 z-10">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono font-medium shadow-xs border ${getThemePastelPalette(theme, isDarkEffective).badgeBg}`}>
-                          {heroDateFormatted}
-                        </span>
-                      </div>
-
-                      {/* Ảnh bìa truyện */}
-                      <div className="relative aspect-square w-full rounded-[16px] sm:rounded-[20px] overflow-hidden bg-neutral-100 dark:bg-zinc-800 border border-black/5 dark:border-white/10">
-                        <img
-                          src={getDirectImageUrl(currentHeroNovel.coverImage, currentHeroNovel.id || currentHeroNovel.title)}
-                          onError={(e) => handleCoverImageError(e, currentHeroNovel.id || currentHeroNovel.title)}
-                          alt={currentHeroNovel.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-
-                      {/* Họa tiết tim dưới đáy khung ảnh: ♡ · ♡ · ♡ */}
-                      <div className={`text-center text-[10px] tracking-widest mt-2 select-none font-mono ${getThemePastelPalette(theme, isDarkEffective).ornamentText}`}>
-                        ♡ · ♡ · ♡
-                      </div>
-                    </div>
+                    {/* Lớp phủ Gradient tối dưới chân ảnh */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 pointer-events-none" />
                   </div>
-
-                  {/* Phần nội dung chi tiết: Tên truyện căn giữa, khoảng cách phía trên và phía dưới rút ngắn lại nhiều hơn nữa */}
-                  <div className="w-full md:flex-1 flex flex-col items-center justify-center text-center py-1 sm:py-2 px-1 sm:px-3 md:px-6 lg:px-10">
-                    
-                    {/* Mục trên: Dòng thể loại: ✧ GIAM CẦM ✧ */}
-                    <div className={`font-lora !font-normal text-[10px] sm:text-[11px] tracking-[0.25em] uppercase select-none opacity-90 ${getThemePastelPalette(theme, isDarkEffective).heroGenreColor}`}>
-                      ✧ {(currentHeroNovel.genres[0] || 'PHƯƠNG TÂY').toUpperCase()} ✧
-                    </div>
-
-                    {/* Tên truyện: NẰM CĂN GIỮA, KHOẢNG CÁCH TRÊN VÀ DƯỚI RÚT NGẮN LẠI NGẮN HƠN NỮA */}
-                    <h2
-                      onClick={() => onSelectNovel(currentHeroNovel)}
-                      className={`font-lora !font-medium text-xl sm:text-2xl md:text-3xl lg:text-[32px] xl:text-[35px] tracking-normal cursor-pointer hover:opacity-85 transition-opacity leading-snug my-1 sm:my-1.5 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}
-                    >
-                      {currentHeroNovel.title}
-                    </h2>
-
-                    {/* Mục dưới: Thông tin tác giả, hoàn thành và hoa văn ♡ ୨୧ ♡ */}
-                    <div className="space-y-1 sm:space-y-1.5">
-                      {/* Tác giả: Phông Source Sans 3, font weight normal */}
-                      <div className={`font-source-sans !font-normal text-[10px] sm:text-[11px] tracking-[0.14em] uppercase opacity-85 ${getThemePastelPalette(theme, isDarkEffective).heroMetaColor} select-none`}>
-                        TÁC GIẢ: {String(typeof currentHeroNovel.author === 'string' ? currentHeroNovel.author : currentHeroNovel.author?.name || 'HẢI KINH LẠC').toUpperCase()}
-                      </div>
-
-                      {/* Hoàn thành & Số chương: Phông Source Sans 3, font weight normal */}
-                      <div className={`font-source-sans !font-normal text-[10px] sm:text-[11px] tracking-[0.14em] uppercase opacity-85 ${getThemePastelPalette(theme, isDarkEffective).heroMetaColor} select-none`}>
-                        HOÀN THÀNH  •  {currentHeroNovel.totalChaptersCount || currentHeroNovel.totalChapters || currentHeroNovel.chapters?.length || 0} CHƯƠNG
-                      </div>
-
-                      {/* Biểu tượng trang trí dưới cùng: ♡  ୨୧  ♡ */}
-                      <div className={`text-base sm:text-lg tracking-widest pt-1 sm:pt-1.5 select-none flex items-center justify-center gap-2 ${getThemePastelPalette(theme, isDarkEffective).heroOrnamentColor}`}>
-                        <span>♡</span>
-                        <span className="text-sm sm:text-base">୨୧</span>
-                        <span>♡</span>
-                      </div>
-                    </div>
-
-                  </div>
-
                 </div>
 
-                {/* Chấm tròn chỉ số Carousel bên dưới (tối đa 5 truyện) */}
-                <div className="flex items-center justify-center gap-2 mt-4 sm:mt-5">
-                  {featuredNovels.map((_, idx) => {
-                    const isActive = featuredIndex === idx;
-                    return (
+                {/* Cụm điều khiển Slider (Nút Lùi + Chấm tròn Dots + Nút Tiến) */}
+                <div className="flex items-center justify-between w-full mt-3 px-1">
+                  {/* Nút Prev */}
+                  <button
+                    onClick={handlePrevFeatured}
+                    aria-label="Truyện trước đó"
+                    className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${ticketTheme.btnSecondary}`}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  {/* Chấm tròn chỉ số (Dots) */}
+                  <div className="flex items-center gap-1.5">
+                    {featuredNovels.map((_, idx) => (
                       <button
                         key={idx}
                         onClick={() => setFeaturedIndex(idx)}
-                        className={`transition-all duration-300 cursor-pointer ${
-                          isActive
-                            ? `w-6 sm:w-7 h-2 rounded-full ${getThemePastelPalette(theme, isDarkEffective).dotActive}`
-                            : `w-2 h-2 rounded-full ${getThemePastelPalette(theme, isDarkEffective).dotInactive}`
+                        className={`transition-all duration-300 cursor-pointer rounded-full ${
+                          featuredIndex === idx
+                            ? `w-5 h-1.5 ${ticketTheme.dotActive}`
+                            : `w-1.5 h-1.5 ${ticketTheme.dotInactive}`
                         }`}
-                        aria-label={`Chuyển sang truyện ${idx + 1}`}
+                        aria-label={`Chuyển tới truyện ${idx + 1}`}
                       />
-                    );
-                  })}
+                    ))}
+                  </div>
+
+                  {/* Nút Next */}
+                  <button
+                    onClick={handleNextFeatured}
+                    aria-label="Truyện tiếp theo"
+                    className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${ticketTheme.btnSecondary}`}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* VẾT CẮT KHUYẾT VÉ TRÊN DESKTOP (2 hình bán nguyệt trên - dưới có đường viền) */}
+                <div className={`hidden md:block absolute -top-3.5 -right-3.5 w-7 h-7 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                <div className={`hidden md:block absolute -bottom-3.5 -right-3.5 w-7 h-7 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+              </div>
+
+              {/* ================================================================= */}
+              {/* ĐƯỜNG PHÂN CÁCH VÉ: ĐƯỜNG NÉT ĐỨT Ở GIỮA HAI HÌNH BÁN NGUYỆT      */}
+              {/* ================================================================= */}
+              <div className="relative order-1 md:order-2 flex items-center justify-center">
+                {/* Đường nét đứt dọc desktop ở giữa hai hình bán nguyệt */}
+                <div className={`hidden md:block h-full w-0 border-r-2 border-dashed ${ticketTheme.dashedDivider}`} />
+                
+                {/* Đường nét đứt ngang mobile kèm vết cắt 2 bên */}
+                <div className={`md:hidden relative w-full border-b-2 border-dashed ${ticketTheme.dashedDivider} my-0`}>
+                  <div className={`absolute -left-3.5 -top-3 w-6 h-6 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                  <div className={`absolute -right-3.5 -top-3 w-6 h-6 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                </div>
+              </div>
+
+              {/* ================================================================= */}
+              {/* CỘT PHẢI: THÔNG TIN CHI TIẾT VÉ, TÁC GIẢ, NÚT BẤM VÀ MÃ VẠCH     */}
+              {/* ================================================================= */}
+              <div className="order-2 flex-1 p-4 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-between space-y-4 bg-transparent">
+                
+                <div className="space-y-3.5">
+                  {/* Dòng Kicker phong cách Stories Ticket */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className={`font-mono text-xs sm:text-[13px] tracking-[0.22em] uppercase font-medium ${ticketTheme.kicker}`}>
+                      STORIES · M-05-I6W
+                    </span>
+                    <span className={`text-[11px] font-mono ${ticketTheme.kicker}`}>
+                      GATE 01
+                    </span>
+                  </div>
+
+                  {/* Tên truyện chữ nghiêng đậm to rõ */}
+                  <h1
+                    onClick={() => onSelectNovel(currentHeroNovel)}
+                    className={`font-bold italic text-2xl sm:text-3xl md:text-3xl lg:text-[34px] tracking-tight leading-snug cursor-pointer transition-colors ${ticketTheme.title}`}
+                  >
+                    {currentHeroNovel.title}
+                  </h1>
+
+                  {/* Dòng metadata 1: Tác giả · Số chương */}
+                  <div className={`text-xs sm:text-sm font-medium tracking-wide ${ticketTheme.meta}`}>
+                    <span className={`font-semibold ${ticketTheme.author}`}>
+                      {typeof currentHeroNovel.author === 'string' ? currentHeroNovel.author : currentHeroNovel.author?.name || 'Hải Kinh Lạc'}
+                    </span>
+                    <span className="mx-2">·</span>
+                    <span>{currentHeroNovel.totalChaptersCount || currentHeroNovel.totalChapters || currentHeroNovel.chapters?.length || 0} Chương</span>
+                  </div>
+
+                  {/* Dòng metadata 2: Nhóm dịch / Tags */}
+                  <div className={`flex items-center gap-1.5 text-xs sm:text-sm ${ticketTheme.meta}`}>
+                    <Users className="w-4 h-4 opacity-75 shrink-0" />
+                    <span>
+                      {currentHeroNovel.translator ? `Editor: ${currentHeroNovel.translator}` : 'Editor: Jouriee65'}
+                      <span className="mx-1.5">·</span>
+                      {currentHeroNovel.tags && currentHeroNovel.tags.length > 0
+                        ? currentHeroNovel.tags.slice(0, 3).join(' · ')
+                        : 'Ngôn Tình · Hiện Đại · Ngọt Sủng'}
+                    </span>
+                  </div>
+
+                  {/* Tóm tắt nội dung (giới hạn 2 dòng) */}
+                  <p className={`text-xs sm:text-sm line-clamp-2 leading-relaxed max-w-2xl pt-1 ${ticketTheme.synopsis}`}>
+                    {currentHeroNovel.synopsis}
+                  </p>
+                </div>
+
+                {/* DÒNG CUỐI: NÚT CTA ĐỌC TRUYỆN NGAY + MÃ VẠCH (HOÀN TOÀN KHÔNG CÓ NỀN) */}
+                <div className={`pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t ${ticketTheme.borderHeroLine} bg-transparent`}>
+                  
+                  <div className="flex flex-wrap items-center gap-3.5 bg-transparent">
+                    {/* Nút bấm chính: Đọc Truyện Ngay (Đồng bộ màu sắc với nút Tất cả) */}
+                    <button
+                      type="button"
+                      onClick={() => onSelectNovel(currentHeroNovel)}
+                      className={`px-5 py-2.5 rounded-lg font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 select-none active:scale-95 ${ticketTheme.btnPrimary}`}
+                    >
+                      <BookOpen className="w-4 h-4 shrink-0" />
+                      <span>Đọc Truyện Ngay</span>
+                    </button>
+                  </div>
+
+                  {/* MÃ VẠCH BARCODE VỚI CÁC ĐƯỜNG CÓ ĐỘ RỘNG BẰNG NHAU (KHÔNG NỀN) */}
+                  <div className="hidden sm:flex items-center gap-2 pr-1 select-none bg-transparent">
+                    <div className="flex flex-col gap-[2.5px] items-center bg-transparent">
+                      {[
+                        'w-11 h-[2px]', 'w-11 h-[1px]', 'w-11 h-[3px]', 'w-11 h-[1px]',
+                        'w-11 h-[3.5px]', 'w-11 h-[1px]', 'w-11 h-[2px]', 'w-11 h-[2px]',
+                        'w-11 h-[3px]', 'w-11 h-[1px]', 'w-11 h-[4px]', 'w-11 h-[1.5px]',
+                        'w-11 h-[2px]', 'w-11 h-[1px]', 'w-11 h-[3px]', 'w-11 h-[2px]',
+                        'w-11 h-[3.5px]', 'w-11 h-[1px]', 'w-11 h-[2px]', 'w-11 h-[2.5px]',
+                      ].map((barClass, bIdx) => (
+                        <span key={bIdx} className={`${barClass} ${ticketTheme.barcode} block rounded-[0.5px]`} />
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
+
             </div>
           </div>
         </section>
@@ -3005,10 +3304,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             <motion.div
                               layoutId="activeCompletedCategoryPill"
                               transition={{ type: 'spring', stiffness: 500, damping: 32 }}
-                              className={`absolute inset-0 rounded-full z-0 overflow-hidden ${pillStyle.gradient} ring-1 ring-white/10 ${pillStyle.glow} shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)]`}
+                              className={`absolute inset-0 rounded-full z-0 overflow-hidden ${pillStyle.gradient} ring-1 ring-white/20 ${pillStyle.glow}`}
                             >
                               {/* Vệt sáng cong hình vòm bán nguyệt nhẹ nhàng mô phỏng bề mặt cong bóng láng 3D */}
-                              <div className="absolute top-0.5 inset-x-1.5 h-[36%] rounded-t-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+                              <div className="absolute top-0.5 inset-x-1.5 h-[38%] rounded-t-full bg-gradient-to-b from-white/35 to-transparent pointer-events-none" />
                             </motion.div>
                           ) : (
                             <div

@@ -524,8 +524,44 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     return (novel?.comments || []).filter((c) => !isBotComment(c));
   });
   const [newCommentContent, setNewCommentContent] = useState('');
-  const [authorNameInput, setAuthorNameInput] = useState('');
+  const [authorNameInput, setAuthorNameInput] = useState(() => {
+    try {
+      return safeStorage.getItem('cosmo_comment_author_name') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [rememberName, setRememberName] = useState(() => {
+    try {
+      return safeStorage.getItem('cosmo_remember_author_name') !== 'false';
+    } catch {
+      return true;
+    }
+  });
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+
+  const handleAuthorNameChange = (val: string) => {
+    setAuthorNameInput(val);
+    if (rememberName) {
+      try {
+        safeStorage.setItem('cosmo_comment_author_name', val);
+      } catch {}
+    }
+  };
+
+  const handleToggleRememberName = (checked: boolean) => {
+    setRememberName(checked);
+    try {
+      safeStorage.setItem('cosmo_remember_author_name', checked ? 'true' : 'false');
+      if (checked) {
+        if (authorNameInput.trim()) {
+          safeStorage.setItem('cosmo_comment_author_name', authorNameInput.trim());
+        }
+      } else {
+        safeStorage.removeItem('cosmo_comment_author_name');
+      }
+    } catch {}
+  };
 
   useEffect(() => {
     if (!novel?.id) return;
@@ -577,6 +613,12 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     setIsSubmittingComment(true);
     const finalAuthor = authorNameInput.trim() || 'Bạn Đọc';
     const formattedDate = formatCommentDate();
+
+    if (rememberName && authorNameInput.trim()) {
+      try {
+        safeStorage.setItem('cosmo_comment_author_name', authorNameInput.trim());
+      } catch {}
+    }
 
     const tempComment: NovelComment = {
       id: `cm-${Date.now()}`,
@@ -1039,9 +1081,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   </button>
                 </div>
 
-                {/* Danh sách chương thu nhỏ */}
-                <div className="p-1.5 space-y-0.5 overflow-y-auto flex-1 max-h-[42vh]">
-                  {displayedChapters.map((chap) => {
+                {/* Danh sách chương thu nhỏ - hiển thị toàn bộ không chia trang */}
+                <div className="p-1.5 space-y-0.5 overflow-y-auto flex-1 max-h-[55vh]">
+                  {allChapters.map((chap) => {
                     const isCurrent = chap.chapterNumber === chapterNumber;
                     const { chapterLabel, isExtra, restTitle } = getChapterDisplayParts(chap);
                     return (
@@ -1072,50 +1114,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                     );
                   })}
                 </div>
-
-                {/* Phân trang nếu có hơn 20 chương - Thu nhỏ */}
-                {totalChapterPages > 1 && (
-                  <div className="px-2 py-1.5 border-t border-zinc-500/20 flex items-center justify-center gap-1">
-                    <button
-                      onClick={() => setChapterPage((p) => Math.max(1, p - 1))}
-                      disabled={chapterPage === 1}
-                      className={`w-6 h-6 rounded-md border flex items-center justify-center text-xs font-semibold transition-all cursor-pointer select-none ${
-                        paginationStyles.arrow
-                      } ${chapterPage === 1 ? 'opacity-30 cursor-not-allowed pointer-events-none' : ''}`}
-                      title="Trang trước"
-                    >
-                      <ChevronLeft className="w-3 h-3" />
-                    </button>
-
-                    {Array.from({ length: totalChapterPages }, (_, i) => i + 1).map((pageNum) => {
-                      const isActive = pageNum === chapterPage;
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => setChapterPage(pageNum)}
-                          className={`w-6 h-6 rounded-md border flex items-center justify-center text-[11px] transition-all cursor-pointer select-none ${
-                            isActive
-                              ? `${paginationStyles.active} font-bold`
-                              : `${paginationStyles.inactive} font-medium`
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-
-                    <button
-                      onClick={() => setChapterPage((p) => Math.min(totalChapterPages, p + 1))}
-                      disabled={chapterPage === totalChapterPages}
-                      className={`w-6 h-6 rounded-md border flex items-center justify-center text-xs font-semibold transition-all cursor-pointer select-none ${
-                        paginationStyles.arrow
-                      } ${chapterPage === totalChapterPages ? 'opacity-30 cursor-not-allowed pointer-events-none' : ''}`}
-                      title="Trang kế tiếp"
-                    >
-                      <ChevronRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -1602,13 +1600,13 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             onSubmit={handlePostChapterComment}
             className={`p-4 sm:p-5 rounded-2xl border space-y-3 transition-colors ${tStyles.card}`}
           >
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
               <div className="w-full sm:w-1/3">
                 <input
                   type="text"
                   placeholder="Tên của bạn (hoặc để trống là Bạn Đọc)"
                   value={authorNameInput}
-                  onChange={(e) => setAuthorNameInput(e.target.value)}
+                  onChange={(e) => handleAuthorNameChange(e.target.value)}
                   maxLength={40}
                   className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm border focus:outline-none focus:ring-2 focus:ring-purple-500/30 transition-all ${
                     isDarkEffective
@@ -1616,6 +1614,17 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
                   }`}
                 />
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-1.5 cursor-pointer text-xs select-none opacity-80 hover:opacity-100 transition-opacity">
+                  <input
+                    type="checkbox"
+                    checked={rememberName}
+                    onChange={(e) => handleToggleRememberName(e.target.checked)}
+                    className="rounded border-zinc-400 text-purple-600 focus:ring-purple-500/30 w-3.5 h-3.5 cursor-pointer accent-purple-600"
+                  />
+                  <span>Ghi nhớ tên</span>
+                </label>
               </div>
               <div className="flex-1 flex items-center justify-between sm:justify-end text-xs opacity-75">
                 <span>Đang bình luận tại: <strong className="font-semibold">Chương {chapterNumber}</strong></span>
@@ -1818,13 +1827,13 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   onSubmit={handlePostChapterComment}
                   className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.card}`}
                 >
-                  <div className="flex flex-col sm:flex-row gap-2.5">
+                  <div className="flex flex-col sm:flex-row gap-2.5 items-start sm:items-center">
                     <div className="w-full sm:w-1/2">
                       <input
                         type="text"
                         placeholder="Tên của bạn (hoặc để trống là Bạn Đọc)"
                         value={authorNameInput}
-                        onChange={(e) => setAuthorNameInput(e.target.value)}
+                        onChange={(e) => handleAuthorNameChange(e.target.value)}
                         maxLength={40}
                         className={`w-full px-3 py-1.5 rounded-xl text-xs border focus:outline-none focus:ring-2 focus:ring-purple-500/30 transition-all ${
                           isDarkEffective
@@ -1832,6 +1841,17 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                             : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
                         }`}
                       />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-1.5 cursor-pointer text-[11px] select-none opacity-80 hover:opacity-100 transition-opacity">
+                        <input
+                          type="checkbox"
+                          checked={rememberName}
+                          onChange={(e) => handleToggleRememberName(e.target.checked)}
+                          className="rounded border-zinc-400 text-purple-600 focus:ring-purple-500/30 w-3 h-3 cursor-pointer accent-purple-600"
+                        />
+                        <span>Ghi nhớ tên</span>
+                      </label>
                     </div>
                     <div className="flex-1 flex items-center justify-between sm:justify-end text-[11px] opacity-75">
                       <span>Bình luận tại <strong className="font-semibold">Chương {chapterNumber}</strong></span>
