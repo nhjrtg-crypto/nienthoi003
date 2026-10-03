@@ -39,9 +39,6 @@ import {
   AdminUserLike,
   getStoredAdminSession,
   clearAdminSession,
-  subscribeFirestoreReadStats,
-  getFirestoreReadStats,
-  FirestoreReadStats,
   isBotComment,
   recordPageView,
 } from './services/firebase';
@@ -616,9 +613,6 @@ export default function App() {
   const [isCreateFirestoreModalOpen, setIsCreateFirestoreModalOpen] = useState(false);
   const [firestoreTruyens, setFirestoreTruyens] = useState<FirestoreTruyen[]>(() => getCachedTruyenList());
 
-  // Thống kê lượt đọc Firestore toàn cầu & Hạn mức 50.000 đọc trong ngày
-  const [firestoreStats, setFirestoreStats] = useState<FirestoreReadStats>(() => getFirestoreReadStats());
-
   // Quản lý chế độ tối Dark Mode đồng bộ toàn trang (mặc định chế độ sáng: false)
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
@@ -646,13 +640,6 @@ export default function App() {
       return next;
     });
   };
-
-  useEffect(() => {
-    const unsub = subscribeFirestoreReadStats((stats) => {
-      setFirestoreStats(stats);
-    });
-    return () => unsub();
-  }, []);
 
   // Listen to Firebase Auth state
   useEffect(() => {

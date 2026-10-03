@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowUp, BookOpen, RefreshCw } from 'lucide-react';
-import {
-  subscribeFirestoreReadStats,
-  getFirestoreReadStats,
-  FirestoreReadStats,
-  getWebsiteViews,
-  subscribeWebsiteViews,
-  refreshFirestoreReadStats,
-} from '../services/firebase';
+import React from 'react';
+import { ArrowUp } from 'lucide-react';
 
 interface FooterProps {
   isNovelPlatform?: boolean;
@@ -23,44 +15,6 @@ export const Footer: React.FC<FooterProps> = ({
   borderClass,
   bgClass,
 }) => {
-  const [visitorCount, setVisitorCount] = useState<number>(() => getWebsiteViews());
-  const [firestoreStats, setFirestoreStats] = useState<FirestoreReadStats>(() => getFirestoreReadStats());
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-
-  useEffect(() => {
-    const unsubStats = subscribeFirestoreReadStats((stats) => {
-      setFirestoreStats(stats);
-      if (typeof stats.totalWebsiteViews === 'number' && stats.totalWebsiteViews > 0) {
-        setVisitorCount(stats.totalWebsiteViews);
-      }
-    });
-
-    const unsubViews = subscribeWebsiteViews((views) => {
-      setVisitorCount(views);
-    });
-
-    return () => {
-      unsubStats();
-      unsubViews();
-    };
-  }, []);
-
-  const handleReloadReads = async () => {
-    if (isRefreshing) return;
-    setIsRefreshing(true);
-    try {
-      const fresh = await refreshFirestoreReadStats();
-      setFirestoreStats(fresh);
-      if (typeof fresh.totalWebsiteViews === 'number' && fresh.totalWebsiteViews > 0) {
-        setVisitorCount(fresh.totalWebsiteViews);
-      }
-    } catch (e) {
-      console.warn('Reload reads error:', e);
-    } finally {
-      setTimeout(() => setIsRefreshing(false), 600);
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -79,27 +33,6 @@ export const Footer: React.FC<FooterProps> = ({
 
             {/* Total Reads Counter with Reload button & Back to top */}
             <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap justify-center sm:justify-end">
-              {/* Khối hiển thị Tổng lượt xem toàn web + Nút reload kế bên (Không hiện popup) */}
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.04] dark:bg-white/[0.05] text-[11px] font-mono shadow-xs backdrop-blur-xs select-none">
-                <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 opacity-90 shrink-0" />
-                <span className="font-bold tracking-wider text-emerald-600 dark:text-emerald-400 font-mono">
-                  {(firestoreStats.totalWebsiteReads || visitorCount || 0).toLocaleString('vi-VN')}
-                </span>
-                <button
-                  id="reload-website-reads-btn"
-                  type="button"
-                  onClick={handleReloadReads}
-                  disabled={isRefreshing}
-                  className={`ml-0.5 p-1 rounded-full text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-black/5 dark:hover:bg-white/10 transition-all cursor-pointer ${
-                    isRefreshing ? 'opacity-50 pointer-events-none' : ''
-                  }`}
-                  title="Tải lại số lượt xem"
-                  aria-label="Tải lại số lượt xem"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-500' : ''}`} />
-                </button>
-              </div>
-
               {/* Back to top button */}
               <button
                 onClick={scrollToTop}
@@ -158,25 +91,6 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Visitor counter & Back to Top */}
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-end">
-            <div className="flex items-center gap-1.5 text-xs font-mono text-slate-300 px-3 py-1.5 rounded-full border border-indigo-900/50 bg-[#0E1026]/70 shadow-xs select-none">
-              <BookOpen className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span className="text-emerald-400 font-bold">
-                {(firestoreStats.totalWebsiteReads || visitorCount || 0).toLocaleString('vi-VN')}
-              </span>
-              <button
-                type="button"
-                onClick={handleReloadReads}
-                disabled={isRefreshing}
-                className={`ml-0.5 p-1 rounded-full text-slate-400 hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer ${
-                  isRefreshing ? 'opacity-50 pointer-events-none' : ''
-                }`}
-                title="Tải lại số lượt xem"
-                aria-label="Tải lại số lượt xem"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-400' : ''}`} />
-              </button>
-            </div>
-
             <button
               onClick={scrollToTop}
               className="p-2.5 rounded-full bg-[#0E1026] hover:bg-purple-950/60 border border-indigo-800/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md"
