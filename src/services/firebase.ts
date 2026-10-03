@@ -1229,6 +1229,14 @@ export function setCachedTruyenList(list: FirestoreTruyen[]): void {
 
 export async function fetchTruyenList(isAdmin: boolean, force = false): Promise<FirestoreTruyen[]> {
   const cached = getCachedTruyenList();
+
+  // Độc giả thông thường: Sử dụng 100% dữ liệu mã nguồn và bộ nhớ đệm, KHÔNG gọi getDocs collection 'truyen'
+  // Tiệt tiêu 2.000 - 3.000 Reads mỗi ngày cho việc tải danh mục truyện!
+  if (!isAdmin && !force) {
+    if (cached.length > 0) return cached;
+    return [];
+  }
+
   let cacheTime = 0;
   try {
     const savedTime = safeStorage.getItem(CACHE_TIME_KEY);
@@ -1830,68 +1838,37 @@ export async function fetchSingleChuong(
     return null;
   };
 
+  const cached = getCached();
+  if (cached) return cached;
+
   if (isQuotaExceededActive()) {
-    const cached = getCached();
-    if (cached) return cached;
+    return cached;
   }
 
   try {
     const idStr = String(chuongId);
-    let docRef = doc(db, 'truyen', truyenId, 'chuong', idStr);
-    let snap = await getDoc(docRef);
+    const docRef = doc(db, 'truyen', truyenId, 'chuong', idStr);
+    const snap = await getDoc(docRef);
 
-    if (!snap.exists()) {
-      // Try with 'c_' prefix if numeric or vice versa
-      const altId = idStr.startsWith('c_') ? idStr.replace('c_', '') : `c_${idStr}`;
-      docRef = doc(db, 'truyen', truyenId, 'chuong', altId);
-      snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const d = snap.data();
+      const result: FirestoreChuong = {
+        id: snap.id,
+        soThuTu: d.soThuTu ?? (Number(idStr) || 0),
+        tieuDe: d.tieuDe || `Chương ${idStr}`,
+        noiDung: d.noiDung || '',
+        thoiGianDang: d.thoiGianDang || '',
+        truyenId,
+      };
+      try {
+        safeStorage.setItem(cacheKey, JSON.stringify(result));
+      } catch {}
+      return result;
     }
-
-    if (!snap.exists()) {
-      const num = Number(idStr.replace('c_', ''));
-      if (!isNaN(num)) {
-        const chuongRef = collection(db, 'truyen', truyenId, 'chuong');
-        const q = query(chuongRef, where('soThuTu', '==', num));
-        const qSnap = await getDocs(q);
-        if (!qSnap.empty) {
-          const firstDoc = qSnap.docs[0];
-          const d = firstDoc.data();
-          const result: FirestoreChuong = {
-            id: firstDoc.id,
-            soThuTu: d.soThuTu ?? num,
-            tieuDe: d.tieuDe || `Chương ${num}`,
-            noiDung: d.noiDung || '',
-            thoiGianDang: d.thoiGianDang || '',
-            truyenId,
-          };
-          try {
-            safeStorage.setItem(cacheKey, JSON.stringify(result));
-          } catch {}
-          return result;
-        }
-      }
-      return getCached();
-    }
-
-    const d = snap.data();
-    const result: FirestoreChuong = {
-      id: snap.id,
-      soThuTu: d.soThuTu ?? 0,
-      tieuDe: d.tieuDe || '',
-      noiDung: d.noiDung || '',
-      thoiGianDang: d.thoiGianDang || '',
-      truyenId,
-    };
-    try {
-      safeStorage.setItem(cacheKey, JSON.stringify(result));
-    } catch {}
-    return result;
+    return null;
   } catch (error) {
     if (isFirestoreQuotaError(error)) {
       markQuotaExceeded();
-      console.warn(`[Firebase] Quota limit for chapter ${chuongId} of ${truyenId}. Returning cached chapter.`);
-    } else {
-      console.warn(`[Firebase] Notice fetching single chapter:`, error);
     }
     return getCached();
   }
@@ -2190,6 +2167,7 @@ export function subscribeBinhLuanList(
   onError?: (error: unknown) => void
 ): Unsubscribe {
   const cacheKey = `cosmo_cached_comments_${truyenId}`;
+  const timeKey = `cosmo_comments_time_${truyenId}`;
   const getCached = (): NovelComment[] => {
     try {
       const raw = safeStorage.getItem(cacheKey);
@@ -2201,18 +2179,29 @@ export function subscribeBinhLuanList(
     return [];
   };
 
-  if (isQuotaExceededActive()) {
-    const cached = getCached();
-    if (cached.length > 0) {
-      callback(cached);
-      return () => {};
-    }
+  const cached = getCached();
+  // 1. Trả về cache ngay tức thì nếu có (0ms, 0 Read)
+  if (cached.length > 0) {
+    callback(cached);
   }
 
+  // 2. Nếu đã nạp trong vòng 5 phút, không gọi lại Firestore để tiết kiệm lượt đọc
+  let lastFetchTime = 0;
+  try {
+    const saved = safeStorage.getItem(timeKey);
+    if (saved) lastFetchTime = parseInt(saved, 10);
+  } catch {}
+
+  const now = Date.now();
+  if (cached.length > 0 && now - lastFetchTime < 5 * 60 * 1000) {
+    return () => {};
+  }
+
+  // 3. Nạp 1 lần từ Firestore với giới hạn 25 bình luận mới nhất (KHÔNG onSnapshot)
   const commentsColl = collection(db, 'truyen', truyenId, 'binh_luan');
-  return onSnapshot(
-    commentsColl,
-    (snapshot) => {
+  const q = query(commentsColl, orderBy('ngayTao', 'desc'), limit(25));
+  getDocs(q)
+    .then((snapshot) => {
       const list: NovelComment[] = [];
       snapshot.forEach((docSnap) => {
         const data = docSnap.data();
@@ -2238,24 +2227,18 @@ export function subscribeBinhLuanList(
       if (list.length > 0) {
         try {
           safeStorage.setItem(cacheKey, JSON.stringify(list));
+          safeStorage.setItem(timeKey, String(Date.now()));
         } catch {}
+        callback(list);
       }
-      callback(list);
-    },
-    (err) => {
-      if (isFirestoreQuotaError(err)) {
-        markQuotaExceeded();
-        console.warn(`[Firebase] Real-time comments subscription reached quota limit for ${truyenId}.`);
-      } else {
-        console.warn(`[Firebase] Real-time comments notice for ${truyenId}:`, err);
-      }
-      const fallbackList = getCached();
-      if (fallbackList.length > 0) {
-        callback(fallbackList);
-      }
+    })
+    .catch((err) => {
+      if (isFirestoreQuotaError(err)) markQuotaExceeded();
+      console.warn(`[Firebase] Notice fetching comments for ${truyenId}:`, err);
       onError?.(err);
-    }
-  );
+    });
+
+  return () => {};
 }
 
 export async function addBinhLuan(
@@ -2292,18 +2275,26 @@ export async function addBinhLuan(
     chapterTitle: commentData.chapterTitle ? commentData.chapterTitle.trim() : undefined,
   };
 
+  // Lưu vĩnh viễn lên máy chủ Firestore của bạn (đổi máy không bao giờ mất)
   await setDoc(newDocRef, payload);
+
+  // Cập nhật ngay vào cache local để người gửi thấy ngay lập tức
+  try {
+    const cacheKey = `cosmo_cached_comments_${truyenId}`;
+    const raw = safeStorage.getItem(cacheKey);
+    let curList: NovelComment[] = raw ? JSON.parse(raw) : [];
+    curList.unshift(payload);
+    safeStorage.setItem(cacheKey, JSON.stringify(curList));
+  } catch {}
+
   return payload;
 }
 
 export async function likeBinhLuan(truyenId: string, commentId: string): Promise<void> {
   try {
     const commentRef = doc(db, 'truyen', truyenId, 'binh_luan', commentId);
-    const snap = await getDoc(commentRef);
-    if (snap.exists()) {
-      const curLikes = snap.data().likes || 0;
-      await updateDoc(commentRef, { likes: curLikes + 1 });
-    }
+    // Dùng atomic increment(1) trực tiếp - KHÔNG gọi getDoc để tiết kiệm 1 Read
+    await updateDoc(commentRef, { likes: increment(1) });
   } catch (err) {
     console.warn(`[Firebase] Failed to like comment ${commentId}:`, err);
   }
@@ -2511,40 +2502,63 @@ export async function incrementIntroHearts(style: 'style1' | 'style2'): Promise<
   scheduleHeartsSync();
 }
 
-/**
- * Lắng nghe danh sách tin nhắn độc giả trong Sổ Kế Hoạch 2 Mặt (Style 1) thời gian thực
- */
-export function subscribeToIntroNotesStyle1(
-  callback: (notes: IntroGuestNote[]) => void,
-  onError?: (error: unknown) => void
-): Unsubscribe {
-  const collRef = collection(db, 'gioi_thieu_notes_style1');
-  const q = query(collRef, orderBy('createdAt', 'desc'), limit(100));
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const notes: IntroGuestNote[] = [];
-      snapshot.forEach((d) => {
-        const data = d.data();
-        notes.push({
-          id: d.id,
-          author: data.author || 'Bạn đọc ẩn danh ♡',
-          content: data.content || '',
-          time: data.time || '',
-          createdAt: typeof data.createdAt === 'number' ? data.createdAt : 0,
-        });
+// In-memory cache for intro notes
+let cachedStyle1Notes: IntroGuestNote[] = [];
+let cachedStyle2Notes: IntroReaderMessage[] = [];
+let lastFetchStyle1NotesTime = 0;
+let lastFetchStyle2NotesTime = 0;
+const style1NotesListeners = new Set<(notes: IntroGuestNote[]) => void>();
+const style2NotesListeners = new Set<(notes: IntroReaderMessage[]) => void>();
+
+export async function fetchIntroNotesStyle1(force = false): Promise<IntroGuestNote[]> {
+  const now = Date.now();
+  if (!force && now - lastFetchStyle1NotesTime < 5 * 60 * 1000 && cachedStyle1Notes.length > 0) {
+    return cachedStyle1Notes;
+  }
+  try {
+    const collRef = collection(db, 'gioi_thieu_notes_style1');
+    const q = query(collRef, orderBy('createdAt', 'desc'), limit(25));
+    const snapshot = await getDocs(q);
+    lastFetchStyle1NotesTime = Date.now();
+    const notes: IntroGuestNote[] = [];
+    snapshot.forEach((d) => {
+      const data = d.data();
+      notes.push({
+        id: d.id,
+        author: data.author || 'Bạn đọc ẩn danh ♡',
+        content: data.content || '',
+        time: data.time || '',
+        createdAt: typeof data.createdAt === 'number' ? data.createdAt : 0,
       });
-      callback(notes);
-    },
-    (err) => {
-      console.warn('[Firebase] Error subscribing to style 1 notes:', err);
-      onError?.(err);
-    }
-  );
+    });
+    cachedStyle1Notes = notes;
+    style1NotesListeners.forEach((fn) => fn(notes));
+    return notes;
+  } catch (err) {
+    console.warn('[Firebase] Notice fetching style 1 notes:', err);
+    return cachedStyle1Notes;
+  }
 }
 
 /**
- * Thêm tin nhắn mới vào Sổ Kế Hoạch 2 Mặt (Style 1) lưu Firestore
+ * Lắng nghe danh sách tin nhắn độc giả trong Sổ Kế Hoạch 2 Mặt (Nạp tĩnh 1 lần + Cache, KHÔNG onSnapshot)
+ */
+export function subscribeToIntroNotesStyle1(
+  callback: (notes: IntroGuestNote[]) => void,
+  _onError?: (error: unknown) => void
+): Unsubscribe {
+  style1NotesListeners.add(callback);
+  if (cachedStyle1Notes.length > 0) {
+    callback(cachedStyle1Notes);
+  }
+  fetchIntroNotesStyle1(false).then((notes) => callback(notes)).catch(() => {});
+  return () => {
+    style1NotesListeners.delete(callback);
+  };
+}
+
+/**
+ * Thêm tin nhắn mới vào Sổ Kế Hoạch 2 Mặt (Style 1) lưu Firestore vĩnh viễn
  */
 export async function addIntroNoteStyle1(author: string, content: string): Promise<IntroGuestNote> {
   const collRef = collection(db, 'gioi_thieu_notes_style1');
@@ -2566,46 +2580,63 @@ export async function addIntroNoteStyle1(author: string, content: string): Promi
 
   try {
     await setDoc(newDocRef, payload);
+    cachedStyle1Notes.unshift(payload);
+    style1NotesListeners.forEach((fn) => fn([...cachedStyle1Notes]));
     return payload;
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, `gioi_thieu_notes_style1/${newDocRef.id}`);
   }
 }
 
-/**
- * Lắng nghe danh sách lời nhắn độc giả Máy Trứng Tamagotchi (Style 2) thời gian thực
- */
-export function subscribeToIntroNotesStyle2(
-  callback: (messages: IntroReaderMessage[]) => void,
-  onError?: (error: unknown) => void
-): Unsubscribe {
-  const collRef = collection(db, 'gioi_thieu_notes_style2');
-  const q = query(collRef, orderBy('createdAt', 'desc'), limit(100));
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const messages: IntroReaderMessage[] = [];
-      snapshot.forEach((d) => {
-        const data = d.data();
-        messages.push({
-          id: typeof data.id === 'number' ? data.id : (data.createdAt || Date.now()),
-          sender: data.sender || 'Độc giả ẩn danh',
-          text: data.text || '',
-          time: data.time || 'Vừa xong',
-          createdAt: typeof data.createdAt === 'number' ? data.createdAt : 0,
-        });
+export async function fetchIntroNotesStyle2(force = false): Promise<IntroReaderMessage[]> {
+  const now = Date.now();
+  if (!force && now - lastFetchStyle2NotesTime < 5 * 60 * 1000 && cachedStyle2Notes.length > 0) {
+    return cachedStyle2Notes;
+  }
+  try {
+    const collRef = collection(db, 'gioi_thieu_notes_style2');
+    const q = query(collRef, orderBy('createdAt', 'desc'), limit(25));
+    const snapshot = await getDocs(q);
+    lastFetchStyle2NotesTime = Date.now();
+    const messages: IntroReaderMessage[] = [];
+    snapshot.forEach((d) => {
+      const data = d.data();
+      messages.push({
+        id: typeof data.id === 'number' ? data.id : (data.createdAt || Date.now()),
+        sender: data.sender || 'Độc giả ẩn danh',
+        text: data.text || '',
+        time: data.time || 'Vừa xong',
+        createdAt: typeof data.createdAt === 'number' ? data.createdAt : 0,
       });
-      callback(messages);
-    },
-    (err) => {
-      console.warn('[Firebase] Error subscribing to style 2 notes:', err);
-      onError?.(err);
-    }
-  );
+    });
+    cachedStyle2Notes = messages;
+    style2NotesListeners.forEach((fn) => fn(messages));
+    return messages;
+  } catch (err) {
+    console.warn('[Firebase] Notice fetching style 2 notes:', err);
+    return cachedStyle2Notes;
+  }
 }
 
 /**
- * Thêm lời nhắn mới vào Máy Trứng Tamagotchi (Style 2) lưu Firestore
+ * Lắng nghe danh sách lời nhắn độc giả Máy Trứng Tamagotchi (Nạp tĩnh 1 lần + Cache, KHÔNG onSnapshot)
+ */
+export function subscribeToIntroNotesStyle2(
+  callback: (messages: IntroReaderMessage[]) => void,
+  _onError?: (error: unknown) => void
+): Unsubscribe {
+  style2NotesListeners.add(callback);
+  if (cachedStyle2Notes.length > 0) {
+    callback(cachedStyle2Notes);
+  }
+  fetchIntroNotesStyle2(false).then((msgs) => callback(msgs)).catch(() => {});
+  return () => {
+    style2NotesListeners.delete(callback);
+  };
+}
+
+/**
+ * Thêm lời nhắn mới vào Máy Trứng Tamagotchi (Style 2) lưu Firestore vĩnh viễn
  */
 export async function addIntroNoteStyle2(sender: string, text: string): Promise<IntroReaderMessage> {
   const collRef = collection(db, 'gioi_thieu_notes_style2');
@@ -2628,6 +2659,8 @@ export async function addIntroNoteStyle2(sender: string, text: string): Promise<
 
   try {
     await setDoc(newDocRef, payload);
+    cachedStyle2Notes.unshift(payload);
+    style2NotesListeners.forEach((fn) => fn([...cachedStyle2Notes]));
     return payload;
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, `gioi_thieu_notes_style2/${newDocRef.id}`);

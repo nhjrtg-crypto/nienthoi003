@@ -739,12 +739,17 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       return;
     }
 
-    // 2b. Lookup from INITIAL_NOVELS static source data
+    // 2b. Lookup from INITIAL_NOVELS static source data (Ưu tiên 100% mã nguồn, không chạm Firestore)
     const staticNovel = INITIAL_NOVELS.find((n) => n.id === novel.id || n.title.toLowerCase().trim() === novel.title.toLowerCase().trim());
-    const staticChap = staticNovel?.chapters?.find((c) => c.chapterNumber === chapterNumber);
-    if (staticChap?.content && staticChap.content.trim().length > 0) {
-      contentCacheRef.current[chapterNumber] = staticChap.content;
-      setFirestoreFetchedContent(staticChap.content);
+    if (staticNovel) {
+      const staticChap = staticNovel?.chapters?.find((c) => c.chapterNumber === chapterNumber);
+      const content = (staticChap?.content && staticChap.content.trim().length > 0)
+        ? staticChap.content
+        : (localChap?.content && localChap.content.trim().length > 0)
+        ? localChap.content
+        : 'Chương này hiện chưa có nội dung hoặc đang được cập nhật.';
+      contentCacheRef.current[chapterNumber] = content;
+      setFirestoreFetchedContent(content);
       setIsLoadingChapterContent(false);
       return;
     }
