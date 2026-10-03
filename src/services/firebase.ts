@@ -374,7 +374,7 @@ export interface FirestoreReadStats {
 export const BASE_WEBSITE_VIEWS = 0;
 const STORAGE_KEY_TOTAL_READS = 'nienthoi_total_website_reads_cache_v3';
 const STORAGE_KEY_STATS_CACHE = 'nienthoi_firestore_stats_cache_v3';
-const STATS_CACHE_TTL_MS = 3 * 60 * 1000; // 3 phút cache để tối ưu triệt để hạn mức đọc miễn phí Firestore
+const STATS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 phút cache theo yêu cầu người dùng để tối ưu triệt để Firestore
 
 // Xóa sạch cache cũ để đảm bảo dữ liệu mới nhất được nạp chính xác
 try {
@@ -605,7 +605,7 @@ function scheduleReadsSync(): void {
   syncTimer = setTimeout(() => {
     syncTimer = null;
     flushPendingReadsToFirestore();
-  }, 15000); // Tự động gom đồng bộ mỗi 15 giây
+  }, 5 * 60 * 1000); // 5 phút gom đồng bộ lượt xem lên Firestore 1 lần theo yêu cầu người dùng
 }
 
 // Bắt sự kiện khi người dùng chuyển tab, ẩn ứng dụng hoặc rời trang để đồng bộ tức thì
@@ -2341,49 +2341,174 @@ export interface IntroReaderMessage {
   createdAt: number;
 }
 
+// ============================================================================
+// HỆ THỐNG GOM LƯỢT THẢ TIM 5 PHÚT / LẦN (BATCHED HEARTS SYNC)
+// ============================================================================
+let pendingStyle1Hearts = 0;
+let pendingStyle2Hearts = 0;
+let heartsSyncTimer: any = null;
+let isHeartsSyncing = false;
+let cachedStyle1Hearts = 0;
+let cachedStyle2Hearts = 0;
+let lastFetchStyle1HeartsTime = 0;
+let lastFetchStyle2HeartsTime = 0;
+const style1HeartsListeners = new Set<(count: number) => void>();
+const style2HeartsListeners = new Set<(count: number) => void>();
+
+export async function flushPendingHeartsToFirestore(): Promise<void> {
+  if (isHeartsSyncing) return;
+  if (pendingStyle1Hearts === 0 && pendingStyle2Hearts === 0) return;
+
+  const s1Count = pendingStyle1Hearts;
+  const s2Count = pendingStyle2Hearts;
+  pendingStyle1Hearts = 0;
+  pendingStyle2Hearts = 0;
+
+  if (heartsSyncTimer) {
+    clearTimeout(heartsSyncTimer);
+    heartsSyncTimer = null;
+  }
+
+  isHeartsSyncing = true;
+  try {
+    const promises: Promise<any>[] = [];
+    if (s1Count > 0) {
+      const docRef = doc(db, 'gioi_thieu_stats', 'style1');
+      promises.push(
+        setDoc(
+          docRef,
+          {
+            heartsCount: increment(s1Count),
+            updatedAt: new Date().toISOString(),
+          },
+          { merge: true }
+        ).catch((err) => console.warn('[Firestore] Error syncing style1 hearts:', err))
+      );
+    }
+    if (s2Count > 0) {
+      const docRef = doc(db, 'gioi_thieu_stats', 'style2');
+      promises.push(
+        setDoc(
+          docRef,
+          {
+            heartsCount: increment(s2Count),
+            updatedAt: new Date().toISOString(),
+          },
+          { merge: true }
+        ).catch((err) => console.warn('[Firestore] Error syncing style2 hearts:', err))
+      );
+    }
+    await Promise.allSettled(promises);
+  } catch (err) {
+    console.warn('[Firestore] Error flushing hearts:', err);
+  } finally {
+    isHeartsSyncing = false;
+  }
+}
+
+function scheduleHeartsSync(): void {
+  if (heartsSyncTimer) return;
+  heartsSyncTimer = setTimeout(() => {
+    heartsSyncTimer = null;
+    flushPendingHeartsToFirestore();
+  }, 5 * 60 * 1000); // 5 phút gom đồng bộ lượt thả tim lên Firestore 1 lần theo yêu cầu
+}
+
+// Bắt sự kiện chuyển tab / đóng trang để đồng bộ tim không bị mất
+if (typeof window !== 'undefined') {
+  try {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        flushPendingHeartsToFirestore();
+      }
+    });
+    window.addEventListener('pagehide', () => {
+      flushPendingHeartsToFirestore();
+    });
+    window.addEventListener('beforeunload', () => {
+      flushPendingHeartsToFirestore();
+    });
+  } catch {}
+}
+
 /**
- * Lắng nghe số lượt thả tim thời gian thực của Style 1 hoặc Style 2
+ * Đọc số tim của Style 1 hoặc Style 2 từ Firestore (Có cache 5 phút, không onSnapshot để tiết kiệm Reads)
+ */
+export async function fetchIntroHearts(style: 'style1' | 'style2', force = false): Promise<number> {
+  const now = Date.now();
+  const lastTime = style === 'style1' ? lastFetchStyle1HeartsTime : lastFetchStyle2HeartsTime;
+  const currentCached = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
+
+  if (!force && now - lastTime < 5 * 60 * 1000 && currentCached > 0) {
+    return currentCached;
+  }
+
+  try {
+    const docRef = doc(db, 'gioi_thieu_stats', style);
+    const snap = await getDoc(docRef);
+    if (style === 'style1') lastFetchStyle1HeartsTime = Date.now();
+    else lastFetchStyle2HeartsTime = Date.now();
+
+    if (snap.exists()) {
+      const count = typeof snap.data().heartsCount === 'number' ? snap.data().heartsCount : 0;
+      if (style === 'style1') {
+        cachedStyle1Hearts = count;
+        style1HeartsListeners.forEach((fn) => fn(count));
+      } else {
+        cachedStyle2Hearts = count;
+        style2HeartsListeners.forEach((fn) => fn(count));
+      }
+      return count;
+    }
+  } catch (err) {
+    console.warn(`[Firestore] Notice fetching ${style} hearts:`, err);
+  }
+  return currentCached;
+}
+
+/**
+ * Lắng nghe số lượt thả tim với chu kỳ 5 phút mới cập nhật 1 lần (Không dùng onSnapshot)
  */
 export function subscribeToIntroHearts(
   style: 'style1' | 'style2',
   callback: (count: number) => void,
-  onError?: (error: unknown) => void
+  _onError?: (error: unknown) => void
 ): Unsubscribe {
-  const docRef = doc(db, 'gioi_thieu_stats', style);
-  return onSnapshot(
-    docRef,
-    (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        callback(typeof data.heartsCount === 'number' ? data.heartsCount : 0);
-      } else {
-        callback(0);
-      }
-    },
-    (err) => {
-      console.warn(`[Firebase] Error subscribing to ${style} hearts:`, err);
-      onError?.(err);
-    }
-  );
+  const listeners = style === 'style1' ? style1HeartsListeners : style2HeartsListeners;
+  listeners.add(callback);
+
+  // Trả về số tim trong cache ngay tức thì (0ms, 0 read)
+  const initial = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
+  if (initial > 0) callback(initial);
+
+  // Nạp từ Firestore lần đầu nếu chưa nạp trong 5 phút qua
+  fetchIntroHearts(style, false).then((count) => callback(count)).catch(() => {});
+
+  // Chu kỳ đúng 5 phút mới cập nhật lại 1 lần từ máy chủ nếu độc giả còn ở lại trang
+  const intervalId = setInterval(() => {
+    fetchIntroHearts(style, true).then((count) => callback(count)).catch(() => {});
+  }, 5 * 60 * 1000);
+
+  return () => {
+    listeners.delete(callback);
+    clearInterval(intervalId);
+  };
 }
 
 /**
- * Thả tim cộng dồn vĩnh viễn trên Firestore cho Style 1 hoặc Style 2
+ * Thả tim: Tăng trên giao diện ngay tức thì, sau đó gom 5 phút mới đồng bộ lên Firestore 1 lần
  */
 export async function incrementIntroHearts(style: 'style1' | 'style2'): Promise<void> {
-  const docRef = doc(db, 'gioi_thieu_stats', style);
-  try {
-    await setDoc(
-      docRef,
-      {
-        heartsCount: increment(1),
-        updatedAt: new Date().toISOString(),
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    handleFirestoreError(error, OperationType.WRITE, `gioi_thieu_stats/${style}`);
+  if (style === 'style1') {
+    cachedStyle1Hearts += 1;
+    style1HeartsListeners.forEach((fn) => fn(cachedStyle1Hearts));
+    pendingStyle1Hearts += 1;
+  } else {
+    cachedStyle2Hearts += 1;
+    style2HeartsListeners.forEach((fn) => fn(cachedStyle2Hearts));
+    pendingStyle2Hearts += 1;
   }
+  scheduleHeartsSync();
 }
 
 /**
