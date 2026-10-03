@@ -374,16 +374,14 @@ export interface FirestoreReadStats {
 export const BASE_WEBSITE_VIEWS = 0;
 const STORAGE_KEY_TOTAL_READS = 'nienthoi_total_website_reads_cache_v3';
 const STORAGE_KEY_STATS_CACHE = 'nienthoi_firestore_stats_cache_v3';
-const STATS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 phút cache theo yêu cầu người dùng để tối ưu triệt để Firestore
+const STATS_CACHE_TTL_MS = 30 * 60 * 1000; // 30 phút cache theo yêu cầu người dùng để tối ưu triệt để Firestore
 
-// Xóa sạch cache cũ để đảm bảo dữ liệu mới nhất được nạp chính xác
+// Xóa sạch các cache cũ phiên bản trước để chuyển đổi sang bộ đệm 30 phút
 try {
   if (typeof window !== 'undefined') {
     safeStorage.removeItem('cosmo_quota_exceeded_timestamp');
     safeStorage.removeItem('nienthoi_total_website_reads_cache');
     safeStorage.removeItem('nienthoi_total_website_views_cache');
-    safeStorage.removeItem('nienthoi_total_website_reads_cache_v3');
-    safeStorage.removeItem('nienthoi_firestore_stats_cache_v3');
     safeStorage.removeItem('cosmo_cached_firestore_truyen');
     safeStorage.removeItem('cosmo_cached_firestore_truyen_time');
     safeStorage.removeItem('cosmo_cached_firestore_truyen_v2');
@@ -605,7 +603,7 @@ function scheduleReadsSync(): void {
   syncTimer = setTimeout(() => {
     syncTimer = null;
     flushPendingReadsToFirestore();
-  }, 5 * 60 * 1000); // 5 phút gom đồng bộ lượt xem lên Firestore 1 lần theo yêu cầu người dùng
+  }, 30 * 60 * 1000); // 30 phút gom đồng bộ lượt xem lên Firestore 1 lần theo yêu cầu người dùng
 }
 
 // Bắt sự kiện khi người dùng chuyển tab, ẩn ứng dụng hoặc rời trang để đồng bộ tức thì
@@ -964,8 +962,8 @@ export async function fetchGlobalReadStats(force = false): Promise<FirestoreRead
 let lastManualRefreshTime = 0;
 export async function refreshFirestoreReadStats(): Promise<FirestoreReadStats> {
   const now = Date.now();
-  // Chống spam click liên tục vào nút reload: chỉ gọi Firestore nếu cách lần bấm trước > 8 giây
-  if (now - lastManualRefreshTime < 8000) {
+  // Chống spam click liên tục vào nút reload: chỉ gọi Firestore nếu cách lần bấm trước > 30 giây
+  if (now - lastManualRefreshTime < 30000) {
     return getFirestoreReadStats();
   }
   lastManualRefreshTime = now;
@@ -976,7 +974,7 @@ export async function refreshFirestoreReadStats(): Promise<FirestoreReadStats> {
  * Khởi tạo đồng bộ số liệu toàn cầu từ Firestore một cách tiết kiệm tài nguyên:
  * - Không duy trì onSnapshot broadcast liên tục gây hao tốn đọc khi có lượng độc giả lớn.
  * - Nạp tức thì từ cache localStorage (0ms, 0 read Firebase).
- * - Tự động đồng bộ nhẹ khi khởi động hoặc khi chuyển tab hoạt động.
+ * - Chu kỳ cập nhật đúng 30 phút một lần.
  */
 export function initGlobalReadSync(): () => void {
   if (typeof window === 'undefined') return () => {};
@@ -993,12 +991,15 @@ export function initGlobalReadSync(): () => void {
   if (isGlobalSyncInitialized) return () => {};
   isGlobalSyncInitialized = true;
 
-  // Lần đầu tải: đọc trực tiếp từ Firestore để đảm bảo số liệu chuẩn xác
-  fetchGlobalReadStats(true);
+  // Nếu chưa có số liệu hoặc cache đã quá 30 phút thì nạp 1 lần nhẹ nhàng
+  const now = Date.now();
+  if (globalWebsiteReads === 0 || now - lastTrackerFetchTime > 30 * 60 * 1000) {
+    fetchGlobalReadStats(false);
+  }
 
-  // Khi người dùng quay lại tab sau hơn 5 phút: cập nhật nhẹ 1 lần
+  // Khi người dùng quay lại tab sau hơn 30 phút: mới cập nhật nhẹ 1 lần
   const handleFocus = () => {
-    if (Date.now() - lastTrackerFetchTime > 5 * 60 * 1000) {
+    if (Date.now() - lastTrackerFetchTime > 30 * 60 * 1000) {
       fetchGlobalReadStats(false);
     }
   };
@@ -2185,7 +2186,7 @@ export function subscribeBinhLuanList(
     callback(cached);
   }
 
-  // 2. Nếu đã nạp trong vòng 5 phút, không gọi lại Firestore để tiết kiệm lượt đọc
+  // 2. Nếu đã nạp trong vòng 30 phút, không gọi lại Firestore để tiết kiệm lượt đọc
   let lastFetchTime = 0;
   try {
     const saved = safeStorage.getItem(timeKey);
@@ -2193,7 +2194,7 @@ export function subscribeBinhLuanList(
   } catch {}
 
   const now = Date.now();
-  if (cached.length > 0 && now - lastFetchTime < 5 * 60 * 1000) {
+  if (cached.length > 0 && now - lastFetchTime < 30 * 60 * 1000) {
     return () => {};
   }
 
@@ -2402,7 +2403,7 @@ function scheduleHeartsSync(): void {
   heartsSyncTimer = setTimeout(() => {
     heartsSyncTimer = null;
     flushPendingHeartsToFirestore();
-  }, 5 * 60 * 1000); // 5 phút gom đồng bộ lượt thả tim lên Firestore 1 lần theo yêu cầu
+  }, 30 * 60 * 1000); // 30 phút gom đồng bộ lượt thả tim lên Firestore 1 lần theo yêu cầu
 }
 
 // Bắt sự kiện chuyển tab / đóng trang để đồng bộ tim không bị mất
@@ -2423,14 +2424,14 @@ if (typeof window !== 'undefined') {
 }
 
 /**
- * Đọc số tim của Style 1 hoặc Style 2 từ Firestore (Có cache 5 phút, không onSnapshot để tiết kiệm Reads)
+ * Đọc số tim của Style 1 hoặc Style 2 từ Firestore (Có cache 30 phút, không onSnapshot để tiết kiệm Reads)
  */
 export async function fetchIntroHearts(style: 'style1' | 'style2', force = false): Promise<number> {
   const now = Date.now();
   const lastTime = style === 'style1' ? lastFetchStyle1HeartsTime : lastFetchStyle2HeartsTime;
   const currentCached = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
 
-  if (!force && now - lastTime < 5 * 60 * 1000 && currentCached > 0) {
+  if (!force && now - lastTime < 30 * 60 * 1000 && currentCached > 0) {
     return currentCached;
   }
 
@@ -2475,10 +2476,10 @@ export function subscribeToIntroHearts(
   // Nạp từ Firestore lần đầu nếu chưa nạp trong 5 phút qua
   fetchIntroHearts(style, false).then((count) => callback(count)).catch(() => {});
 
-  // Chu kỳ đúng 5 phút mới cập nhật lại 1 lần từ máy chủ nếu độc giả còn ở lại trang
+  // Chu kỳ đúng 30 phút mới cập nhật lại 1 lần từ máy chủ nếu độc giả còn ở lại trang
   const intervalId = setInterval(() => {
     fetchIntroHearts(style, true).then((count) => callback(count)).catch(() => {});
-  }, 5 * 60 * 1000);
+  }, 30 * 60 * 1000);
 
   return () => {
     listeners.delete(callback);
@@ -2512,7 +2513,7 @@ const style2NotesListeners = new Set<(notes: IntroReaderMessage[]) => void>();
 
 export async function fetchIntroNotesStyle1(force = false): Promise<IntroGuestNote[]> {
   const now = Date.now();
-  if (!force && now - lastFetchStyle1NotesTime < 5 * 60 * 1000 && cachedStyle1Notes.length > 0) {
+  if (!force && now - lastFetchStyle1NotesTime < 30 * 60 * 1000 && cachedStyle1Notes.length > 0) {
     return cachedStyle1Notes;
   }
   try {
@@ -2590,7 +2591,7 @@ export async function addIntroNoteStyle1(author: string, content: string): Promi
 
 export async function fetchIntroNotesStyle2(force = false): Promise<IntroReaderMessage[]> {
   const now = Date.now();
-  if (!force && now - lastFetchStyle2NotesTime < 5 * 60 * 1000 && cachedStyle2Notes.length > 0) {
+  if (!force && now - lastFetchStyle2NotesTime < 30 * 60 * 1000 && cachedStyle2Notes.length > 0) {
     return cachedStyle2Notes;
   }
   try {
