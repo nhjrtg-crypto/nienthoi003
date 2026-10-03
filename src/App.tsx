@@ -44,7 +44,6 @@ import {
   FirestoreReadStats,
   isBotComment,
   recordPageView,
-  recordWebsiteVisit,
 } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getOriginalCoverByNovel, getCustomCoverFromStorage } from './utils/imageUtils';
@@ -995,14 +994,14 @@ export default function App() {
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber, pendingNovelId]);
 
-  // Ghi nhận LƯỢT XEM WEB phiên truy cập (Tối ưu hóa: chỉ tính 1 lượt xem cho cả phiên, chống F5/spam)
+  // Ghi nhận lượt đọc vào bộ đếm Footer:
+  // 1. Khi bấm vào xem trang giới thiệu (about-light hoặc portfolio) -> tính +1 lượt đọc
+  // 2. Khi bấm vào xem trang thông tin truyện (novel-detail) -> tính +1 lượt đọc cho truyện và +1 vào footer
+  // 3. KHÔNG tính khi nạp danh sách truyện (novel-home), đúng theo chỉ thị người dùng.
   useEffect(() => {
-    recordWebsiteVisit();
-  }, []);
-
-  // Ghi nhận lượt xem cho truyện khi vào xem trang chi tiết truyện
-  useEffect(() => {
-    if (viewMode === 'novel-detail' && readingChapterNumber === null && selectedNovel) {
+    if (viewMode === 'about-light' || viewMode === 'portfolio') {
+      recordPageView('about', 'Trang giới thiệu');
+    } else if (viewMode === 'novel-detail' && readingChapterNumber === null && selectedNovel) {
       recordPageView('novel-info', selectedNovel.title, selectedNovel.id);
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber]);

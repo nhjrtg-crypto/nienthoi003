@@ -689,13 +689,64 @@ export function recordWebsiteVisit(): void {
 
 export async function recordPageView(
   pageType: 'home' | 'about' | 'novel-info' | string,
-  _pageTitle?: string,
+  pageTitle?: string,
   detailId?: string
 ): Promise<void> {
   if (typeof window === 'undefined') return;
   if (isAutomatedBot()) return;
 
-  // Nếu là trang thông tin truyện, chỉ tăng lượt xem cho bộ truyện đó (1 lần mỗi phiên đọc)
+  // 1. Khi bấm vào xem trang giới thiệu: tính +1 lượt đọc vào footer (1 lần mỗi phiên đọc)
+  if (pageType === 'about') {
+    const sessionKey = 'cosmo_about_view_session';
+    try {
+      if (window.sessionStorage && sessionStorage.getItem(sessionKey)) {
+        return; // Đã ghi nhận trong phiên hiện tại
+      }
+      if (window.sessionStorage) {
+        sessionStorage.setItem(sessionKey, '1');
+      }
+    } catch {}
+
+    // Cập nhật giao diện lập tức (Optimistic update)
+    sessionFirestoreReads += 1;
+    globalTodayReads += 1;
+    globalWebsiteReads += 1;
+
+    try {
+      safeStorage.setItem(STORAGE_KEY_TOTAL_READS, String(globalWebsiteReads));
+    } catch {}
+
+    notifyReadListeners();
+    notifyWebsiteViewListeners();
+
+    // Gom lượt đọc gửi lên Firestore tracker (cộng dồn vĩnh viễn trên server)
+    queuePendingTrackerRead(1);
+
+    const logItem: FirestoreReadLogItem = {
+      id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: new Date().toISOString(),
+      timeStr: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      count: 1,
+      source: 'Xem trang Giới thiệu',
+    };
+
+    try {
+      const logKey = 'cosmo_fs_reads_logs';
+      let logs: FirestoreReadLogItem[] = [];
+      const rawLogs = safeStorage.getItem(logKey);
+      if (rawLogs) {
+        try {
+          logs = JSON.parse(rawLogs);
+        } catch {}
+      }
+      logs.unshift(logItem);
+      if (logs.length > 30) logs = logs.slice(0, 30);
+      safeStorage.setItem(logKey, JSON.stringify(logs));
+    } catch {}
+    return;
+  }
+
+  // 2. Khi bấm vào xem trang thông tin truyện: tính +1 lượt đọc cho truyện VÀ +1 vào footer (1 lần mỗi phiên đọc)
   if (pageType === 'novel-info' && detailId) {
     const sessionKey = `cosmo_novel_view_${detailId}`;
     try {
@@ -707,8 +758,43 @@ export async function recordPageView(
       }
     } catch {}
 
-    // Đưa vào hàng đợi gom lượt đọc truyện để đồng bộ lên Firestore
+    // Cập nhật giao diện lập tức (Optimistic update)
+    sessionFirestoreReads += 1;
+    globalTodayReads += 1;
+    globalWebsiteReads += 1;
+
+    try {
+      safeStorage.setItem(STORAGE_KEY_TOTAL_READS, String(globalWebsiteReads));
+    } catch {}
+
+    notifyReadListeners();
+    notifyWebsiteViewListeners();
+
+    // Đưa vào hàng đợi gom lượt đọc để đồng bộ nguyên tử lên Firestore
+    queuePendingTrackerRead(1);
     queuePendingNovelRead(detailId, 1);
+
+    const logItem: FirestoreReadLogItem = {
+      id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: new Date().toISOString(),
+      timeStr: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      count: 1,
+      source: `Xem thông tin: ${pageTitle || 'Truyện'}`,
+    };
+
+    try {
+      const logKey = 'cosmo_fs_reads_logs';
+      let logs: FirestoreReadLogItem[] = [];
+      const rawLogs = safeStorage.getItem(logKey);
+      if (rawLogs) {
+        try {
+          logs = JSON.parse(rawLogs);
+        } catch {}
+      }
+      logs.unshift(logItem);
+      if (logs.length > 30) logs = logs.slice(0, 30);
+      safeStorage.setItem(logKey, JSON.stringify(logs));
+    } catch {}
   }
 }
 
@@ -875,7 +961,14 @@ export async function fetchGlobalReadStats(force = false): Promise<FirestoreRead
   return getFirestoreReadStats();
 }
 
+let lastManualRefreshTime = 0;
 export async function refreshFirestoreReadStats(): Promise<FirestoreReadStats> {
+  const now = Date.now();
+  // Chống spam click liên tục vào nút reload: chỉ gọi Firestore nếu cách lần bấm trước > 8 giây
+  if (now - lastManualRefreshTime < 8000) {
+    return getFirestoreReadStats();
+  }
+  lastManualRefreshTime = now;
   return fetchGlobalReadStats(true);
 }
 
