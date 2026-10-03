@@ -48,6 +48,7 @@ import { INITIAL_NOVELS } from '../data/novelData';
 interface NovelReaderModalProps {
   novel: Novel | null;
   chapterNumber: number | null;
+  isAdmin?: boolean;
   onClose: () => void;
   onSelectChapter: (num: number) => void;
   onUpdateChapters?: (novelId: string, chapters: NovelChapter[]) => void;
@@ -61,6 +62,7 @@ type PageMarginOption = 'narrow' | 'normal' | 'wide';
 export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   novel,
   chapterNumber,
+  isAdmin = false,
   onClose,
   onSelectChapter,
   onUpdateChapters,
@@ -674,7 +676,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   };
 
   const handleDeleteChapterComment = async (commentId: string) => {
-    if (!novel) return;
+    if (!isAdmin || !novel) return;
     if (!window.confirm('Bạn có chắc chắn muốn xóa bình luận này không?')) return;
     const updated = chapterComments.filter((c) => c.id !== commentId);
     setChapterComments(updated);
@@ -1720,14 +1722,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteChapterComment(cm.id)}
-                      className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                      title="Xóa bình luận"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteChapterComment(cm.id)}
+                        className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        title="Xóa bình luận"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
 
                   <p className={`text-xs sm:text-sm leading-relaxed pl-10.5 ${
@@ -1946,14 +1950,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                             </div>
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteChapterComment(cm.id)}
-                            className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                            title="Xóa bình luận"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          {isAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteChapterComment(cm.id)}
+                              className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                              title="Xóa bình luận"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
 
                         <p className={`text-xs leading-relaxed pl-9 ${

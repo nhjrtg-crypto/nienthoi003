@@ -1514,6 +1514,7 @@ export default function App() {
           <NovelReaderModal
             novel={selectedNovel}
             chapterNumber={readingChapterNumber}
+            isAdmin={isAdmin}
             onClose={() => {
               setReadingChapterNumber(null);
               window.scrollTo({ top: 0, behavior: 'smooth' });

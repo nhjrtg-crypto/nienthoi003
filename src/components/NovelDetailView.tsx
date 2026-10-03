@@ -1761,12 +1761,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   };
 
   const handleOpenDeleteComment = (comment: NovelComment) => {
+    if (!isAdmin) return;
     setCommentToDelete(comment);
     setIsDeleteCommentModalOpen(true);
   };
 
   const handleConfirmDeleteComment = async () => {
-    if (!commentToDelete) return;
+    if (!isAdmin || !commentToDelete) return;
 
     const targetId = commentToDelete.id;
     const updated = comments.filter((c) => c.id !== targetId);
@@ -4690,17 +4691,19 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                           </div>
                         </div>
 
-                        {/* Nút xóa bình luận */}
-                        <button
-                          type="button"
-                          onClick={() => handleOpenDeleteComment(comment)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[14px] font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all cursor-pointer shrink-0"
-                          title="Xóa bình luận này"
-                          aria-label="Xóa bình luận"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span>Xóa</span>
-                        </button>
+                        {/* Nút xóa bình luận (Chỉ dành cho Quản trị viên) */}
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenDeleteComment(comment)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[14px] font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all cursor-pointer shrink-0"
+                            title="Xóa bình luận này (Quản trị viên)"
+                            aria-label="Xóa bình luận"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            <span>Xóa</span>
+                          </button>
+                        )}
                       </div>
 
                       <p className={`text-[14px] sm:text-[16px] font-sans leading-relaxed ${isDarkEffective ? 'text-stone-200' : 'text-stone-700'}`} style={{ lineHeight: '1.75' }}>
@@ -5587,9 +5590,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         )}
       </AnimatePresence>
 
-      {/* MODAL 3: XÁC NHẬN XÓA BÌNH LUẬN */}
+      {/* MODAL 3: XÁC NHẬN XÓA BÌNH LUẬN (Chỉ dành cho Quản trị viên) */}
       <AnimatePresence>
-        {isDeleteCommentModalOpen && commentToDelete && (
+        {isDeleteCommentModalOpen && commentToDelete && isAdmin && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
