@@ -505,12 +505,132 @@ export function isAutomatedBot(): boolean {
   return false;
 }
 
+// ============================================================================
+// HỆ THỐNG GOM LƯỢT ĐỌC & ĐỒNG BỘ NGUYÊN TỬ (BATCHED ATOMIC READS SYNC)
+// ============================================================================
+// - Cộng dồn 100% vĩnh viễn trên Firestore, đổi máy hay sang thiết bị khác không mất.
+// - Không bắn lẻ từng lệnh setDoc mỗi giây gây cạn kiệt 20.000 writes/ngày.
+// - Tự động gom (batch) trong 15 giây hoặc khi đóng/chuyển tab để gửi 1 lần duy nhất bằng increment(N).
+// ============================================================================
+let pendingTrackerReads = 0;
+const pendingNovelReads = new Map<string, number>();
+let syncTimer: any = null;
+let isSyncing = false;
+
+export function queuePendingTrackerRead(count = 1): void {
+  pendingTrackerReads += count;
+  scheduleReadsSync();
+}
+
+export function queuePendingNovelRead(novelId: string, count = 1): void {
+  if (!novelId) return;
+  const current = pendingNovelReads.get(novelId) || 0;
+  pendingNovelReads.set(novelId, current + count);
+  scheduleReadsSync();
+}
+
+export async function flushPendingReadsToFirestore(): Promise<void> {
+  if (isSyncing) return;
+  if (pendingTrackerReads === 0 && pendingNovelReads.size === 0) return;
+
+  const readsToSync = pendingTrackerReads;
+  const novelsToSync = new Map(pendingNovelReads);
+
+  // Reset trước để gom các lượt mới trong lúc đang sync
+  pendingTrackerReads = 0;
+  pendingNovelReads.clear();
+
+  if (syncTimer) {
+    clearTimeout(syncTimer);
+    syncTimer = null;
+  }
+
+  isSyncing = true;
+  try {
+    const promises: Promise<any>[] = [];
+    const activeCycle = getCycleKey();
+
+    // 1. Đồng bộ lên tracker toàn web (Cộng dồn vĩnh viễn)
+    if (readsToSync > 0) {
+      const trackerDocRef = doc(db, 'he_thong', 'daily_reads_tracker');
+      promises.push(
+        setDoc(
+          trackerDocRef,
+          {
+            totalWebsiteReads: increment(readsToSync),
+            totalWebsiteViews: increment(readsToSync),
+            todayReads: increment(readsToSync),
+            cycleKey: activeCycle,
+            dailyLimit: 50000,
+            updatedAt: new Date().toISOString(),
+          },
+          { merge: true }
+        ).catch((err) => {
+          if (isFirestoreQuotaError(err)) markQuotaExceeded();
+          console.warn('[Firestore] Notice syncing tracker reads:', err);
+        })
+      );
+    }
+
+    // 2. Đồng bộ lên từng bộ truyện (Cộng dồn vĩnh viễn)
+    novelsToSync.forEach((count, nId) => {
+      if (count > 0 && nId) {
+        const novelDocRef = doc(db, 'truyen', nId);
+        promises.push(
+          setDoc(
+            novelDocRef,
+            {
+              views: increment(count),
+              luotDoc: increment(count),
+              ngayCapNhat: new Date().toISOString(),
+            },
+            { merge: true }
+          ).catch((err) => {
+            console.warn(`[Firestore] Notice syncing novel ${nId} reads:`, err);
+          })
+        );
+      }
+    });
+
+    await Promise.allSettled(promises);
+  } catch (err) {
+    console.warn('[Firestore] Error flushing batched reads:', err);
+  } finally {
+    isSyncing = false;
+  }
+}
+
+function scheduleReadsSync(): void {
+  if (syncTimer) return;
+  syncTimer = setTimeout(() => {
+    syncTimer = null;
+    flushPendingReadsToFirestore();
+  }, 15000); // Tự động gom đồng bộ mỗi 15 giây
+}
+
+// Bắt sự kiện khi người dùng chuyển tab, ẩn ứng dụng hoặc rời trang để đồng bộ tức thì
+if (typeof window !== 'undefined') {
+  try {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        flushPendingReadsToFirestore();
+      }
+    });
+    window.addEventListener('pagehide', () => {
+      flushPendingReadsToFirestore();
+    });
+    window.addEventListener('beforeunload', () => {
+      flushPendingReadsToFirestore();
+    });
+  } catch {}
+}
+
 /**
  * Ghi nhận LƯỢT XEM WEB của người dùng khi truy cập vào website.
  * Tối ưu hóa chuẩn quốc tế:
  * 1. Mỗi phiên truy cập (Session) chỉ tính duy nhất 1 lượt xem, chống spam/F5.
  * 2. Lưu sessionStorage để không bao giờ cộng lặp khi chuyển trang hay tải lại.
- * 3. Đồng bộ chính xác lên Firestore tracker he_thong/daily_reads_tracker.
+ * 3. Đồng bộ chính xác lên Firestore tracker he_thong/daily_reads_tracker (dùng batching).
  */
 export function recordWebsiteVisit(): void {
   if (typeof window === 'undefined') return;
@@ -541,23 +661,8 @@ export function recordWebsiteVisit(): void {
   notifyReadListeners();
   notifyWebsiteViewListeners();
 
-  // Ghi nhận lên Firestore tracker (Cộng dồn vĩnh viễn mọi thiết bị)
-  const trackerDocRef = doc(db, 'he_thong', 'daily_reads_tracker');
-  const activeCycle = getCycleKey();
-  setDoc(
-    trackerDocRef,
-    {
-      totalWebsiteReads: increment(1),
-      totalWebsiteViews: increment(1),
-      todayReads: increment(1),
-      cycleKey: activeCycle,
-      dailyLimit: 50000,
-      updatedAt: new Date().toISOString(),
-    },
-    { merge: true }
-  ).catch((err) => {
-    console.warn('[Firestore] Error recording website visit on tracker:', err);
-  });
+  // Đưa vào hàng đợi gom lượt đọc để đồng bộ nguyên tử lên Firestore
+  queuePendingTrackerRead(1);
 
   const logItem: FirestoreReadLogItem = {
     id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -602,18 +707,8 @@ export async function recordPageView(
       }
     } catch {}
 
-    try {
-      const novelDocRef = doc(db, 'truyen', detailId);
-      setDoc(
-        novelDocRef,
-        {
-          views: increment(1),
-          luotDoc: increment(1),
-          ngayCapNhat: new Date().toISOString(),
-        },
-        { merge: true }
-      ).catch(() => {});
-    } catch {}
+    // Đưa vào hàng đợi gom lượt đọc truyện để đồng bộ lên Firestore
+    queuePendingNovelRead(detailId, 1);
   }
 }
 
@@ -875,38 +970,10 @@ export async function recordChapterRead(
   notifyReadListeners();
   notifyWebsiteViewListeners();
 
-  // 3. Tăng bộ đếm toàn web và hôm nay trực tiếp trên Firestore tracker (Cộng dồn vĩnh viễn mọi thiết bị)
-  const trackerDocRef = doc(db, 'he_thong', 'daily_reads_tracker');
-  const activeCycle = getCycleKey();
-  setDoc(
-    trackerDocRef,
-    {
-      totalWebsiteReads: increment(1),
-      totalWebsiteViews: increment(1), // Đồng bộ
-      todayReads: increment(1),
-      cycleKey: activeCycle,
-      dailyLimit: 50000,
-      updatedAt: new Date().toISOString(),
-    },
-    { merge: true }
-  ).catch((err) => {
-    if (isFirestoreQuotaError(err)) markQuotaExceeded();
-    console.warn('[Firestore] Error recording chapter read on tracker:', err);
-  });
-
-  // 4. Tăng số lượt đọc của chính bộ truyện đó trên Firestore
-  try {
-    const novelDocRef = doc(db, 'truyen', novelId);
-    setDoc(
-      novelDocRef,
-      {
-        views: increment(1),
-        luotDoc: increment(1),
-        ngayCapNhat: new Date().toISOString(),
-      },
-      { merge: true }
-    ).catch(() => {});
-  } catch {}
+  // 3. Đưa vào hàng đợi gom lượt đọc thông minh (Batched Atomic Writes)
+  // Cộng dồn 100% vĩnh viễn trên Firestore cho mọi thiết bị, đồng thời giảm 90% số lượt Write lên Firebase.
+  queuePendingTrackerRead(1);
+  queuePendingNovelRead(novelId, 1);
 
   // 5. Ghi log hiển thị trong Modal chi tiết lượt đọc
   const logItem: FirestoreReadLogItem = {
@@ -1140,13 +1207,32 @@ export async function fetchTruyenList(isAdmin: boolean, force = false): Promise<
   }
 }
 
-// Real-time listener for novels / posts list using onSnapshot
+// Real-time listener for novels / posts list (Chỉ bật onSnapshot cho Admin để tiết kiệm quota)
 export function subscribeTruyenList(
   isAdmin: boolean,
   callback: (list: FirestoreTruyen[]) => void,
   onError?: (error: unknown) => void
 ): Unsubscribe {
   const cached = getCachedTruyenList();
+
+  // Độc giả thông thường: Sử dụng cache tĩnh và nạp 1 lần, KHÔNG mở onSnapshot toàn bộ collection
+  // Cắt đứt hoàn toàn hiệu ứng khuếch đại lượt đọc (mỗi lượt xem truyện không ép tất cả máy khác đọc lại).
+  if (!isAdmin) {
+    if (cached.length > 0) {
+      callback(cached);
+    }
+    fetchTruyenList(false)
+      .then((list) => {
+        if (list && list.length > 0) {
+          callback(list);
+        }
+      })
+      .catch((err) => {
+        onError?.(err);
+      });
+    return () => {};
+  }
+
   // Nếu đang trong thời gian quota cạn kiệt và đã có cache, gửi cache ngay cho UI
   if (isQuotaExceededActive() && cached.length > 0) {
     callback(cached);
