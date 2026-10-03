@@ -31,6 +31,12 @@ interface SpiralThemeStyles {
   ringsBorder: string;
   holesBg: string;
   holesBorder: string;
+  spineBg: string;
+  spineDashedBorder: string;
+  spineShadow: string;
+  spineHoleBorder: string;
+  spineHoleBg: string;
+  spineHoleCenterBg: string;
   paperBg: string;
   paperBorder: string;
   paperText: string;
@@ -100,6 +106,9 @@ interface SpiralThemeStyles {
   footerBorder: string;
   footerText: string;
   washiTape: string;
+  washiBgPattern: string;
+  washiBorder: string;
+  synopsisLineColor: string;
   heartIcon: string;
   chapterScrollbar: string;
 }
@@ -117,11 +126,17 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         bannerDivider: 'bg-gradient-to-r from-[#dfcef5] via-[#caa4ec] to-[#f4c8e3]',
         coverBg: 'bg-[#f7f2fd]',
         coverBorder: 'border-[#e5d5f6]',
-        coverShadow: 'shadow-[0_14px_36px_rgba(175,130,225,0.22),0_4px_12px_rgba(175,130,225,0.12)]',
+        coverShadow: 'shadow-[0_22px_54px_rgba(155,100,220,0.40),0_8px_22px_rgba(155,100,220,0.24),0_2px_6px_rgba(0,0,0,0.08)]',
         ringsGradient: 'bg-gradient-to-r from-[#d9c4f0] via-[#fbf7ff] to-[#f0c8e4]',
         ringsBorder: 'border-[#caa7e8]',
         holesBg: 'bg-[#ecdcf7]',
         holesBorder: 'border-[#d8c4ee]',
+        spineBg: 'bg-[#fff0f4]',
+        spineDashedBorder: 'border-pink-300',
+        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(244,114,182,0.08)]',
+        spineHoleBorder: 'border-pink-200/90',
+        spineHoleBg: 'bg-white',
+        spineHoleCenterBg: 'bg-pink-100/60',
         paperBg: 'bg-[#ffffff]',
         paperBorder: 'border-[#ebdbf7]',
         paperText: 'text-[#32234b]',
@@ -191,6 +206,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         footerBorder: 'border-[#e9daf7]',
         footerText: 'text-[#896bb3]',
         washiTape: 'bg-[#ebd8f8]/90 border-[#d8bbf2]',
+        washiBgPattern: 'repeating-linear-gradient(45deg, #f1e4fb 0px, #f1e4fb 6px, #ffffff 6px, #ffffff 12px)',
+        washiBorder: '1px solid rgba(221, 202, 242, 0.6)',
+        synopsisLineColor: 'rgba(202, 164, 236, 0.08)',
         heartIcon: 'text-[#9d73c7] fill-[#e8d7fa]/60',
         chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#f5ecfc] [&::-webkit-scrollbar-thumb]:bg-[#cdabf0]/60 hover:[&::-webkit-scrollbar-thumb]:bg-[#b891e2]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(205,171,240,0.6)_transparent] [scrollbar-width:thin]',
       };
@@ -209,6 +227,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       ringsBorder: 'border-indigo-400/60',
       holesBg: 'bg-[#060818]',
       holesBorder: 'border-purple-900/80',
+      spineBg: 'bg-[#241c2f]',
+      spineDashedBorder: 'border-pink-500/50',
+      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(244,114,182,0.12)]',
+      spineHoleBorder: 'border-pink-800/70',
+      spineHoleBg: 'bg-[#12101a]',
+      spineHoleCenterBg: 'bg-[#0c0a14]',
       paperBg: 'bg-[#090b20]',
       paperBorder: 'border-purple-500/30',
       paperText: 'text-purple-100',
@@ -278,6 +302,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       footerBorder: 'border-purple-900/50',
       footerText: 'text-stone-400',
       washiTape: 'bg-indigo-900/70 border-indigo-700/60',
+      washiBgPattern: 'repeating-linear-gradient(45deg, #3b0764 0px, #3b0764 6px, #1a082e 6px, #1a082e 12px)',
+      washiBorder: '1px solid rgba(168, 85, 247, 0.4)',
+      synopsisLineColor: 'transparent',
       heartIcon: 'text-purple-400 fill-purple-400/50',
       chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-purple-950/20 [&::-webkit-scrollbar-thumb]:bg-purple-500/50 hover:[&::-webkit-scrollbar-thumb]:bg-purple-400/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(168,85,247,0.5)_transparent] [scrollbar-width:thin]',
     };
@@ -299,6 +326,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-zinc-400/50',
         holesBg: 'bg-[#101012]',
         holesBorder: 'border-zinc-700/60',
+        spineBg: 'bg-[#18181c]',
+        spineDashedBorder: 'border-zinc-700/80',
+        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(0,0,0,0.30)]',
+        spineHoleBorder: 'border-zinc-700/80',
+        spineHoleBg: 'bg-[#101012]',
+        spineHoleCenterBg: 'bg-[#0a0a0c]',
         paperBg: 'bg-[#131316]',
         paperBorder: 'border-zinc-800/80',
         paperText: 'text-zinc-100',
@@ -368,6 +401,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         footerBorder: 'border-zinc-800',
         footerText: 'text-zinc-400',
         washiTape: 'bg-zinc-700/70 border-zinc-600/70',
+        washiBgPattern: 'repeating-linear-gradient(45deg, #27272a 0px, #27272a 6px, #18181b 6px, #18181b 12px)',
+        washiBorder: '1px solid rgba(113, 113, 122, 0.4)',
+        synopsisLineColor: 'transparent',
         heartIcon: 'text-zinc-300 fill-zinc-300/40',
         chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-zinc-900/20 [&::-webkit-scrollbar-thumb]:bg-zinc-600/50 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-500/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(161,161,170,0.5)_transparent] [scrollbar-width:thin]',
       };
@@ -381,11 +417,17 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-200',
       coverBg: 'bg-[#f8f9fa]',
       coverBorder: 'border-zinc-200/90',
-      coverShadow: 'shadow-[0_14px_36px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.06)]',
+      coverShadow: 'shadow-[0_22px_54px_rgba(0,0,0,0.28),0_8px_22px_rgba(0,0,0,0.16),0_2px_6px_rgba(0,0,0,0.08)]',
       ringsGradient: 'bg-gradient-to-r from-zinc-300 via-zinc-100 to-zinc-300',
       ringsBorder: 'border-zinc-300/80',
       holesBg: 'bg-zinc-200',
       holesBorder: 'border-zinc-300',
+      spineBg: 'bg-[#f4f4f5]',
+      spineDashedBorder: 'border-zinc-300',
+      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(0,0,0,0.06)]',
+      spineHoleBorder: 'border-zinc-300',
+      spineHoleBg: 'bg-white',
+      spineHoleCenterBg: 'bg-zinc-200',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border-zinc-200/80',
       paperText: 'text-zinc-800',
@@ -455,6 +497,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       footerBorder: 'border-zinc-200',
       footerText: 'text-zinc-400',
       washiTape: 'bg-zinc-200/80 border-zinc-300/80',
+      washiBgPattern: 'repeating-linear-gradient(45deg, #f4f4f5 0px, #f4f4f5 6px, #ffffff 6px, #ffffff 12px)',
+      washiBorder: '1px solid rgba(228, 228, 231, 0.8)',
+      synopsisLineColor: 'rgba(212, 212, 216, 0.16)',
       heartIcon: 'text-zinc-400 fill-zinc-200',
       chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-zinc-100 [&::-webkit-scrollbar-thumb]:bg-zinc-300 hover:[&::-webkit-scrollbar-thumb]:bg-zinc-400 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(212,212,216,0.8)_transparent] [scrollbar-width:thin]',
     };
@@ -476,6 +521,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#4d6a85]/50',
         holesBg: 'bg-[#080d14]',
         holesBorder: 'border-[#4d6a85]/60',
+        spineBg: 'bg-[#111a26]',
+        spineDashedBorder: 'border-[#4d6a85]/60',
+        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(77,106,133,0.18)]',
+        spineHoleBorder: 'border-[#4d6a85]/70',
+        spineHoleBg: 'bg-[#0a1017]',
+        spineHoleCenterBg: 'bg-[#060a0f]',
         paperBg: 'bg-[#0a1017]',
         paperBorder: 'border-[#4d6a85]/40',
         paperText: 'text-[#f0f5fa]',
@@ -545,6 +596,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         footerBorder: 'border-[#4d6a85]/40',
         footerText: 'text-stone-400',
         washiTape: 'bg-[#1b2b3a]/70 border-[#4d6a85]/50',
+        washiBgPattern: 'repeating-linear-gradient(45deg, #14202c 0px, #14202c 6px, #0b1117 6px, #0b1117 12px)',
+        washiBorder: '1px solid rgba(77, 106, 133, 0.4)',
+        synopsisLineColor: 'transparent',
         heartIcon: 'text-[#8bb0cf] fill-[#8bb0cf]/40',
         chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#14202c]/20 [&::-webkit-scrollbar-thumb]:bg-[#4d6a85]/50 hover:[&::-webkit-scrollbar-thumb]:bg-[#5d7e9d]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(77,106,133,0.5)_transparent] [scrollbar-width:thin]',
       };
@@ -558,11 +612,17 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-[#cce0f2] via-[#94bede] to-[#cce0f2]',
       coverBg: 'bg-[#edf4fb]',
       coverBorder: 'border-[#d4e5f4]',
-      coverShadow: 'shadow-[0_14px_36px_rgba(110,155,195,0.22),0_4px_12px_rgba(110,155,195,0.12)]',
+      coverShadow: 'shadow-[0_22px_54px_rgba(85,135,180,0.40),0_8px_22px_rgba(85,135,180,0.24),0_2px_6px_rgba(0,0,0,0.08)]',
       ringsGradient: 'bg-gradient-to-r from-[#c4daf0] via-[#f5f9fd] to-[#c4daf0]',
       ringsBorder: 'border-[#aecde8]',
       holesBg: 'bg-[#dbe9f6]',
       holesBorder: 'border-[#c8ddf0]',
+      spineBg: 'bg-[#f0f6fc]',
+      spineDashedBorder: 'border-[#aecde8]',
+      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(85,135,180,0.10)]',
+      spineHoleBorder: 'border-[#c8ddf0]',
+      spineHoleBg: 'bg-white',
+      spineHoleCenterBg: 'bg-[#dbe9f6]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border-[#dbeefc]',
       paperText: 'text-[#24384d]',
@@ -632,6 +692,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       footerBorder: 'border-[#d7e7f6]',
       footerText: 'text-[#6387a8]',
       washiTape: 'bg-[#d7e9f8]/90 border-[#bfdaf2]',
+      washiBgPattern: 'repeating-linear-gradient(45deg, #e5f0fa 0px, #e5f0fa 6px, #ffffff 6px, #ffffff 12px)',
+      washiBorder: '1px solid rgba(197, 220, 240, 0.7)',
+      synopsisLineColor: 'rgba(174, 205, 232, 0.09)',
       heartIcon: 'text-[#608eb8] fill-[#cfe2f5]/60',
       chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#ebf3fa] [&::-webkit-scrollbar-thumb]:bg-[#b0d0ed]/60 hover:[&::-webkit-scrollbar-thumb]:bg-[#97bee0]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(176,208,237,0.6)_transparent] [scrollbar-width:thin]',
     };
@@ -654,6 +717,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#4d6f53]/50',
         holesBg: 'bg-[#060c08]',
         holesBorder: 'border-[#4d6f53]/60',
+        spineBg: 'bg-[#111a13]',
+        spineDashedBorder: 'border-[#4d6f53]/60',
+        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(77,111,83,0.18)]',
+        spineHoleBorder: 'border-[#4d6f53]/70',
+        spineHoleBg: 'bg-[#0a120d]',
+        spineHoleCenterBg: 'bg-[#050806]',
         paperBg: 'bg-[#0a120d]',
         paperBorder: 'border-[#4d6f53]/40',
         paperText: 'text-[#eaf2eb]',
@@ -723,6 +792,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         footerBorder: 'border-[#4d6f53]/40',
         footerText: 'text-stone-400',
         washiTape: 'bg-[#1d3021]/70 border-[#4d6f53]/50',
+        washiBgPattern: 'repeating-linear-gradient(45deg, #152317 0px, #152317 6px, #0a110b 6px, #0a110b 12px)',
+        washiBorder: '1px solid rgba(77, 111, 83, 0.4)',
+        synopsisLineColor: 'transparent',
         heartIcon: 'text-[#8cb391] fill-[#8cb391]/40',
         chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#152317]/20 [&::-webkit-scrollbar-thumb]:bg-[#4d6f53]/50 hover:[&::-webkit-scrollbar-thumb]:bg-[#5e8264]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(77,111,83,0.5)_transparent] [scrollbar-width:thin]',
       };
@@ -736,11 +808,17 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-[#d0e3cd] via-[#9ec698] to-[#d0e3cd]',
       coverBg: 'bg-[#eef5ed]',
       coverBorder: 'border-[#d6e6d3]',
-      coverShadow: 'shadow-[0_14px_36px_rgba(105,145,100,0.22),0_4px_12px_rgba(105,145,100,0.12)]',
+      coverShadow: 'shadow-[0_22px_54px_rgba(85,130,80,0.40),0_8px_22px_rgba(85,130,80,0.24),0_2px_6px_rgba(0,0,0,0.08)]',
       ringsGradient: 'bg-gradient-to-r from-[#c7ddc3] via-[#f6faf5] to-[#c7ddc3]',
       ringsBorder: 'border-[#b4cfb0]',
       holesBg: 'bg-[#deecdb]',
       holesBorder: 'border-[#cae0c6]',
+      spineBg: 'bg-[#f1f7f0]',
+      spineDashedBorder: 'border-[#b4cfb0]',
+      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(85,130,80,0.10)]',
+      spineHoleBorder: 'border-[#cae0c6]',
+      spineHoleBg: 'bg-white',
+      spineHoleCenterBg: 'bg-[#deecdb]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border-[#deeada]',
       paperText: 'text-[#253823]',
@@ -810,6 +888,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       footerBorder: 'border-[#d9e8d6]',
       footerText: 'text-[#6a8c66]',
       washiTape: 'bg-[#daecdc]/90 border-[#c2dec5]',
+      washiBgPattern: 'repeating-linear-gradient(45deg, #e7f1e5 0px, #e7f1e5 6px, #ffffff 6px, #ffffff 12px)',
+      washiBorder: '1px solid rgba(201, 222, 198, 0.7)',
+      synopsisLineColor: 'rgba(180, 207, 176, 0.09)',
       heartIcon: 'text-[#638e5e] fill-[#d4e7d1]/60',
       chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#ebf4ea] [&::-webkit-scrollbar-thumb]:bg-[#b6d6b1]/60 hover:[&::-webkit-scrollbar-thumb]:bg-[#9ec698]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(182,214,177,0.6)_transparent] [scrollbar-width:thin]',
     };
@@ -832,6 +913,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#8c6150]/50',
         holesBg: 'bg-[#0e0906]',
         holesBorder: 'border-[#8c6150]/60',
+        spineBg: 'bg-[#1c1511]',
+        spineDashedBorder: 'border-[#8c6150]/60',
+        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(140,97,80,0.18)]',
+        spineHoleBorder: 'border-[#8c6150]/70',
+        spineHoleBg: 'bg-[#130d09]',
+        spineHoleCenterBg: 'bg-[#0c0805]',
         paperBg: 'bg-[#130d09]',
         paperBorder: 'border-[#8c6150]/40',
         paperText: 'text-[#f5ece6]',
@@ -901,6 +988,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         footerBorder: 'border-[#8c6150]/40',
         footerText: 'text-stone-400',
         washiTape: 'bg-[#3a251b]/70 border-[#8c6150]/50',
+        washiBgPattern: 'repeating-linear-gradient(45deg, #2a1a14 0px, #2a1a14 6px, #170e0a 6px, #170e0a 12px)',
+        washiBorder: '1px solid rgba(140, 97, 80, 0.4)',
+        synopsisLineColor: 'transparent',
         heartIcon: 'text-[#d4a38c] fill-[#d4a38c]/40',
         chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#241712]/20 [&::-webkit-scrollbar-thumb]:bg-[#8c6150]/50 hover:[&::-webkit-scrollbar-thumb]:bg-[#9f7260]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(140,97,80,0.5)_transparent] [scrollbar-width:thin]',
       };
@@ -914,11 +1004,17 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerDivider: 'bg-gradient-to-r from-[#e7d5c2] via-[#cca787] to-[#e7d5c2]',
       coverBg: 'bg-[#f8f1e8]',
       coverBorder: 'border-[#e7d8c7]',
-      coverShadow: 'shadow-[0_14px_36px_rgba(160,120,85,0.22),0_4px_12px_rgba(160,120,85,0.12)]',
+      coverShadow: 'shadow-[0_22px_54px_rgba(145,100,65,0.40),0_8px_22px_rgba(145,100,65,0.24),0_2px_6px_rgba(0,0,0,0.08)]',
       ringsGradient: 'bg-gradient-to-r from-[#dfcebc] via-[#fbf7f1] to-[#dfcebc]',
       ringsBorder: 'border-[#d1bdab]',
       holesBg: 'bg-[#efe0d0]',
       holesBorder: 'border-[#e0cebc]',
+      spineBg: 'bg-[#f9f3ec]',
+      spineDashedBorder: 'border-[#d1bdab]',
+      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(145,100,65,0.10)]',
+      spineHoleBorder: 'border-[#e0cebc]',
+      spineHoleBg: 'bg-white',
+      spineHoleCenterBg: 'bg-[#efe0d0]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border-[#ede0d2]',
       paperText: 'text-[#3d2c1f]',
@@ -988,6 +1084,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       footerBorder: 'border-[#ebdccd]',
       footerText: 'text-[#967a63]',
       washiTape: 'bg-[#eedecf]/90 border-[#dcc5b0]',
+      washiBgPattern: 'repeating-linear-gradient(45deg, #f4e9dc 0px, #f4e9dc 6px, #ffffff 6px, #ffffff 12px)',
+      washiBorder: '1px solid rgba(226, 206, 186, 0.7)',
+      synopsisLineColor: 'rgba(215, 184, 153, 0.09)',
       heartIcon: 'text-[#ad8665] fill-[#f0decb]/60',
       chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#f7efe6] [&::-webkit-scrollbar-thumb]:bg-[#d6bc9f]/60 hover:[&::-webkit-scrollbar-thumb]:bg-[#c2a282]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(214,188,159,0.6)_transparent] [scrollbar-width:thin]',
     };
@@ -1008,6 +1107,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       ringsBorder: 'border-purple-400/50',
       holesBg: 'bg-[#0e0a16]',
       holesBorder: 'border-purple-900/60',
+      spineBg: 'bg-[#191427]',
+      spineDashedBorder: 'border-purple-800/70',
+      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(147,51,234,0.18)]',
+      spineHoleBorder: 'border-purple-900/80',
+      spineHoleBg: 'bg-[#100c19]',
+      spineHoleCenterBg: 'bg-[#0a0710]',
       paperBg: 'bg-[#120e1b]',
       paperBorder: 'border-purple-900/50',
       paperText: 'text-purple-100',
@@ -1077,6 +1182,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       footerBorder: 'border-purple-900/50',
       footerText: 'text-stone-400',
       washiTape: 'bg-purple-900/60 border-purple-700/60',
+      washiBgPattern: 'repeating-linear-gradient(45deg, #3b0764 0px, #3b0764 6px, #1a082e 6px, #1a082e 12px)',
+      washiBorder: '1px solid rgba(168, 85, 247, 0.4)',
+      synopsisLineColor: 'transparent',
       heartIcon: 'text-purple-400 fill-purple-400/50',
       chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-purple-950/20 [&::-webkit-scrollbar-thumb]:bg-purple-500/50 hover:[&::-webkit-scrollbar-thumb]:bg-purple-400/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(168,85,247,0.5)_transparent] [scrollbar-width:thin]',
     };
@@ -1091,11 +1199,17 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     bannerDivider: 'bg-gradient-to-r from-[#dfcef5] via-[#b89cd9] to-[#dfcef5]',
     coverBg: 'bg-[#f6f0fc]',
     coverBorder: 'border-[#e4d5f4]',
-    coverShadow: 'shadow-[0_14px_36px_rgba(155,124,194,0.22),0_4px_12px_rgba(155,124,194,0.12)]',
+    coverShadow: 'shadow-[0_22px_54px_rgba(135,100,180,0.40),0_8px_22px_rgba(135,100,180,0.24),0_2px_6px_rgba(0,0,0,0.08)]',
     ringsGradient: 'bg-gradient-to-r from-[#d8c5ed] via-[#f8f2fd] to-[#d8c5ed]',
     ringsBorder: 'border-[#cbb3e6]',
     holesBg: 'bg-[#e9dcf5]',
     holesBorder: 'border-[#d8c5ed]',
+    spineBg: 'bg-[#f9f4fd]',
+    spineDashedBorder: 'border-[#cbb3e6]',
+    spineShadow: 'shadow-[inset_-2px_0_8px_rgba(135,100,180,0.10)]',
+    spineHoleBorder: 'border-[#d8c5ed]',
+    spineHoleBg: 'bg-white',
+    spineHoleCenterBg: 'bg-[#e9dcf5]',
     paperBg: 'bg-[#ffffff]',
     paperBorder: 'border-[#ebddf8]',
     paperText: 'text-[#37284d]',
@@ -1165,6 +1279,9 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     footerBorder: 'border-[#e8daf6]',
     footerText: 'text-[#8a74a6]',
     washiTape: 'bg-[#ebd8f8]/90 border-[#d7bdf0]',
+    washiBgPattern: 'repeating-linear-gradient(45deg, #f0e5fa 0px, #f0e5fa 6px, #ffffff 6px, #ffffff 12px)',
+    washiBorder: '1px solid rgba(221, 204, 242, 0.7)',
+    synopsisLineColor: 'rgba(203, 179, 230, 0.08)',
     heartIcon: 'text-[#9f80c4] fill-[#dfcef5]/60',
     chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#f4ecfa] [&::-webkit-scrollbar-thumb]:bg-[#caa9e8]/60 hover:[&::-webkit-scrollbar-thumb]:bg-[#b592d6]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(202,169,232,0.6)_transparent] [scrollbar-width:thin]',
   };
@@ -1253,6 +1370,26 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
       };
   }
 }
+
+// Cấu hình các lỗ còng rời:
+// - Điện thoại: Giữ nguyên 10 lỗ phân bố đều khắp chiều dọc
+// - Máy tính (md+): Giảm số lượng xuống 14 lỗ (vừa vặn, không quá dày)
+const BINDER_HOLE_CONFIGS = [
+  { id: 0, responsive: 'flex' },
+  { id: 1, responsive: 'flex' },
+  { id: 2, responsive: 'hidden md:flex' },
+  { id: 3, responsive: 'flex' },
+  { id: 4, responsive: 'flex' },
+  { id: 5, responsive: 'hidden md:flex' },
+  { id: 6, responsive: 'flex' },
+  { id: 7, responsive: 'flex' },
+  { id: 8, responsive: 'hidden md:flex' },
+  { id: 9, responsive: 'flex' },
+  { id: 10, responsive: 'flex' },
+  { id: 11, responsive: 'hidden md:flex' },
+  { id: 12, responsive: 'flex' },
+  { id: 13, responsive: 'flex' },
+];
 
 interface SpiralNotebookViewProps {
   novel: Novel;
@@ -1372,26 +1509,37 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
         <div className={`w-20 h-[2px] ${sTheme.bannerDivider} mx-auto mt-2 rounded-full transition-all duration-300`} />
       </div>
 
-      {/* ================= TOÀN BỘ CUỐN SỔ CÒNG XOẮN ================= */}
-      <div className="w-[calc(100%-14px)] sm:w-full ml-3.5 sm:ml-0 mr-1 sm:mr-0 relative">
+      {/* ================= TOÀN BỘ CUỐN SỔ CÒNG RỜI ================= */}
+      <div className="w-full relative">
         {/* BÌA CỨNG NGOÀI (SOFT HARDCOVER: CẢ 4 GÓC ĐỀU BO TRÒN NHIỀU) */}
-        <div className={`w-full relative rounded-3xl sm:rounded-[36px] ${sTheme.coverBg} p-2.5 sm:p-6 md:p-8 ${sTheme.coverShadow} border sm:border-2 ${sTheme.coverBorder} transition-all duration-300`}>
-          
-          {/* CỘT CÒNG LÒ XO KIM LOẠI 3D NẰM BÊN MÉP TRÁI */}
-          <div className="absolute -left-3 sm:-left-4.5 top-6 sm:top-8 bottom-6 sm:bottom-8 w-6 sm:w-9 flex flex-col justify-between items-center pointer-events-none z-30 select-none">
-            {Array.from({ length: 28 }).map((_, i) => (
-              <div key={i} className="relative w-full h-4 flex items-center">
-                {/* Lỗ đục giấy tròn */}
-                <div className={`w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full ${sTheme.holesBg} border ${sTheme.holesBorder} shadow-inner -ml-0.5 sm:-ml-1 transition-colors duration-300`} />
-                {/* Vòng kim loại xoắn nối 3D */}
-                <div className={`flex-1 h-1.5 sm:h-2 rounded-full ${sTheme.ringsGradient} shadow-sm border ${sTheme.ringsBorder} transition-all duration-300`} />
-              </div>
-            ))}
-          </div>
+        <div className={`w-full relative rounded-3xl sm:rounded-[36px] ${sTheme.coverBg} p-2 sm:p-5 md:p-7 ${sTheme.coverShadow} border sm:border-2 ${sTheme.coverBorder} transition-all duration-300`}>
 
-          {/* TRANG GIẤY RUỘT TRONG CUỐN SỔ (CẢ 4 GÓC BO TRÒN NHIỀU, PADDING RỘNG RÃI TRÁNH SÁT MÉP) */}
-          <div className={`relative z-10 rounded-2xl sm:rounded-[26px] ${sTheme.paperBg} ${sTheme.paperText} border ${sTheme.paperBorder} p-4 sm:p-7 md:p-9 pl-5 sm:pl-8 shadow-inner flex flex-col justify-between transition-colors duration-300`}>
-            <div className="space-y-6">
+          {/* TRANG GIẤY RUỘT TRONG CUỐN SỔ: BẢO GỒM GÁY CÒNG RỜI 6 LỖ + NỘI DUNG RUỘT SỔ */}
+          <div className={`relative z-10 rounded-2xl sm:rounded-[26px] ${sTheme.paperBg} ${sTheme.paperText} border ${sTheme.paperBorder} shadow-inner flex flex-row overflow-hidden transition-colors duration-300`}>
+
+            {/* ========================================================================= */}
+            {/* KHUNG GÁY SỔ CÒNG RỜI LINH HOẠT THEO MÀN HÌNH                              */}
+            {/* Thu nhỏ chiều rộng gáy trên mobile (w-7), tăng số lượng lỗ còng linh hoạt */}
+            {/* ========================================================================= */}
+            <div 
+              className={`w-7 sm:w-12 md:w-16 shrink-0 relative flex flex-col justify-around items-center py-6 sm:py-12 md:py-16 ${sTheme.spineBg} border-r-2 border-dashed ${sTheme.spineDashedBorder} transition-colors ${sTheme.spineShadow} select-none`}
+            >
+              {/* CÁC LỖ ĐỤC CÒNG RỜI (PUNCHED HOLES) - TĂNG SỐ LƯỢNG LINH HOẠT THEO MÀN HÌNH */}
+              {BINDER_HOLE_CONFIGS.map((hole) => (
+                <div
+                  key={hole.id}
+                  className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full border ${sTheme.spineHoleBorder} ${sTheme.spineHoleBg} shadow-[inset_0_2px_5px_rgba(0,0,0,0.14)] items-center justify-center relative group ${hole.responsive}`}
+                  title="Lỗ còng rời sổ tay"
+                >
+                  {/* Vòng tròn tạo hiệu ứng độ sâu khoét lõm 3D ở tâm lỗ */}
+                  <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${sTheme.spineHoleCenterBg} shadow-inner`} />
+                </div>
+              ))}
+            </div>
+
+            {/* NỘI DUNG RUỘT TRANG SỔ (HOÀN TOÀN GIỮ NGUYÊN 100% THEO CHỈ THỊ NGƯỜI DÙNG) */}
+            <div className="flex-1 min-w-0 p-3.5 sm:p-7 md:p-9 flex flex-col justify-between">
+              <div className="space-y-6">
               
               {/* HEADER SỔ: Nhãn Planner */}
               <div className={`flex items-center justify-between gap-3 border-b-2 border-dashed ${sTheme.dashedBorder} pb-4 transition-colors duration-300`}>
@@ -1414,8 +1562,18 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                         : `bg-white ${sTheme.cardInnerBorder} shadow-[0_8px_24px_rgba(0,0,0,0.04)]`
                     }`}
                   >
-                    {/* Băng dán washi tape góc trên trang trí theo theme */}
-                    <div className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-4.5 ${sTheme.washiTape} border rounded-xs -rotate-1 pointer-events-none backdrop-blur-2xs shadow-xs transition-colors duration-300`} />
+                    {/* Băng dán washi tape góc trên trang trí theo theme (sọc chéo 45 độ chất liệu Washi Nhật Bản) */}
+                    <div
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-24 h-6 shadow-xs rotate-[-1deg] pointer-events-none rounded-2xs"
+                      style={{
+                        // Tạo sọc chéo 45 độ: sọc xen kẽ sọc trắng theo màu nút PLANNER
+                        background: sTheme.washiBgPattern,
+                        // Độ trong mờ tự nhiên của chất liệu giấy Washi Nhật Bản
+                        opacity: 0.9,
+                        // Viền mép mỏng nhẹ xung quanh miếng băng dính
+                        border: sTheme.washiBorder,
+                      }}
+                    />
 
                     <div className="aspect-[3/4.2] w-full rounded-xl overflow-hidden bg-stone-100 dark:bg-zinc-800 relative group">
                       <img
@@ -1495,13 +1653,21 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                     ))}
                   </div>
 
-                  {/* Thiết lập nhân vật (đã đổi tên từ Thiết lập thế giới và bỏ icon) */}
+                  {/* Thiết lập nhân vật: họa tiết đường kẻ sổ trong nền với khoảng cách 5px (chế độ tối bỏ hẳn họa tiết này) */}
                   {(effectiveWorldLore || novel.worldLore) && (
-                    <div className={`p-4 rounded-xl ${sTheme.loreBoxBg} border ${sTheme.loreBoxBorder} space-y-1.5 transition-colors duration-300`}>
-                      <span className={`text-xs sm:text-[13px] font-bold ${sTheme.loreTitleText} block`}>
+                    <div 
+                      className={`p-4 sm:p-5 rounded-xl ${sTheme.loreBoxBg} border ${sTheme.loreBoxBorder} space-y-2 transition-colors duration-300 relative overflow-hidden`}
+                      style={{
+                        backgroundImage: isDarkEffective
+                          ? 'none'
+                          : `repeating-linear-gradient(to bottom, transparent 0px, transparent 5px, ${sTheme.synopsisLineColor} 5px, ${sTheme.synopsisLineColor} 6px)`,
+                        backgroundAttachment: 'local',
+                      }}
+                    >
+                      <span className={`text-xs sm:text-[13px] font-bold ${sTheme.loreTitleText} block relative z-10`}>
                         <span>Thiết lập nhân vật:</span>
                       </span>
-                      <p className={`text-[15px] sm:text-[16px] ${sTheme.loreBodyText} leading-relaxed whitespace-pre-line`}>
+                      <p className={`text-[15px] sm:text-[16px] ${sTheme.loreBodyText} leading-relaxed whitespace-pre-line relative z-10`}>
                         {effectiveWorldLore || novel.worldLore}
                       </p>
                     </div>
@@ -1711,5 +1877,6 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
         </div>
       </div>
     </div>
+  </div>
   );
 };

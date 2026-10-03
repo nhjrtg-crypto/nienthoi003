@@ -37,35 +37,36 @@ export function getOriginalCoverByNovel(novelId?: string | null, title?: string 
   }
 
   const query = `${novelId || ''} ${title || ''}`.toLowerCase();
+  const norm = normalizeNovelTitle(query);
 
-  if (query.includes('trúc mã alpha') || query.includes('truc-ma-alpha') || query.includes('truc_ma_alpha') || query.includes('truc ma alpha') || query.includes('wt9smt1plovfgoqzmrh6') || query.includes('s1zjuvan4umw3h7nxo9m')) {
+  if (norm.includes('trucmaalpha') || query.includes('trúc mã alpha') || query.includes('truc-ma-alpha') || query.includes('truc_ma_alpha') || query.includes('truc ma alpha') || query.includes('wt9smt1plovfgoqzmrh6') || query.includes('s1zjuvan4umw3h7nxo9m')) {
     return '/covers/truc_ma_alpha.jpg';
   }
-  if (query.includes('gấp đôi luân hãm') || query.includes('gap-doi') || query.includes('gap_doi') || query.includes('luân hãm') || query.includes('kr2dqtbmvfyrrzmewydo')) {
+  if (norm.includes('gapdoiluanham') || query.includes('gấp đôi luân hãm') || query.includes('gap-doi') || query.includes('gap_doi') || query.includes('luân hãm') || query.includes('kr2dqtbmvfyrrzmewydo')) {
     return '/covers/gap_doi_luan_ham.jpg';
   }
-  if (query.includes('cám dỗ vụng trộm') || query.includes('series ntr') || query.includes('ntr')) {
+  if (norm.includes('camdovungtrom') || norm.includes('seriesntr') || norm.includes('ntr') || query.includes('cám dỗ vụng trộm') || query.includes('series ntr')) {
     return '/covers/series_ntr.jpg';
   }
-  if (query.includes('tù đuôi') || query.includes('tu-duoi') || query.includes('tu_duoi')) {
+  if (norm.includes('tuduoi') || query.includes('tù đuôi') || query.includes('tu-duoi') || query.includes('tu_duoi')) {
     return '/covers/tu_duoi.jpg';
   }
-  if (query.includes('cuộc sống dâm loạn') || query.includes('bộ lạc')) {
+  if (norm.includes('cuocsongdamloan') || query.includes('cuộc sống dâm loạn') || query.includes('bộ lạc')) {
     return '/covers/cuoc_song_dam_loan.jpg';
   }
-  if (query.includes('thôi miên') || query.includes('bạn cùng phòng')) {
+  if (norm.includes('thoimien') || query.includes('thôi miên') || query.includes('bạn cùng phòng')) {
     return '/covers/thoi_mien.jpg';
   }
-  if (query.includes('cưỡng ép yêu') || query.includes('bị nam chính điên cuồng')) {
+  if (norm.includes('cuongepyeu') || query.includes('cưỡng ép yêu') || query.includes('bị nam chính điên cuồng')) {
     return '/covers/cuong_ep_yeu.jpg';
   }
-  if (query.includes('căng sữa') || query.includes('kẻ thù')) {
+  if (norm.includes('cangsua') || norm.includes('kethu') || query.includes('căng sữa') || query.includes('kẻ thù')) {
     return '/covers/ke_thu.jpg';
   }
-  if (query.includes('lừa nhau') || query.includes('lua-nhau') || query.includes('lua nhau')) {
+  if (norm.includes('luanhau') || query.includes('lừa nhau') || query.includes('lua-nhau') || query.includes('lua nhau')) {
     return '/covers/lua_nhau.jpg';
   }
-  if (query.includes('mẹ kế') || query.includes('me-ke')) {
+  if (norm.includes('mekevuamemvuangot') || norm.includes('meke') || query.includes('mẹ kế') || query.includes('me-ke')) {
     return '/me_ke_vua_mem_vua_ngot_cover.jpg';
   }
 

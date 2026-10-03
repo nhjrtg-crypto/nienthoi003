@@ -342,9 +342,7 @@ export function clearQuotaExceededFlag() {
 }
 
 export function isQuotaExceededActive(): boolean {
-  if (globalTodayReads >= 50000) {
-    return true;
-  }
+  // Không khóa trang web khi đạt mốc 50.000 lượt đọc theo yêu cầu người dùng
   return false;
 }
 
@@ -964,9 +962,9 @@ export function getFirestoreReadStats(): FirestoreReadStats {
     month: '2-digit',
   });
 
-  // Kiểm tra ngưỡng giới hạn 50.000 lượt đọc trong ngày
-  const isLimitReached = todayReads >= 50000;
-  const isExceeded = isLimitReached;
+  // Không khóa trang web khi đạt mốc 50.000 lượt đọc theo yêu cầu người dùng
+  const isLimitReached = false;
+  const isExceeded = false;
 
   return {
     todayReads,

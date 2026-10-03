@@ -2377,9 +2377,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   ? `${detailThemeExtras.statusBadge} shadow-xs font-bold`
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white'
               }`}
-              title="Kiểu sổ còng nhật ký"
+              title="Kiểu Cuốn sổ nhật ký"
             >
-              Sổ còng
+              Cuốn sổ
             </button>
           </div>
         </div>

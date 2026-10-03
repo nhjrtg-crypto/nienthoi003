@@ -113,7 +113,7 @@ function convertFirestoreTruyenToNovel(ft: FirestoreTruyen): Novel {
   const customCover = getCustomCoverFromStorage(ft.id) || getCustomCoverFromStorage(ft.tenTruyen);
 
   let cleanCover = customCover || ft.anhBia;
-  if (cleanCover && (cleanCover.startsWith('/assets/') || cleanCover.includes('assets/') || cleanCover.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || cleanCover.includes('drive.google.com'))) {
+  if (cleanCover && (cleanCover.startsWith('/assets/') || cleanCover.includes('assets/') || cleanCover.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || cleanCover.includes('drive.google.com') || cleanCover.includes('images.unsplash.com'))) {
     cleanCover = customCover || originalCover || cleanCover;
   }
   const resolvedCover = cleanCover || originalCover || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop';
@@ -734,13 +734,13 @@ export default function App() {
           totalChaptersCount: Math.max(ft.soChuong || 0, existingLocal.chapters?.length || 0),
           coverImage:
             customCover ||
-            ft.anhBia ||
+            (ft.anhBia && !ft.anhBia.includes('images.unsplash.com') ? ft.anhBia : null) ||
             existingLocal.coverImage ||
             getOriginalCoverByNovel(ft.id, ft.tenTruyen) ||
             converted.coverImage,
           coverImageUrl:
             customCover ||
-            ft.anhBia ||
+            (ft.anhBia && !ft.anhBia.includes('images.unsplash.com') ? ft.anhBia : null) ||
             existingLocal.coverImageUrl ||
             getOriginalCoverByNovel(ft.id, ft.tenTruyen) ||
             converted.coverImageUrl,
@@ -1334,16 +1334,8 @@ export default function App() {
     }
   };
 
-  const isSystemLocked = firestoreStats.todayReads >= 50000 && !isAdmin;
-
-  if (isSystemLocked) {
-    return (
-      <div className="min-h-screen bg-[#060713] text-slate-200 relative selection:bg-purple-500/30 selection:text-white font-jakarta">
-        {/* POPUP KHÓA TOÀN BỘ WEB KHI ĐẠT MỐC 50.000 LƯỢT ĐỌC */}
-        <DailyLimitExceededModal stats={firestoreStats} isDarkMode={isDarkMode} />
-      </div>
-    );
-  }
+  // Bỏ chế độ khóa trang web khi lượt xem 1 ngày đạt mốc 50.000 theo yêu cầu người dùng
+  const isSystemLocked = false;
 
   return (
     <div className="min-h-screen bg-[#060713] text-slate-200 relative selection:bg-purple-500/30 selection:text-white font-jakarta">
@@ -1559,11 +1551,6 @@ export default function App() {
         currentUser={currentUser}
         onSuccess={handleCreateFirestoreSuccess}
       />
-
-      {/* POPUP KHÓA TOÀN BỘ WEB KHI ĐẠT MỐC 50.000 LƯỢT ĐỌC HOẶC HẾT HẠN MỨC */}
-      {firestoreStats.todayReads >= 50000 && !isAdmin && (
-        <DailyLimitExceededModal stats={firestoreStats} isDarkMode={isDarkMode} />
-      )}
     </div>
   );
 }

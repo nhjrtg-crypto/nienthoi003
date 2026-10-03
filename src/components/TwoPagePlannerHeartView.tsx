@@ -23,22 +23,28 @@ import { safeStorage } from '../utils/safeStorage';
 
 /**
  * =========================================================================
- * 1. HÀM TẠO SVG PATTERN NỀN TRÁI TIM TRẮNG XẾP SO LE THẲNG ĐỨNG, THƯA THOÁNG
+ * 1. HÀM TẠO SVG PATTERN NỀN NGÔI SAO 5 CÁNH TRẮNG XẾP SO LE, THƯA THOÁNG
  * =========================================================================
- * - Màu nền: Hồng pastel nhẹ nhàng (#FCE7F3)
- * - Họa tiết: Trái tim trắng (#FFFFFF), dáng thẳng đứng 100% (không nghiêng)
- * - Bố cục: Xếp so le đan xen (staggered tile 68x68px), giảm số lượng để thưa thoáng, dịu mắt
+ * - Màu nền: Hồng pastel nhẹ nhàng (#FDF2F8)
+ * - Họa tiết: Ngôi sao 5 cánh màu trắng (#FFFFFF)
+ * - Bố cục: Xếp so le đan xen (staggered tile 68x68px), thưa thoáng, dịu mắt
  * - Điểm xuyết: Chấm tinh tú li ti mờ ảo
  */
-export function createSweetHeartsSvgPattern(width = 68, height = 68): string {
+export function createSweetStarsSvgPattern(width = 68, height = 68): string {
   const svgContent = `
     <g fill="#ffffff" opacity="0.92">
-      <!-- Hàng 1: Trái tim thẳng đứng ở giữa (34, 17) -->
-      <path d="M34 12 C31 8.5, 26 11, 26 15 C26 20, 34 24, 34 24 C34 24, 42 20, 42 15 C42 11, 37 8.5, 34 12 Z" />
+      <!-- Hàng 1: Ngôi sao 5 cánh ở giữa (34, 17) -->
+      <g transform="translate(34, 17)">
+        <polygon points="0,-7 2.1,-2.4 7,-2 3.3,1.5 4.3,6.5 0,3.9 -4.3,6.5 -3.3,1.5 -7,-2 -2.1,-2.4" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+      </g>
 
-      <!-- Hàng 2: Trái tim so le thẳng đứng ở 2 mép (0, 51) và (68, 51) -->
-      <path d="M0 46 C-3 42.5, -8 45, -8 49 C-8 54, 0 58, 0 58 C0 58, 8 54, 8 49 C8 45, 3 42.5, 0 46 Z" />
-      <path d="M68 46 C65 42.5, 60 45, 60 49 C60 54, 68 58, 68 58 C68 58, 76 54, 76 49 C76 45, 71 42.5, 68 46 Z" />
+      <!-- Hàng 2: Ngôi sao 5 cánh so le ở 2 mép (0, 51) và (68, 51) -->
+      <g transform="translate(0, 51)">
+        <polygon points="0,-7 2.1,-2.4 7,-2 3.3,1.5 4.3,6.5 0,3.9 -4.3,6.5 -3.3,1.5 -7,-2 -2.1,-2.4" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+      </g>
+      <g transform="translate(68, 51)">
+        <polygon points="0,-7 2.1,-2.4 7,-2 3.3,1.5 4.3,6.5 0,3.9 -4.3,6.5 -3.3,1.5 -7,-2 -2.1,-2.4" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+      </g>
 
       <!-- Chấm tinh tú li ti thoáng đãng -->
       <circle cx="0" cy="17" r="1.2" opacity="0.45" />
@@ -49,6 +55,9 @@ export function createSweetHeartsSvgPattern(width = 68, height = 68): string {
   const fullSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${svgContent}</svg>`;
   return `url("data:image/svg+xml,${encodeURIComponent(fullSvg)}")`;
 }
+
+// Giữ lại alias để tương thích ngược nếu có component khác gọi
+export const createSweetHeartsSvgPattern = createSweetStarsSvgPattern;
 
 /**
  * Icon ngôi sao 5 cánh bo tròn góc (Cute 5-Point Rounded Star SVG)
@@ -234,12 +243,12 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
       }}
     >
       {/* ========================================================================= */}
-      {/* 1. LỚP NỀN TRÁI TIM TRẮNG XẾP SO LE THẲNG ĐỨNG, THƯA THOÁNG              */}
+      {/* 1. LỚP NỀN NGÔI SAO 5 CÁNH TRẮNG XẾP SO LE, THƯA THOÁNG                    */}
       {/* ========================================================================= */}
       <div
         className="fixed inset-0 pointer-events-none z-0 opacity-80"
         style={{
-          backgroundImage: createSweetHeartsSvgPattern(68, 68),
+          backgroundImage: createSweetStarsSvgPattern(68, 68),
           backgroundRepeat: 'repeat',
           backgroundPosition: '0 0',
         }}
@@ -288,7 +297,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                       ? 'bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-xs'
                       : 'text-pink-700 hover:text-pink-900'
                   }`}
-                  title="Style 1: Sổ Kế Hoạch 2 Mặt Nền Trái Tim"
+                  title="Style 1: Sổ Kế Hoạch 2 Mặt Nền Ngôi Sao"
                 >
                   Style 1
                 </button>

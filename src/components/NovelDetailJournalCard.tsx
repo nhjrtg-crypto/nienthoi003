@@ -181,8 +181,17 @@ export const NovelDetailJournalCard: React.FC<NovelDetailJournalCardProps> = ({
                     : 'bg-white border-[#E5DCD6] shadow-[0_8px_24px_rgba(0,0,0,0.06)]'
                 }`}
               >
-                {/* Băng dán washi tape góc trên trang trí */}
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-pink-200/70 dark:bg-pink-900/50 border border-pink-300/70 dark:border-pink-800/50 rounded-xs -rotate-1 pointer-events-none backdrop-blur-2xs" />
+                {/* Băng dán washi tape góc trên trang trí (sọc chéo Washi Nhật Bản) */}
+                <div
+                  className="absolute -top-1 left-1/2 -translate-x-1/2 z-20 w-24 h-6 shadow-xs rotate-[-1deg] pointer-events-none rounded-2xs"
+                  style={{
+                    background: isDarkEffective
+                      ? 'repeating-linear-gradient(45deg, #831843 0px, #831843 6px, #4c0519 6px, #4c0519 12px)'
+                      : 'repeating-linear-gradient(45deg, #fbcfe8 0px, #fbcfe8 6px, #ffffff 6px, #ffffff 12px)',
+                    opacity: 0.9,
+                    border: isDarkEffective ? '1px solid rgba(251, 113, 133, 0.4)' : '1px solid rgba(244, 114, 182, 0.3)',
+                  }}
+                />
 
                 <div className="aspect-[3/4.2] w-full rounded-xl overflow-hidden bg-stone-100 dark:bg-zinc-800 relative group">
                   <img

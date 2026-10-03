@@ -1910,40 +1910,57 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   }, [theme, isDarkEffective]);
 
-  // Cấu hình phong cách cho nút "GIỚI THIỆU VỀ TRANG WEB" với đầy đủ 4 chuẩn hiệu ứng:
-  // 1. Viền chuyển sắc động (Animated Gradient Flow Border - 4.2s cycle, 250% 250% size, shadow-xs -> group-hover:shadow-sm)
-  // 2. Lớp đệm hào quang nhịp thở (Motion Halo Cushion - 1.6s cycle, scale 0.99->1.025)
-  // 5. Phản hồi nén cơ học khi nhấn (Tactile Active Scale - 200ms active:scale-95)
-  // 7. Thích ứng thông minh theo 6 Theme giao diện (Dark mode nền sâu dạ quang; Light mode viền pastel kem dịu, riêng theme white trung tính sạch)
+  // Cấu hình phong cách cho nút "GIỚI THIỆU VỀ TRANG WEB"
+  // - Ở chế độ tối: Màu nút giống màu nút trong mục tiểu thuyết đã hoàn theo từng theme
+  // - Ở chế độ sáng: Giữ nguyên không thay đổi
   const introButtonStyles = useMemo(() => {
     if (isCosmic) {
-      return {
-        btnBg: '#4e287e',
-        textColor: 'text-white',
-        borderGradient: 'bg-transparent',
-        borderShadow: 'shadow-none',
-        innerShadow: 'shadow-xs',
-        haloCushion: 'bg-gradient-to-r from-purple-600/35 via-violet-500/25 to-indigo-500/35',
-        dotColor: 'bg-purple-300',
-        dotPing: 'bg-purple-400',
-      };
+      return isDarkEffective
+        ? {
+            btnBg: '',
+            btnGradient: 'bg-gradient-to-r from-[#818cf8] via-[#c084fc] to-[#e879f9]',
+            btnGlow: 'shadow-[0_4px_16px_rgba(168,85,247,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
+            textColor: 'text-white font-bold',
+            borderGradient: 'bg-transparent',
+            borderShadow: 'shadow-none',
+            innerShadow: 'shadow-xs',
+            haloCushion: 'bg-gradient-to-r from-[#818cf8]/40 via-[#c084fc]/30 to-[#e879f9]/40',
+            dotColor: 'bg-white',
+            dotPing: 'bg-white/80',
+          }
+        : {
+            btnBg: '#faf8fc',
+            btnGradient: '',
+            btnGlow: '',
+            textColor: 'text-[#3f2e51]',
+            borderGradient: 'bg-gradient-to-r from-[#dbd1e8] via-[#ebe3f4] to-[#d3c7e1]',
+            borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
+            innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
+            haloCushion: 'bg-[#dbd1e8]/30',
+            dotColor: 'bg-[#6b5280]',
+            dotPing: 'bg-[#ad97c2]',
+          };
     }
 
     switch (theme) {
       case 'sage':
         return isDarkEffective
           ? {
-              btnBg: '#3b5c43',
-              textColor: 'text-white',
+              btnBg: '',
+              btnGradient: 'bg-gradient-to-r from-[#34d399] to-[#2dd4bf]',
+              btnGlow: 'shadow-[0_4px_16px_rgba(52,211,153,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
+              textColor: 'text-white font-bold',
               borderGradient: 'bg-transparent',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#4d6f53]/35 via-[#658570]/25 to-[#3e5b43]/35',
-              dotColor: 'bg-[#b2ceae]',
-              dotPing: 'bg-[#cad8c6]',
+              haloCushion: 'bg-gradient-to-r from-[#34d399]/40 to-[#2dd4bf]/40',
+              dotColor: 'bg-white',
+              dotPing: 'bg-white/80',
             }
           : {
               btnBg: '#f7faf7',
+              btnGradient: '',
+              btnGlow: '',
               textColor: 'text-[#2a442d]',
               borderGradient: 'bg-gradient-to-r from-[#c6d7c4] via-[#dce8db] to-[#bed0bd]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
@@ -1956,17 +1973,21 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'notebook':
         return isDarkEffective
           ? {
-              btnBg: '#44444c',
-              textColor: 'text-white',
+              btnBg: '',
+              btnGradient: 'bg-gradient-to-r from-[#94a3b8] to-[#cbd5e1]',
+              btnGlow: 'shadow-[0_4px_16px_rgba(148,163,184,0.4),inset_0_1px_1.5px_rgba(255,255,255,0.6),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
+              textColor: 'text-neutral-900 font-bold',
               borderGradient: 'bg-transparent',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-zinc-500/30 via-zinc-400/20 to-zinc-600/30',
-              dotColor: 'bg-zinc-200',
-              dotPing: 'bg-zinc-400',
+              haloCushion: 'bg-gradient-to-r from-zinc-400/40 via-zinc-300/30 to-zinc-400/40',
+              dotColor: 'bg-neutral-800',
+              dotPing: 'bg-neutral-700',
             }
           : {
               btnBg: '#ffffff',
+              btnGradient: '',
+              btnGlow: '',
               textColor: 'text-neutral-700',
               borderGradient: 'bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
@@ -1979,17 +2000,21 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'mocha':
         return isDarkEffective
           ? {
-              btnBg: '#5c3e30',
-              textColor: 'text-white',
+              btnBg: '',
+              btnGradient: 'bg-gradient-to-r from-[#fb923c] to-[#f59e0b]',
+              btnGlow: 'shadow-[0_4px_16px_rgba(251,146,60,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
+              textColor: 'text-white font-bold',
               borderGradient: 'bg-transparent',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#8c6150]/35 via-[#975f58]/25 to-[#775243]/35',
-              dotColor: 'bg-[#e4cec0]',
-              dotPing: 'bg-[#f0d8cc]',
+              haloCushion: 'bg-gradient-to-r from-[#fb923c]/40 to-[#f59e0b]/40',
+              dotColor: 'bg-white',
+              dotPing: 'bg-white/80',
             }
           : {
               btnBg: '#faf8f5',
+              btnGradient: '',
+              btnGlow: '',
               textColor: 'text-[#473b33]',
               borderGradient: 'bg-gradient-to-r from-[#ded5cb] via-[#ebe4dc] to-[#d6cbbf]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
@@ -1999,20 +2024,52 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               dotPing: 'bg-[#b39b8c]',
             };
 
-      case 'amethyst-haze':
+      case 'slate-haze':
         return isDarkEffective
           ? {
-              btnBg: '#4e287e',
-              textColor: 'text-white',
+              btnBg: '',
+              btnGradient: 'bg-gradient-to-r from-[#38bdf8] to-[#60a5fa]',
+              btnGlow: 'shadow-[0_4px_16px_rgba(56,189,248,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
+              textColor: 'text-white font-bold',
               borderGradient: 'bg-transparent',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#5a3978]/30 via-[#714d94]/25 to-[#5a3978]/30',
-              dotColor: 'bg-[#d1c2e4]',
-              dotPing: 'bg-[#e2d7f0]',
+              haloCushion: 'bg-gradient-to-r from-[#38bdf8]/40 to-[#60a5fa]/40',
+              dotColor: 'bg-white',
+              dotPing: 'bg-white/80',
+            }
+          : {
+              btnBg: '#f8fafc',
+              btnGradient: '',
+              btnGlow: '',
+              textColor: 'text-[#243a49]',
+              borderGradient: 'bg-gradient-to-r from-[#cde0ec] via-[#deedf6] to-[#c4d7e4]',
+              borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
+              innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
+              haloCushion: 'bg-[#cde0ec]/30',
+              dotColor: 'bg-[#3a6077]',
+              dotPing: 'bg-[#89aabf]',
+            };
+
+      case 'amethyst-haze':
+      default:
+        return isDarkEffective
+          ? {
+              btnBg: '',
+              btnGradient: 'bg-gradient-to-r from-[#c084fc] to-[#e879f9]',
+              btnGlow: 'shadow-[0_4px_16px_rgba(192,132,252,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
+              textColor: 'text-white font-bold',
+              borderGradient: 'bg-transparent',
+              borderShadow: 'shadow-none',
+              innerShadow: 'shadow-xs',
+              haloCushion: 'bg-gradient-to-r from-[#c084fc]/40 to-[#e879f9]/40',
+              dotColor: 'bg-white',
+              dotPing: 'bg-white/80',
             }
           : {
               btnBg: '#faf8fc',
+              btnGradient: '',
+              btnGlow: '',
               textColor: 'text-[#3f2e51]',
               borderGradient: 'bg-gradient-to-r from-[#dbd1e8] via-[#ebe3f4] to-[#d3c7e1]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
@@ -2020,30 +2077,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               haloCushion: 'bg-[#dbd1e8]/30',
               dotColor: 'bg-[#6b5280]',
               dotPing: 'bg-[#ad97c2]',
-            };
-
-      case 'slate-haze':
-      default:
-        return isDarkEffective
-          ? {
-              btnBg: '#344e68',
-              textColor: 'text-white',
-              borderGradient: 'bg-transparent',
-              borderShadow: 'shadow-none',
-              innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#34526f]/30 via-[#456b90]/25 to-[#34526f]/30',
-              dotColor: 'bg-[#b6cee0]',
-              dotPing: 'bg-[#d4e4ef]',
-            }
-          : {
-              btnBg: '#f8fafc',
-              textColor: 'text-[#243a49]',
-              borderGradient: 'bg-gradient-to-r from-[#cde0ec] via-[#deedf6] to-[#c4d7e4]',
-              borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
-              innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
-              haloCushion: 'bg-[#cde0ec]/30',
-              dotColor: 'bg-[#3a6077]',
-              dotPing: 'bg-[#7fa5be]',
             };
     }
   }, [theme, isDarkEffective, isCosmic]);
@@ -2858,10 +2891,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                 title="Khám phá giới thiệu về trang web và hồ sơ tác giả sáng lập"
               >
                 <span
-                  className={`relative flex items-center gap-2.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide overflow-hidden ${introButtonStyles.textColor} ${introButtonStyles.innerShadow}`}
-                  style={{
+                  className={`relative flex items-center gap-2.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide overflow-hidden ${introButtonStyles.textColor} ${introButtonStyles.innerShadow} ${
+                    isDarkEffective ? `${introButtonStyles.btnGradient} ${introButtonStyles.btnGlow}` : ''
+                  }`}
+                  style={!isDarkEffective ? {
                     backgroundColor: introButtonStyles.btnBg,
-                  }}
+                  } : undefined}
                 >
                   <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
                     <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />

@@ -170,6 +170,19 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
   const [sentSuccessMsg, setSentSuccessMsg] = useState<string | null>(null);
   const [recentMessages, setRecentMessages] = useState<IntroReaderMessage[]>([]);
 
+  // Bảng màu rực rỡ & pastel cho icon LỜI NHẮN ĐỘC GIẢ (Người dùng có thể bấm vào icon để đổi màu theo ý thích)
+  const READER_MSG_ICON_COLORS = [
+    { text: 'text-purple-600 dark:text-purple-400', fill: 'fill-purple-200/70 dark:fill-purple-900/50', name: 'Tím Lavender' },
+    { text: 'text-pink-600 dark:text-pink-400', fill: 'fill-pink-200/70 dark:fill-pink-900/50', name: 'Hồng Sakura' },
+    { text: 'text-rose-600 dark:text-rose-400', fill: 'fill-rose-200/70 dark:fill-rose-900/50', name: 'Đỏ San Hô' },
+    { text: 'text-amber-500 dark:text-amber-400', fill: 'fill-amber-200/70 dark:fill-amber-900/50', name: 'Vàng Nắng Mật' },
+    { text: 'text-emerald-600 dark:text-emerald-400', fill: 'fill-emerald-200/70 dark:fill-emerald-900/50', name: 'Xanh Mint Bạc Hà' },
+    { text: 'text-sky-600 dark:text-sky-400', fill: 'fill-sky-200/70 dark:fill-sky-900/50', name: 'Xanh Da Trời' },
+    { text: 'text-violet-600 dark:text-violet-400', fill: 'fill-violet-200/70 dark:fill-violet-900/50', name: 'Tím Thạch Anh' },
+  ];
+  const [readerMsgIconColorIndex, setReaderMsgIconColorIndex] = useState<number>(0);
+  const currentMsgIconColor = READER_MSG_ICON_COLORS[readerMsgIconColorIndex];
+
   // Lắng nghe dữ liệu thời gian thực từ Firestore và xóa triệt để cache tin nhắn giả lập
   useEffect(() => {
     try {
@@ -591,7 +604,55 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
         }
 
         /* 11. PHONG CÁCH SPLIT GLOSS GRADIENT THEO CÔNG THỨC CHUẨN (ĐỔ BÓNG CẮT NGANG Ở 48% - 50%) */
-        .split-gloss-btn,
+        /* Nút thả tim & hòm thư: Dải màu Split Gloss nhạt lại thêm một chút, mềm mại và thanh thoát */
+        .split-gloss-btn {
+          padding: 8px 4px;                /* py-2 px-1 */
+          border-radius: 12px;             /* rounded-xl */
+          border: 1px solid rgba(244, 114, 182, 0.32); /* border-pink-300/32 */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+
+          /* Dải màu Split Gloss nhạt hơn, tông hồng sữa phấn êm ái */
+          background: linear-gradient(
+            to bottom,
+            #fff4f9 0%,    /* Đỉnh nút: hồng sữa rất nhạt, trong trẻo */
+            #fde0ee 48%,   /* Mép trên đường cắt ánh sáng: hồng pastel dịu */
+            #fabdd8 50%,   /* Đường cắt gắt: hồng phấn ngọt ngào vừa độ */
+            #faa5c9 100%   /* Đáy nút: hồng dâu dịu mát, nhạt hơn trước */
+          );
+
+          /* Hiệu ứng đổ bóng nổi khối */
+          box-shadow: 
+            inset 0 1px 1px rgba(255, 255, 255, 0.9),   /* Viền bóng sáng mép trên */
+            0 1px 2px rgba(225, 29, 72, 0.10);          /* Đổ bóng êm dịu */
+
+          /* Chữ & Icon */
+          color: #942b54 !important;                   /* Màu hồng quả mọng dịu hài hòa */
+          font-size: 10px;
+          font-weight: 700;                /* In đậm */
+          text-transform: uppercase;
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .split-gloss-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 
+            inset 0 1px 1.5px rgba(255, 255, 255, 0.95),
+            0 2px 5px rgba(244, 114, 182, 0.22);
+        }
+
+        .split-gloss-btn:active {
+          transform: translateY(1px);
+          box-shadow: 
+            inset 0 1.5px 2px rgba(0, 0, 0, 0.10),
+            0 1px 1px rgba(244, 114, 182, 0.12);
+        }
+
         .jelly-glossy-btn,
         .jelly-glossy-btn-pink {
           padding: 8px 4px;                /* py-2 px-1 */
@@ -627,7 +688,6 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
           user-select: none;
         }
 
-        .split-gloss-btn:hover,
         .jelly-glossy-btn:hover,
         .jelly-glossy-btn-pink:hover {
           transform: translateY(-1px);
@@ -636,7 +696,6 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
             0 2px 5px rgba(190, 18, 60, 0.2);
         }
 
-        .split-gloss-btn:active,
         .jelly-glossy-btn:active,
         .jelly-glossy-btn-pink:active {
           transform: translateY(1px);
@@ -800,7 +859,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                       ? 'bg-gradient-to-r from-pink-500 to-rose-400 text-white shadow-[0_3px_8px_rgba(244,63,94,0.35),inset_0_1.5px_2px_rgba(255,255,255,0.6)]'
                       : 'text-[#8A4C5D] hover:text-black'
                   }`}
-                  title="Style 1: Sổ Kế Hoạch 2 Mặt Nền Trái Tim"
+                  title="Style 1: Sổ Kế Hoạch 2 Mặt Nền Ngôi Sao"
                 >
                   Style 1
                 </button>
@@ -834,7 +893,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
       )}
 
       {/* COMPONENT TAMAGOTCHI / ĐIỆN THOẠI PASTEL - Dời xuống dưới tạo khoảng cách thông thoáng */}
-      <div className={`relative max-w-[490px] mx-auto mt-24 sm:mt-32 py-2 transition-all z-10 ${
+      <div className={`relative max-w-[490px] md:max-w-[445px] mx-auto mt-24 sm:mt-32 py-2 transition-all z-10 ${
         isTamaShaking ? 'tama-shaking' : ''
       }`}>
         {/* VỎ MÁY QUẢ TRỨNG (Outer Shell): Hiệu ứng nổi khối Claymorphism & Neumorphic viền 1px hồng chuẩn bảng màu OKLCH */}
@@ -1439,12 +1498,25 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
                   {/* KHỐI 2: DANH SÁCH LỜI NHẮN ĐỘC GIẢ */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 border-b border-purple-100 pb-1.5">
-                      <span className="flex items-center gap-1">
-                        <span>💬</span>
+                    <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-200 border-b border-purple-100 dark:border-purple-900/50 pb-1.5">
+                      <span className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextIdx = (readerMsgIconColorIndex + 1) % READER_MSG_ICON_COLORS.length;
+                            setReaderMsgIconColorIndex(nextIdx);
+                            showToast(`Đã đổi màu icon: ${READER_MSG_ICON_COLORS[nextIdx].name} 🎨`);
+                          }}
+                          className="cursor-pointer p-0.5 rounded-md hover:bg-purple-100/70 dark:hover:bg-purple-900/40 active:scale-90 transition-all flex items-center justify-center group"
+                          title="Bấm để đổi màu icon 🎨"
+                        >
+                          <MessageCircle
+                            className={`w-3.5 h-3.5 ${currentMsgIconColor.text} ${currentMsgIconColor.fill} group-hover:scale-115 transition-all duration-300 shrink-0`}
+                          />
+                        </button>
                         <span>LỜI NHẮN ĐỘC GIẢ ({recentMessages.length})</span>
                       </span>
-                      <span className="text-[9px] text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full font-mono">
+                      <span className="text-[9px] text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 px-2 py-0.5 rounded-full font-mono">
                         Mới nhất
                       </span>
                     </div>
@@ -1497,7 +1569,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                   <span className="text-[10px] font-bold tracking-wider uppercase">
                     {hasLiked ? 'ĐÃ THẢ TIM' : 'THẢ TIM'}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/80 text-[#831e45]">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/85 text-[#942b54]">
                     {tamaHearts}
                   </span>
                 </div>
@@ -1522,7 +1594,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
                   <span className="text-[10px] font-bold tracking-wider uppercase">
                     {activeTab === 'messages' ? 'MỞ HÒM THƯ' : 'HÒM THƯ'}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/80 text-[#831e45]">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/85 text-[#942b54]">
                     {recentMessages.length}
                   </span>
                 </div>
