@@ -1231,13 +1231,6 @@ export function setCachedTruyenList(list: FirestoreTruyen[]): void {
 export async function fetchTruyenList(isAdmin: boolean, force = false): Promise<FirestoreTruyen[]> {
   const cached = getCachedTruyenList();
 
-  // Độc giả thông thường: Sử dụng 100% dữ liệu mã nguồn và bộ nhớ đệm, KHÔNG gọi getDocs collection 'truyen'
-  // Tiệt tiêu 2.000 - 3.000 Reads mỗi ngày cho việc tải danh mục truyện!
-  if (!isAdmin && !force) {
-    if (cached.length > 0) return cached;
-    return [];
-  }
-
   let cacheTime = 0;
   try {
     const savedTime = safeStorage.getItem(CACHE_TIME_KEY);
@@ -1309,7 +1302,7 @@ export async function fetchTruyenList(isAdmin: boolean, force = false): Promise<
   }
 }
 
-// Real-time listener for novels / posts list (Chỉ bật onSnapshot cho Admin để tiết kiệm quota)
+// Real-time listener for novels / posts list
 export function subscribeTruyenList(
   isAdmin: boolean,
   callback: (list: FirestoreTruyen[]) => void,
@@ -1317,13 +1310,12 @@ export function subscribeTruyenList(
 ): Unsubscribe {
   const cached = getCachedTruyenList();
 
-  // Độc giả thông thường: Sử dụng cache tĩnh và nạp 1 lần, KHÔNG mở onSnapshot toàn bộ collection
-  // Cắt đứt hoàn toàn hiệu ứng khuếch đại lượt đọc (mỗi lượt xem truyện không ép tất cả máy khác đọc lại).
+  // Độc giả thông thường: Sử dụng cache tức thì 0ms, sau đó nạp ngầm bản cập nhật mới nhất
   if (!isAdmin) {
     if (cached.length > 0) {
       callback(cached);
     }
-    fetchTruyenList(false)
+    fetchTruyenList(false, true)
       .then((list) => {
         if (list && list.length > 0) {
           callback(list);
@@ -1517,6 +1509,17 @@ export async function saveNovelCoverToFirebase(
         return Promise.resolve();
       });
       await Promise.all(updates);
+    }
+
+    // 3. Cập nhật ngay bộ nhớ cache cục bộ để cả Admin và Độc giả đều thấy ảnh bìa mới
+    const currentCached = getCachedTruyenList();
+    if (currentCached && currentCached.length > 0) {
+      const updatedCache = currentCached.map((t) =>
+        t.id === truyenId || (novelTitle && t.tenTruyen === novelTitle.trim())
+          ? { ...t, anhBia: trimmedCover, ngayCapNhat: now }
+          : t
+      );
+      setCachedTruyenList(updatedCache);
     }
 
     return { success: true };

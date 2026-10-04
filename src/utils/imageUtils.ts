@@ -290,7 +290,7 @@ export function getDirectImageUrl(url: string | undefined | null, novelIdOrTitle
       if (trimmed.includes('truc_ma_alpha')) {
         return '/covers/truc_ma_alpha.jpg';
       }
-      if (trimmed.includes('lua_nhau') || trimmed.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm')) {
+      if (trimmed.includes('lua_nhau') || trimmed.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || trimmed.includes('19Wkxij9kEqzeFU5QcfBrJJWlYETPpWB_')) {
         return '/covers/lua_nhau.jpg';
       }
       if (trimmed.startsWith('/assets/') && trimmed.includes('me_ke')) {
@@ -309,7 +309,7 @@ export function getDirectImageUrl(url: string | undefined | null, novelIdOrTitle
         if (fileId === '1nm6xF9zncDSSWiwHrpa0ppG14E0JcLFB') {
           return '/covers/gap_doi_luan_ham.jpg';
         }
-        if (fileId === '1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') {
+        if (fileId === '1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm' || fileId === '19Wkxij9kEqzeFU5QcfBrJJWlYETPpWB_') {
           return '/covers/lua_nhau.jpg';
         }
         return `https://lh3.googleusercontent.com/d/${fileId}`;
@@ -321,7 +321,7 @@ export function getDirectImageUrl(url: string | undefined | null, novelIdOrTitle
         if (fileId === '1nm6xF9zncDSSWiwHrpa0ppG14E0JcLFB') {
           return '/covers/gap_doi_luan_ham.jpg';
         }
-        if (fileId === '1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') {
+        if (fileId === '1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm' || fileId === '19Wkxij9kEqzeFU5QcfBrJJWlYETPpWB_') {
           return '/covers/lua_nhau.jpg';
         }
         return `https://lh3.googleusercontent.com/d/${fileId}`;
