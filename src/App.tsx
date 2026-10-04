@@ -13,12 +13,6 @@ import { PublishNovelModal } from './components/PublishNovelModal';
 import { TwoPagePlannerHeartView } from './components/TwoPagePlannerHeartView';
 import { AboutLightTamagotchiView } from './components/AboutLightTamagotchiView';
 import { AdminAuthModal } from './components/AdminAuthModal';
-import { AdminNotificationModal } from './components/AdminNotificationModal';
-import {
-  AdminNotificationItem,
-  fetchAdminNotifications,
-  markAllNotificationsAsRead,
-} from './services/adminNotificationService';
 import { CreateFirestoreTruyenModal } from './components/CreateFirestoreTruyenModal';
 import { DailyLimitExceededModal } from './components/DailyLimitExceededModal';
 import { ModernLoadingScreen } from './components/ModernLoadingScreen';
@@ -828,41 +822,6 @@ export default function App() {
     return deduplicated;
   }, [firestoreTruyens, novels]);
 
-  // =========================================================================
-  // ADMIN NOTIFICATIONS (THÔNG BÁO QUẢN TRỊ: THẢ TIM, BÌNH LUẬN, LƯU BÚT MỚI)
-  // Cơ chế tải tối ưu: chỉ chạy khi là Admin, không tốn tài nguyên máy chủ
-  // =========================================================================
-  const [isAdminNotificationModalOpen, setIsAdminNotificationModalOpen] = useState(false);
-  const [adminNotifications, setAdminNotifications] = useState<AdminNotificationItem[]>([]);
-  const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
-
-  const loadAdminNotifications = useCallback(async () => {
-    if (!isAdmin) return;
-    setIsLoadingNotifications(true);
-    try {
-      const items = await fetchAdminNotifications(allMergedNovels);
-      setAdminNotifications(items);
-    } catch {} finally {
-      setIsLoadingNotifications(false);
-    }
-  }, [isAdmin, allMergedNovels]);
-
-  // Tự động tải thông báo khi Admin đăng nhập
-  useEffect(() => {
-    if (isAdmin) {
-      loadAdminNotifications();
-    }
-  }, [isAdmin, loadAdminNotifications]);
-
-  const handleMarkAllNotificationsAsRead = useCallback(() => {
-    markAllNotificationsAsRead();
-    setAdminNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-  }, []);
-
-  const adminUnreadCount = useMemo(() => {
-    return adminNotifications.filter((n) => !n.isRead).length;
-  }, [adminNotifications]);
-
   // Tự động phân giải pendingNovelId ngay khi danh mục truyện allMergedNovels được tải
   useEffect(() => {
     if (pendingNovelId) {
@@ -1463,8 +1422,6 @@ export default function App() {
             isAdmin={isAdmin}
             currentUser={currentUser}
             onOpenAdminAuth={() => setIsAdminAuthModalOpen(true)}
-            onOpenAdminNotifications={() => setIsAdminNotificationModalOpen(true)}
-            adminUnreadCount={adminUnreadCount}
             onOpenCreateFirestoreTruyen={() => setIsCreateFirestoreModalOpen(true)}
             onToggleNovelStatus={handleToggleNovelStatus}
             onDeleteFirestoreNovel={handleDeleteFirestoreNovel}
@@ -1494,8 +1451,6 @@ export default function App() {
             onSelectNovel={handleSelectNovel}
             isAdmin={isAdmin}
             currentUser={currentUser}
-            onOpenAdminNotifications={() => setIsAdminNotificationModalOpen(true)}
-            adminUnreadCount={adminUnreadCount}
             onToggleStatus={handleToggleNovelStatus}
             onDeleteNovel={handleDeleteFirestoreNovel}
           />
@@ -1586,21 +1541,6 @@ export default function App() {
         currentUser={currentUser}
         onSuccess={handleCreateFirestoreSuccess}
       />
-
-      {/* ADMIN NOTIFICATION MODAL */}
-      {isAdmin && (
-        <AdminNotificationModal
-          isOpen={isAdminNotificationModalOpen}
-          onClose={() => setIsAdminNotificationModalOpen(false)}
-          notifications={adminNotifications}
-          isLoading={isLoadingNotifications}
-          onRefresh={loadAdminNotifications}
-          onMarkAllAsRead={handleMarkAllNotificationsAsRead}
-          onSelectNovel={handleSelectNovel}
-          allNovels={allMergedNovels}
-          isDark={isDarkMode}
-        />
-      )}
     </div>
   );
 }

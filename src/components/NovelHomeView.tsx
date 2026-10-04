@@ -35,7 +35,6 @@ import {
   CircleDot,
   ArrowRight,
   Users,
-  Bell,
 } from 'lucide-react';
 import { Novel, NovelGenre, DarkBackgroundOption, DARK_BG_OPTIONS } from '../types';
 import { AdminUserLike } from '../services/firebase';
@@ -162,8 +161,6 @@ interface NovelHomeViewProps {
   isAdmin?: boolean;
   currentUser?: AdminUserLike | null;
   onOpenAdminAuth?: () => void;
-  onOpenAdminNotifications?: () => void;
-  adminUnreadCount?: number;
   onOpenCreateFirestoreTruyen?: () => void;
   onToggleNovelStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteFirestoreNovel?: (novelId: string) => void;
@@ -179,8 +176,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   isAdmin = false,
   currentUser = null,
   onOpenAdminAuth,
-  onOpenAdminNotifications,
-  adminUnreadCount = 0,
   onOpenCreateFirestoreTruyen,
   onToggleNovelStatus,
   onDeleteFirestoreNovel,
@@ -2743,29 +2738,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               )}
               <span className="hidden sm:inline">{isAdmin ? 'Admin' : 'Quản Trị'}</span>
             </button>
-
-            {/* Admin Notifications Bell Button (Chỉ hiển thị khi đã đăng nhập Admin) */}
-            {isAdmin && (
-              <button
-                id="btn-admin-notifications"
-                type="button"
-                onClick={onOpenAdminNotifications}
-                className={`relative flex items-center justify-center p-2 rounded-full transition-all border cursor-pointer ${
-                  adminUnreadCount > 0
-                    ? 'bg-purple-600/25 text-purple-300 border-purple-400/50 shadow-xs hover:bg-purple-600/40'
-                    : tStyles.themeSelectorBtn
-                }`}
-                title={`Thông báo quản trị (${adminUnreadCount} chưa đọc)`}
-                aria-label="Thông báo quản trị"
-              >
-                <Bell className="w-3.5 h-3.5" />
-                {adminUnreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-mono font-bold flex items-center justify-center border-2 border-[#060713] animate-pulse">
-                    {adminUnreadCount > 99 ? '99+' : adminUnreadCount}
-                  </span>
-                )}
-              </button>
-            )}
 
             {/* Publish Novel Button (Chỉ hiển thị khi đã đăng nhập Admin) */}
             {isAdmin && (

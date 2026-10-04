@@ -33,7 +33,6 @@ import {
   Copy,
   Clock,
   Heart,
-  Bell,
   Wallpaper,
   Shuffle,
   CircleDot,
@@ -522,8 +521,6 @@ interface NovelDetailViewProps {
   onSelectNovel: (novel: Novel) => void;
   isAdmin?: boolean;
   currentUser?: AdminUserLike | null;
-  onOpenAdminNotifications?: () => void;
-  adminUnreadCount?: number;
   onToggleStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteNovel?: (novelId: string) => void;
 }
@@ -540,8 +537,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   onSelectNovel,
   isAdmin = false,
   currentUser = null,
-  onOpenAdminNotifications,
-  adminUnreadCount = 0,
   onToggleStatus,
   onDeleteNovel,
 }) => {
@@ -2555,29 +2550,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               </div>
             )}
           </div>
-
-          {/* Admin Notifications Bell (Chỉ hiển thị khi là Admin) */}
-          {isAdmin && (
-            <button
-              id="novel-detail-admin-notifs-btn"
-              type="button"
-              onClick={onOpenAdminNotifications}
-              className={`relative p-2 rounded-full border transition-all cursor-pointer ${
-                adminUnreadCount > 0
-                  ? 'bg-purple-600/25 text-purple-300 border-purple-400/50 shadow-xs hover:bg-purple-600/40'
-                  : tStyles.buttonNeutral
-              }`}
-              title={`Thông báo quản trị (${adminUnreadCount} chưa đọc)`}
-              aria-label="Thông báo quản trị"
-            >
-              <Bell className="w-4 h-4" />
-              {adminUnreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-mono font-bold flex items-center justify-center border-2 border-[#060713] animate-pulse">
-                  {adminUnreadCount > 99 ? '99+' : adminUnreadCount}
-                </span>
-              )}
-            </button>
-          )}
 
           {/* Share Button & Popover */}
           <div className="relative" ref={shareRef}>
