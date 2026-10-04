@@ -1106,13 +1106,18 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     }
   });
 
-  // Purple theme dark mode background effects toggle (mặc định bật: true)
+  // Purple theme dark mode background effects toggle (mặc định tắt: false theo yêu cầu)
   const [purpleBgEffectsEnabled, setPurpleBgEffectsEnabled] = useState<boolean>(() => {
     try {
+      if (safeStorage.getItem('cosmo_purple_bg_default_off_v2') !== 'true') {
+        safeStorage.setItem('cosmo_purple_bg_default_off_v2', 'true');
+        safeStorage.setItem('cosmo_purple_bg_effects', 'false');
+        return false;
+      }
       const saved = safeStorage.getItem('cosmo_purple_bg_effects');
-      return saved !== null ? JSON.parse(saved) : true;
+      return saved !== null ? JSON.parse(saved) : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
