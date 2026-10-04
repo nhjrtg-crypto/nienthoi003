@@ -44,6 +44,7 @@ import {
 } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getOriginalCoverByNovel, getCustomCoverFromStorage } from './utils/imageUtils';
+import { incrementGlobalView } from './services/d1Service';
 
 interface SavedViewState {
   viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
@@ -987,8 +988,10 @@ export default function App() {
   // 3. KHÔNG tính khi nạp danh sách truyện (novel-home), đúng theo chỉ thị người dùng.
   useEffect(() => {
     if (viewMode === 'about-light' || viewMode === 'portfolio') {
+      incrementGlobalView(1).catch(() => {});
       recordPageView('about', 'Trang giới thiệu');
     } else if (viewMode === 'novel-detail' && readingChapterNumber === null && selectedNovel) {
+      incrementGlobalView(1).catch(() => {});
       recordPageView('novel-info', selectedNovel.title, selectedNovel.id);
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber]);
