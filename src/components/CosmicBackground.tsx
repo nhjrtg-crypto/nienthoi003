@@ -10,6 +10,12 @@ interface Star {
   twinklePhase: number;
   layer: number; // 1, 2, 3 for parallax
   color: string;
+  orbitPhase: number;
+  orbitSpeed: number;
+  orbitRadiusX: number;
+  orbitRadiusY: number;
+  driftVx: number;
+  driftVy: number;
 }
 
 interface ShootingStar {
@@ -103,6 +109,12 @@ export const CosmicBackground: React.FC<CosmicBackgroundProps> = () => {
           twinklePhase: Math.random() * Math.PI * 2,
           layer,
           color: starColors[Math.floor(Math.random() * starColors.length)],
+          orbitPhase: Math.random() * Math.PI * 2,
+          orbitSpeed: 0.003 + Math.random() * 0.004,
+          orbitRadiusX: 10 + Math.random() * 16,
+          orbitRadiusY: 8 + Math.random() * 14,
+          driftVx: (Math.random() - 0.5) * 0.06,
+          driftVy: (Math.random() - 0.5) * 0.05,
         });
       }
     };
@@ -117,11 +129,11 @@ export const CosmicBackground: React.FC<CosmicBackgroundProps> = () => {
         shootingStars.push({
           x: Math.random() * width * 0.8 + width * 0.1,
           y: Math.random() * height * 0.4,
-          length: Math.random() * 140 + 80,
-          speed: Math.random() * 12 + 8,
+          length: Math.random() * 80 + 60,
+          speed: Math.random() * 1.2 + 2.1, // Chuyển động chậm lại một chút (~2.1 - 3.3 px/frame)
           angle: (Math.PI / 4) + (Math.random() * 0.3 - 0.15), // ~45 deg downward right
           alpha: 1,
-          thickness: Math.random() * 1.5 + 1,
+          thickness: Math.random() * 1.2 + 1,
           active: true,
         });
       }
@@ -213,17 +225,30 @@ export const CosmicBackground: React.FC<CosmicBackgroundProps> = () => {
         ctx.fillRect(0, 0, width, height);
       } catch {}
 
-      // 3. Render Stars with Parallax and Twinkle
+      // 3. Render Stars with Parallax and Gentle Floating Motion
       stars.forEach((star) => {
         star.twinklePhase += star.twinkleSpeed;
         const currentAlpha = star.baseAlpha + Math.sin(star.twinklePhase) * (star.baseAlpha * 0.5);
+
+        // Chuyển động nhẹ nhàng xung quanh
+        star.orbitPhase += star.orbitSpeed;
+        star.x += star.driftVx;
+        star.y += star.driftVy;
+
+        if (star.x < -20) star.x = width + 20;
+        else if (star.x > width + 20) star.x = -20;
+        if (star.y < -20) star.y = height + 20;
+        else if (star.y > height + 20) star.y = -20;
+
+        const floatX = Math.cos(star.orbitPhase) * star.orbitRadiusX;
+        const floatY = Math.sin(star.orbitPhase * 1.3) * star.orbitRadiusY;
 
         // Parallax shift based on depth layer
         const parallaxX = mx * (star.layer * 12);
         const parallaxY = my * (star.layer * 12);
 
-        const drawX = (((star.x + parallaxX) % width) + width) % width;
-        const drawY = (((star.y + parallaxY) % height) + height) % height;
+        const drawX = (((star.x + floatX + parallaxX) % width) + width) % width;
+        const drawY = (((star.y + floatY + parallaxY) % height) + height) % height;
 
         if (!Number.isFinite(drawX) || !Number.isFinite(drawY)) return;
 
@@ -274,7 +299,7 @@ export const CosmicBackground: React.FC<CosmicBackgroundProps> = () => {
 
         meteor.x += Math.cos(meteor.angle) * meteor.speed;
         meteor.y += Math.sin(meteor.angle) * meteor.speed;
-        meteor.alpha -= 0.014;
+        meteor.alpha -= 0.005;
 
         if (meteor.alpha <= 0 || meteor.x > width + 100 || meteor.y > height + 100) {
           meteor.active = false;

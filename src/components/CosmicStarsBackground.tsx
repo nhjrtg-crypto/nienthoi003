@@ -12,6 +12,12 @@ interface Star {
   twinklePhase: number;
   twinkleSpeed: number;
   hasCrossFlare: boolean;
+  orbitPhase: number;
+  orbitSpeed: number;
+  orbitRadiusX: number;
+  orbitRadiusY: number;
+  driftVx: number;
+  driftVy: number;
 }
 
 interface Meteor {
@@ -121,26 +127,26 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
       '#BAE6FD', // Celestial Cyan Starlight
     ];
 
-    // Generate ~32 well-dispersed, elegant stars (active for Cosmic theme / Purple Dark mode)
-    const starCount = 32;
+    // Generate ~44 well-dispersed, elegant stars (active for Cosmic theme / Purple Dark mode)
+    const starCount = 44;
     const stars: Star[] = Array.from({ length: starCount }, (_, i) => {
       const rand = Math.random();
       let layer: 1 | 2 | 3 = 1;
-      let size = 0.75 + Math.random() * 0.5;
+      let size = 0.8 + Math.random() * 0.6;
       let hasCrossFlare = false;
 
-      // Only 2 or 3 stars get the hero 4-point flare
-      if (i < 2 || rand > 0.94) {
+      // Only 3 or 4 stars get the hero 4-point flare
+      if (i < 3 || rand > 0.92) {
         layer = 3;
-        size = 1.8 + Math.random() * 0.5;
+        size = 1.9 + Math.random() * 0.6;
         hasCrossFlare = true;
-      } else if (rand > 0.75) {
+      } else if (rand > 0.68) {
         layer = 2;
-        size = 1.1 + Math.random() * 0.4;
+        size = 1.2 + Math.random() * 0.5;
       }
 
-      const cols = 8;
-      const rows = 4;
+      const cols = 9;
+      const rows = 5;
       const col = i % cols;
       const row = Math.floor(i / cols) % rows;
       const gridX = (col / cols) * width + (Math.random() * 0.7 + 0.15) * (width / cols);
@@ -152,14 +158,20 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
         size,
         layer,
         color: starColors[Math.floor(Math.random() * starColors.length)],
-        baseAlpha: layer === 3 ? 0.85 : layer === 2 ? 0.55 : 0.35,
+        baseAlpha: layer === 3 ? 0.88 : layer === 2 ? 0.58 : 0.38,
         twinklePhase: Math.random() * Math.PI * 2,
-        twinkleSpeed: 0.012 + Math.random() * 0.02,
+        twinkleSpeed: 0.008 + Math.random() * 0.012,
         hasCrossFlare,
+        orbitPhase: Math.random() * Math.PI * 2,
+        orbitSpeed: 0.0006 + Math.random() * 0.0008, // Chuyển động siêu nhẹ và chậm, không di chuyển quá nhiều
+        orbitRadiusX: 2.5 + Math.random() * 2.5,     // Biên độ dao động siêu nhỏ (chỉ 2.5 - 5px)
+        orbitRadiusY: 2.0 + Math.random() * 2.0,     // Biên độ dao động siêu nhỏ (chỉ 2.0 - 4px)
+        driftVx: (Math.random() - 0.5) * 0.004,      // Giữ ngôi sao gần như cố định vị trí tinh tú
+        driftVy: (Math.random() - 0.5) * 0.003,
       };
     });
 
-    // Shooting stars pool (active for Cosmic theme / Purple Dark mode - moderate speed, 1-2 concurrent meteors)
+    // Shooting stars pool (active for Cosmic theme / Purple Dark mode - sao băng chuyển động chậm hơn nữa, lướt êm ả thư thái)
     const meteors: Meteor[] = [];
     const activeMeteorTimers: NodeJS.Timeout[] = [];
 
@@ -170,9 +182,9 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
       meteors.push({
         x,
         y,
-        length: 90 + Math.random() * 55,
-        speed: 3.8 + Math.random() * 1.8, // Tốc độ vừa phải, mượt mà và êm dịu (khoảng 3.8 - 5.6 px/frame)
-        thickness: 1.3 + Math.random() * 0.7,
+        length: 100 + Math.random() * 40,
+        speed: 0.48 + Math.random() * 0.22, // Sao băng di chuyển chậm hơn nữa (~0.48 - 0.70 px/frame), lướt qua bầu trời một cách cực kỳ êm đềm và thanh thoát
+        thickness: 1.2 + Math.random() * 0.6,
         angle: Math.PI / 4 + (Math.random() - 0.5) * 0.16,
         alpha: 1.0,
         active: true,
@@ -541,7 +553,7 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
             }
           }
 
-          // Render Twinkling Stars
+          // Render Twinkling Stars với chuyển động nhẹ nhàng xung quanh (Gentle floating & orbiting)
           stars.forEach((star) => {
             star.twinklePhase += star.twinkleSpeed;
             const currentAlpha = Math.max(
@@ -549,13 +561,28 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
               Math.min(1, star.baseAlpha + Math.sin(star.twinklePhase) * (star.baseAlpha * 0.45))
             );
 
-            // Parallax shift based on layer depth
-            const parallaxX = mx * (star.layer * 10);
-            const parallaxY = my * (star.layer * 10);
+            // Chuyển động nhẹ nhàng xung quanh quỹ đạo tự nhiên (Soft harmonic floating & organic wandering)
+            star.orbitPhase += star.orbitSpeed;
+            star.x += star.driftVx;
+            star.y += star.driftVy;
+
+            // Bao bọc toạ độ mượt mà khi trôi qua mép màn hình
+            if (star.x < -30) star.x = width + 30;
+            else if (star.x > width + 30) star.x = -30;
+            if (star.y < -30) star.y = height + 30;
+            else if (star.y > height + 30) star.y = -30;
+
+            // Chuyển động siêu nhẹ và chậm, giữ ngôi sao ngự trị trang nghiêm trên bầu trời
+            const floatX = Math.cos(star.orbitPhase) * star.orbitRadiusX;
+            const floatY = Math.sin(star.orbitPhase) * star.orbitRadiusY;
+
+            // Parallax shift siêu nhẹ
+            const parallaxX = mx * (star.layer * 1.8);
+            const parallaxY = my * (star.layer * 1.8);
 
             // Strictly safe modulo wrapping
-            const drawX = (((star.x + parallaxX) % width) + width) % width;
-            const drawY = (((star.y + parallaxY) % height) + height) % height;
+            const drawX = (((star.x + floatX + parallaxX) % width) + width) % width;
+            const drawY = (((star.y + floatY + parallaxY) % height) + height) % height;
 
             if (!Number.isFinite(drawX) || !Number.isFinite(drawY)) return;
 
@@ -611,7 +638,7 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
             ctx.restore();
           });
 
-          // Render Shooting Stars / Meteors
+          // Render Shooting Stars / Meteors (sao băng chuyển động chậm hơn nữa, vệt đuôi mượt mà và thanh nhã)
           for (let i = meteors.length - 1; i >= 0; i--) {
             const m = meteors[i];
             if (!m.active) {
@@ -621,7 +648,7 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
 
             m.x += Math.cos(m.angle) * m.speed;
             m.y += Math.sin(m.angle) * m.speed;
-            m.alpha -= 0.007;
+            m.alpha -= 0.0006; // Tốc độ mờ dần tương ứng với tốc độ sao băng di chuyển chậm hơn nữa
 
             if (m.alpha <= 0 || m.x > width + 100 || m.y > height + 100) {
               m.active = false;
