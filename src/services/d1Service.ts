@@ -5,6 +5,7 @@
  */
 
 import { safeStorage } from '../utils/safeStorage';
+import { saveCustomCoverToAllStores } from '../utils/imageUtils';
 
 export interface D1Comment {
   id: string;
@@ -343,10 +344,10 @@ export async function fetchNovelCoversFromD1(): Promise<Record<string, string>> 
     if (res.ok) {
       const data = await res.json();
       if (data && typeof data.covers === 'object' && data.covers !== null) {
-        // Tự động đồng bộ vào safeStorage để các component dùng ngay
+        // Tự động đồng bộ vào toàn bộ kho lưu trữ (Memory, safeStorage, IndexedDB)
         for (const [idOrTitle, coverUrl] of Object.entries(data.covers)) {
           if (coverUrl && typeof coverUrl === 'string' && coverUrl.trim()) {
-            safeStorage.setItem(`cosmo_novel_custom_cover_${idOrTitle.trim()}`, coverUrl.trim());
+            saveCustomCoverToAllStores(idOrTitle.trim(), null, coverUrl.trim());
           }
         }
         return data.covers;
@@ -369,12 +370,9 @@ export async function saveNovelCoverToD1(
     return { success: false, error: 'Thiếu novelId hoặc coverUrl' };
   }
 
-  // 1. Lưu ngay lập tức vào safeStorage trên trình duyệt để UI cập nhật tức thì (0ms latency)
+  // 1. Lưu ngay lập tức vào Memory Cache, safeStorage, và IndexedDB (0ms latency, không sợ mất ảnh)
   try {
-    safeStorage.setItem(`cosmo_novel_custom_cover_${trimmedId}`, trimmedUrl);
-    if (trimmedTitle) {
-      safeStorage.setItem(`cosmo_novel_custom_cover_${trimmedTitle}`, trimmedUrl);
-    }
+    saveCustomCoverToAllStores(trimmedId, trimmedTitle, trimmedUrl);
   } catch {}
 
   // 2. Gửi lưu trữ vĩnh viễn trên Cloudflare D1
@@ -398,7 +396,6 @@ export async function saveNovelCoverToD1(
     }
   } catch (err: any) {
     console.warn('Lỗi khi gửi ảnh bìa lên Cloudflare D1:', err);
-    // Vẫn trả về success: true vì đã lưu an toàn trong safeStorage
     return { success: true };
   }
 

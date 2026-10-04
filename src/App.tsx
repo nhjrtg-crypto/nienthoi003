@@ -43,7 +43,12 @@ import {
   recordPageView,
 } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { getOriginalCoverByNovel, getCustomCoverFromStorage } from './utils/imageUtils';
+import {
+  getOriginalCoverByNovel,
+  getCustomCoverFromStorage,
+  saveCustomCoverToAllStores,
+  getDirectImageUrl,
+} from './utils/imageUtils';
 import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1 } from './services/d1Service';
 
 interface SavedViewState {
@@ -106,21 +111,21 @@ function convertFirestoreTruyenToNovel(ft: FirestoreTruyen): Novel {
     : ['Tiểu Thuyết'];
   const originalCover = getOriginalCoverByNovel(ft.id, ft.tenTruyen);
 
-  // Check if a custom cover was set by user in safeStorage (synced across all views)
+  // Check if a custom cover was set by user in memory/safeStorage/IndexedDB
   const customCover = getCustomCoverFromStorage(ft.id) || getCustomCoverFromStorage(ft.tenTruyen);
 
-  let cleanCover = customCover || ft.anhBia;
-  if (cleanCover && (cleanCover.startsWith('/assets/') || cleanCover.includes('assets/') || cleanCover.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || cleanCover.includes('drive.google.com') || cleanCover.includes('images.unsplash.com'))) {
-    cleanCover = customCover || originalCover || cleanCover;
+  // Ưu tiên cao nhất: Ảnh bìa người dùng tùy chỉnh hoặc ảnh bìa lưu trên Firestore/Cloudflare D1
+  let finalCover: string;
+  if (customCover && customCover.trim()) {
+    finalCover = customCover.trim();
+  } else if (ft.anhBia && ft.anhBia.trim() && !ft.anhBia.includes('images.unsplash.com')) {
+    finalCover = getDirectImageUrl(ft.anhBia.trim(), ft.id || ft.tenTruyen);
+  } else {
+    finalCover = originalCover || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop';
   }
-  const resolvedCover = cleanCover || originalCover || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop';
 
   const normT = normalizeNovelTitle(ft.tenTruyen);
   const isLuaNhau = ft.id === 'lua-nhau' || normT.includes('luanhau');
-  const isTrucMa = ft.id === 's1zJUVAn4uMW3h7NXO9M' || ft.id === 'Wt9SMT1pLOVFGoQZMrH6' || normT.includes('trucmaalpha');
-
-  // If user uploaded a new cover, always prioritize it!
-  const finalCover = customCover || (cleanCover && cleanCover !== originalCover ? cleanCover : (isTrucMa ? (originalCover || '/covers/truc_ma_alpha.jpg') : (isLuaNhau ? LUA_NHAU_EXACT_COVER : resolvedCover)));
 
   return {
     id: ft.id,
@@ -701,7 +706,7 @@ export default function App() {
       if (covers && Object.keys(covers).length > 0) {
         setNovels((prev) =>
           prev.map((n) => {
-            const d1Cover = covers[n.id] || covers[n.title];
+            const d1Cover = covers[n.id] || covers[n.title] || covers[normalizeNovelTitle(n.title)];
             if (d1Cover && d1Cover.trim() && d1Cover.trim() !== n.coverImage) {
               return {
                 ...n,
@@ -710,6 +715,18 @@ export default function App() {
               };
             }
             return n;
+          })
+        );
+        setFirestoreTruyens((prev) =>
+          prev.map((ft) => {
+            const d1Cover = covers[ft.id] || covers[ft.tenTruyen] || covers[normalizeNovelTitle(ft.tenTruyen)];
+            if (d1Cover && d1Cover.trim() && d1Cover.trim() !== ft.anhBia) {
+              return {
+                ...ft,
+                anhBia: d1Cover.trim(),
+              };
+            }
+            return ft;
           })
         );
       }
@@ -1045,14 +1062,28 @@ export default function App() {
   };
 
   const handleSelectNovel = (novel: Novel) => {
-    setSelectedNovel(novel);
+    const custom = getCustomCoverFromStorage(novel.id) || getCustomCoverFromStorage(novel.title);
+    const resolvedCover = custom || novel.coverImage;
+    const freshNovel: Novel = {
+      ...novel,
+      coverImage: resolvedCover,
+      coverImageUrl: resolvedCover,
+    };
+    setSelectedNovel(freshNovel);
     setReadingChapterNumber(null);
     setViewMode('novel-detail');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleOpenNovelToReadingPosition = (novel: Novel, chapterNumber: number) => {
-    setSelectedNovel(novel);
+    const custom = getCustomCoverFromStorage(novel.id) || getCustomCoverFromStorage(novel.title);
+    const resolvedCover = custom || novel.coverImage;
+    const freshNovel: Novel = {
+      ...novel,
+      coverImage: resolvedCover,
+      coverImageUrl: resolvedCover,
+    };
+    setSelectedNovel(freshNovel);
     setReadingChapterNumber(chapterNumber);
     setViewMode('novel-detail');
   };
@@ -1198,55 +1229,84 @@ export default function App() {
   };
 
   const handleUpdateNovelCover = (novelId: string, newCoverUrl: string) => {
-    // 1. Persist to safeStorage immediately so NovelHomeView, NovelDetailView, and all components sync instantly
-    const matched = novels.find((n) => n.id === novelId);
-    try {
-      safeStorage.setItem(`cosmo_novel_custom_cover_${novelId}`, newCoverUrl);
-      if (matched?.title) {
-        safeStorage.setItem(`cosmo_novel_custom_cover_${matched.title}`, newCoverUrl);
-        safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(matched.title)}`, newCoverUrl);
-      }
-    } catch {}
+    const trimmedCover = (newCoverUrl || '').trim();
+    if (!trimmedCover) return;
 
-    // 2. Persist to Cloudflare D1 (bất biến, không lo mất ảnh, chống lỗi đồng bộ)
+    const matched =
+      novels.find((n) => n.id === novelId) ||
+      allMergedNovels.find((n) => n.id === novelId) ||
+      firestoreTruyens.find((ft) => ft.id === novelId);
+
+    const title = (matched && 'title' in matched ? matched.title : (matched as any)?.tenTruyen) || '';
+    const normTitle = normalizeNovelTitle(title);
+
+    // 1. Lưu ngay vào mọi tầng lưu trữ (Memory, safeStorage, IndexedDB)
+    saveCustomCoverToAllStores(novelId, title, trimmedCover);
+
+    // 2. Persist to Cloudflare D1
     try {
-      saveNovelCoverToD1(novelId, newCoverUrl, matched?.title);
+      saveNovelCoverToD1(novelId, trimmedCover, title);
     } catch (e) {
       console.warn('Failed to update novel cover on Cloudflare D1', e);
     }
 
     // 3. Persist to Firestore backup
     try {
-      saveNovelCoverToFirebase(novelId, newCoverUrl);
+      saveNovelCoverToFirebase(novelId, trimmedCover, title);
     } catch (e) {
       console.warn('Failed to update novel cover on Firestore', e);
     }
 
+    // 4. Cập nhật state firestoreTruyens
     setFirestoreTruyens((prev) =>
-      prev.map((ft) => (ft.id === novelId ? { ...ft, anhBia: newCoverUrl } : ft))
+      prev.map((ft) =>
+        ft.id === novelId ||
+        (normTitle && normalizeNovelTitle(ft.tenTruyen) === normTitle) ||
+        (novelId === 'me-ke-vua-mem-vua-ngot' && ft.id === 'e5H5oZGg1sGnFyHjdM5Z') ||
+        (novelId === 'e5H5oZGg1sGnFyHjdM5Z' && ft.id === 'me-ke-vua-mem-vua-ngot') ||
+        (novelId === 'lua-nhau' && ft.id === 'lua-nhau')
+          ? { ...ft, anhBia: trimmedCover }
+          : ft
+      )
     );
 
+    // 5. Cập nhật state novels
     setNovels((prev) => {
       const next = prev.map((n) => {
-        if (n.id === novelId) {
-          const updatedNovel = {
+        if (
+          n.id === novelId ||
+          (normTitle && normalizeNovelTitle(n.title) === normTitle) ||
+          (novelId === 'e5H5oZGg1sGnFyHjdM5Z' && n.id === 'me-ke-vua-mem-vua-ngot') ||
+          (novelId === 'me-ke-vua-mem-vua-ngot' && n.id === 'e5H5oZGg1sGnFyHjdM5Z')
+        ) {
+          return {
             ...n,
-            coverImage: newCoverUrl,
-            coverImageUrl: newCoverUrl,
+            coverImage: trimmedCover,
+            coverImageUrl: trimmedCover,
           };
-          if (selectedNovel && selectedNovel.id === novelId) {
-            setSelectedNovel(updatedNovel);
-          }
-          return updatedNovel;
         }
         return n;
       });
       try {
         safeStorage.setItem('cosmo_novels', JSON.stringify(next));
-      } catch (e) {
-        console.error('Failed to save novel cover', e);
-      }
+      } catch (e) {}
       return next;
+    });
+
+    // 6. Cập nhật selectedNovel nếu đang xem truyện đó
+    setSelectedNovel((curr) => {
+      if (!curr) return null;
+      if (
+        curr.id === novelId ||
+        (normTitle && normalizeNovelTitle(curr.title) === normTitle)
+      ) {
+        return {
+          ...curr,
+          coverImage: trimmedCover,
+          coverImageUrl: trimmedCover,
+        };
+      }
+      return curr;
     });
   };
 

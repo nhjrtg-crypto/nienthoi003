@@ -66,7 +66,14 @@ import {
   Clapperboard,
   Film,
 } from 'lucide-react';
-import { getDirectImageUrl, handleCoverImageError, getOriginalCoverByNovel, normalizeNovelTitle } from '../utils/imageUtils';
+import {
+  getDirectImageUrl,
+  handleCoverImageError,
+  getOriginalCoverByNovel,
+  normalizeNovelTitle,
+  saveCustomCoverToAllStores,
+  getCustomCoverFromStorage,
+} from '../utils/imageUtils';
 import { Novel, NovelChapter, NovelComment, DarkBackgroundOption, DARK_BG_OPTIONS } from '../types';
 import {
   NovelThemeId,
@@ -670,20 +677,22 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
   const [inputCustomUrl, setInputCustomUrl] = useState('');
   const [customCoverUrl, setCustomCoverUrl] = useState<string | null>(() => {
-    try {
-      const stored = safeStorage.getItem(`cosmo_novel_custom_cover_${novel.id}`);
-      if (novel.id === 'lua-nhau' || novel.title?.toLowerCase().includes('lừa nhau')) {
-        if (stored && (stored.includes('1oqpUECsYtkmUUAYkXlRbq1cTUhUHFHGm') || stored.includes('drive.google.com'))) {
-          safeStorage.removeItem(`cosmo_novel_custom_cover_${novel.id}`);
-          return null;
-        }
-      }
-      return stored;
-    } catch {
-      return null;
-    }
+    return getCustomCoverFromStorage(novel.id) || getCustomCoverFromStorage(novel.title);
   });
   const coverInputRef = useRef<HTMLInputElement>(null);
+
+  // Luôn đồng bộ ảnh bìa mới khi novel prop thay đổi hoặc khi chuyển qua lại giữa các truyện
+  useEffect(() => {
+    const custom = getCustomCoverFromStorage(novel.id) || getCustomCoverFromStorage(novel.title);
+    if (custom) {
+      setCustomCoverUrl(custom);
+      setPendingCoverUrl(custom);
+    } else {
+      const direct = getDirectImageUrl(novel.coverImage, novel.id || novel.title);
+      setCustomCoverUrl(null);
+      setPendingCoverUrl(direct);
+    }
+  }, [novel.id, novel.title, novel.coverImage]);
 
   const activeCoverImage = customCoverUrl || getDirectImageUrl(novel.coverImage, novel.id || novel.title);
   const [pendingCoverUrl, setPendingCoverUrl] = useState<string | null>(activeCoverImage);
@@ -700,30 +709,19 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   };
 
   const handleApplyCover = async (newUrl: string) => {
-    setCustomCoverUrl(newUrl);
+    const trimmed = (newUrl || '').trim();
+    if (!trimmed) return;
+    setCustomCoverUrl(trimmed);
+    setPendingCoverUrl(trimmed);
+
+    // Lưu vào mọi kho lưu trữ: Memory, safeStorage, IndexedDB
+    saveCustomCoverToAllStores(novel.id, novel.title, trimmed);
+
+    onUpdateCover?.(novel.id, trimmed);
+    onUpdateNovel?.({ ...novel, coverImage: trimmed, coverImageUrl: trimmed });
     try {
-      safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, newUrl);
-      if (novel.title) {
-        safeStorage.setItem(`cosmo_novel_custom_cover_${novel.title}`, newUrl);
-        safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(novel.title)}`, newUrl);
-      }
-      const savedNovelsStr = safeStorage.getItem('cosmo_novels');
-      if (savedNovelsStr) {
-        const parsed: Novel[] = JSON.parse(savedNovelsStr);
-        const norm = normalizeNovelTitle(novel.title);
-        const next = parsed.map((n) =>
-          n.id === novel.id || normalizeNovelTitle(n.title) === norm
-            ? { ...n, coverImage: newUrl, coverImageUrl: newUrl }
-            : n
-        );
-        safeStorage.setItem('cosmo_novels', JSON.stringify(next));
-      }
-    } catch {}
-    onUpdateCover?.(novel.id, newUrl);
-    onUpdateNovel?.({ ...novel, coverImage: newUrl, coverImageUrl: newUrl });
-    try {
-      saveNovelCoverToD1(novel.id, newUrl, novel.title).catch(() => {});
-      await saveNovelCoverToFirebase(novel.id, newUrl, novel.title);
+      saveNovelCoverToD1(novel.id, trimmed, novel.title).catch(() => {});
+      saveNovelCoverToFirebase(novel.id, trimmed, novel.title).catch(() => {});
     } catch (e) {
       console.warn('Could not auto-save cover:', e);
     }
@@ -775,7 +773,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       setCustomCoverUrl(dataUrl);
 
       try {
-        // 1. Lưu trực tiếp vào Cloudflare D1 (bất biến, không lo mất ảnh, không lo lỗi đồng bộ)
+        // 1. Lưu trực tiếp vào Cloudflare D1 và mọi kho lưu trữ (Memory, safeStorage, IndexedDB)
+        saveCustomCoverToAllStores(novel.id, novel.title, dataUrl);
         await saveNovelCoverToD1(novel.id, dataUrl, novel.title);
 
         // 2. Dự phòng song song lên Firebase
@@ -784,11 +783,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         onUpdateCover?.(novel.id, dataUrl);
         onUpdateNovel?.({ ...novel, coverImage: dataUrl, coverImageUrl: dataUrl });
         try {
-          safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, dataUrl);
-          if (novel.title) {
-            safeStorage.setItem(`cosmo_novel_custom_cover_${novel.title}`, dataUrl);
-            safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(novel.title)}`, dataUrl);
-          }
           const savedNovelsStr = safeStorage.getItem('cosmo_novels');
           if (savedNovelsStr) {
             const parsed: Novel[] = JSON.parse(savedNovelsStr);
@@ -818,7 +812,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setIsUploadingToFirebase(true);
 
     try {
-      // Lưu trực tiếp vào Cloudflare D1
+      // Lưu trực tiếp vào Cloudflare D1 và mọi kho lưu trữ
+      saveCustomCoverToAllStores(novel.id, novel.title, currentCover);
       await saveNovelCoverToD1(novel.id, currentCover, novel.title);
       // Dự phòng song song lên Firebase
       saveNovelCoverToFirebase(novel.id, currentCover, novel.title).catch(() => {});
@@ -826,7 +821,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       onUpdateCover?.(novel.id, currentCover);
       onUpdateNovel?.({ ...novel, coverImage: currentCover, coverImageUrl: currentCover });
       try {
-        safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, currentCover);
         const savedNovelsStr = safeStorage.getItem('cosmo_novels');
         if (savedNovelsStr) {
           const parsed: Novel[] = JSON.parse(savedNovelsStr);
@@ -853,7 +847,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setCustomCoverUrl(coverToSave);
 
     try {
-      // Lưu trực tiếp vào Cloudflare D1
+      // Lưu trực tiếp vào Cloudflare D1 và mọi kho lưu trữ
+      saveCustomCoverToAllStores(novel.id, novel.title, coverToSave);
       await saveNovelCoverToD1(novel.id, coverToSave, novel.title);
       // Dự phòng song song lên Firebase
       saveNovelCoverToFirebase(novel.id, coverToSave, novel.title).catch(() => {});
@@ -861,7 +856,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       onUpdateCover?.(novel.id, coverToSave);
       onUpdateNovel?.({ ...novel, coverImage: coverToSave, coverImageUrl: coverToSave });
       try {
-        safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, coverToSave);
         const savedNovelsStr = safeStorage.getItem('cosmo_novels');
         if (savedNovelsStr) {
           const parsed: Novel[] = JSON.parse(savedNovelsStr);
