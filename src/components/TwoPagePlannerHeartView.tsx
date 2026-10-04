@@ -19,6 +19,7 @@ import {
   addIntroNoteStyle1,
   IntroGuestNote,
 } from '../services/firebase';
+import { incrementLike as incrementD1Like, addGuestNote as addD1GuestNote } from '../services/d1Service';
 import { safeStorage } from '../utils/safeStorage';
 
 /**
@@ -168,13 +169,14 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
   const [guestContentInput, setGuestContentInput] = useState<string>('');
   const [guestBookPage, setGuestBookPage] = useState<number>(1);
 
-  // Xử lý thả tim (Cộng dồn vĩnh viễn trên Firestore)
+  // Xử lý thả tim (Cộng dồn vĩnh viễn trên Firestore & Cloudflare D1)
   const handleLike = () => {
     if (!hasLiked) {
       setHasLiked(true);
       try {
         safeStorage.setItem('cosmo_has_liked_style1', 'true');
       } catch {}
+      incrementD1Like('intro_style1', 1).catch(() => {});
       incrementIntroHearts('style1').catch(console.error);
       playCuteChime('pop');
       showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ');
@@ -212,6 +214,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
     const content = guestContentInput.trim();
     setIsSubmittingNote(true);
     try {
+      addD1GuestNote('style1', author, content).catch(() => {});
       await addIntroNoteStyle1(author, content);
       setGuestAuthorInput('');
       setGuestContentInput('');

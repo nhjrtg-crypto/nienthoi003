@@ -103,6 +103,14 @@ import {
   deleteBinhLuan,
   isBotComment,
 } from '../services/firebase';
+import {
+  fetchComments as fetchD1Comments,
+  addComment as addD1Comment,
+  likeComment as likeD1Comment,
+  deleteComment as deleteD1Comment,
+  fetchLikes as fetchD1Likes,
+  incrementLike as incrementD1Like,
+} from '../services/d1Service';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
 import { LUA_NHAU_NOVEL } from '../data/luaNhauData';
 
@@ -917,6 +925,35 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     // Only subscribe to comments from Firestore if user opens the comments tab
     if (activeTab !== 'comments') return;
 
+    fetchD1Comments(novel.id).then((d1Comments) => {
+      if (d1Comments && d1Comments.length > 0) {
+        setComments((prev) => {
+          const ids = new Set(prev.map((c) => c.id));
+          const mappedFromD1: NovelComment[] = d1Comments.map((c) => ({
+            id: c.id,
+            truyenId: c.truyenId,
+            author: c.author,
+            content: c.content,
+            createdAt: c.createdAt,
+            ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
+            likes: c.likes || 0,
+            badge: c.badge || 'Độc Giả',
+            rating: c.rating || 5,
+            avatar: c.avatar || '',
+            chapterNumber: c.chapterNumber,
+            chapterTitle: c.chapterTitle,
+          }));
+          const newFromD1 = mappedFromD1.filter((c) => !ids.has(c.id));
+          if (newFromD1.length === 0) return prev;
+          const merged = [...newFromD1, ...prev];
+          try {
+            safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(merged));
+          } catch {}
+          return merged;
+        });
+      }
+    }).catch(() => {});
+
     const unsubscribe = subscribeBinhLuanList(
       novel.id,
       (firestoreComments) => {
@@ -1685,6 +1722,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     } else {
       setLikeCount((prev) => prev + 1);
       setHasLiked(true);
+      incrementD1Like(novel.id, 1).catch(() => {});
     }
   };
 
@@ -1733,6 +1771,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setNewCommentText('');
 
     try {
+      addD1Comment({
+        truyenId: novel.id,
+        author: finalAuthor,
+        content: tempComment.content,
+        rating: userRating,
+        badge: 'Độc Giả',
+      }).catch(() => {});
+
       await addBinhLuan(novel.id, {
         author: finalAuthor,
         content: tempComment.content,
@@ -1752,6 +1798,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
     } catch {}
     onUpdateNovel?.({ ...novel, comments: updated });
+
+    likeD1Comment(commentId).catch(() => {});
 
     try {
       likeBinhLuan(novel.id, commentId);
@@ -1779,6 +1827,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
     setIsDeleteCommentModalOpen(false);
     setCommentToDelete(null);
+
+    deleteD1Comment(targetId).catch(() => {});
 
     try {
       await deleteBinhLuan(novel.id, targetId);

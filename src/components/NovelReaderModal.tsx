@@ -41,6 +41,7 @@ import {
   deleteBinhLuan,
   isBotComment,
 } from '../services/firebase';
+import { recordChapterView } from '../services/d1Service';
 import { ChapterEditorModal } from './ChapterEditorModal';
 import { ChapterPasswordModal, isChapterPasswordUnlocked } from './ChapterPasswordModal';
 import { INITIAL_NOVELS } from '../data/novelData';
@@ -723,6 +724,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     const chap = allChapters.find((c) => c.chapterNumber === chapterNumber);
     const chapTitle = chap?.title || `Chương ${chapterNumber}`;
     recordChapterRead(novel.id, novel.title, chapterNumber, chapTitle);
+    recordChapterView(novel.id, chapterNumber);
 
     // 1. Instant load from in-memory cache if available (0ms delay)
     const cached = contentCacheRef.current[chapterNumber];

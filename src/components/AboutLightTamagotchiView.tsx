@@ -22,6 +22,7 @@ import {
   addIntroNoteStyle2,
   IntroReaderMessage,
 } from '../services/firebase';
+import { incrementLike as incrementD1Like, addGuestNote as addD1GuestNote } from '../services/d1Service';
 
 // Danh sách các trang nội dung bên trong Tamagotchi
 export const TAMA_STEPS = [
@@ -209,6 +210,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
     const sender = nicknameInput.trim() || `Độc giả #${Math.floor(100 + Math.random() * 900)}`;
     try {
+      addD1GuestNote('style2', sender, trimmed).catch(() => {});
       await addIntroNoteStyle2(sender, trimmed);
 
       if (!hasLiked) {
@@ -216,6 +218,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
         try {
           safeStorage.setItem('cosmo_has_liked_tama', 'true');
         } catch {}
+        incrementD1Like('intro_style2', 1).catch(() => {});
         incrementIntroHearts('style2').catch(console.error);
       }
 
@@ -286,7 +289,8 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
       setIsHeartFlashing(false);
     }, 450);
 
-    // 3. Cộng dồn điểm tương tác lên Firestore
+    // 3. Cộng dồn điểm tương tác lên Firestore & Cloudflare D1
+    incrementD1Like('intro_style2', 1).catch(() => {});
     incrementIntroHearts('style2').catch(console.error);
 
     showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');

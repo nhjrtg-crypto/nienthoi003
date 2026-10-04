@@ -1,0 +1,14 @@
+name = "nienthoi003"
+main = "worker.ts"
+compatibility_date = "2026-10-03"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nienthoi-db"
+database_id = "da9a2b34-1755-4315-8e71-9dbbabf8c643"
