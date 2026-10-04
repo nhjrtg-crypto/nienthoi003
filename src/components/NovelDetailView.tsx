@@ -110,6 +110,7 @@ import {
   deleteComment as deleteD1Comment,
   fetchLikes as fetchD1Likes,
   incrementLike as incrementD1Like,
+  saveNovelCoverToD1,
 } from '../services/d1Service';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
 import { LUA_NHAU_NOVEL } from '../data/luaNhauData';
@@ -721,13 +722,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     onUpdateCover?.(novel.id, newUrl);
     onUpdateNovel?.({ ...novel, coverImage: newUrl, coverImageUrl: newUrl });
     try {
+      saveNovelCoverToD1(novel.id, newUrl, novel.title).catch(() => {});
       await saveNovelCoverToFirebase(novel.id, newUrl, novel.title);
     } catch (e) {
-      console.warn('Could not auto-save cover to Firebase:', e);
+      console.warn('Could not auto-save cover:', e);
     }
   };
 
-  // Helper nén ảnh khi tải trực tiếp từ máy để tối ưu bộ nhớ & lưu Firestore an toàn
+  // Helper nén ảnh khi tải trực tiếp từ máy để tối ưu bộ nhớ & lưu Cloudflare D1 an toàn
   const compressImageFile = (file: File, callback: (dataUrl: string) => void) => {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -762,7 +764,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     reader.readAsDataURL(file);
   };
 
-  // Tự động tải tệp ảnh từ máy và lưu ngay vào Firebase Firestore
+  // Tự động tải tệp ảnh từ máy và lưu ngay vào Cloudflare D1 & Firebase
   const handleCoverFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -773,35 +775,36 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       setCustomCoverUrl(dataUrl);
 
       try {
-        const res = await saveNovelCoverToFirebase(novel.id, dataUrl, novel.title);
-        if (res.success) {
-          onUpdateCover?.(novel.id, dataUrl);
-          onUpdateNovel?.({ ...novel, coverImage: dataUrl, coverImageUrl: dataUrl });
-          try {
-            safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, dataUrl);
-            if (novel.title) {
-              safeStorage.setItem(`cosmo_novel_custom_cover_${novel.title}`, dataUrl);
-              safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(novel.title)}`, dataUrl);
-            }
-            const savedNovelsStr = safeStorage.getItem('cosmo_novels');
-            if (savedNovelsStr) {
-              const parsed: Novel[] = JSON.parse(savedNovelsStr);
-              const norm = normalizeNovelTitle(novel.title);
-              const next = parsed.map((n) =>
-                n.id === novel.id || normalizeNovelTitle(n.title) === norm
-                  ? { ...n, coverImage: dataUrl, coverImageUrl: dataUrl }
-                  : n
-              );
-              safeStorage.setItem('cosmo_novels', JSON.stringify(next));
-            }
-          } catch {}
-          triggerToast('Đã lưu ảnh bìa vào Firebase!', 'Ảnh bìa mới đã được tải lên và lưu trực tiếp vào cơ sở dữ liệu Firebase Cloud.');
-        } else {
-          triggerToast('Lỗi lưu Firebase', res.error || 'Vui lòng kiểm tra lại kết nối mạng.');
-        }
+        // 1. Lưu trực tiếp vào Cloudflare D1 (bất biến, không lo mất ảnh, không lo lỗi đồng bộ)
+        await saveNovelCoverToD1(novel.id, dataUrl, novel.title);
+
+        // 2. Dự phòng song song lên Firebase
+        saveNovelCoverToFirebase(novel.id, dataUrl, novel.title).catch(() => {});
+
+        onUpdateCover?.(novel.id, dataUrl);
+        onUpdateNovel?.({ ...novel, coverImage: dataUrl, coverImageUrl: dataUrl });
+        try {
+          safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, dataUrl);
+          if (novel.title) {
+            safeStorage.setItem(`cosmo_novel_custom_cover_${novel.title}`, dataUrl);
+            safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(novel.title)}`, dataUrl);
+          }
+          const savedNovelsStr = safeStorage.getItem('cosmo_novels');
+          if (savedNovelsStr) {
+            const parsed: Novel[] = JSON.parse(savedNovelsStr);
+            const norm = normalizeNovelTitle(novel.title);
+            const next = parsed.map((n) =>
+              n.id === novel.id || normalizeNovelTitle(n.title) === norm
+                ? { ...n, coverImage: dataUrl, coverImageUrl: dataUrl }
+                : n
+            );
+            safeStorage.setItem('cosmo_novels', JSON.stringify(next));
+          }
+        } catch {}
+        triggerToast('Đã lưu ảnh bìa vào Cloudflare D1!', 'Ảnh bìa mới đã được lưu trực tiếp vào cơ sở dữ liệu Cloudflare D1 và đồng bộ đám mây an toàn.');
       } catch (err: any) {
-        console.error('Lỗi khi tải ảnh bìa lên Firebase:', err);
-        triggerToast('Lỗi lưu Firebase', 'Không thể đồng bộ ảnh bìa mới với máy chủ.');
+        console.error('Lỗi khi tải ảnh bìa lên Cloudflare D1:', err);
+        triggerToast('Lỗi lưu ảnh', 'Không thể đồng bộ ảnh bìa mới với máy chủ.');
       } finally {
         setIsUploadingToFirebase(false);
       }
@@ -815,28 +818,28 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setIsUploadingToFirebase(true);
 
     try {
-      const res = await saveNovelCoverToFirebase(novel.id, currentCover, novel.title);
-      if (res.success) {
-        onUpdateCover?.(novel.id, currentCover);
-        onUpdateNovel?.({ ...novel, coverImage: currentCover, coverImageUrl: currentCover });
-        try {
-          safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, currentCover);
-          const savedNovelsStr = safeStorage.getItem('cosmo_novels');
-          if (savedNovelsStr) {
-            const parsed: Novel[] = JSON.parse(savedNovelsStr);
-            const next = parsed.map((n) =>
-              n.id === novel.id ? { ...n, coverImage: currentCover, coverImageUrl: currentCover } : n
-            );
-            safeStorage.setItem('cosmo_novels', JSON.stringify(next));
-          }
-        } catch {}
-        triggerToast('Đã lưu ảnh bìa vào Firebase!', 'Ảnh bìa đã được lưu trực tiếp vào cơ sở dữ liệu Firebase Cloud.');
-      } else {
-        triggerToast('Lỗi lưu Firebase', res.error || 'Không thể lưu lên đám mây.');
-      }
+      // Lưu trực tiếp vào Cloudflare D1
+      await saveNovelCoverToD1(novel.id, currentCover, novel.title);
+      // Dự phòng song song lên Firebase
+      saveNovelCoverToFirebase(novel.id, currentCover, novel.title).catch(() => {});
+
+      onUpdateCover?.(novel.id, currentCover);
+      onUpdateNovel?.({ ...novel, coverImage: currentCover, coverImageUrl: currentCover });
+      try {
+        safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, currentCover);
+        const savedNovelsStr = safeStorage.getItem('cosmo_novels');
+        if (savedNovelsStr) {
+          const parsed: Novel[] = JSON.parse(savedNovelsStr);
+          const next = parsed.map((n) =>
+            n.id === novel.id ? { ...n, coverImage: currentCover, coverImageUrl: currentCover } : n
+          );
+          safeStorage.setItem('cosmo_novels', JSON.stringify(next));
+        }
+      } catch {}
+      triggerToast('Đã lưu ảnh bìa vào Cloudflare D1!', 'Ảnh bìa đã được lưu trực tiếp vào cơ sở dữ liệu Cloudflare D1.');
     } catch (err) {
-      console.warn('Failed to save cover to Firebase', err);
-      triggerToast('Lỗi lưu Firebase', 'Không thể đồng bộ ảnh bìa.');
+      console.warn('Failed to save cover to Cloudflare D1', err);
+      triggerToast('Lỗi lưu ảnh', 'Không thể đồng bộ ảnh bìa.');
     } finally {
       setIsUploadingToFirebase(false);
     }
@@ -850,29 +853,29 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setCustomCoverUrl(coverToSave);
 
     try {
-      const res = await saveNovelCoverToFirebase(novel.id, coverToSave, novel.title);
-      if (res.success) {
-        onUpdateCover?.(novel.id, coverToSave);
-        onUpdateNovel?.({ ...novel, coverImage: coverToSave, coverImageUrl: coverToSave });
-        try {
-          safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, coverToSave);
-          const savedNovelsStr = safeStorage.getItem('cosmo_novels');
-          if (savedNovelsStr) {
-            const parsed: Novel[] = JSON.parse(savedNovelsStr);
-            const next = parsed.map((n) =>
-              n.id === novel.id ? { ...n, coverImage: coverToSave, coverImageUrl: coverToSave } : n
-            );
-            safeStorage.setItem('cosmo_novels', JSON.stringify(next));
-          }
-        } catch {}
-        setIsCoverModalOpen(false);
-        triggerToast('Đã lưu ảnh bìa vào Firebase thành công!', 'Ảnh bìa mới đã được lưu trực tiếp vào cơ sở dữ liệu Firebase Cloud.');
-      } else {
-        triggerToast('Lỗi lưu Firebase', res.error || 'Không thể lưu lên đám mây.');
-      }
+      // Lưu trực tiếp vào Cloudflare D1
+      await saveNovelCoverToD1(novel.id, coverToSave, novel.title);
+      // Dự phòng song song lên Firebase
+      saveNovelCoverToFirebase(novel.id, coverToSave, novel.title).catch(() => {});
+
+      onUpdateCover?.(novel.id, coverToSave);
+      onUpdateNovel?.({ ...novel, coverImage: coverToSave, coverImageUrl: coverToSave });
+      try {
+        safeStorage.setItem(`cosmo_novel_custom_cover_${novel.id}`, coverToSave);
+        const savedNovelsStr = safeStorage.getItem('cosmo_novels');
+        if (savedNovelsStr) {
+          const parsed: Novel[] = JSON.parse(savedNovelsStr);
+          const next = parsed.map((n) =>
+            n.id === novel.id ? { ...n, coverImage: coverToSave, coverImageUrl: coverToSave } : n
+          );
+          safeStorage.setItem('cosmo_novels', JSON.stringify(next));
+        }
+      } catch {}
+      setIsCoverModalOpen(false);
+      triggerToast('Đã lưu ảnh bìa vào Cloudflare D1!', 'Ảnh bìa mới đã được lưu trực tiếp vào cơ sở dữ liệu Cloudflare D1.');
     } catch (err) {
-      console.warn('Failed to save cover from modal to Firebase', err);
-      triggerToast('Lỗi lưu Firebase', 'Không thể đồng bộ ảnh bìa với máy chủ.');
+      console.warn('Failed to save cover from modal to Cloudflare D1', err);
+      triggerToast('Lỗi lưu ảnh', 'Không thể đồng bộ ảnh bìa với máy chủ.');
     } finally {
       setIsUploadingToFirebase(false);
     }

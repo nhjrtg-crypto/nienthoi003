@@ -44,7 +44,7 @@ import {
 } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getOriginalCoverByNovel, getCustomCoverFromStorage } from './utils/imageUtils';
-import { incrementGlobalView } from './services/d1Service';
+import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1 } from './services/d1Service';
 
 interface SavedViewState {
   viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
@@ -695,6 +695,27 @@ export default function App() {
     return () => unsub();
   }, [isAdmin]);
 
+  // Tự động tải và đồng bộ ảnh bìa lưu trên Cloudflare D1 khi vào trang
+  useEffect(() => {
+    fetchNovelCoversFromD1().then((covers) => {
+      if (covers && Object.keys(covers).length > 0) {
+        setNovels((prev) =>
+          prev.map((n) => {
+            const d1Cover = covers[n.id] || covers[n.title];
+            if (d1Cover && d1Cover.trim() && d1Cover.trim() !== n.coverImage) {
+              return {
+                ...n,
+                coverImage: d1Cover.trim(),
+                coverImageUrl: d1Cover.trim(),
+              };
+            }
+            return n;
+          })
+        );
+      }
+    }).catch(() => {});
+  }, []);
+
   // Combined novels: firestore novels + local novels
   const allMergedNovels = useMemo(() => {
     const mapped = firestoreTruyens.map((ft) => {
@@ -1178,16 +1199,23 @@ export default function App() {
 
   const handleUpdateNovelCover = (novelId: string, newCoverUrl: string) => {
     // 1. Persist to safeStorage immediately so NovelHomeView, NovelDetailView, and all components sync instantly
+    const matched = novels.find((n) => n.id === novelId);
     try {
       safeStorage.setItem(`cosmo_novel_custom_cover_${novelId}`, newCoverUrl);
-      const matched = novels.find((n) => n.id === novelId);
       if (matched?.title) {
         safeStorage.setItem(`cosmo_novel_custom_cover_${matched.title}`, newCoverUrl);
         safeStorage.setItem(`cosmo_novel_custom_cover_${normalizeNovelTitle(matched.title)}`, newCoverUrl);
       }
     } catch {}
 
-    // Persist to Firestore
+    // 2. Persist to Cloudflare D1 (bất biến, không lo mất ảnh, chống lỗi đồng bộ)
+    try {
+      saveNovelCoverToD1(novelId, newCoverUrl, matched?.title);
+    } catch (e) {
+      console.warn('Failed to update novel cover on Cloudflare D1', e);
+    }
+
+    // 3. Persist to Firestore backup
     try {
       saveNovelCoverToFirebase(novelId, newCoverUrl);
     } catch (e) {

@@ -68,3 +68,13 @@ CREATE TABLE IF NOT EXISTS guest_notes (
 );
 
 CREATE INDEX IF NOT EXISTS idx_guest_notes_style ON guest_notes(style, created_at DESC);
+
+-- 6. BẢNG ẢNH BÌA TRUYỆN (LƯU TRỰC TIẾP TRÊN CLOUDFLARE D1)
+CREATE TABLE IF NOT EXISTS novel_covers (
+  novel_id TEXT PRIMARY KEY,
+  cover_url TEXT NOT NULL,
+  novel_title TEXT,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_novel_covers_title ON novel_covers(novel_title);

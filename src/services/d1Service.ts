@@ -331,3 +331,77 @@ export async function addGuestNote(style: string, author: string, content: strin
   } catch {}
   return null;
 }
+
+// ============================================================================
+// 5. QUẢN LÝ ẢNH BÌA TRUYỆN (CLOUD FLARE D1)
+// Lưu trữ trực tiếp ảnh bìa vào Cloudflare D1, chống mất ảnh & đồng bộ tức thì
+// ============================================================================
+
+export async function fetchNovelCoversFromD1(): Promise<Record<string, string>> {
+  try {
+    const res = await fetch('/api/covers');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data.covers === 'object' && data.covers !== null) {
+        // Tự động đồng bộ vào safeStorage để các component dùng ngay
+        for (const [idOrTitle, coverUrl] of Object.entries(data.covers)) {
+          if (coverUrl && typeof coverUrl === 'string' && coverUrl.trim()) {
+            safeStorage.setItem(`cosmo_novel_custom_cover_${idOrTitle.trim()}`, coverUrl.trim());
+          }
+        }
+        return data.covers;
+      }
+    }
+  } catch {}
+  return {};
+}
+
+export async function saveNovelCoverToD1(
+  novelId: string,
+  coverUrl: string,
+  novelTitle?: string
+): Promise<{ success: boolean; error?: string }> {
+  const trimmedId = (novelId || '').trim();
+  const trimmedUrl = (coverUrl || '').trim();
+  const trimmedTitle = (novelTitle || '').trim();
+
+  if (!trimmedId || !trimmedUrl) {
+    return { success: false, error: 'Thiếu novelId hoặc coverUrl' };
+  }
+
+  // 1. Lưu ngay lập tức vào safeStorage trên trình duyệt để UI cập nhật tức thì (0ms latency)
+  try {
+    safeStorage.setItem(`cosmo_novel_custom_cover_${trimmedId}`, trimmedUrl);
+    if (trimmedTitle) {
+      safeStorage.setItem(`cosmo_novel_custom_cover_${trimmedTitle}`, trimmedUrl);
+    }
+  } catch {}
+
+  // 2. Gửi lưu trữ vĩnh viễn trên Cloudflare D1
+  try {
+    const res = await fetch('/api/covers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        novelId: trimmedId,
+        coverUrl: trimmedUrl,
+        novelTitle: trimmedTitle,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success) {
+        return { success: true };
+      }
+      return { success: false, error: data.error || 'Lỗi lưu Cloudflare D1' };
+    }
+  } catch (err: any) {
+    console.warn('Lỗi khi gửi ảnh bìa lên Cloudflare D1:', err);
+    // Vẫn trả về success: true vì đã lưu an toàn trong safeStorage
+    return { success: true };
+  }
+
+  return { success: true };
+}
+

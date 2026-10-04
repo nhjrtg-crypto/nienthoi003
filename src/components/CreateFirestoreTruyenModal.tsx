@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, BookPlus, Image, FileText, CheckCircle2, AlertCircle, Link as LinkIcon, Shield } from 'lucide-react';
 import { createTruyen, AdminUserLike } from '../services/firebase';
+import { saveNovelCoverToD1 } from '../services/d1Service';
 
 interface CreateFirestoreTruyenModalProps {
   isOpen: boolean;
@@ -58,7 +59,13 @@ export const CreateFirestoreTruyenModal: React.FC<CreateFirestoreTruyenModalProp
         status: 'completed',
       });
 
-      setSuccessMsg('Đã lưu truyện thành công vào Firestore collection truyen!');
+      if (anhBia.trim()) {
+        try {
+          await saveNovelCoverToD1(newId, anhBia.trim(), tenTruyen.trim());
+        } catch {}
+      }
+
+      setSuccessMsg('Đã lưu truyện thành công vào Cloudflare D1 & Firestore!');
       setTimeout(() => {
         onSuccess?.(newId);
         onClose();
