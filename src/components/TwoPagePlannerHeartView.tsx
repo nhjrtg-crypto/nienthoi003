@@ -113,8 +113,8 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
   isDarkMode = false,
   onToggleDarkMode,
 }) => {
-  // Trạng thái thả tim (Mặc định bắt đầu từ 0, đồng bộ thời gian thực từ Firestore)
-  const [heartsCount, setHeartsCount] = useState<number>(initialHearts);
+  // Trạng thái thả tim (Mặc định bắt đầu từ 30, đồng bộ thời gian thực từ Cloudflare D1)
+  const [heartsCount, setHeartsCount] = useState<number>(initialHearts > 0 ? initialHearts : 30);
   const [hasLiked, setHasLiked] = useState<boolean>(() => {
     try {
       return safeStorage.getItem('cosmo_has_liked_style1') === 'true';
@@ -168,22 +168,20 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
   const [guestContentInput, setGuestContentInput] = useState<string>('');
   const [guestBookPage, setGuestBookPage] = useState<number>(1);
 
-  // Xử lý thả tim (Cộng dồn vĩnh viễn trên Cloudflare D1 - Database 2)
+  // Xử lý thả tim (Giới hạn 1 trình duyệt chỉ thả tim được 1 lần - không phát âm thanh pop)
   const handleLike = () => {
-    // Luôn tăng số tim và đồng bộ ngay lập tức
-    incrementLike('intro_style1', 1).catch(() => {});
-
-    if (!hasLiked) {
-      setHasLiked(true);
-      try {
-        safeStorage.setItem('cosmo_has_liked_style1', 'true');
-      } catch {}
-      playCuteChime('pop');
-      showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
-    } else {
-      playCuteChime('sparkle');
-      showToast('Đã gửi thêm +1 tim yêu thương! (｡♥‿♥｡) 💕');
+    if (hasLiked) {
+      showToast('Bạn đã thả tim rồi nè, cảm ơn bạn rất nhiều! (｡♥‿♥｡)');
+      return;
     }
+
+    setHasLiked(true);
+    try {
+      safeStorage.setItem('cosmo_has_liked_style1', 'true');
+    } catch {}
+
+    incrementLike('intro_style1', 1).catch(() => {});
+    showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
   };
 
   // Sao chép liên kết

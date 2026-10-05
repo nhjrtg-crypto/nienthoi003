@@ -97,7 +97,6 @@ import {
   FirestoreChuongMeta,
   AdminUserLike,
   updateTruyen,
-  saveNovelCoverToFirebase,
   saveNovelSynopsisToFirebase,
   saveNovelTagsToFirebase,
   updateChuong,
@@ -721,9 +720,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     onUpdateNovel?.({ ...novel, coverImage: trimmed, coverImageUrl: trimmed });
     try {
       saveNovelCoverToD1(novel.id, trimmed, novel.title).catch(() => {});
-      saveNovelCoverToFirebase(novel.id, trimmed, novel.title).catch(() => {});
     } catch (e) {
-      console.warn('Could not auto-save cover:', e);
+      console.warn('Could not auto-save cover to Cloudflare D1:', e);
     }
   };
 
@@ -777,9 +775,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         saveCustomCoverToAllStores(novel.id, novel.title, dataUrl);
         await saveNovelCoverToD1(novel.id, dataUrl, novel.title);
 
-        // 2. Dự phòng song song lên Firebase
-        saveNovelCoverToFirebase(novel.id, dataUrl, novel.title).catch(() => {});
-
         onUpdateCover?.(novel.id, dataUrl);
         onUpdateNovel?.({ ...novel, coverImage: dataUrl, coverImageUrl: dataUrl });
         try {
@@ -815,8 +810,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       // Lưu trực tiếp vào Cloudflare D1 và mọi kho lưu trữ
       saveCustomCoverToAllStores(novel.id, novel.title, currentCover);
       await saveNovelCoverToD1(novel.id, currentCover, novel.title);
-      // Dự phòng song song lên Firebase
-      saveNovelCoverToFirebase(novel.id, currentCover, novel.title).catch(() => {});
 
       onUpdateCover?.(novel.id, currentCover);
       onUpdateNovel?.({ ...novel, coverImage: currentCover, coverImageUrl: currentCover });
@@ -850,8 +843,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       // Lưu trực tiếp vào Cloudflare D1 và mọi kho lưu trữ
       saveCustomCoverToAllStores(novel.id, novel.title, coverToSave);
       await saveNovelCoverToD1(novel.id, coverToSave, novel.title);
-      // Dự phòng song song lên Firebase
-      saveNovelCoverToFirebase(novel.id, coverToSave, novel.title).catch(() => {});
 
       onUpdateCover?.(novel.id, coverToSave);
       onUpdateNovel?.({ ...novel, coverImage: coverToSave, coverImageUrl: coverToSave });

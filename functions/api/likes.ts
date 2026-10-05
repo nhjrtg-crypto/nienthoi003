@@ -26,7 +26,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         success: true,
         source: 'fallback',
         targetId,
-        likeCount: targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 100),
+        likeCount: targetId.startsWith('intro_') ? 30 : 100,
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );
@@ -48,11 +48,25 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       .bind(targetId)
       .first();
 
+    let count = row ? row.like_count : 0;
+    // Set lại từ số 30 nếu là lượt tim trang giới thiệu đang dính số ảo cũ (>= 500) hoặc chưa có
+    if (targetId.startsWith('intro_')) {
+      if (!row || count >= 500 || count === 0) {
+        count = 30;
+        await db.prepare(
+          `INSERT INTO likes (target_id, like_count, updated_at) 
+           VALUES (?, 30, CURRENT_TIMESTAMP)
+           ON CONFLICT(target_id) 
+           DO UPDATE SET like_count = 30, updated_at = CURRENT_TIMESTAMP`
+        ).bind(targetId).run().catch(() => {});
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
         targetId,
-        likeCount: row ? row.like_count : 0,
+        likeCount: count,
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );

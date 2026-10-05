@@ -16,9 +16,10 @@ CREATE TABLE IF NOT EXISTS likes (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Khởi tạo số tim mặc định ban đầu nếu chưa có
-INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style1', 520);
-INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style2', 680);
+-- Khởi tạo số tim mặc định ban đầu nếu chưa có (Bắt đầu từ 30 theo yêu cầu)
+INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style1', 30);
+INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style2', 30);
+UPDATE likes SET like_count = 30 WHERE target_id IN ('intro_style1', 'intro_style2') AND like_count >= 500;
 
 -- 2. BẢNG LƯU BÚT / LỜI NHẮN ĐỘC GIẢ (Sổ Kế Hoạch Style 1 & Máy Trứng Style 2)
 CREATE TABLE IF NOT EXISTS guest_notes (

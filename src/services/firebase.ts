@@ -1466,67 +1466,16 @@ export async function updateTruyen(
 }
 
 /**
- * Lưu trực tiếp ảnh bìa mới vào Firebase Firestore
- * Đảm bảo dữ liệu được cập nhật trên Cloud (Firestore) theo đúng truyenId hoặc tên truyện
+ * @deprecated ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE:
+ * Ảnh bìa hiện được quản lý & lưu trữ 100% trên Cloudflare D1 (bảng novel_covers)
+ * Không còn ghi đè hay kết nối với Firebase Firestore để đảm bảo toàn vẹn dữ liệu.
  */
 export async function saveNovelCoverToFirebase(
-  truyenId: string,
-  coverUrlOrDataUrl: string,
-  novelTitle?: string
+  _truyenId: string,
+  _coverUrlOrDataUrl: string,
+  _novelTitle?: string
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const trimmedCover = coverUrlOrDataUrl.trim();
-    if (!trimmedCover) {
-      return { success: false, error: 'Dữ liệu ảnh bìa không hợp lệ' };
-    }
-
-    const now = new Date().toISOString();
-
-    // 1. Cập nhật trực tiếp document theo truyenId
-    if (truyenId) {
-      const docRef = doc(db, 'truyen', truyenId);
-      await setDoc(
-        docRef,
-        {
-          anhBia: trimmedCover,
-          ngayCapNhat: now,
-        },
-        { merge: true }
-      );
-    }
-
-    // 2. Nếu có novelTitle, kiểm tra và đồng bộ thêm các document có cùng tên truyện trong Firestore
-    if (novelTitle) {
-      const q = query(collection(db, 'truyen'), where('tenTruyen', '==', novelTitle.trim()));
-      const snap = await getDocs(q);
-      const updates = snap.docs.map((d) => {
-        if (d.id !== truyenId) {
-          return updateDoc(d.ref, {
-            anhBia: trimmedCover,
-            ngayCapNhat: now,
-          });
-        }
-        return Promise.resolve();
-      });
-      await Promise.all(updates);
-    }
-
-    // 3. Cập nhật ngay bộ nhớ cache cục bộ để cả Admin và Độc giả đều thấy ảnh bìa mới
-    const currentCached = getCachedTruyenList();
-    if (currentCached && currentCached.length > 0) {
-      const updatedCache = currentCached.map((t) =>
-        t.id === truyenId || (novelTitle && t.tenTruyen === novelTitle.trim())
-          ? { ...t, anhBia: trimmedCover, ngayCapNhat: now }
-          : t
-      );
-      setCachedTruyenList(updatedCache);
-    }
-
-    return { success: true };
-  } catch (err: any) {
-    console.error('Lỗi khi lưu ảnh bìa vào Firebase:', err);
-    return { success: false, error: err?.message || 'Không thể lưu lên Firebase' };
-  }
+  return { success: true };
 }
 
 /**

@@ -35,8 +35,9 @@ CREATE TABLE IF NOT EXISTS likes (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style1', 520);
-INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style2', 680);
+INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style1', 30);
+INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style2', 30);
+UPDATE likes SET like_count = 30 WHERE target_id IN ('intro_style1', 'intro_style2') AND like_count >= 500;
 
 -- 4. BẢNG BÌNH LUẬN (Bình luận truyện & Bình luận từng chương)
 CREATE TABLE IF NOT EXISTS comments (

@@ -136,8 +136,8 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     return () => clearInterval(timer);
   }, []);
 
-  // 4. Số lượng tim & Giới hạn mỗi trình duyệt chỉ thả tim 1 lần (Đồng bộ Firestore thực, khởi tạo 0)
-  const [tamaHearts, setTamaHearts] = useState<number>(0);
+  // 4. Số lượng tim & Giới hạn mỗi trình duyệt chỉ thả tim 1 lần (Đồng bộ Cloudflare D1, bắt đầu từ 30)
+  const [tamaHearts, setTamaHearts] = useState<number>(30);
 
   const [hasLiked, setHasLiked] = useState<boolean>(() => {
     try {
@@ -256,15 +256,17 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     setActiveTab(TAMA_STEPS[nextIdx].id);
   };
 
-  // 💜 NÚT [B]: THẢ TIM (Màu Tím Hoa Cà - Cloudflare D1 Database 2)
+  // 💜 NÚT [B]: THẢ TIM (Màu Tím Hoa Cà - Giới hạn 1 trình duyệt chỉ được thả tim 1 lần)
   const handlePressB = () => {
-    const wasAlreadyLiked = hasLiked;
-    if (!wasAlreadyLiked) {
-      setHasLiked(true);
-      try {
-        safeStorage.setItem('cosmo_has_liked_tama', 'true');
-      } catch {}
+    if (hasLiked) {
+      showToast('Bạn đã thả tim rồi nè, cảm ơn bạn rất nhiều! (｡♥‿♥｡)');
+      return;
     }
+
+    setHasLiked(true);
+    try {
+      safeStorage.setItem('cosmo_has_liked_tama', 'true');
+    } catch {}
 
     // 1. Rung nhẹ máy & phản hồi xúc giác
     setIsTamaShaking(true);
@@ -294,11 +296,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     // 3. Cộng dồn điểm tương tác lên Cloudflare D1 (Database 2)
     incrementLike('intro_style2', 1).catch(() => {});
 
-    if (!wasAlreadyLiked) {
-      showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
-    } else {
-      showToast('Đã gửi thêm +1 tim yêu thương! (｡♥‿♥｡) 💕');
-    }
+    showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
   };
 
   // 💖 NÚT [C]: TRANG ĐẦU (Quay về màn hình Welcome)

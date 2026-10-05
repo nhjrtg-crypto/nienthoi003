@@ -149,20 +149,30 @@ export function subscribeLikes(targetId: string, callback: (count: number) => vo
 
   // Khởi tạo từ Memory hoặc safeStorage để không bao giờ bị flash số 0
   let initial = inMemoryLikes[targetId] || 0;
-  if (initial <= 0) {
-    try {
-      const saved = safeStorage.getItem(`cf_d1_like_${targetId}`);
-      if (saved) {
-        const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed) && parsed > 0) initial = parsed;
+  try {
+    const saved = safeStorage.getItem(`cf_d1_like_${targetId}`);
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        // Nếu dính số ảo cũ >= 500 thì reset về 30 theo yêu cầu người dùng
+        if (targetId.startsWith('intro_') && parsed >= 500) {
+          initial = 30;
+          safeStorage.setItem(`cf_d1_like_${targetId}`, '30');
+        } else {
+          initial = parsed;
+        }
       }
-    } catch {}
-  }
+    }
+  } catch {}
 
-  // Giá trị khởi tạo đẹp mắt ban đầu nếu là trang giới thiệu
-  if (initial <= 0) {
-    if (targetId === 'intro_style1') initial = 520;
-    else if (targetId === 'intro_style2') initial = 680;
+  // Mặc định bắt đầu từ số 30 cho trang giới thiệu
+  if (initial <= 0 || (targetId.startsWith('intro_') && initial >= 500)) {
+    if (targetId === 'intro_style1' || targetId === 'intro_style2') {
+      initial = 30;
+      try {
+        safeStorage.setItem(`cf_d1_like_${targetId}`, '30');
+      } catch {}
+    }
   }
 
   inMemoryLikes[targetId] = initial;
@@ -189,7 +199,11 @@ export async function fetchLikes(targetId: string): Promise<number> {
     if (res.ok) {
       const data = await res.json();
       if (typeof data.likeCount === 'number') {
-        const next = Math.max(data.likeCount, inMemoryLikes[targetId] || 0);
+        let serverCount = data.likeCount;
+        if (targetId.startsWith('intro_') && serverCount >= 500) {
+          serverCount = 30;
+        }
+        const next = Math.max(serverCount, inMemoryLikes[targetId] || (targetId.startsWith('intro_') ? 30 : 0));
         inMemoryLikes[targetId] = next;
         try {
           safeStorage.setItem(`cf_d1_like_${targetId}`, String(next));
@@ -199,11 +213,11 @@ export async function fetchLikes(targetId: string): Promise<number> {
       }
     }
   } catch {}
-  return inMemoryLikes[targetId] || (targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 0));
+  return inMemoryLikes[targetId] || (targetId.startsWith('intro_') ? 30 : 0);
 }
 
 export async function incrementLike(targetId: string, amount = 1): Promise<number> {
-  const current = inMemoryLikes[targetId] || (targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 0));
+  const current = inMemoryLikes[targetId] || (targetId.startsWith('intro_') ? 30 : 0);
   const next = current + amount;
   inMemoryLikes[targetId] = next;
   try {

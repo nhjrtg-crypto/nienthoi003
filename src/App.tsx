@@ -31,7 +31,6 @@ import {
   saveChaptersToFirestore,
   updateTruyenStatus,
   updateTruyen,
-  saveNovelCoverToFirebase,
   saveNovelSynopsisToFirebase,
   saveNovelTagsToFirebase,
   deleteTruyen,
@@ -1243,21 +1242,14 @@ export default function App() {
     // 1. Lưu ngay vào mọi tầng lưu trữ (Memory, safeStorage, IndexedDB)
     saveCustomCoverToAllStores(novelId, title, trimmedCover);
 
-    // 2. Persist to Cloudflare D1
+    // 2. Lưu trực tiếp vào Cloudflare D1 (100% độc lập, ngắt kết nối hoàn toàn khỏi Firebase)
     try {
       saveNovelCoverToD1(novelId, trimmedCover, title);
     } catch (e) {
       console.warn('Failed to update novel cover on Cloudflare D1', e);
     }
 
-    // 3. Persist to Firestore backup
-    try {
-      saveNovelCoverToFirebase(novelId, trimmedCover, title);
-    } catch (e) {
-      console.warn('Failed to update novel cover on Firestore', e);
-    }
-
-    // 4. Cập nhật state firestoreTruyens
+    // 3. Cập nhật state firestoreTruyens
     setFirestoreTruyens((prev) =>
       prev.map((ft) =>
         ft.id === novelId ||
