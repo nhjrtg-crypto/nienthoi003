@@ -114,10 +114,27 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
   onToggleDarkMode,
 }) => {
   // Trạng thái thả tim (Mặc định bắt đầu từ 30, đồng bộ thời gian thực từ Cloudflare D1)
-  const [heartsCount, setHeartsCount] = useState<number>(initialHearts > 0 ? initialHearts : 30);
+  const [heartsCount, setHeartsCount] = useState<number>(() => {
+    try {
+      const saved =
+        safeStorage.getItem('cf_d1_like_intro_page') ||
+        safeStorage.getItem('cf_d1_like_intro_style1') ||
+        safeStorage.getItem('cf_d1_like_intro_style2');
+      if (saved) {
+        const p = parseInt(saved, 10);
+        if (!isNaN(p) && p >= 30 && p !== 521) return p;
+      }
+    } catch {}
+    return initialHearts > 0 ? initialHearts : 30;
+  });
+
   const [hasLiked, setHasLiked] = useState<boolean>(() => {
     try {
-      return safeStorage.getItem('cosmo_has_liked_style1') === 'true';
+      return (
+        safeStorage.getItem('cosmo_has_liked_intro') === 'true' ||
+        safeStorage.getItem('cosmo_has_liked_style1') === 'true' ||
+        safeStorage.getItem('cosmo_has_liked_tama') === 'true'
+      );
     } catch {
       return false;
     }
@@ -151,7 +168,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
       safeStorage.removeItem('cosmo_style1_notes');
     } catch {}
 
-    const unsubHearts = subscribeLikes('intro_style1', (count) => {
+    const unsubHearts = subscribeLikes('intro_page', (count) => {
       setHeartsCount(count);
     });
     const unsubNotes = subscribeGuestNotes('style1', (notes) => {
@@ -176,11 +193,14 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
     }
 
     setHasLiked(true);
+    setHeartsCount((prev) => Math.max(prev + 1, 31));
     try {
+      safeStorage.setItem('cosmo_has_liked_intro', 'true');
       safeStorage.setItem('cosmo_has_liked_style1', 'true');
+      safeStorage.setItem('cosmo_has_liked_tama', 'true');
     } catch {}
 
-    incrementLike('intro_style1', 1).catch(() => {});
+    incrementLike('intro_page', 1).catch(() => {});
     showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
   };
 

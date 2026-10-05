@@ -137,11 +137,27 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
   }, []);
 
   // 4. Số lượng tim & Giới hạn mỗi trình duyệt chỉ thả tim 1 lần (Đồng bộ Cloudflare D1, bắt đầu từ 30)
-  const [tamaHearts, setTamaHearts] = useState<number>(30);
+  const [tamaHearts, setTamaHearts] = useState<number>(() => {
+    try {
+      const saved =
+        safeStorage.getItem('cf_d1_like_intro_page') ||
+        safeStorage.getItem('cf_d1_like_intro_style2') ||
+        safeStorage.getItem('cf_d1_like_intro_style1');
+      if (saved) {
+        const p = parseInt(saved, 10);
+        if (!isNaN(p) && p >= 30 && p !== 521) return p;
+      }
+    } catch {}
+    return 30;
+  });
 
   const [hasLiked, setHasLiked] = useState<boolean>(() => {
     try {
-      return safeStorage.getItem('cosmo_has_liked_tama') === 'true';
+      return (
+        safeStorage.getItem('cosmo_has_liked_intro') === 'true' ||
+        safeStorage.getItem('cosmo_has_liked_style1') === 'true' ||
+        safeStorage.getItem('cosmo_has_liked_tama') === 'true'
+      );
     } catch {
       return false;
     }
@@ -187,10 +203,9 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
   useEffect(() => {
     try {
       safeStorage.removeItem('cosmo_tama_messages');
-      safeStorage.removeItem('cosmo_tama_hearts');
     } catch {}
 
-    const unsubHearts = subscribeLikes('intro_style2', (count) => {
+    const unsubHearts = subscribeLikes('intro_page', (count) => {
       setTamaHearts(count);
     });
     const unsubNotes = subscribeGuestNotes('style2', (notes) => {
@@ -221,10 +236,13 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
       if (!hasLiked) {
         setHasLiked(true);
+        setTamaHearts((prev) => Math.max(prev + 1, 31));
         try {
+          safeStorage.setItem('cosmo_has_liked_intro', 'true');
+          safeStorage.setItem('cosmo_has_liked_style1', 'true');
           safeStorage.setItem('cosmo_has_liked_tama', 'true');
         } catch {}
-        incrementLike('intro_style2', 1).catch(() => {});
+        incrementLike('intro_page', 1).catch(() => {});
       }
 
       const heartId = Date.now();
@@ -264,7 +282,10 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     }
 
     setHasLiked(true);
+    setTamaHearts((prev) => Math.max(prev + 1, 31));
     try {
+      safeStorage.setItem('cosmo_has_liked_intro', 'true');
+      safeStorage.setItem('cosmo_has_liked_style1', 'true');
       safeStorage.setItem('cosmo_has_liked_tama', 'true');
     } catch {}
 
@@ -294,7 +315,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     }, 450);
 
     // 3. Cộng dồn điểm tương tác lên Cloudflare D1 (Database 2)
-    incrementLike('intro_style2', 1).catch(() => {});
+    incrementLike('intro_page', 1).catch(() => {});
 
     showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
   };

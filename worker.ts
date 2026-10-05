@@ -128,8 +128,9 @@ export default {
     // 2. API: /api/likes (Thả tim truyện & trang giới thiệu - hỗ trợ INTRO_DB)
     // ========================================================================
     if (url.pathname === '/api/likes' || url.pathname.startsWith('/api/likes/')) {
-      const targetId = url.searchParams.get('targetId') || 'global';
-      const db = (targetId.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+      const rawTarget = url.searchParams.get('targetId') || 'global';
+      const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
+      const db = (targetId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
 
       if (request.method === 'GET') {
         if (!db) {
@@ -138,7 +139,7 @@ export default {
               success: true,
               source: 'fallback',
               targetId,
-              likeCount: targetId.startsWith('intro_') ? 30 : 100,
+              likeCount: targetId === 'intro_page' ? 30 : 100,
             }),
             { headers: { 'Content-Type': 'application/json' } }
           );
@@ -157,14 +158,14 @@ export default {
             .first();
 
           let count = row ? row.like_count : 0;
-          if (targetId.startsWith('intro_')) {
-            if (!row || count >= 500 || count === 0) {
+          if (targetId === 'intro_page') {
+            if (!row || count < 30) {
               count = 30;
               await db.prepare(
                 `INSERT INTO likes (target_id, like_count, updated_at) 
                  VALUES (?, 30, CURRENT_TIMESTAMP)
                  ON CONFLICT(target_id) 
-                 DO UPDATE SET like_count = 30, updated_at = CURRENT_TIMESTAMP`
+                 DO UPDATE SET like_count = CASE WHEN like_count < 30 THEN 30 ELSE like_count END, updated_at = CURRENT_TIMESTAMP`
               ).bind(targetId).run().catch(() => {});
             }
           }
@@ -184,13 +185,14 @@ export default {
       if (request.method === 'POST') {
         try {
           const body = (await request.json().catch(() => ({}))) as any;
-          const target = body.targetId || targetId;
+          const rawPostTarget = body.targetId || targetId;
+          const postTarget = rawPostTarget.startsWith('intro_') || rawPostTarget === 'intro' ? 'intro_page' : rawPostTarget;
           const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
-          const postDb = (target.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+          const postDb = (postTarget === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
 
           if (!postDb) {
             return new Response(
-              JSON.stringify({ success: true, source: 'fallback', likeCount: 521 }),
+              JSON.stringify({ success: true, source: 'fallback', targetId: postTarget, incremented: true }),
               { headers: { 'Content-Type': 'application/json' } }
             );
           }
@@ -203,19 +205,21 @@ export default {
             )
           `).run().catch(() => {});
 
+          const baseCount = postTarget === 'intro_page' ? 30 : 0;
+
           await postDb.prepare(
             `INSERT INTO likes (target_id, like_count, updated_at) 
-             VALUES (?, ?, CURRENT_TIMESTAMP)
+             VALUES (?, ? + ?, CURRENT_TIMESTAMP)
              ON CONFLICT(target_id) 
              DO UPDATE SET like_count = like_count + ?, updated_at = CURRENT_TIMESTAMP`
-          ).bind(target, amount, amount).run();
+          ).bind(postTarget, baseCount, amount, amount).run();
 
           const row = await postDb.prepare('SELECT like_count FROM likes WHERE target_id = ?')
-            .bind(target)
+            .bind(postTarget)
             .first();
 
           return new Response(
-            JSON.stringify({ success: true, targetId: target, likeCount: row ? row.like_count : amount }),
+            JSON.stringify({ success: true, targetId: postTarget, likeCount: row ? row.like_count : (baseCount + amount) }),
             { headers: { 'Content-Type': 'application/json' } }
           );
         } catch (error: any) {

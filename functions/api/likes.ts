@@ -15,10 +15,11 @@ interface EventContext {
 export const onRequestGet = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
   const url = new URL(request.url);
-  const targetId = url.searchParams.get('targetId') || 'global';
+  const rawTarget = url.searchParams.get('targetId') || 'global';
+  const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
 
   // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/thả tim) nếu có, fallback về DB
-  const db = (targetId.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+  const db = (targetId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
 
   if (!db) {
     return new Response(
@@ -26,7 +27,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         success: true,
         source: 'fallback',
         targetId,
-        likeCount: targetId.startsWith('intro_') ? 30 : 100,
+        likeCount: targetId === 'intro_page' ? 30 : 100,
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );
@@ -49,15 +50,15 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       .first();
 
     let count = row ? row.like_count : 0;
-    // Set lại từ số 30 nếu là lượt tim trang giới thiệu đang dính số ảo cũ (>= 500) hoặc chưa có
-    if (targetId.startsWith('intro_')) {
-      if (!row || count >= 500 || count === 0) {
+    // Khởi tạo tối thiểu từ số 30 cho trang giới thiệu nếu chưa có
+    if (targetId === 'intro_page') {
+      if (!row || count < 30) {
         count = 30;
         await db.prepare(
           `INSERT INTO likes (target_id, like_count, updated_at) 
            VALUES (?, 30, CURRENT_TIMESTAMP)
            ON CONFLICT(target_id) 
-           DO UPDATE SET like_count = 30, updated_at = CURRENT_TIMESTAMP`
+           DO UPDATE SET like_count = CASE WHEN like_count < 30 THEN 30 ELSE like_count END, updated_at = CURRENT_TIMESTAMP`
         ).bind(targetId).run().catch(() => {});
       }
     }
@@ -87,15 +88,16 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       amount?: number;
     };
 
-    const targetId = body.targetId || 'intro_style1';
+    const rawTarget = body.targetId || 'intro_page';
+    const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
     const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
 
     // Ưu tiên INTRO_DB (Database thứ 2) nếu có
-    const db = (targetId.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+    const db = (targetId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
 
     if (!db) {
       return new Response(
-        JSON.stringify({ success: true, source: 'fallback', targetId, likeCount: 521 }),
+        JSON.stringify({ success: true, source: 'fallback', targetId, incremented: true }),
         { headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -109,13 +111,15 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       )
     `).run().catch(() => {});
 
+    const baseCount = targetId === 'intro_page' ? 30 : 0;
+
     await db.prepare(
       `INSERT INTO likes (target_id, like_count, updated_at) 
-       VALUES (?, ?, CURRENT_TIMESTAMP)
+       VALUES (?, ? + ?, CURRENT_TIMESTAMP)
        ON CONFLICT(target_id) 
        DO UPDATE SET like_count = like_count + ?, updated_at = CURRENT_TIMESTAMP`
     )
-      .bind(targetId, amount, amount)
+      .bind(targetId, baseCount, amount, amount)
       .run();
 
     const row = await db.prepare(
@@ -128,7 +132,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       JSON.stringify({
         success: true,
         targetId,
-        likeCount: row ? row.like_count : amount,
+        likeCount: row ? row.like_count : (baseCount + amount),
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );

@@ -141,23 +141,59 @@ export async function recordChapterView(novelId: string, chapterNumber: number):
 // 2. QUẢN LÝ LƯỢT THẢ TIM (CLOUD FLARE D1 - HỖ TRỢ INTRO_DB DATABASE 2)
 // ============================================================================
 
-export function subscribeLikes(targetId: string, callback: (count: number) => void): () => void {
+export function normalizeLikeTargetId(targetId: string): string {
+  if (
+    targetId === 'intro_style1' ||
+    targetId === 'intro_style2' ||
+    targetId === 'intro' ||
+    targetId === 'intro_page' ||
+    targetId.startsWith('intro_')
+  ) {
+    return 'intro_page';
+  }
+  return targetId;
+}
+
+function notifyLikeListeners(targetId: string, count: number): void {
+  likesListeners[targetId]?.forEach((fn) => fn(count));
+  // Đồng bộ cho cả intro_page, intro_style1, intro_style2 nếu là tim giới thiệu
+  if (targetId === 'intro_page') {
+    likesListeners['intro_style1']?.forEach((fn) => fn(count));
+    likesListeners['intro_style2']?.forEach((fn) => fn(count));
+    likesListeners['intro']?.forEach((fn) => fn(count));
+  }
+}
+
+export function subscribeLikes(rawTargetId: string, callback: (count: number) => void): () => void {
+  const targetId = normalizeLikeTargetId(rawTargetId);
   if (!likesListeners[targetId]) {
     likesListeners[targetId] = new Set();
   }
   likesListeners[targetId].add(callback);
+  // Nếu là intro style, cũng add vào raw target để đảm bảo lắng nghe trực tiếp
+  if (rawTargetId !== targetId) {
+    if (!likesListeners[rawTargetId]) {
+      likesListeners[rawTargetId] = new Set();
+    }
+    likesListeners[rawTargetId].add(callback);
+  }
 
   // Khởi tạo từ Memory hoặc safeStorage để không bao giờ bị flash số 0
   let initial = inMemoryLikes[targetId] || 0;
   try {
-    const saved = safeStorage.getItem(`cf_d1_like_${targetId}`);
+    const saved =
+      safeStorage.getItem(`cf_d1_like_${targetId}`) ||
+      (targetId === 'intro_page'
+        ? safeStorage.getItem('cf_d1_like_intro_style1') || safeStorage.getItem('cf_d1_like_intro_style2')
+        : null);
+
     if (saved) {
       const parsed = parseInt(saved, 10);
       if (!isNaN(parsed) && parsed > 0) {
-        // Nếu dính số ảo cũ >= 500 thì reset về 30 theo yêu cầu người dùng
-        if (targetId.startsWith('intro_') && parsed >= 500) {
+        // Chỉ loại bỏ số ảo cũ 521 nếu có
+        if (targetId === 'intro_page' && parsed === 521) {
           initial = 30;
-          safeStorage.setItem(`cf_d1_like_${targetId}`, '30');
+          safeStorage.setItem('cf_d1_like_intro_page', '30');
         } else {
           initial = parsed;
         }
@@ -166,64 +202,82 @@ export function subscribeLikes(targetId: string, callback: (count: number) => vo
   } catch {}
 
   // Mặc định bắt đầu từ số 30 cho trang giới thiệu
-  if (initial <= 0 || (targetId.startsWith('intro_') && initial >= 500)) {
-    if (targetId === 'intro_style1' || targetId === 'intro_style2') {
-      initial = 30;
-      try {
-        safeStorage.setItem(`cf_d1_like_${targetId}`, '30');
-      } catch {}
-    }
+  if (targetId === 'intro_page' && (initial < 30 || initial === 521)) {
+    initial = 30;
+    try {
+      safeStorage.setItem('cf_d1_like_intro_page', '30');
+      safeStorage.setItem('cf_d1_like_intro_style1', '30');
+      safeStorage.setItem('cf_d1_like_intro_style2', '30');
+    } catch {}
   }
 
   inMemoryLikes[targetId] = initial;
   callback(initial);
 
-  fetchLikes(targetId).then((count) => {
-    callback(count);
-  }).catch(() => {});
+  fetchLikes(targetId)
+    .then((count) => {
+      callback(count);
+    })
+    .catch(() => {});
 
   // Tự động làm mới mỗi 30s nếu người dùng còn ở trang
   const intervalId = setInterval(() => {
-    fetchLikes(targetId).then((count) => callback(count)).catch(() => {});
+    fetchLikes(targetId)
+      .then((count) => callback(count))
+      .catch(() => {});
   }, 30 * 1000);
 
   return () => {
     likesListeners[targetId]?.delete(callback);
+    if (rawTargetId !== targetId) {
+      likesListeners[rawTargetId]?.delete(callback);
+    }
     clearInterval(intervalId);
   };
 }
 
-export async function fetchLikes(targetId: string): Promise<number> {
+export async function fetchLikes(rawTargetId: string): Promise<number> {
+  const targetId = normalizeLikeTargetId(rawTargetId);
   try {
     const res = await fetch(`/api/likes?targetId=${encodeURIComponent(targetId)}`);
     if (res.ok) {
       const data = await res.json();
       if (typeof data.likeCount === 'number') {
-        let serverCount = data.likeCount;
-        if (targetId.startsWith('intro_') && serverCount >= 500) {
-          serverCount = 30;
+        const serverCount = data.likeCount;
+        if (serverCount === 521) {
+          return inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
         }
-        const next = Math.max(serverCount, inMemoryLikes[targetId] || (targetId.startsWith('intro_') ? 30 : 0));
+        const currentLocal = inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
+        const next = Math.max(serverCount, currentLocal);
         inMemoryLikes[targetId] = next;
         try {
           safeStorage.setItem(`cf_d1_like_${targetId}`, String(next));
+          if (targetId === 'intro_page') {
+            safeStorage.setItem('cf_d1_like_intro_style1', String(next));
+            safeStorage.setItem('cf_d1_like_intro_style2', String(next));
+          }
         } catch {}
-        likesListeners[targetId]?.forEach((fn) => fn(next));
+        notifyLikeListeners(targetId, next);
         return next;
       }
     }
   } catch {}
-  return inMemoryLikes[targetId] || (targetId.startsWith('intro_') ? 30 : 0);
+  return inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
 }
 
-export async function incrementLike(targetId: string, amount = 1): Promise<number> {
-  const current = inMemoryLikes[targetId] || (targetId.startsWith('intro_') ? 30 : 0);
+export async function incrementLike(rawTargetId: string, amount = 1): Promise<number> {
+  const targetId = normalizeLikeTargetId(rawTargetId);
+  const current = inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
   const next = current + amount;
   inMemoryLikes[targetId] = next;
   try {
     safeStorage.setItem(`cf_d1_like_${targetId}`, String(next));
+    if (targetId === 'intro_page') {
+      safeStorage.setItem('cf_d1_like_intro_style1', String(next));
+      safeStorage.setItem('cf_d1_like_intro_style2', String(next));
+    }
   } catch {}
-  likesListeners[targetId]?.forEach((fn) => fn(next));
+  notifyLikeListeners(targetId, next);
 
   try {
     const res = await fetch('/api/likes', {
@@ -233,13 +287,17 @@ export async function incrementLike(targetId: string, amount = 1): Promise<numbe
     });
     if (res.ok) {
       const data = await res.json();
-      if (typeof data.likeCount === 'number') {
+      if (typeof data.likeCount === 'number' && data.likeCount > 0 && data.likeCount !== 521) {
         const serverCount = Math.max(data.likeCount, next);
         inMemoryLikes[targetId] = serverCount;
         try {
           safeStorage.setItem(`cf_d1_like_${targetId}`, String(serverCount));
+          if (targetId === 'intro_page') {
+            safeStorage.setItem('cf_d1_like_intro_style1', String(serverCount));
+            safeStorage.setItem('cf_d1_like_intro_style2', String(serverCount));
+          }
         } catch {}
-        likesListeners[targetId]?.forEach((fn) => fn(serverCount));
+        notifyLikeListeners(targetId, serverCount);
         return serverCount;
       }
     }
