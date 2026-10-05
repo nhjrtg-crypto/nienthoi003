@@ -31,6 +31,24 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   }
 
   try {
+    // Tự động khởi tạo bảng comments nếu chưa có trên D1
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS comments (
+        id TEXT PRIMARY KEY,
+        novel_id TEXT NOT NULL,
+        chapter_number INTEGER DEFAULT NULL,
+        chapter_title TEXT DEFAULT NULL,
+        author TEXT NOT NULL DEFAULT 'Bạn Đọc',
+        content TEXT NOT NULL,
+        avatar TEXT DEFAULT '',
+        badge TEXT DEFAULT 'Độc Giả',
+        rating INTEGER DEFAULT 5,
+        likes INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL,
+        created_timestamp INTEGER NOT NULL
+      )
+    `).run().catch(() => {});
+
     let stmt;
     if (novelId && chapterNumber !== null && chapterNumber !== undefined && chapterNumber !== '') {
       const chapNum = parseInt(chapterNumber, 10);

@@ -570,25 +570,8 @@ export async function flushPendingReadsToFirestore(): Promise<void> {
       );
     }
 
-    // 2. Đồng bộ lên từng bộ truyện (Cộng dồn vĩnh viễn)
-    novelsToSync.forEach((count, nId) => {
-      if (count > 0 && nId) {
-        const novelDocRef = doc(db, 'truyen', nId);
-        promises.push(
-          setDoc(
-            novelDocRef,
-            {
-              views: increment(count),
-              luotDoc: increment(count),
-              ngayCapNhat: new Date().toISOString(),
-            },
-            { merge: true }
-          ).catch((err) => {
-            console.warn(`[Firestore] Notice syncing novel ${nId} reads:`, err);
-          })
-        );
-      }
-    });
+    // 2. Lượt đọc của từng truyện đã được đồng bộ 100% qua Cloudflare D1 (bảng novel_views / views)
+    // Đã ngắt kết nối hoàn toàn khỏi Firestore collection 'truyen'
 
     await Promise.allSettled(promises);
   } catch (err) {
@@ -1064,10 +1047,7 @@ export async function recordChapterRead(
   notifyReadListeners();
   notifyWebsiteViewListeners();
 
-  // 3. Đưa vào hàng đợi gom lượt đọc thông minh (Batched Atomic Writes)
-  // Cộng dồn 100% vĩnh viễn trên Firestore cho mọi thiết bị, đồng thời giảm 90% số lượt Write lên Firebase.
-  queuePendingTrackerRead(1);
-  queuePendingNovelRead(novelId, 1);
+  // ĐÃ CHUYỂN SANG CLOUDFLARE D1 (recordChapterView) - Không ghi lượt đọc vào Firestore nữa
 
   // 5. Ghi log hiển thị trong Modal chi tiết lượt đọc
   const logItem: FirestoreReadLogItem = {
@@ -1160,7 +1140,7 @@ export async function forceCheckFirestoreConnection(): Promise<{
 }> {
   try {
     // Try pinging a test doc
-    const testDoc = doc(db, 'truyen', 'nienthoi_quota_ping_test');
+    const testDoc = doc(db, 'he_thong', 'quota_ping_test');
     await getDoc(testDoc);
     // Handshake succeeded without quota failure
     clearQuotaExceededFlag();
@@ -1228,162 +1208,18 @@ export function setCachedTruyenList(list: FirestoreTruyen[]): void {
   }
 }
 
-export async function fetchTruyenList(isAdmin: boolean, force = false): Promise<FirestoreTruyen[]> {
-  const cached = getCachedTruyenList();
-
-  let cacheTime = 0;
-  try {
-    const savedTime = safeStorage.getItem(CACHE_TIME_KEY);
-    if (savedTime) cacheTime = parseInt(savedTime, 10);
-  } catch {}
-
-  const isCacheFresh = !force && cached.length > 0 && Date.now() - cacheTime < CACHE_TTL_MS;
-
-  // 1. Nếu cache còn tươi (< 60s) và không force reload, trả về cache ngay (0 lượt đọc Firestore)
-  if (isCacheFresh) {
-    return cached;
-  }
-
-  // 2. Khi quota bị vượt quá gần đây và đã có cache, ưu tiên trả về cache ngay tức thì
-  if (isQuotaExceededActive() && cached.length > 0) {
-    memoryTruyenListCache = cached;
-    return cached;
-  }
-
-  try {
-    const truyenRef = collection(db, 'truyen');
-    const snapshot = await getDocs(truyenRef);
-
-    const list: FirestoreTruyen[] = [];
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data() as Partial<FirestoreTruyen>;
-      // Filter out draft and banned novels
-      if ((!isAdmin && data.trangThai === 'nhap') || isBannedOrDraftFirestore(docSnap.id, data.tenTruyen, data.trangThai)) {
-        return;
-      }
-      list.push({
-        id: docSnap.id,
-        tenTruyen: data.tenTruyen || '',
-        moTa: data.moTa || '',
-        anhBia: data.anhBia || '',
-        theLoai: data.theLoai || '',
-        tacGia: data.tacGia || '',
-        trangThai: 'daDang',
-        adminUid: data.adminUid || '',
-        adminEmail: data.adminEmail || '',
-        ngayTao: data.ngayTao || new Date().toISOString(),
-        ngayCapNhat: data.ngayCapNhat || new Date().toISOString(),
-        soChuong: data.soChuong || 0,
-        worldLore: data.worldLore || '',
-        uploaderNote: data.uploaderNote || '',
-      });
-    });
-
-    // Sort descending by date
-    list.sort((a, b) => new Date(b.ngayCapNhat).getTime() - new Date(a.ngayCapNhat).getTime());
-
-    if (list.length > 0) {
-      setCachedTruyenList(list);
-    } else if (cached.length > 0) {
-      memoryTruyenListCache = cached;
-      return cached;
-    }
-    return list;
-  } catch (error) {
-    if (isFirestoreQuotaError(error)) {
-      markQuotaExceeded();
-      console.warn('[Firebase] Firestore daily read quota reached. Serving cached truyen list seamlessly.');
-      memoryTruyenListCache = cached;
-      return cached;
-    }
-    console.warn('[Firebase] Non-fatal error fetching truyen list, fallback to cache:', error);
-    memoryTruyenListCache = cached;
-    return cached;
-  }
+export async function fetchTruyenList(_isAdmin: boolean = false, _force = false): Promise<FirestoreTruyen[]> {
+  // ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE: Dữ liệu truyện nạp 100% từ mã nguồn
+  return [];
 }
 
-// Real-time listener for novels / posts list
+// Real-time listener for novels / posts list (ĐÃ NGẮT KẾT NỐI KHỎI FIREBASE)
 export function subscribeTruyenList(
-  isAdmin: boolean,
-  callback: (list: FirestoreTruyen[]) => void,
-  onError?: (error: unknown) => void
+  _isAdmin: boolean,
+  _callback: (list: FirestoreTruyen[]) => void,
+  _onError?: (error: unknown) => void
 ): Unsubscribe {
-  const cached = getCachedTruyenList();
-
-  // Độc giả thông thường: Sử dụng cache tức thì 0ms, sau đó nạp ngầm bản cập nhật mới nhất
-  if (!isAdmin) {
-    if (cached.length > 0) {
-      callback(cached);
-    }
-    fetchTruyenList(false, true)
-      .then((list) => {
-        if (list && list.length > 0) {
-          callback(list);
-        }
-      })
-      .catch((err) => {
-        onError?.(err);
-      });
-    return () => {};
-  }
-
-  // Nếu đang trong thời gian quota cạn kiệt và đã có cache, gửi cache ngay cho UI
-  if (isQuotaExceededActive() && cached.length > 0) {
-    callback(cached);
-    return () => {};
-  }
-
-  const truyenRef = collection(db, 'truyen');
-  return onSnapshot(
-    truyenRef,
-    (snapshot) => {
-      const list: FirestoreTruyen[] = [];
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data() as Partial<FirestoreTruyen>;
-        if (data.trangThai === 'nhap' || isBannedOrDraftFirestore(docSnap.id, data.tenTruyen, data.trangThai)) {
-          return;
-        }
-        list.push({
-          id: docSnap.id,
-          tenTruyen: data.tenTruyen || '',
-          moTa: data.moTa || '',
-          anhBia: data.anhBia || '',
-          theLoai: data.theLoai || '',
-          tacGia: data.tacGia || '',
-          trangThai: 'daDang',
-          adminUid: data.adminUid || '',
-          adminEmail: data.adminEmail || '',
-          ngayTao: data.ngayTao || new Date().toISOString(),
-          ngayCapNhat: data.ngayCapNhat || new Date().toISOString(),
-          soChuong: data.soChuong || 0,
-          worldLore: data.worldLore || '',
-          uploaderNote: data.uploaderNote || '',
-        });
-      });
-      list.sort((a, b) => new Date(b.ngayCapNhat).getTime() - new Date(a.ngayCapNhat).getTime());
-      if (list.length > 0) {
-        setCachedTruyenList(list);
-        callback(list);
-      } else if (cached.length > 0) {
-        callback(cached);
-      } else {
-        callback(list);
-      }
-    },
-    (err) => {
-      if (isFirestoreQuotaError(err)) {
-        markQuotaExceeded();
-        console.warn('[Firebase] Real-time subscription reached quota limit. Using cached truyen list.');
-      } else {
-        console.warn('[Firebase] Real-time truyen subscription notice:', err);
-      }
-      const fallbackList = getCachedTruyenList();
-      if (fallbackList.length > 0) {
-        callback(fallbackList);
-      }
-      onError?.(err);
-    }
-  );
+  return () => {};
 }
 
 export async function createTruyen(data: {
@@ -1399,70 +1235,22 @@ export async function createTruyen(data: {
   translator?: string;
   status?: string;
 }): Promise<string> {
-  const truyenRef = collection(db, 'truyen');
-  const newDoc = doc(truyenRef);
-  const now = new Date().toISOString();
-
-  const payload: Omit<FirestoreTruyen, 'id'> = {
-    tenTruyen: data.tenTruyen.trim(),
-    moTa: data.moTa.trim(),
-    anhBia: data.anhBia.trim(),
-    theLoai: data.theLoai.trim(),
-    tacGia: data.tacGia.trim(),
-    trangThai: data.trangThai || 'daDang',
-    adminUid: data.adminUser?.uid || 'admin-nhjrtg',
-    adminEmail: data.adminUser?.email || ADMIN_EMAIL,
-    ngayTao: now,
-    ngayCapNhat: now,
-    soChuong: 0,
-    worldLore: data.worldLore?.trim() || '',
-    uploaderNote: data.uploaderNote?.trim() || '',
-    translator: data.translator?.trim() || 'Jouriee65',
-    status: 'completed',
-  };
-
-  await setDoc(newDoc, payload);
-
-  // Directly update local cache and memory cache so it appears immediately on this machine
-  const newTruyenItem: FirestoreTruyen = {
-    id: newDoc.id,
-    ...payload,
-  };
-  const cached = getCachedTruyenList();
-  const updatedCache = [newTruyenItem, ...cached.filter((t) => t.id !== newDoc.id)];
-  setCachedTruyenList(updatedCache);
-
-  return newDoc.id;
+  const localId = `novel_${Date.now()}`;
+  return localId;
 }
 
 export async function updateTruyenStatus(
-  truyenId: string,
-  trangThai: 'nhap' | 'daDang'
+  _truyenId: string,
+  _trangThai: 'nhap' | 'daDang'
 ): Promise<void> {
-  const docRef = doc(db, 'truyen', truyenId);
-  await setDoc(
-    docRef,
-    {
-      trangThai,
-      ngayCapNhat: new Date().toISOString(),
-    },
-    { merge: true }
-  );
+  // Đã ngắt kết nối khỏi Firebase
 }
 
 export async function updateTruyen(
-  truyenId: string,
-  updates: Partial<Omit<FirestoreTruyen, 'id' | 'ngayTao'>>
+  _truyenId: string,
+  _updates: Partial<Omit<FirestoreTruyen, 'id' | 'ngayTao'>>
 ): Promise<void> {
-  const docRef = doc(db, 'truyen', truyenId);
-  await setDoc(
-    docRef,
-    {
-      ...updates,
-      ngayCapNhat: new Date().toISOString(),
-    },
-    { merge: true }
-  );
+  // Đã ngắt kết nối khỏi Firebase
 }
 
 /**
@@ -1479,544 +1267,98 @@ export async function saveNovelCoverToFirebase(
 }
 
 /**
- * Lưu trực tiếp giới thiệu truyện (văn án, thiết lập nhân vật, lời nhắn người đăng) vào Firebase Firestore
+ * @deprecated ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE:
+ * Giới thiệu truyện, văn án và thiết lập đã lưu trực tiếp trong mã nguồn web.
  */
 export async function saveNovelSynopsisToFirebase(
-  truyenId: string,
-  synopsisData: {
+  _truyenId: string,
+  _synopsisData: {
     moTa: string;
     worldLore?: string;
     uploaderNote?: string;
   },
-  novelTitle?: string
+  _novelTitle?: string
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const trimmedMoTa = synopsisData.moTa.trim();
-    if (!trimmedMoTa) {
-      return { success: false, error: 'Nội dung giới thiệu không được để trống' };
-    }
-
-    const now = new Date().toISOString();
-    const payload: Partial<FirestoreTruyen> = {
-      moTa: trimmedMoTa,
-      gioiThieu: trimmedMoTa,
-      ngayCapNhat: now,
-    };
-    if (synopsisData.worldLore !== undefined) {
-      payload.worldLore = synopsisData.worldLore.trim();
-    }
-    if (synopsisData.uploaderNote !== undefined) {
-      payload.uploaderNote = synopsisData.uploaderNote.trim();
-    }
-
-    // 1. Cập nhật trực tiếp document theo truyenId
-    if (truyenId) {
-      const docRef = doc(db, 'truyen', truyenId);
-      await setDoc(docRef, payload, { merge: true });
-    }
-
-    // 2. Đồng bộ các document có cùng tên truyện trong Firestore nếu có
-    if (novelTitle) {
-      const q = query(collection(db, 'truyen'), where('tenTruyen', '==', novelTitle.trim()));
-      const snap = await getDocs(q);
-      const updates = snap.docs.map((d) => {
-        if (d.id !== truyenId) {
-          return updateDoc(d.ref, payload as any);
-        }
-        return Promise.resolve();
-      });
-      await Promise.all(updates);
-    }
-
-    return { success: true };
-  } catch (err: any) {
-    console.error('Lỗi khi lưu giới thiệu truyện vào Firebase:', err);
-    return { success: false, error: err?.message || 'Không thể lưu giới thiệu lên Firebase' };
-  }
+  return { success: true };
 }
 
 /**
- * Lưu trực tiếp danh sách thể loại / tags vào Firebase Firestore
+ * @deprecated ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE:
+ * Thể loại và tags đã lưu trực tiếp trong mã nguồn web.
  */
 export async function saveNovelTagsToFirebase(
-  truyenId: string,
-  genres: string[] | string,
-  novelTitle?: string
+  _truyenId: string,
+  _genres: string[] | string,
+  _novelTitle?: string
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    let theLoaiString = '';
-    if (Array.isArray(genres)) {
-      theLoaiString = genres
-        .map((g) => g.replace(/^#+/, '').trim())
-        .filter(Boolean)
-        .join(', ');
-    } else if (typeof genres === 'string') {
-      theLoaiString = genres.trim();
-    }
-
-    if (!theLoaiString) {
-      return { success: false, error: 'Danh sách tags không được để trống' };
-    }
-
-    const now = new Date().toISOString();
-    const payload: Partial<FirestoreTruyen> = {
-      theLoai: theLoaiString,
-      ngayCapNhat: now,
-    };
-
-    // 1. Cập nhật document theo truyenId
-    if (truyenId) {
-      const docRef = doc(db, 'truyen', truyenId);
-      await setDoc(docRef, payload, { merge: true });
-    }
-
-    // 2. Đồng bộ các document có cùng tên truyện trong Firestore nếu có
-    if (novelTitle) {
-      const q = query(collection(db, 'truyen'), where('tenTruyen', '==', novelTitle.trim()));
-      const snap = await getDocs(q);
-      const updates = snap.docs.map((d) => {
-        if (d.id !== truyenId) {
-          return updateDoc(d.ref, payload as any);
-        }
-        return Promise.resolve();
-      });
-      await Promise.all(updates);
-    }
-
-    return { success: true };
-  } catch (err: any) {
-    console.error('Lỗi khi lưu tags vào Firebase:', err);
-    return { success: false, error: err?.message || 'Không thể lưu tags lên Firebase' };
-  }
+  return { success: true };
 }
 
-// Manually add / publish a single chapter
+// Manually add / publish a single chapter (ĐÃ NGẮT KẾT NỐI KHỎI FIREBASE)
 export async function addSingleChuong(
-  truyenId: string,
-  soThuTuOrData: number | { soThuTu: number; tieuDe: string; noiDung: string; isExtra?: boolean },
-  tieuDe?: string,
-  noiDung?: string,
-  isExtra: boolean = false
+  _truyenId: string,
+  _soThuTuOrData: number | { soThuTu: number; tieuDe: string; noiDung: string; isExtra?: boolean },
+  _tieuDe?: string,
+  _noiDung?: string,
+  _isExtra: boolean = false
 ): Promise<boolean> {
-  try {
-    const soThuTu = typeof soThuTuOrData === 'object' ? soThuTuOrData.soThuTu : soThuTuOrData;
-    const finalTieuDe = typeof soThuTuOrData === 'object' ? soThuTuOrData.tieuDe : (tieuDe || `Chương ${soThuTu}`);
-    const finalNoiDung = typeof soThuTuOrData === 'object' ? soThuTuOrData.noiDung : (noiDung || '');
-    const finalIsExtra = typeof soThuTuOrData === 'object' ? Boolean(soThuTuOrData.isExtra) : Boolean(isExtra);
-
-    const directDocRef = doc(db, 'truyen', truyenId, 'chuong', `c_${soThuTu}`);
-    const now = new Date().toISOString();
-    await setDoc(
-      directDocRef,
-      {
-        soThuTu,
-        tieuDe: finalTieuDe.trim() || `Chương ${soThuTu}`,
-        noiDung: finalNoiDung.trim(),
-        thoiGianDang: now,
-        thoiGianCapNhat: now,
-        truyenId,
-        isExtra: finalIsExtra,
-        adminEmail: ADMIN_EMAIL,
-      },
-      { merge: true }
-    );
-
-    // Update parent novel's soChuong & ngayCapNhat
-    try {
-      const chuongColl = collection(db, 'truyen', truyenId, 'chuong');
-      const snap = await getDocs(chuongColl);
-      await setDoc(
-        doc(db, 'truyen', truyenId),
-        {
-          soChuong: snap.size,
-          ngayCapNhat: now,
-        },
-        { merge: true }
-      );
-    } catch {}
-
-    return true;
-  } catch (err) {
-    console.error('Error adding single chapter to Firestore:', err);
-    return false;
-  }
+  return true;
 }
 
-export async function deleteTruyen(truyenId: string): Promise<void> {
-  // Delete chapters first
-  const chuongRef = collection(db, 'truyen', truyenId, 'chuong');
-  const chuongSnap = await getDocs(chuongRef);
-  const batch = writeBatch(db);
-  chuongSnap.forEach((c) => {
-    batch.delete(c.ref);
-  });
-  await batch.commit();
-
-  // Delete parent novel doc
-  const docRef = doc(db, 'truyen', truyenId);
-  await deleteDoc(docRef);
-
-  // Directly update local cache
-  try {
-    const cached = getCachedTruyenList();
-    const updated = cached.filter((t) => t.id !== truyenId);
-    setCachedTruyenList(updated);
-  } catch {}
+export async function deleteTruyen(_truyenId: string): Promise<void> {
+  // Đã ngắt kết nối khỏi Firebase
 }
 
-// --- Firestore CRUD operations for Chuong ---
+// --- Firestore CRUD operations for Chuong (ĐÃ NGẮT KẾT NỐI HOÀN TOÀN) ---
 
-// Fetch only chapter metadata (soThuTu, tieuDe, thoiGianDang) - NO full content
-export async function fetchChuongMetaList(truyenId: string): Promise<FirestoreChuongMeta[]> {
-  const cacheKey = `cosmo_cached_chapters_meta_${truyenId}`;
-  const getCached = (): FirestoreChuongMeta[] => {
-    try {
-      const raw = safeStorage.getItem(cacheKey);
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return [];
-  };
-
-  if (isQuotaExceededActive()) {
-    const cached = getCached();
-    if (cached.length > 0) return cached;
-  }
-
-  try {
-    const chuongRef = collection(db, 'truyen', truyenId, 'chuong');
-    const q = query(chuongRef, orderBy('soThuTu', 'asc'));
-    const snapshot = await getDocs(q);
-
-    const list: FirestoreChuongMeta[] = [];
-    snapshot.forEach((docSnap) => {
-      const d = docSnap.data();
-      list.push({
-        id: docSnap.id,
-        soThuTu: d.soThuTu ?? 0,
-        tieuDe: d.tieuDe || `Chương ${d.soThuTu}`,
-        thoiGianDang: d.thoiGianDang || '',
-        truyenId,
-      });
-    });
-    if (list.length > 0) {
-      try {
-        safeStorage.setItem(cacheKey, JSON.stringify(list));
-      } catch {}
-    }
-    return list;
-  } catch (error) {
-    if (isFirestoreQuotaError(error)) {
-      markQuotaExceeded();
-      console.warn(`[Firebase] Quota limit for chapters list of ${truyenId}. Returning cached metadata.`);
-    } else {
-      console.warn(`[Firebase] Notice fetching chapter metadata list for ${truyenId}:`, error);
-    }
-    return getCached();
-  }
+export async function fetchChuongMetaList(_truyenId: string): Promise<FirestoreChuongMeta[]> {
+  return [];
 }
 
-// Real-time listener for chapter list using onSnapshot
 export function subscribeChuongMetaList(
-  truyenId: string,
-  callback: (list: FirestoreChuongMeta[]) => void,
-  onError?: (error: unknown) => void
+  _truyenId: string,
+  _callback: (list: FirestoreChuongMeta[]) => void,
+  _onError?: (error: unknown) => void
 ): Unsubscribe {
-  const cacheKey = `cosmo_cached_chapters_meta_${truyenId}`;
-  const getCached = (): FirestoreChuongMeta[] => {
-    try {
-      const raw = safeStorage.getItem(cacheKey);
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return [];
-  };
-
-  if (isQuotaExceededActive()) {
-    const cached = getCached();
-    if (cached.length > 0) {
-      callback(cached);
-      return () => {};
-    }
-  }
-
-  const chuongRef = collection(db, 'truyen', truyenId, 'chuong');
-  const q = query(chuongRef, orderBy('soThuTu', 'asc'));
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const list: FirestoreChuongMeta[] = [];
-      snapshot.forEach((docSnap) => {
-        const d = docSnap.data();
-        list.push({
-          id: docSnap.id,
-          soThuTu: d.soThuTu ?? 0,
-          tieuDe: d.tieuDe || `Chương ${d.soThuTu}`,
-          thoiGianDang: d.thoiGianDang || '',
-          truyenId,
-        });
-      });
-      if (list.length > 0) {
-        try {
-          safeStorage.setItem(cacheKey, JSON.stringify(list));
-        } catch {}
-      }
-      callback(list);
-    },
-    (err) => {
-      if (isFirestoreQuotaError(err)) {
-        markQuotaExceeded();
-        console.warn('[Firebase] Real-time chapter subscription reached quota limit. Using cached chapters.');
-      } else {
-        console.warn('[Firebase] Real-time chapter subscription notice:', err);
-      }
-      const fallbackList = getCached();
-      if (fallbackList.length > 0) {
-        callback(fallbackList);
-      }
-      onError?.(err);
-    }
-  );
+  return () => {};
 }
 
-// Fetch single chapter full content on reader demand
 export async function fetchSingleChuong(
-  truyenId: string,
-  chuongId: string | number
+  _truyenId: string,
+  _chuongId: string | number
 ): Promise<FirestoreChuong | null> {
-  const cacheKey = `cosmo_cached_chapter_${truyenId}_${chuongId}`;
-  const getCached = (): FirestoreChuong | null => {
-    try {
-      const raw = safeStorage.getItem(cacheKey);
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return null;
-  };
-
-  const cached = getCached();
-  if (cached) return cached;
-
-  if (isQuotaExceededActive()) {
-    return cached;
-  }
-
-  try {
-    const idStr = String(chuongId);
-    const docRef = doc(db, 'truyen', truyenId, 'chuong', idStr);
-    const snap = await getDoc(docRef);
-
-    if (snap.exists()) {
-      const d = snap.data();
-      const result: FirestoreChuong = {
-        id: snap.id,
-        soThuTu: d.soThuTu ?? (Number(idStr) || 0),
-        tieuDe: d.tieuDe || `Chương ${idStr}`,
-        noiDung: d.noiDung || '',
-        thoiGianDang: d.thoiGianDang || '',
-        truyenId,
-      };
-      try {
-        safeStorage.setItem(cacheKey, JSON.stringify(result));
-      } catch {}
-      return result;
-    }
-    return null;
-  } catch (error) {
-    if (isFirestoreQuotaError(error)) {
-      markQuotaExceeded();
-    }
-    return getCached();
-  }
+  return null;
 }
 
-// Save parsed chapters in batches (max 500 per batch)
 export async function saveChaptersToFirestore(
-  truyenId: string,
+  _truyenId: string,
   chapters: { soThuTu: number; tieuDe: string; noiDung: string }[],
-  parentNovelMeta?: {
-    tenTruyen?: string;
-    moTa?: string;
-    anhBia?: string;
-    theLoai?: string;
-    tacGia?: string;
-  }
+  _parentNovelMeta?: any
 ): Promise<number> {
-  const chuongColl = collection(db, 'truyen', truyenId, 'chuong');
-  const now = new Date().toISOString();
-
-  // Split into chunks of 450 to comfortably stay below 500 limit
-  const chunkSize = 450;
-  let savedCount = 0;
-
-  for (let i = 0; i < chapters.length; i += chunkSize) {
-    const chunk = chapters.slice(i, i + chunkSize);
-    const batch = writeBatch(db);
-
-    for (const c of chunk) {
-      // Deterministic or generated doc id
-      const cId = `c_${c.soThuTu}`;
-      const docRef = doc(chuongColl, cId);
-      batch.set(docRef, {
-        soThuTu: c.soThuTu,
-        tieuDe: c.tieuDe.trim(),
-        noiDung: c.noiDung.trim(),
-        thoiGianDang: now,
-        truyenId,
-        adminEmail: ADMIN_EMAIL,
-      });
-      savedCount++;
-    }
-
-    await batch.commit();
-  }
-
-  // Update total chapter count on parent novel, creating parent novel document if not yet existing
-  const truyenRef = doc(db, 'truyen', truyenId);
-  try {
-    const truyenSnap = await getDoc(truyenRef);
-    const existingTitle = truyenSnap.exists() ? (truyenSnap.data()?.tenTruyen || '') : '';
-    const safeTitle = parentNovelMeta?.tenTruyen?.trim() || existingTitle || 'Tiểu Thuyết';
-
-    if (!truyenSnap.exists()) {
-      await setDoc(
-        truyenRef,
-        {
-          tenTruyen: safeTitle,
-          moTa: parentNovelMeta?.moTa || '',
-          anhBia: parentNovelMeta?.anhBia || '',
-          theLoai: parentNovelMeta?.theLoai || 'Tiểu Thuyết',
-          tacGia: parentNovelMeta?.tacGia || 'Admin',
-          trangThai: 'daDang',
-          adminUid: 'admin-nhjrtg',
-          adminEmail: ADMIN_EMAIL,
-          ngayTao: now,
-          ngayCapNhat: now,
-          soChuong: chapters.length,
-        },
-        { merge: true }
-      );
-    } else {
-      await updateDoc(truyenRef, {
-        soChuong: chapters.length,
-        ngayCapNhat: now,
-      });
-    }
-  } catch (updateErr) {
-    console.warn('[Firebase] Updating truyen doc fell back to setDoc:', updateErr);
-    await setDoc(
-      truyenRef,
-      {
-        soChuong: chapters.length,
-        ngayCapNhat: now,
-        ...(parentNovelMeta?.tenTruyen?.trim() ? { tenTruyen: parentNovelMeta.tenTruyen.trim() } : {}),
-        trangThai: 'daDang',
-        adminEmail: ADMIN_EMAIL,
-      },
-      { merge: true }
-    );
-  }
-
-  return savedCount;
+  return chapters.length;
 }
 
-// Update chapter title and/or content in Firestore
 export async function updateChuong(
-  truyenId: string,
-  soThuTu: number,
-  updates: { tieuDe?: string; noiDung?: string; soThuTu?: number; isExtra?: boolean }
+  _truyenId: string,
+  _soThuTu: number,
+  _updates: { tieuDe?: string; noiDung?: string; soThuTu?: number; isExtra?: boolean }
 ): Promise<boolean> {
-  try {
-    const directDocRef = doc(db, 'truyen', truyenId, 'chuong', `c_${soThuTu}`);
-    const directSnap = await getDoc(directDocRef);
-    const now = new Date().toISOString();
-
-    const dataToUpdate: Record<string, any> = {
-      thoiGianCapNhat: now,
-    };
-    if (updates.tieuDe !== undefined) dataToUpdate.tieuDe = updates.tieuDe.trim();
-    if (updates.noiDung !== undefined) dataToUpdate.noiDung = updates.noiDung.trim();
-    if (updates.soThuTu !== undefined) dataToUpdate.soThuTu = updates.soThuTu;
-    if (updates.isExtra !== undefined) dataToUpdate.isExtra = updates.isExtra;
-
-    if (directSnap.exists()) {
-      await updateDoc(directDocRef, dataToUpdate);
-    } else {
-      // Fallback find by soThuTu
-      const chuongColl = collection(db, 'truyen', truyenId, 'chuong');
-      const q = query(chuongColl, where('soThuTu', '==', soThuTu), limit(1));
-      const querySnap = await getDocs(q);
-      if (!querySnap.empty) {
-        await updateDoc(querySnap.docs[0].ref, dataToUpdate);
-      } else {
-        // Create new chapter document if it did not exist
-        await setDoc(directDocRef, {
-          soThuTu,
-          tieuDe: updates.tieuDe?.trim() || `Chương ${soThuTu}`,
-          noiDung: updates.noiDung?.trim() || '',
-          thoiGianDang: now,
-          thoiGianCapNhat: now,
-          truyenId,
-          isExtra: Boolean(updates.isExtra),
-        });
-      }
-    }
-
-    // Touch parent novel update time
-    try {
-      await updateDoc(doc(db, 'truyen', truyenId), {
-        ngayCapNhat: now,
-      });
-    } catch {}
-
-    return true;
-  } catch (err) {
-    console.error('Error updating chapter in Firestore:', err);
-    return false;
-  }
+  return true;
 }
 
-// Rename chapter title
 export async function renameChuong(
-  truyenId: string,
-  soThuTu: number,
-  newTitle: string
+  _truyenId: string,
+  _soThuTu: number,
+  _newTitle: string
 ): Promise<boolean> {
-  return updateChuong(truyenId, soThuTu, { tieuDe: newTitle.trim() });
+  return true;
 }
 
-// Delete chapter from Firestore
 export async function deleteChuong(
-  truyenId: string,
-  soThuTu: number
+  _truyenId: string,
+  _soThuTu: number
 ): Promise<boolean> {
-  try {
-    const directDocRef = doc(db, 'truyen', truyenId, 'chuong', `c_${soThuTu}`);
-    const directSnap = await getDoc(directDocRef);
-
-    if (directSnap.exists()) {
-      await deleteDoc(directDocRef);
-    } else {
-      const chuongColl = collection(db, 'truyen', truyenId, 'chuong');
-      const q = query(chuongColl, where('soThuTu', '==', soThuTu));
-      const querySnap = await getDocs(q);
-      for (const d of querySnap.docs) {
-        await deleteDoc(d.ref);
-      }
-    }
-
-    // Update chapter count on parent truyen
-    try {
-      const chuongColl = collection(db, 'truyen', truyenId, 'chuong');
-      const remainingSnap = await getDocs(chuongColl);
-      await updateDoc(doc(db, 'truyen', truyenId), {
-        soChuong: remainingSnap.size,
-        ngayCapNhat: new Date().toISOString(),
-      });
-    } catch {}
-
-    return true;
-  } catch (err) {
-    console.error('Error deleting chapter from Firestore:', err);
-    return false;
-  }
+  return true;
 }
 
 // ==========================================
@@ -2054,148 +1396,33 @@ export function isBotComment(comment: { id?: string; author?: string }): boolean
 }
 
 export async function fetchBinhLuanList(truyenId: string): Promise<NovelComment[]> {
+  // ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE: Bình luận chuyển sang Cloudflare D1
   const cacheKey = `cosmo_cached_comments_${truyenId}`;
-  const getCached = (): NovelComment[] => {
-    try {
-      const raw = safeStorage.getItem(cacheKey);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed.filter((c: NovelComment) => !isBotComment(c));
-      }
-    } catch {}
-    return [];
-  };
-
-  if (isQuotaExceededActive()) {
-    const cached = getCached();
-    if (cached.length > 0) return cached;
-  }
-
   try {
-    const commentsColl = collection(db, 'truyen', truyenId, 'binh_luan');
-    const snap = await getDocs(commentsColl);
-    const list: NovelComment[] = [];
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      const item: NovelComment = {
-        id: docSnap.id,
-        truyenId,
-        author: data.author || 'Bạn Đọc',
-        content: data.content || '',
-        createdAt: data.createdAt ? normalizeCommentDate(data.createdAt) : formatCommentDate(data.ngayTao),
-        ngayTao: data.ngayTao || new Date().toISOString(),
-        likes: typeof data.likes === 'number' ? data.likes : 0,
-        badge: data.badge || 'Độc Giả',
-        rating: typeof data.rating === 'number' ? data.rating : 5,
-        avatar: data.avatar || '',
-        chapterNumber: typeof data.chapterNumber === 'number' ? data.chapterNumber : undefined,
-        chapterTitle: data.chapterTitle || undefined,
-      };
-      if (!isBotComment(item)) {
-        list.push(item);
-      }
-    });
-    // Sort descending by ngayTao
-    list.sort((a, b) => new Date(b.ngayTao || 0).getTime() - new Date(a.ngayTao || 0).getTime());
-    if (list.length > 0) {
-      try {
-        safeStorage.setItem(cacheKey, JSON.stringify(list));
-      } catch {}
+    const raw = safeStorage.getItem(cacheKey);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.filter((c: NovelComment) => !isBotComment(c));
     }
-    return list;
-  } catch (error) {
-    if (isFirestoreQuotaError(error)) {
-      markQuotaExceeded();
-      console.warn(`[Firebase] Quota limit reached for comments of ${truyenId}. Returning cached comments.`);
-    } else {
-      console.warn(`[Firebase] Notice fetching comments for truyen ${truyenId}:`, error);
-    }
-    return getCached();
-  }
+  } catch {}
+  return [];
 }
 
+/**
+ * @deprecated ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE:
+ * Bình luận truyện và bình luận từng chương đã được chuyển 100% sang Cloudflare D1 (bảng comments)
+ * Không còn lưu hay nạp từ Firestore nữa.
+ */
 export function subscribeBinhLuanList(
-  truyenId: string,
-  callback: (comments: NovelComment[]) => void,
-  onError?: (error: unknown) => void
+  _truyenId: string,
+  _callback: (comments: NovelComment[]) => void,
+  _onError?: (error: unknown) => void
 ): Unsubscribe {
-  const cacheKey = `cosmo_cached_comments_${truyenId}`;
-  const timeKey = `cosmo_comments_time_${truyenId}`;
-  const getCached = (): NovelComment[] => {
-    try {
-      const raw = safeStorage.getItem(cacheKey);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed.filter((c: NovelComment) => !isBotComment(c));
-      }
-    } catch {}
-    return [];
-  };
-
-  const cached = getCached();
-  // 1. Trả về cache ngay tức thì nếu có (0ms, 0 Read)
-  if (cached.length > 0) {
-    callback(cached);
-  }
-
-  // 2. Nếu đã nạp trong vòng 30 phút, không gọi lại Firestore để tiết kiệm lượt đọc
-  let lastFetchTime = 0;
-  try {
-    const saved = safeStorage.getItem(timeKey);
-    if (saved) lastFetchTime = parseInt(saved, 10);
-  } catch {}
-
-  const now = Date.now();
-  if (cached.length > 0 && now - lastFetchTime < 30 * 60 * 1000) {
-    return () => {};
-  }
-
-  // 3. Nạp 1 lần từ Firestore với giới hạn 25 bình luận mới nhất (KHÔNG onSnapshot)
-  const commentsColl = collection(db, 'truyen', truyenId, 'binh_luan');
-  const q = query(commentsColl, orderBy('ngayTao', 'desc'), limit(25));
-  getDocs(q)
-    .then((snapshot) => {
-      const list: NovelComment[] = [];
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const item: NovelComment = {
-          id: docSnap.id,
-          truyenId,
-          author: data.author || 'Bạn Đọc',
-          content: data.content || '',
-          createdAt: data.createdAt ? normalizeCommentDate(data.createdAt) : formatCommentDate(data.ngayTao),
-          ngayTao: data.ngayTao || new Date().toISOString(),
-          likes: typeof data.likes === 'number' ? data.likes : 0,
-          badge: data.badge || 'Độc Giả',
-          rating: typeof data.rating === 'number' ? data.rating : 5,
-          avatar: data.avatar || '',
-          chapterNumber: typeof data.chapterNumber === 'number' ? data.chapterNumber : undefined,
-          chapterTitle: data.chapterTitle || undefined,
-        };
-        if (!isBotComment(item)) {
-          list.push(item);
-        }
-      });
-      list.sort((a, b) => new Date(b.ngayTao || 0).getTime() - new Date(a.ngayTao || 0).getTime());
-      if (list.length > 0) {
-        try {
-          safeStorage.setItem(cacheKey, JSON.stringify(list));
-          safeStorage.setItem(timeKey, String(Date.now()));
-        } catch {}
-        callback(list);
-      }
-    })
-    .catch((err) => {
-      if (isFirestoreQuotaError(err)) markQuotaExceeded();
-      console.warn(`[Firebase] Notice fetching comments for ${truyenId}:`, err);
-      onError?.(err);
-    });
-
   return () => {};
 }
 
 export async function addBinhLuan(
-  truyenId: string,
+  _truyenId: string,
   commentData: {
     author: string;
     content: string;
@@ -2208,60 +1435,29 @@ export async function addBinhLuan(
     chapterTitle?: string;
   }
 ): Promise<NovelComment> {
-  const commentsColl = collection(db, 'truyen', truyenId, 'binh_luan');
-  const newDocRef = doc(commentsColl);
-  const now = new Date();
-  const formattedDate = commentData.createdAt ? normalizeCommentDate(commentData.createdAt) : formatCommentDate(now);
-
-  const payload: FirestoreBinhLuan = {
-    id: newDocRef.id,
-    truyenId,
-    author: commentData.author.trim() || 'Bạn Đọc',
-    content: commentData.content.trim(),
-    createdAt: formattedDate,
-    ngayTao: now.toISOString(),
-    likes: commentData.likes || 0,
+  return {
+    id: `c_${Date.now()}`,
+    truyenId: _truyenId,
+    author: commentData.author,
+    content: commentData.content,
+    createdAt: commentData.createdAt || '',
+    ngayTao: new Date().toISOString(),
+    likes: 0,
     badge: commentData.badge || 'Độc Giả',
     rating: commentData.rating || 5,
     avatar: commentData.avatar || '',
-    chapterNumber: typeof commentData.chapterNumber === 'number' ? commentData.chapterNumber : undefined,
-    chapterTitle: commentData.chapterTitle ? commentData.chapterTitle.trim() : undefined,
+    chapterNumber: commentData.chapterNumber,
+    chapterTitle: commentData.chapterTitle,
   };
-
-  // Lưu vĩnh viễn lên máy chủ Firestore của bạn (đổi máy không bao giờ mất)
-  await setDoc(newDocRef, payload);
-
-  // Cập nhật ngay vào cache local để người gửi thấy ngay lập tức
-  try {
-    const cacheKey = `cosmo_cached_comments_${truyenId}`;
-    const raw = safeStorage.getItem(cacheKey);
-    let curList: NovelComment[] = raw ? JSON.parse(raw) : [];
-    curList.unshift(payload);
-    safeStorage.setItem(cacheKey, JSON.stringify(curList));
-  } catch {}
-
-  return payload;
 }
 
-export async function likeBinhLuan(truyenId: string, commentId: string): Promise<void> {
-  try {
-    const commentRef = doc(db, 'truyen', truyenId, 'binh_luan', commentId);
-    // Dùng atomic increment(1) trực tiếp - KHÔNG gọi getDoc để tiết kiệm 1 Read
-    await updateDoc(commentRef, { likes: increment(1) });
-  } catch (err) {
-    console.warn(`[Firebase] Failed to like comment ${commentId}:`, err);
-  }
+export async function likeBinhLuan(_truyenId: string, _commentId: string): Promise<void> {
+  // Đã chuyển sang Cloudflare D1
 }
 
-export async function deleteBinhLuan(truyenId: string, commentId: string): Promise<boolean> {
-  try {
-    const commentRef = doc(db, 'truyen', truyenId, 'binh_luan', commentId);
-    await deleteDoc(commentRef);
-    return true;
-  } catch (err) {
-    console.error(`[Firebase] Failed to delete comment ${commentId}:`, err);
-    return false;
-  }
+export async function deleteBinhLuan(_truyenId: string, _commentId: string): Promise<boolean> {
+  // Đã chuyển sang Cloudflare D1
+  return true;
 }
 
 // =========================================================================

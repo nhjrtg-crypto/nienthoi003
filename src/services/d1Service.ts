@@ -249,8 +249,56 @@ export async function incrementLike(targetId: string, amount = 1): Promise<numbe
 }
 
 // ============================================================================
-// 3. QUẢN LÝ BÌNH LUẬN (CLOUD FLARE D1)
+// 3. QUẢN LÝ BÌNH LUẬN (CLOUDFLARE D1 - ĐỘC LẬP HOÀN TOÀN KHỎI FIREBASE)
 // ============================================================================
+
+const commentListeners: Record<string, Set<(comments: D1Comment[]) => void>> = {};
+
+function getCommentSubscriptionKey(novelId: string, chapterNumber?: number | null): string {
+  return `${novelId}_${typeof chapterNumber === 'number' ? chapterNumber : 'all'}`;
+}
+
+export function subscribeComments(
+  novelId: string,
+  chapterNumber: number | null | undefined,
+  callback: (comments: D1Comment[]) => void
+): () => void {
+  const key = getCommentSubscriptionKey(novelId, chapterNumber);
+  if (!commentListeners[key]) {
+    commentListeners[key] = new Set();
+  }
+  commentListeners[key].add(callback);
+
+  // 1. Phục hồi ngay từ safeStorage để không bao giờ bị chớp trắng giao diện
+  const cacheKey = `d1_comments_${novelId}_${typeof chapterNumber === 'number' ? chapterNumber : 'all'}`;
+  try {
+    const saved = safeStorage.getItem(cacheKey);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        callback(parsed);
+      }
+    }
+  } catch {}
+
+  // 2. Fetch mới nhất từ Cloudflare D1
+  const chapNum = typeof chapterNumber === 'number' ? chapterNumber : undefined;
+  fetchComments(novelId, chapNum).then((comments) => {
+    callback(comments);
+  }).catch(() => {});
+
+  // 3. Tự động kiểm tra bình luận mới mỗi 25s
+  const intervalId = setInterval(() => {
+    fetchComments(novelId, chapNum).then((comments) => {
+      callback(comments);
+    }).catch(() => {});
+  }, 25 * 1000);
+
+  return () => {
+    commentListeners[key]?.delete(callback);
+    clearInterval(intervalId);
+  };
+}
 
 export async function fetchComments(novelId: string, chapterNumber?: number): Promise<D1Comment[]> {
   const cacheKey = `d1_comments_${novelId}_${chapterNumber ?? 'all'}`;
@@ -264,6 +312,8 @@ export async function fetchComments(novelId: string, chapterNumber?: number): Pr
       const data = await res.json();
       if (Array.isArray(data.comments)) {
         safeStorage.setItem(cacheKey, JSON.stringify(data.comments));
+        const key = getCommentSubscriptionKey(novelId, chapterNumber);
+        commentListeners[key]?.forEach((fn) => fn(data.comments));
         return data.comments;
       }
     }
@@ -309,6 +359,17 @@ export async function addComment(commentData: {
     createdTimestamp: Date.now(),
   };
 
+  // Cập nhật local storage cache ngay lập tức
+  const cacheKey = `d1_comments_${commentData.truyenId}_${commentData.chapterNumber ?? 'all'}`;
+  try {
+    const raw = safeStorage.getItem(cacheKey);
+    const list: D1Comment[] = raw ? JSON.parse(raw) : [];
+    list.unshift(payload);
+    safeStorage.setItem(cacheKey, JSON.stringify(list));
+    const key = getCommentSubscriptionKey(commentData.truyenId, commentData.chapterNumber);
+    commentListeners[key]?.forEach((fn) => fn(list));
+  } catch {}
+
   try {
     const res = await fetch('/api/comments', {
       method: 'POST',
@@ -321,33 +382,30 @@ export async function addComment(commentData: {
     }
   } catch {}
 
-  // Cập nhật local storage cache nếu offline
-  const cacheKey = `d1_comments_${commentData.truyenId}_${commentData.chapterNumber ?? 'all'}`;
-  try {
-    const raw = safeStorage.getItem(cacheKey);
-    const list: D1Comment[] = raw ? JSON.parse(raw) : [];
-    list.unshift(payload);
-    safeStorage.setItem(cacheKey, JSON.stringify(list));
-  } catch {}
-
   return payload;
 }
 
-export async function likeComment(commentId: string): Promise<void> {
+export async function likeComment(commentId: string, novelId?: string, chapterNumber?: number): Promise<void> {
   try {
     await fetch('/api/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'like', commentId }),
     });
+    if (novelId) {
+      fetchComments(novelId, chapterNumber).catch(() => {});
+    }
   } catch {}
 }
 
-export async function deleteComment(commentId: string): Promise<boolean> {
+export async function deleteComment(commentId: string, novelId?: string, chapterNumber?: number): Promise<boolean> {
   try {
     const res = await fetch(`/api/comments?id=${encodeURIComponent(commentId)}`, {
       method: 'DELETE',
     });
+    if (novelId) {
+      fetchComments(novelId, chapterNumber).catch(() => {});
+    }
     return res.ok;
   } catch {
     return false;

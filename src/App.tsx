@@ -28,7 +28,6 @@ import {
   subscribeTruyenList,
   getCachedTruyenList,
   createTruyen,
-  saveChaptersToFirestore,
   updateTruyenStatus,
   updateTruyen,
   saveNovelSynopsisToFirebase,
@@ -666,38 +665,9 @@ export default function App() {
     return () => unsub();
   }, []);
 
-  // Tải danh mục truyện từ Firestore 1 lần khi mở web
-  // Tối ưu hóa: Sử dụng bộ nhớ đệm cache, không tự động re-fetch khi chuyển trang hay quay về trang chủ
-  const hasLoadedCatalogRef = useRef(false);
-
-  const loadFirestoreTruyens = useCallback(async (force = false) => {
-    try {
-      const list = await fetchTruyenList(isAdmin, force);
-      if (list && list.length > 0) {
-        setFirestoreTruyens(list);
-      }
-    } catch (err) {
-      console.warn('Notice fetching firestore truyens:', err);
-    }
-  }, [isAdmin]);
-
-  // Tải danh mục truyện từ Firestore khi khởi động (ưu tiên cache trước để bảo toàn 50.000 lượt đọc)
-  useEffect(() => {
-    if (!hasLoadedCatalogRef.current) {
-      hasLoadedCatalogRef.current = true;
-      loadFirestoreTruyens(false);
-    }
-  }, [loadFirestoreTruyens]);
-
-  // Đồng bộ danh mục truyện thời gian thực từ Firestore
-  useEffect(() => {
-    const unsub = subscribeTruyenList(isAdmin, (list) => {
-      if (list && list.length > 0) {
-        setFirestoreTruyens(list);
-      }
-    });
-    return () => unsub();
-  }, [isAdmin]);
+  // ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE:
+  // Dữ liệu truyện và chương được lưu và nạp 100% từ mã nguồn web (INITIAL_NOVELS).
+  const loadFirestoreTruyens = useCallback(async (_force = false) => {}, []);
 
   // Tự động tải và đồng bộ ảnh bìa lưu trên Cloudflare D1 khi vào trang
   useEffect(() => {
@@ -879,74 +849,7 @@ export default function App() {
     }
   }, [novels]);
 
-  // Tự động kiểm tra và đồng bộ bất kỳ truyện nào người dùng đã sáng tác/đăng trên máy này nhưng chưa kịp đưa lên Firestore
-  const hasAutoSyncedRef = useRef(false);
-  useEffect(() => {
-    if (hasAutoSyncedRef.current || firestoreTruyens.length === 0) return;
-
-    const syncUnsyncedNovels = async () => {
-      hasAutoSyncedRef.current = true;
-      try {
-        const savedNovelsStr = safeStorage.getItem('cosmo_novels');
-        if (!savedNovelsStr) return;
-        const localList: Novel[] = JSON.parse(savedNovelsStr);
-        if (!Array.isArray(localList) || localList.length === 0) return;
-
-        const builtInIds = new Set(['lua-nhau', 'truc-ma-alpha', 'me-ke-vua-mem-vua-ngot', 'e5H5oZGg1sGnFyHjdM5Z', 'c-lua-nhau']);
-
-        for (const local of localList) {
-          if (!local || !local.title || !local.title.trim()) continue;
-          if (isBannedOrDraftNovel(local)) continue;
-          if (builtInIds.has(local.id)) continue;
-
-          // Check if already in firestore by ID or exact title
-          const existsInFirestore = firestoreTruyens.some(
-            (ft) =>
-              ft.id === local.id ||
-              normalizeNovelTitle(ft.tenTruyen) === normalizeNovelTitle(local.title)
-          );
-
-          if (!existsInFirestore) {
-            console.log('[AutoSync] Uploading local novel to Firestore:', local.title);
-            const newId = await createTruyen({
-              tenTruyen: local.title.trim(),
-              moTa: local.synopsis || '',
-              anhBia: local.coverImage || '',
-              theLoai: local.genres ? local.genres.join(', ') : 'Tiểu Thuyết',
-              tacGia: local.author?.name || 'Tác Giả',
-              trangThai: 'daDang',
-              status: 'completed',
-              translator: 'Jouriee65',
-              adminUser: currentUser || { uid: 'admin-nhjrtg', email: 'nhjrtg@gmail.com' },
-              worldLore: local.worldLore || '',
-              uploaderNote: local.uploaderNote || '',
-            });
-
-            if (local.chapters && local.chapters.length > 0) {
-              await saveChaptersToFirestore(
-                newId,
-                local.chapters.map((c) => ({
-                  soThuTu: c.chapterNumber,
-                  tieuDe: c.title,
-                  noiDung: c.content,
-                }))
-              );
-            }
-
-            // Update local novel id to match new Firestore doc id
-            setNovels((prev) =>
-              prev.map((n) => (n.id === local.id ? { ...n, id: newId, status: 'completed', translator: 'Jouriee65' } : n))
-            );
-            await loadFirestoreTruyens(false);
-          }
-        }
-      } catch (syncErr) {
-        console.warn('Notice auto-syncing unsynced novels to Firestore:', syncErr);
-      }
-    };
-
-    syncUnsyncedNovels();
-  }, [firestoreTruyens, currentUser, loadFirestoreTruyens]);
+  // ĐÃ NGẮT KẾT NỐI ĐỒNG BỘ FIRESTORE (Dữ liệu cố định trong mã nguồn)
 
   // Keep selectedNovel synchronized with latest novel data in allMergedNovels array
   useEffect(() => {
@@ -957,8 +860,7 @@ export default function App() {
           setSelectedNovel(refreshed);
         }
       } else {
-        // Chỉ reset về trang chủ khi danh mục từ Firestore đã tải xong thật sự mà vẫn không tìm thấy
-        if (hasLoadedCatalogRef.current && firestoreTruyens.length > 0) {
+        if (novels.length > 0) {
           setSelectedNovel(null);
           setViewMode('novel-home');
         }
@@ -1094,96 +996,39 @@ export default function App() {
       translator: 'Jouriee65',
     };
 
-    let firestoreId = newNovel.id;
-    try {
-      firestoreId = await createTruyen({
-        tenTruyen: standardized.title,
-        moTa: standardized.synopsis,
-        anhBia: standardized.coverImage,
-        theLoai: standardized.genres.join(', '),
-        tacGia: standardized.author?.name || 'Tác Giả',
-        trangThai: 'daDang',
-        adminUser: currentUser || { uid: 'admin-nhjrtg', email: 'nhjrtg@gmail.com' },
-        translator: 'Jouriee65',
-        status: 'completed',
-        worldLore: standardized.worldLore || '',
-        uploaderNote: standardized.uploaderNote || '',
-      });
-
-      if (standardized.chapters && standardized.chapters.length > 0) {
-        await saveChaptersToFirestore(
-          firestoreId,
-          standardized.chapters.map((c) => ({
-            soThuTu: c.chapterNumber,
-            tieuDe: c.title,
-            noiDung: c.content,
-          }))
-        );
-      }
-
-      standardized.id = firestoreId;
-      await loadFirestoreTruyens(true);
-    } catch (fsErr) {
-      console.warn('Error saving novel to Firestore:', fsErr);
-    }
-
-    setNovels((prev) => [standardized, ...prev.filter((n) => n.id !== firestoreId && n.id !== newNovel.id)]);
+    const localId = `novel_${Date.now()}`;
+    standardized.id = localId;
+    setNovels((prev) => [standardized, ...prev.filter((n) => n.id !== localId && n.id !== newNovel.id)]);
   };
 
   const handleAddChapter = (novelId: string, chapter: NovelChapter) => {
-    // Persist to Firestore subcollection chuong
-    try {
-      saveChaptersToFirestore(novelId, [
-        {
-          soThuTu: chapter.chapterNumber,
-          tieuDe: chapter.title,
-          noiDung: chapter.content,
-        },
-      ]).catch((err) => console.warn('Notice saving added chapter to Firestore:', err));
-    } catch (e) {
-      console.warn('Error saving chapter to Firestore:', e);
-    }
-
     setNovels((prev) =>
       prev.map((n) => {
-        if (n.id === novelId) {
-          const updatedChapters = [...n.chapters, chapter];
-          const updatedNovel = {
-            ...n,
-            chapters: updatedChapters,
-            latestChapter: {
-              number: chapter.chapterNumber,
-              title: chapter.title,
-              updatedAt: 'Vừa xong',
-            },
-            totalWords: n.totalWords + chapter.wordCount,
-          };
-          if (selectedNovel && selectedNovel.id === novelId) {
-            setSelectedNovel(updatedNovel);
-          }
-          return updatedNovel;
+        if (n.id !== novelId) return n;
+        const exists = n.chapters.some((c) => c.chapterNumber === chapter.chapterNumber);
+        const nextChapters = exists
+          ? n.chapters.map((c) => (c.chapterNumber === chapter.chapterNumber ? chapter : c))
+          : [...n.chapters, chapter].sort((a, b) => a.chapterNumber - b.chapterNumber);
+        const updatedNovel = {
+          ...n,
+          chapters: nextChapters,
+          totalChaptersCount: nextChapters.length,
+          latestChapter: {
+            number: chapter.chapterNumber,
+            title: chapter.title,
+            updatedAt: 'Vừa xong',
+          },
+          totalWords: n.totalWords + chapter.wordCount,
+        };
+        if (selectedNovel && selectedNovel.id === novelId) {
+          setSelectedNovel(updatedNovel);
         }
-        return n;
+        return updatedNovel;
       })
     );
   };
 
   const handleUpdateNovelChapters = (novelId: string, updatedChapters: NovelChapter[]) => {
-    // Persist chapters to Firestore so other devices see them
-    try {
-      if (updatedChapters.length > 0) {
-        saveChaptersToFirestore(
-          novelId,
-          updatedChapters.map((c) => ({
-            soThuTu: c.chapterNumber,
-            tieuDe: c.title,
-            noiDung: c.content,
-          }))
-        ).catch((err) => console.warn('Notice saving updated chapters to Firestore:', err));
-      }
-    } catch (e) {
-      console.warn('Error syncing updated chapters to Firestore:', e);
-    }
 
     let updatedNovelForSelected: Novel | null = null;
     setNovels((prev) => {

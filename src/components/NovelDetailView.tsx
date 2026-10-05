@@ -93,24 +93,13 @@ import { TxtImportModal } from './TxtImportModal';
 import { TxtChapterSplitterModal } from './TxtChapterSplitterModal';
 import { cosmicAudio } from '../utils/audioSynth';
 import {
-  fetchChuongMetaList,
   FirestoreChuongMeta,
   AdminUserLike,
-  updateTruyen,
-  saveNovelSynopsisToFirebase,
-  saveNovelTagsToFirebase,
-  updateChuong,
-  deleteChuong,
-  addSingleChuong,
-  fetchSingleChuong,
-  subscribeBinhLuanList,
-  addBinhLuan,
-  likeBinhLuan,
-  deleteBinhLuan,
   isBotComment,
 } from '../services/firebase';
 import {
   fetchComments as fetchD1Comments,
+  subscribeComments as subscribeD1Comments,
   addComment as addD1Comment,
   likeComment as likeD1Comment,
   deleteComment as deleteD1Comment,
@@ -587,45 +576,10 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const [isLoadingChapters, setIsLoadingChapters] = useState(false);
   const [isTxtSplitterOpen, setIsTxtSplitterOpen] = useState(false);
 
-  // Manual refresh chapter list from Firestore on-demand ONLY (avoids reading all chapters on detail page load)
+  // Manual refresh chapter list (ĐÃ NGẮT KẾT NỐI KHỎI FIRESTORE - Dữ liệu lấy từ mã nguồn)
   const handleRefreshChaptersFromServer = useCallback(async () => {
-    if (!novel?.id) return;
-    setIsLoadingChapters(true);
-    try {
-      const metas = await fetchChuongMetaList(novel.id);
-      if (metas && metas.length > 0) {
-        setFirestoreChapters(metas);
-        try {
-          safeStorage.setItem(`cosmo_cached_chapters_meta_${novel.id}`, JSON.stringify(metas));
-        } catch {}
-        if (onUpdateChapters) {
-          const localChaps = novel.chapters || [];
-          const localMap = new Map(localChaps.map((c) => [c.chapterNumber, c]));
-          const converted: NovelChapter[] = metas.map((fc) => {
-            const local = localMap.get(fc.soThuTu);
-            return {
-              id: fc.id,
-              novelId: novel.id,
-              chapterNumber: fc.soThuTu,
-              title: fc.tieuDe,
-              publishedAt: fc.thoiGianDang
-                ? new Date(fc.thoiGianDang).toLocaleDateString('vi-VN')
-                : local?.publishedAt || 'Mới cập nhật',
-              wordCount: local?.wordCount || 0,
-              views: local?.views || 0,
-              content: local?.content || '',
-              isExtra: /ngoại\s*truyện|phiên\s*ngoại/i.test(fc.tieuDe),
-            };
-          });
-          onUpdateChapters(novel.id, converted);
-        }
-      }
-    } catch (err) {
-      console.warn('Manual refresh chapters warning:', err);
-    } finally {
-      setIsLoadingChapters(false);
-    }
-  }, [novel?.id, novel?.chapters, onUpdateChapters]);
+    setIsLoadingChapters(false);
+  }, []);
 
   const effectiveChapters: NovelChapter[] = useMemo(() => {
     // 1. Dùng mảng chương đã có sẵn trong novel (ví dụ dữ liệu Lừa Nhau hoặc cache đã có)
@@ -913,54 +867,35 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     // Only subscribe to comments from Firestore if user opens the comments tab
     if (activeTab !== 'comments') return;
 
-    fetchD1Comments(novel.id).then((d1Comments) => {
-      if (d1Comments && d1Comments.length > 0) {
-        setComments((prev) => {
-          const ids = new Set(prev.map((c) => c.id));
-          const mappedFromD1: NovelComment[] = d1Comments.map((c) => ({
-            id: c.id,
-            truyenId: c.truyenId,
-            author: c.author,
-            content: c.content,
-            createdAt: c.createdAt,
-            ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
-            likes: c.likes || 0,
-            badge: c.badge || 'Độc Giả',
-            rating: c.rating || 5,
-            avatar: c.avatar || '',
-            chapterNumber: c.chapterNumber,
-            chapterTitle: c.chapterTitle,
-          }));
-          const newFromD1 = mappedFromD1.filter((c) => !ids.has(c.id));
-          if (newFromD1.length === 0) return prev;
-          const merged = [...newFromD1, ...prev];
-          try {
-            safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(merged));
-          } catch {}
-          return merged;
-        });
-      }
-    }).catch(() => {});
+    // Lắng nghe bình luận thời gian thực 100% từ Cloudflare D1 (Ngắt kết nối hoàn toàn khỏi Firebase)
+    const unsubscribe = subscribeD1Comments(novel.id, undefined, (d1Comments) => {
+      const mappedFromD1: NovelComment[] = d1Comments.map((c) => ({
+        id: c.id,
+        truyenId: c.truyenId,
+        author: c.author,
+        content: c.content,
+        createdAt: c.createdAt,
+        ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
+        likes: c.likes || 0,
+        badge: c.badge || 'Độc Giả',
+        rating: c.rating || 5,
+        avatar: c.avatar || '',
+        chapterNumber: c.chapterNumber,
+        chapterTitle: c.chapterTitle,
+      }));
 
-    const unsubscribe = subscribeBinhLuanList(
-      novel.id,
-      (firestoreComments) => {
-        const cleanFirestore = firestoreComments.filter((c) => !isBotComment(c));
-        const baseComments = (novel.comments || []).filter((c) => !isBotComment(c));
-        const fsIds = new Set(cleanFirestore.map((c) => c.id));
-        const remainingBase = baseComments.filter((c) => !fsIds.has(c.id));
-        const merged = [...cleanFirestore, ...remainingBase];
+      // Kết hợp bình luận cục bộ nếu có
+      const baseComments = (novel.comments || []).filter((c) => !isBotComment(c));
+      const d1Ids = new Set(mappedFromD1.map((c) => c.id));
+      const remainingBase = baseComments.filter((c) => !d1Ids.has(c.id));
+      const merged = [...mappedFromD1, ...remainingBase];
 
-        setComments(merged);
-        try {
-          safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(merged));
-        } catch {}
-        onUpdateNovel?.({ ...novel, comments: merged });
-      },
-      (err) => {
-        console.warn('Realtime comments subscription warning:', err);
-      }
-    );
+      setComments(merged);
+      try {
+        safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(merged));
+      } catch {}
+      onUpdateNovel?.({ ...novel, comments: merged });
+    });
 
     return () => {
       unsubscribe();
@@ -1764,23 +1699,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setNewCommentText('');
 
     try {
-      addD1Comment({
+      await addD1Comment({
         truyenId: novel.id,
         author: finalAuthor,
         content: tempComment.content,
         rating: userRating,
         badge: 'Độc Giả',
-      }).catch(() => {});
-
-      await addBinhLuan(novel.id, {
-        author: finalAuthor,
-        content: tempComment.content,
-        createdAt: formattedDate,
-        rating: userRating,
-        badge: 'Độc Giả',
       });
     } catch (err) {
-      console.warn('[Firebase] Failed to persist comment to Firestore:', err);
+      console.warn('[D1] Failed to persist comment to Cloudflare D1:', err);
     }
   };
 
@@ -1792,13 +1719,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     } catch {}
     onUpdateNovel?.({ ...novel, comments: updated });
 
-    likeD1Comment(commentId).catch(() => {});
-
-    try {
-      likeBinhLuan(novel.id, commentId);
-    } catch (err) {
-      console.warn('[Firebase] Failed to sync comment like:', err);
-    }
+    likeD1Comment(commentId, novel.id).catch(() => {});
   };
 
   const handleOpenDeleteComment = (comment: NovelComment) => {
@@ -1821,13 +1742,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setIsDeleteCommentModalOpen(false);
     setCommentToDelete(null);
 
-    deleteD1Comment(targetId).catch(() => {});
-
-    try {
-      await deleteBinhLuan(novel.id, targetId);
-    } catch (err) {
-      console.warn('[Firebase] Failed to delete comment from Firestore:', err);
-    }
+    deleteD1Comment(targetId, novel.id).catch(() => {});
   };
 
   const handleOpenEditChapter = async (chap: NovelChapter) => {
@@ -1835,27 +1750,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setEditChapTitle(chap.title);
     setEditChapIsExtra(Boolean(chap.isExtra));
     setIsEditChapterModalOpen(true);
-
-    if (chap.content && chap.content.trim()) {
-      setEditChapContent(chap.content);
-    } else {
-      setIsLoadingEditContent(true);
-      try {
-        const fullChap = await fetchSingleChuong(novel.id, chap.chapterNumber);
-        if (fullChap && fullChap.noiDung) {
-          setEditChapContent(fullChap.noiDung);
-        } else {
-          const localMatch = (novel.chapters || []).find((c) => c.chapterNumber === chap.chapterNumber);
-          setEditChapContent(localMatch?.content || '');
-        }
-      } catch (err) {
-        console.warn('Could not fetch chapter content from firestore', err);
-        const localMatch = (novel.chapters || []).find((c) => c.chapterNumber === chap.chapterNumber);
-        setEditChapContent(localMatch?.content || '');
-      } finally {
-        setIsLoadingEditContent(false);
-      }
-    }
+    const content = chap.content || (novel.chapters || []).find((c) => c.chapterNumber === chap.chapterNumber)?.content || '';
+    setEditChapContent(content);
   };
 
   const handleSaveEditChapter = async (e: React.FormEvent) => {
@@ -1866,17 +1762,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     const trimmedTitle = editChapTitle.trim() || editingChapter.title;
     const trimmedContent = editChapContent.trim();
     const wordCount = trimmedContent ? trimmedContent.split(/\s+/).filter(Boolean).length : editingChapter.wordCount;
-
-    // 1. Sync directly to Firestore
-    try {
-      await updateChuong(novel.id, editingChapter.chapterNumber, {
-        tieuDe: trimmedTitle,
-        noiDung: editChapContent,
-        soThuTu: editingChapter.chapterNumber,
-      });
-    } catch (err) {
-      console.warn('Failed to update chapter in firestore', err);
-    }
 
     // 2. Update local state
     const updatedChapters = (novel.chapters || []).map((c) => {
@@ -1909,13 +1794,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
     setIsDeletingChapter(true);
     const delChapterNum = chapterToDelete.chapterNumber;
-
-    // 1. Delete from Firestore
-    try {
-      await deleteChuong(novel.id, delChapterNum);
-    } catch (err) {
-      console.warn('Failed to delete chapter in firestore', err);
-    }
 
     // 2. Update local state
     const remainingChapters = (novel.chapters || []).filter(
@@ -1954,18 +1832,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     const finalChapNum = Number(newChapNumber) || (novel.chapters.length + 1);
     const finalTitle = newChapTitle.trim();
     const wordCount = newChapContent.trim().split(/\s+/).filter(Boolean).length;
-
-    // 1. Push directly to Firestore
-    try {
-      await addSingleChuong(novel.id, {
-        soThuTu: finalChapNum,
-        tieuDe: finalTitle,
-        noiDung: newChapContent,
-        isExtra: newChapIsExtra,
-      });
-    } catch (err) {
-      console.warn('Failed to save new chapter to firestore', err);
-    }
 
     // 2. Add to local novel state
     const newChap: NovelChapter = {
@@ -2021,13 +1887,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       tags: editingGenresList.map((t) => (t.startsWith('#') ? t : `#${t}`)),
     };
 
-    // 1. Save to Firestore
-    try {
-      await saveNovelTagsToFirebase(novel.id, editingGenresList, novel.title);
-    } catch (err) {
-      console.warn('Failed to update tags in firestore', err);
-    }
-
     // 2. Update parent state
     onUpdateNovel?.(updatedNovel);
 
@@ -2045,7 +1904,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
     setIsSavingTags(false);
     setIsEditTagsModalOpen(false);
-    triggerToast('Đã lưu tags vào Firebase!', `Danh sách thể loại / tag của "${novel.title}" đã được lưu trực tiếp vào Firebase Cloud.`);
+    triggerToast('Đã lưu tags!', `Danh sách thể loại / tag của "${novel.title}" đã được cập nhật thành công.`);
   };
 
   const handleOpenEditSynopsis = () => {
@@ -2085,25 +1944,10 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       uploaderNote: editUploaderNote.trim() || undefined,
     };
 
-    // 1. Save directly to Firebase Firestore
-    try {
-      await saveNovelSynopsisToFirebase(
-        novel.id,
-        {
-          moTa: trimmedSynopsis,
-          worldLore: editWorldLore.trim() || undefined,
-          uploaderNote: editUploaderNote.trim() || undefined,
-        },
-        novel.title
-      );
-    } catch (err) {
-      console.warn('Failed to update synopsis in firestore', err);
-    }
-
-    // 2. Update React parent state
+    // 1. Update React parent state
     onUpdateNovel?.(updatedNovel);
 
-    // 3. Persist in safeStorage
+    // 2. Persist in safeStorage
     try {
       const savedNovelsStr = safeStorage.getItem('cosmo_novels');
       if (savedNovelsStr) {
@@ -2118,7 +1962,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     setIsSavingSynopsis(false);
     setIsEditingSynopsis(false);
     setActiveSynopsisSubTab('edit');
-    triggerToast('Đã lưu giới thiệu vào Firebase!', 'Văn án, thiết lập nhân vật và lời nhắn người đăng đã được lưu trực tiếp vào Firebase Cloud.');
+    triggerToast('Đã lưu giới thiệu thành công!', 'Văn án, thiết lập nhân vật và lời nhắn người đăng đã được lưu vào hệ thống.');
   };
 
   // Nút Lưu mục lục danh sách chương của tác phẩm
@@ -2659,16 +2503,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               } catch {}
               onUpdateNovel?.({ ...novel, comments: updated });
               try {
-                addBinhLuan(novel.id, {
+                addD1Comment({
+                  truyenId: novel.id,
                   author: tempComment.author,
-                  avatar: '',
                   content: tempComment.content,
                   rating: 5,
                   badge: 'Độc Giả',
-                  createdAt: formattedDate,
-                });
+                }).catch(() => {});
               } catch (err) {
-                console.warn('Could not post comment to Firestore:', err);
+                console.warn('Could not post comment to Cloudflare D1:', err);
               }
               triggerToast('Đã lưu bình luận!', 'Cảm nghĩ của bạn đã được ghi chép vào trang sổ.');
             }}
@@ -5739,12 +5582,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           tacGia: novel.author?.name || 'Tác giả',
         }}
         onSaveSuccess={async () => {
-          try {
-            const metas = await fetchChuongMetaList(novel.id);
-            if (metas && metas.length > 0) {
-              setFirestoreChapters(metas);
-            }
-          } catch {}
+          // Chương được lưu cục bộ/trong session khi chia tách TXT
         }}
       />
 
