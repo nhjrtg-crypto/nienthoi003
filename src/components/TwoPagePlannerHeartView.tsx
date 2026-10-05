@@ -13,13 +13,12 @@ import {
   Moon,
 } from 'lucide-react';
 import {
-  subscribeToIntroHearts,
-  incrementIntroHearts,
-  subscribeToIntroNotesStyle1,
-  addIntroNoteStyle1,
-  IntroGuestNote,
-} from '../services/firebase';
-import { incrementLike as incrementD1Like, addGuestNote as addD1GuestNote } from '../services/d1Service';
+  subscribeLikes,
+  incrementLike,
+  subscribeGuestNotes,
+  addGuestNote,
+  D1GuestNote as IntroGuestNote,
+} from '../services/d1Service';
 import { safeStorage } from '../utils/safeStorage';
 
 /**
@@ -145,17 +144,17 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
   const [guestNotes, setGuestNotes] = useState<IntroGuestNote[]>([]);
   const [isSubmittingNote, setIsSubmittingNote] = useState<boolean>(false);
 
-  // Lắng nghe dữ liệu thời gian thực từ Firestore trên mọi thiết bị
+  // Lắng nghe dữ liệu thời gian thực từ Cloudflare D1 (Database 2 INTRO_DB)
   useEffect(() => {
     // Xóa bộ nhớ đệm cục bộ cũ nếu có
     try {
       safeStorage.removeItem('cosmo_style1_notes');
     } catch {}
 
-    const unsubHearts = subscribeToIntroHearts('style1', (count) => {
+    const unsubHearts = subscribeLikes('intro_style1', (count) => {
       setHeartsCount(count);
     });
-    const unsubNotes = subscribeToIntroNotesStyle1((notes) => {
+    const unsubNotes = subscribeGuestNotes('style1', (notes) => {
       setGuestNotes(notes);
     });
 
@@ -169,20 +168,21 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
   const [guestContentInput, setGuestContentInput] = useState<string>('');
   const [guestBookPage, setGuestBookPage] = useState<number>(1);
 
-  // Xử lý thả tim (Cộng dồn vĩnh viễn trên Firestore & Cloudflare D1)
+  // Xử lý thả tim (Cộng dồn vĩnh viễn trên Cloudflare D1 - Database 2)
   const handleLike = () => {
+    // Luôn tăng số tim và đồng bộ ngay lập tức
+    incrementLike('intro_style1', 1).catch(() => {});
+
     if (!hasLiked) {
       setHasLiked(true);
       try {
         safeStorage.setItem('cosmo_has_liked_style1', 'true');
       } catch {}
-      incrementD1Like('intro_style1', 1).catch(() => {});
-      incrementIntroHearts('style1').catch(console.error);
       playCuteChime('pop');
-      showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ');
+      showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
     } else {
       playCuteChime('sparkle');
-      showToast('Bạn đã thả tim rồi nè, cảm ơn bạn rất nhiều! (｡♥‿♥｡)');
+      showToast('Đã gửi thêm +1 tim yêu thương! (｡♥‿♥｡) 💕');
     }
   };
 
@@ -203,7 +203,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
     }
   };
 
-  // Thêm tin nhắn vào sổ (Lưu thật vào Firestore)
+  // Thêm tin nhắn vào sổ (Lưu thật vào Cloudflare D1 - Database 2)
   const handleAddGuestNote = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!guestContentInput.trim()) {
@@ -214,8 +214,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
     const content = guestContentInput.trim();
     setIsSubmittingNote(true);
     try {
-      addD1GuestNote('style1', author, content).catch(() => {});
-      await addIntroNoteStyle1(author, content);
+      await addGuestNote('style1', author, content);
       setGuestAuthorInput('');
       setGuestContentInput('');
       setGuestBookPage(1);

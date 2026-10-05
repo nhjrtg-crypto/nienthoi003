@@ -2337,14 +2337,35 @@ export interface IntroReaderMessage {
 }
 
 // ============================================================================
-// HỆ THỐNG GOM LƯỢT THẢ TIM 5 PHÚT / LẦN (BATCHED HEARTS SYNC)
+// HỆ THỐNG ĐỒNG BỘ LƯỢT THẢ TIM TRANG GIỚI THIỆU (STYLE 1 & STYLE 2)
+// Lưu trữ vĩnh viễn trên Firestore, phản hồi 0ms trên UI & ghi tức thì
 // ============================================================================
 let pendingStyle1Hearts = 0;
 let pendingStyle2Hearts = 0;
 let heartsSyncTimer: any = null;
 let isHeartsSyncing = false;
-let cachedStyle1Hearts = 0;
-let cachedStyle2Hearts = 0;
+
+// Đọc bộ đệm an toàn từ safeStorage để không bao giờ bị flash số 0 khi tải lại trang
+let cachedStyle1Hearts = (() => {
+  try {
+    const raw = safeStorage.getItem('cosmo_intro_hearts_style1');
+    const val = raw ? parseInt(raw, 10) : 0;
+    return isNaN(val) || val < 0 ? 0 : val;
+  } catch {
+    return 0;
+  }
+})();
+
+let cachedStyle2Hearts = (() => {
+  try {
+    const raw = safeStorage.getItem('cosmo_intro_hearts_style2');
+    const val = raw ? parseInt(raw, 10) : 0;
+    return isNaN(val) || val < 0 ? 0 : val;
+  } catch {
+    return 0;
+  }
+})();
+
 let lastFetchStyle1HeartsTime = 0;
 let lastFetchStyle2HeartsTime = 0;
 const style1HeartsListeners = new Set<(count: number) => void>();
@@ -2403,10 +2424,11 @@ export async function flushPendingHeartsToFirestore(): Promise<void> {
 
 function scheduleHeartsSync(): void {
   if (heartsSyncTimer) return;
+  // Đồng bộ nhanh chóng sau 1,5 giây (thay vì đợi 30 phút gây mất tim khi tắt tab)
   heartsSyncTimer = setTimeout(() => {
     heartsSyncTimer = null;
     flushPendingHeartsToFirestore();
-  }, 30 * 60 * 1000); // 30 phút gom đồng bộ lượt thả tim lên Firestore 1 lần theo yêu cầu
+  }, 1500);
 }
 
 // Bắt sự kiện chuyển tab / đóng trang để đồng bộ tim không bị mất
@@ -2427,14 +2449,14 @@ if (typeof window !== 'undefined') {
 }
 
 /**
- * Đọc số tim của Style 1 hoặc Style 2 từ Firestore (Có cache 30 phút, không onSnapshot để tiết kiệm Reads)
+ * Đọc số tim của Style 1 hoặc Style 2 từ Firestore (Có cache và lưu an toàn)
  */
 export async function fetchIntroHearts(style: 'style1' | 'style2', force = false): Promise<number> {
   const now = Date.now();
   const lastTime = style === 'style1' ? lastFetchStyle1HeartsTime : lastFetchStyle2HeartsTime;
   const currentCached = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
 
-  if (!force && now - lastTime < 30 * 60 * 1000 && currentCached > 0) {
+  if (!force && now - lastTime < 5 * 60 * 1000 && currentCached > 0) {
     return currentCached;
   }
 
@@ -2445,15 +2467,30 @@ export async function fetchIntroHearts(style: 'style1' | 'style2', force = false
     else lastFetchStyle2HeartsTime = Date.now();
 
     if (snap.exists()) {
-      const count = typeof snap.data().heartsCount === 'number' ? snap.data().heartsCount : 0;
+      const data = snap.data();
+      const count = typeof data?.heartsCount === 'number' ? data.heartsCount : 0;
       if (style === 'style1') {
-        cachedStyle1Hearts = count;
-        style1HeartsListeners.forEach((fn) => fn(count));
+        // Lấy số lớn hơn giữa cache và server để không bị lùi số nếu vừa thả tim
+        cachedStyle1Hearts = Math.max(cachedStyle1Hearts, count);
+        safeStorage.setItem('cosmo_intro_hearts_style1', String(cachedStyle1Hearts));
+        style1HeartsListeners.forEach((fn) => fn(cachedStyle1Hearts));
+        return cachedStyle1Hearts;
       } else {
-        cachedStyle2Hearts = count;
-        style2HeartsListeners.forEach((fn) => fn(count));
+        cachedStyle2Hearts = Math.max(cachedStyle2Hearts, count);
+        safeStorage.setItem('cosmo_intro_hearts_style2', String(cachedStyle2Hearts));
+        style2HeartsListeners.forEach((fn) => fn(cachedStyle2Hearts));
+        return cachedStyle2Hearts;
       }
-      return count;
+    } else {
+      // Document chưa tồn tại trên Firestore -> tự động khởi tạo document
+      setDoc(
+        docRef,
+        {
+          heartsCount: currentCached > 0 ? currentCached : 0,
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true }
+      ).catch(() => {});
     }
   } catch (err) {
     console.warn(`[Firestore] Notice fetching ${style} hearts:`, err);
@@ -2462,7 +2499,7 @@ export async function fetchIntroHearts(style: 'style1' | 'style2', force = false
 }
 
 /**
- * Lắng nghe số lượt thả tim với chu kỳ 5 phút mới cập nhật 1 lần (Không dùng onSnapshot)
+ * Lắng nghe số lượt thả tim thời gian thực từ Firestore và cache bộ nhớ
  */
 export function subscribeToIntroHearts(
   style: 'style1' | 'style2',
@@ -2472,17 +2509,17 @@ export function subscribeToIntroHearts(
   const listeners = style === 'style1' ? style1HeartsListeners : style2HeartsListeners;
   listeners.add(callback);
 
-  // Trả về số tim trong cache ngay tức thì (0ms, 0 read)
+  // Trả về số tim trong cache ngay tức thì (0ms, không độ trễ)
   const initial = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
-  if (initial > 0) callback(initial);
+  callback(initial);
 
   // Nạp từ Firestore lần đầu nếu chưa nạp trong 5 phút qua
   fetchIntroHearts(style, false).then((count) => callback(count)).catch(() => {});
 
-  // Chu kỳ đúng 30 phút mới cập nhật lại 1 lần từ máy chủ nếu độc giả còn ở lại trang
+  // Chu kỳ 5 phút làm mới lại 1 lần từ máy chủ nếu độc giả còn ở lại trang
   const intervalId = setInterval(() => {
     fetchIntroHearts(style, true).then((count) => callback(count)).catch(() => {});
-  }, 30 * 60 * 1000);
+  }, 5 * 60 * 1000);
 
   return () => {
     listeners.delete(callback);
@@ -2491,15 +2528,17 @@ export function subscribeToIntroHearts(
 }
 
 /**
- * Thả tim: Tăng trên giao diện ngay tức thì, sau đó gom 5 phút mới đồng bộ lên Firestore 1 lần
+ * Thả tim: Tăng trên giao diện ngay tức thì, lưu safeStorage, sau đó đồng bộ nhanh lên Firestore
  */
 export async function incrementIntroHearts(style: 'style1' | 'style2'): Promise<void> {
   if (style === 'style1') {
     cachedStyle1Hearts += 1;
+    safeStorage.setItem('cosmo_intro_hearts_style1', String(cachedStyle1Hearts));
     style1HeartsListeners.forEach((fn) => fn(cachedStyle1Hearts));
     pendingStyle1Hearts += 1;
   } else {
     cachedStyle2Hearts += 1;
+    safeStorage.setItem('cosmo_intro_hearts_style2', String(cachedStyle2Hearts));
     style2HeartsListeners.forEach((fn) => fn(cachedStyle2Hearts));
     pendingStyle2Hearts += 1;
   }

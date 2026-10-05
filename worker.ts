@@ -4,6 +4,7 @@
 
 export interface Env {
   DB?: any;
+  INTRO_DB?: any;
   ASSETS?: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -124,20 +125,34 @@ export default {
     }
 
     // ========================================================================
-    // 2. API: /api/likes (Thả tim truyện & trang giới thiệu)
+    // 2. API: /api/likes (Thả tim truyện & trang giới thiệu - hỗ trợ INTRO_DB)
     // ========================================================================
     if (url.pathname === '/api/likes' || url.pathname.startsWith('/api/likes/')) {
       const targetId = url.searchParams.get('targetId') || 'global';
+      const db = (targetId.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
 
       if (request.method === 'GET') {
-        if (!env.DB) {
+        if (!db) {
           return new Response(
-            JSON.stringify({ success: true, source: 'fallback', targetId, likeCount: 520 }),
+            JSON.stringify({
+              success: true,
+              source: 'fallback',
+              targetId,
+              likeCount: targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 100),
+            }),
             { headers: { 'Content-Type': 'application/json' } }
           );
         }
         try {
-          const row = await env.DB.prepare('SELECT like_count FROM likes WHERE target_id = ?')
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS likes (
+              target_id TEXT PRIMARY KEY,
+              like_count INTEGER NOT NULL DEFAULT 0,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `).run().catch(() => {});
+
+          const row = await db.prepare('SELECT like_count FROM likes WHERE target_id = ?')
             .bind(targetId)
             .first();
           return new Response(
@@ -153,25 +168,35 @@ export default {
       }
 
       if (request.method === 'POST') {
-        if (!env.DB) {
-          return new Response(
-            JSON.stringify({ success: true, source: 'fallback', likeCount: 521 }),
-            { headers: { 'Content-Type': 'application/json' } }
-          );
-        }
         try {
           const body = (await request.json().catch(() => ({}))) as any;
           const target = body.targetId || targetId;
-          const amount = typeof body.amount === 'number' ? body.amount : 1;
+          const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
+          const postDb = (target.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
 
-          await env.DB.prepare(
+          if (!postDb) {
+            return new Response(
+              JSON.stringify({ success: true, source: 'fallback', likeCount: 521 }),
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+          }
+
+          await postDb.prepare(`
+            CREATE TABLE IF NOT EXISTS likes (
+              target_id TEXT PRIMARY KEY,
+              like_count INTEGER NOT NULL DEFAULT 0,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `).run().catch(() => {});
+
+          await postDb.prepare(
             `INSERT INTO likes (target_id, like_count, updated_at) 
              VALUES (?, ?, CURRENT_TIMESTAMP)
              ON CONFLICT(target_id) 
              DO UPDATE SET like_count = like_count + ?, updated_at = CURRENT_TIMESTAMP`
-          ).bind(target, amount > 0 ? amount : 1, amount).run();
+          ).bind(target, amount, amount).run();
 
-          const row = await env.DB.prepare('SELECT like_count FROM likes WHERE target_id = ?')
+          const row = await postDb.prepare('SELECT like_count FROM likes WHERE target_id = ?')
             .bind(target)
             .first();
 
@@ -372,20 +397,32 @@ export default {
     }
 
     // ========================================================================
-    // 4. API: /api/notes (Lưu bút bạn đọc)
+    // 4. API: /api/notes (Lưu bút bạn đọc - hỗ trợ INTRO_DB)
     // ========================================================================
     if (url.pathname === '/api/notes' || url.pathname.startsWith('/api/notes/')) {
       const style = url.searchParams.get('style') || 'style1';
+      const db = env.INTRO_DB || env.DB;
 
       if (request.method === 'GET') {
-        if (!env.DB) {
+        if (!db) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', notes: [] }),
             { headers: { 'Content-Type': 'application/json' } }
           );
         }
         try {
-          const { results } = await env.DB.prepare(
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS guest_notes (
+              id TEXT PRIMARY KEY,
+              style TEXT NOT NULL DEFAULT 'style1',
+              author TEXT NOT NULL,
+              content TEXT NOT NULL,
+              time_string TEXT NOT NULL,
+              created_at INTEGER NOT NULL
+            )
+          `).run().catch(() => {});
+
+          const { results } = await db.prepare(
             `SELECT id, style, author, content, time_string as time, created_at as createdAt
              FROM guest_notes
              WHERE style = ?
@@ -406,7 +443,7 @@ export default {
       }
 
       if (request.method === 'POST') {
-        if (!env.DB) {
+        if (!db) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback' }),
             { headers: { 'Content-Type': 'application/json' } }
@@ -417,10 +454,22 @@ export default {
           const id = body.id || `note_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
           const author = (body.author || body.sender || 'Bạn đọc ẩn danh ♡').trim().slice(0, 50);
           const content = (body.content || body.text || '').trim().slice(0, 500);
-          const timeString = body.time || new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-          const createdAt = Date.now();
+          const now = new Date();
+          const timeString = body.time || `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+          const createdAt = typeof body.createdAt === 'number' ? body.createdAt : Date.now();
 
-          await env.DB.prepare(
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS guest_notes (
+              id TEXT PRIMARY KEY,
+              style TEXT NOT NULL DEFAULT 'style1',
+              author TEXT NOT NULL,
+              content TEXT NOT NULL,
+              time_string TEXT NOT NULL,
+              created_at INTEGER NOT NULL
+            )
+          `).run().catch(() => {});
+
+          await db.prepare(
             `INSERT INTO guest_notes (id, style, author, content, time_string, created_at)
              VALUES (?, ?, ?, ?, ?, ?)`
           ).bind(id, style, author, content, timeString, createdAt).run();

@@ -1,46 +1,43 @@
-# HƯỚNG DẪN KẾT NỐI CLOUDFLARE D1 (MIỄN PHÍ 100%)
+# HƯỚNG DẪN KẾT NỐI 2 DATABASE CLOUDFLARE D1 (MIỄN PHÍ 100%)
 
-Hệ thống đã được lập trình sẵn toàn bộ API Cloudflare Pages Functions (`/functions/api/`) và Client Service (`d1Service.ts`) để thay thế hoặc chạy song song với Firebase.
-
-Khi kích hoạt D1:
-- **Lượt đọc miễn phí**: 5.000.000 lượt/ngày (Gấp 100 lần Firebase).
-- **Lượt ghi miễn phí**: 100.000 lượt/ngày (Gấp 5 lần Firebase).
-- **Không bao giờ bị nghẽn mạng hay dính cảnh báo giới hạn (Quota Limit)**.
+Hệ thống đã được kiến trúc tách biệt thành **2 Database D1 độc lập** trên Cloudflare:
+1. **Database 1 (`DB` - `nienthoi-db`)**: Dành riêng cho Lượt xem toàn web, Lượt xem chương truyện, Bình luận truyện & Lưu trữ ảnh bìa (500MB).
+2. **Database 2 (`INTRO_DB` - `nienthoi-intro-db`)**: Dành riêng 100% cho **Lượt thả tim** và **Bình luận lưu bút trang giới thiệu** (500MB độc lập).
 
 ---
 
-## 3 BƯỚC ĐƠN GIẢN ĐỂ KÍCH HOẠT D1 TRÊN CLOUDFLARE
+## LỢI ÍCH CỦA VIỆC TÁCH 2 DATABASE:
+- **Ngắt hoàn toàn khỏi Firebase**: Lượt thả tim và lưu bút không còn phụ thuộc vào Firebase Firestore.
+- **X2 Dung lượng (1.000 MB thay vì 500 MB)**: Mỗi database Cloudflare D1 miễn phí có 500 MB. Tách 2 database giúp bạn có tới 1.000 MB miễn phí!
+- **Hạn mức khổng lồ**: 5.000.000 lượt đọc/ngày và 100.000 lượt ghi/ngày trên Cloudflare Edge Network.
 
-### BƯỚC 1: Tạo Database D1 trên Cloudflare
+---
+
+## CÁCH TẠO & KẾT NỐI DATABASE THỨ 2 (`INTRO_DB`):
+
+### BƯỚC 1: Tạo Database thứ 2 trên Cloudflare
 1. Đăng nhập vào [dash.cloudflare.com](https://dash.cloudflare.com/).
-2. Ở thanh menu bên trái, chọn **Storage & Databases** -> **D1 SQL Database**.
-3. Bấm nút **Create database** -> Đặt tên (ví dụ: `nienthoi-db`) -> Bấm **Create**.
+2. Chọn menu **Storage & Databases** -> **D1 SQL Database**.
+3. Bấm **Create database** -> Đặt tên: `nienthoi-intro-db` -> Bấm **Create**.
 
 ---
 
-### BƯỚC 2: Khởi tạo bảng dữ liệu (Copy & Paste)
-1. Bấm vào database vừa tạo (`nienthoi-db`).
-2. Chọn tab **Console** (ngay trên đầu).
-3. Mở file `schema.sql` trong dự án của bạn, copy toàn bộ nội dung và dán vào ô nhập lệnh Console của D1.
-4. Bấm **Execute** (hoặc nhấn Enter) để chạy.
-*(Bảng `site_stats`, `novel_views`, `likes`, `comments`, `guest_notes` sẽ được tạo ngay lập tức).*
+### BƯỚC 2: Chạy Schema khởi tạo cho Database thứ 2
+1. Bấm vào database `nienthoi-intro-db` vừa tạo.
+2. Chọn tab **Console**.
+3. Mở file `schema_intro.sql` trong dự án của bạn (chỉ gồm bảng `likes` và `guest_notes`), copy toàn bộ nội dung và dán vào ô Console.
+4. Bấm **Execute**.
 
 ---
 
-### BƯỚC 3: Liên kết (Binding) Database vào trang Web Pages
-1. Tại menu bên trái Cloudflare, vào **Workers & Pages**.
-2. Chọn dự án website bạn đã deploy.
-3. Vào tab **Settings** -> chọn mục **Functions** ở menu con.
-4. Cuộn xuống phần **D1 Database Bindings** -> Bấm **Add binding**:
-   - **Variable name**: Nhập chính xác chữ `DB` (viết hoa).
-   - **D1 database**: Chọn database bạn vừa tạo ở Bước 1 (`nienthoi-db`).
-5. Bấm **Save**.
-6. (Tùy chọn) Bấm **Deployments** -> Bấm vào lần build mới nhất và chọn **Retry deployment** hoặc đẩy code mới lên GitHub để Cloudflare kích hoạt Pages Functions.
+### BƯỚC 3: Liên kết (Binding) vào Cloudflare Pages / Workers
+1. Tại menu Cloudflare, vào **Workers & Pages** -> Chọn dự án website của bạn.
+2. Vào **Settings** -> **Functions** (hoặc **Variables & Bindings** nếu dùng Worker):
+3. Cuộn xuống mục **D1 Database Bindings** -> Bấm **Add binding**:
+   - **Variable name**: Nhập chính xác chữ `INTRO_DB` (viết hoa).
+   - **D1 database**: Chọn `nienthoi-intro-db`.
+4. Bấm **Save**.
+5. Vào **Deployments** -> Bấm vào lần build mới nhất chọn **Retry deployment** (hoặc commit code mới lên GitHub) để Cloudflare kích hoạt binding mới.
 
----
+*(Lưu ý: Nếu chưa cấu hình binding `INTRO_DB`, hệ thống sẽ tự động fallback về `DB` nên web vẫn hoạt động bình thường mà không bị lỗi).*
 
-## CÁC TÍNH NĂNG ĐÃ SẴN SÀNG:
-1. **Lượt xem toàn web cộng dồn**: Nút ở chân trang (Footer) tự động đếm và cộng dồn qua `/api/views`.
-2. **Lượt thả tim**: Thả tim truyện và trang giới thiệu lưu trực tiếp vào bảng `likes`.
-3. **Bình luận truyện & chương**: Lưu trữ vĩnh viễn trong bảng `comments`, tốc độ tải trang cực nhanh.
-4. **Lưu bút bạn đọc**: Lưu vào bảng `guest_notes` trên Edge Network của Cloudflare.

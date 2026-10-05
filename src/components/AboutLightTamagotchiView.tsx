@@ -16,13 +16,12 @@ import {
 } from 'lucide-react';
 import { safeStorage } from '../utils/safeStorage';
 import {
-  subscribeToIntroHearts,
-  incrementIntroHearts,
-  subscribeToIntroNotesStyle2,
-  addIntroNoteStyle2,
+  subscribeLikes,
+  incrementLike,
+  subscribeGuestNotes,
+  addGuestNote,
   IntroReaderMessage,
-} from '../services/firebase';
-import { incrementLike as incrementD1Like, addGuestNote as addD1GuestNote } from '../services/d1Service';
+} from '../services/d1Service';
 
 // Danh sách các trang nội dung bên trong Tamagotchi
 export const TAMA_STEPS = [
@@ -184,18 +183,26 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
   const [readerMsgIconColorIndex, setReaderMsgIconColorIndex] = useState<number>(0);
   const currentMsgIconColor = READER_MSG_ICON_COLORS[readerMsgIconColorIndex];
 
-  // Lắng nghe dữ liệu thời gian thực từ Firestore và xóa triệt để cache tin nhắn giả lập
+  // Lắng nghe dữ liệu thời gian thực từ Cloudflare D1 (Database 2 INTRO_DB)
   useEffect(() => {
     try {
       safeStorage.removeItem('cosmo_tama_messages');
       safeStorage.removeItem('cosmo_tama_hearts');
     } catch {}
 
-    const unsubHearts = subscribeToIntroHearts('style2', (count) => {
+    const unsubHearts = subscribeLikes('intro_style2', (count) => {
       setTamaHearts(count);
     });
-    const unsubNotes = subscribeToIntroNotesStyle2((messages) => {
-      setRecentMessages(messages);
+    const unsubNotes = subscribeGuestNotes('style2', (notes) => {
+      setRecentMessages(
+        notes.map((n) => ({
+          id: n.id,
+          sender: n.author,
+          text: n.content,
+          time: n.time,
+          createdAt: n.createdAt,
+        }))
+      );
     });
 
     return () => {
@@ -210,16 +217,14 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
     const sender = nicknameInput.trim() || `Độc giả #${Math.floor(100 + Math.random() * 900)}`;
     try {
-      addD1GuestNote('style2', sender, trimmed).catch(() => {});
-      await addIntroNoteStyle2(sender, trimmed);
+      await addGuestNote('style2', sender, trimmed);
 
       if (!hasLiked) {
         setHasLiked(true);
         try {
           safeStorage.setItem('cosmo_has_liked_tama', 'true');
         } catch {}
-        incrementD1Like('intro_style2', 1).catch(() => {});
-        incrementIntroHearts('style2').catch(console.error);
+        incrementLike('intro_style2', 1).catch(() => {});
       }
 
       const heartId = Date.now();
@@ -251,18 +256,15 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     setActiveTab(TAMA_STEPS[nextIdx].id);
   };
 
-  // 💜 NÚT [B]: THẢ TIM (Màu Tím Hoa Cà)
-  // Giới hạn 1 trình duyệt chỉ được thả tim 1 lần
+  // 💜 NÚT [B]: THẢ TIM (Màu Tím Hoa Cà - Cloudflare D1 Database 2)
   const handlePressB = () => {
-    if (hasLiked) {
-      showToast('Bạn đã thả tim rồi nè, cảm ơn bạn rất nhiều! (｡♥‿♥｡)');
-      return;
+    const wasAlreadyLiked = hasLiked;
+    if (!wasAlreadyLiked) {
+      setHasLiked(true);
+      try {
+        safeStorage.setItem('cosmo_has_liked_tama', 'true');
+      } catch {}
     }
-
-    setHasLiked(true);
-    try {
-      safeStorage.setItem('cosmo_has_liked_tama', 'true');
-    } catch {}
 
     // 1. Rung nhẹ máy & phản hồi xúc giác
     setIsTamaShaking(true);
@@ -289,11 +291,14 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
       setIsHeartFlashing(false);
     }, 450);
 
-    // 3. Cộng dồn điểm tương tác lên Firestore & Cloudflare D1
-    incrementD1Like('intro_style2', 1).catch(() => {});
-    incrementIntroHearts('style2').catch(console.error);
+    // 3. Cộng dồn điểm tương tác lên Cloudflare D1 (Database 2)
+    incrementLike('intro_style2', 1).catch(() => {});
 
-    showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
+    if (!wasAlreadyLiked) {
+      showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
+    } else {
+      showToast('Đã gửi thêm +1 tim yêu thương! (｡♥‿♥｡) 💕');
+    }
   };
 
   // 💖 NÚT [C]: TRANG ĐẦU (Quay về màn hình Welcome)

@@ -1,8 +1,10 @@
 // Cloudflare Pages Function: /api/likes
 // Quản lý lượt thả tim truyện & trang giới thiệu qua Cloudflare D1
+// Hỗ trợ Database thứ 2 chuyên biệt (INTRO_DB) cho lượt thả tim và bình luận lưu bút
 
 interface Env {
   DB?: any;
+  INTRO_DB?: any;
 }
 
 interface EventContext {
@@ -15,20 +17,32 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const url = new URL(request.url);
   const targetId = url.searchParams.get('targetId') || 'global';
 
-  if (!env.DB) {
+  // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/thả tim) nếu có, fallback về DB
+  const db = (targetId.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+
+  if (!db) {
     return new Response(
       JSON.stringify({
         success: true,
         source: 'fallback',
         targetId,
-        likeCount: 520,
+        likeCount: targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 100),
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );
   }
 
   try {
-    const row = await env.DB.prepare(
+    // Tự động khởi tạo bảng likes nếu chưa có
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS likes (
+        target_id TEXT PRIMARY KEY,
+        like_count INTEGER NOT NULL DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run().catch(() => {});
+
+    const row = await db.prepare(
       'SELECT like_count FROM likes WHERE target_id = ?'
     )
       .bind(targetId)
@@ -53,13 +67,6 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
 
-  if (!env.DB) {
-    return new Response(
-      JSON.stringify({ success: true, source: 'fallback', likeCount: 521 }),
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-  }
-
   try {
     const body = (await request.json().catch(() => ({}))) as {
       targetId?: string;
@@ -67,18 +74,37 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     };
 
     const targetId = body.targetId || 'intro_style1';
-    const amount = typeof body.amount === 'number' ? body.amount : 1;
+    const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
 
-    await env.DB.prepare(
+    // Ưu tiên INTRO_DB (Database thứ 2) nếu có
+    const db = (targetId.startsWith('intro_') && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+
+    if (!db) {
+      return new Response(
+        JSON.stringify({ success: true, source: 'fallback', targetId, likeCount: 521 }),
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Tự động tạo bảng nếu chưa có
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS likes (
+        target_id TEXT PRIMARY KEY,
+        like_count INTEGER NOT NULL DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run().catch(() => {});
+
+    await db.prepare(
       `INSERT INTO likes (target_id, like_count, updated_at) 
        VALUES (?, ?, CURRENT_TIMESTAMP)
        ON CONFLICT(target_id) 
        DO UPDATE SET like_count = like_count + ?, updated_at = CURRENT_TIMESTAMP`
     )
-      .bind(targetId, amount > 0 ? amount : 1, amount)
+      .bind(targetId, amount, amount)
       .run();
 
-    const row = await env.DB.prepare(
+    const row = await db.prepare(
       'SELECT like_count FROM likes WHERE target_id = ?'
     )
       .bind(targetId)

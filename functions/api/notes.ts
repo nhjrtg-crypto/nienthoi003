@@ -1,8 +1,10 @@
 // Cloudflare Pages Function: /api/notes
 // Quản lý lưu bút / tin nhắn bạn đọc trang giới thiệu qua Cloudflare D1
+// Hỗ trợ Database thứ 2 chuyên biệt (INTRO_DB) cho lượt thả tim và bình luận lưu bút
 
 interface Env {
   DB?: any;
+  INTRO_DB?: any;
 }
 
 interface EventContext {
@@ -14,10 +16,13 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const { request, env } = context;
   const url = new URL(request.url);
   const style = url.searchParams.get('style') || 'style1';
-  const limitParam = parseInt(url.searchParams.get('limit') || '30', 10);
-  const limit = Math.min(Math.max(limitParam, 1), 60);
+  const limitParam = parseInt(url.searchParams.get('limit') || '50', 10);
+  const limit = Math.min(Math.max(limitParam, 1), 100);
 
-  if (!env.DB) {
+  // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/lưu bút) nếu có, fallback về DB
+  const db = env.INTRO_DB || env.DB;
+
+  if (!db) {
     return new Response(
       JSON.stringify({
         success: true,
@@ -29,7 +34,19 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   }
 
   try {
-    const { results } = await env.DB.prepare(
+    // Tự động tạo bảng guest_notes nếu chưa có
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS guest_notes (
+        id TEXT PRIMARY KEY,
+        style TEXT NOT NULL DEFAULT 'style1',
+        author TEXT NOT NULL,
+        content TEXT NOT NULL,
+        time_string TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      )
+    `).run().catch(() => {});
+
+    const { results } = await db.prepare(
       `SELECT id, style, author, content, time_string as time, created_at as createdAt
        FROM guest_notes
        WHERE style = ?
@@ -56,8 +73,9 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
+  const db = env.INTRO_DB || env.DB;
 
-  if (!env.DB) {
+  if (!db) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback' }),
       { headers: { 'Content-Type': 'application/json' } }
@@ -70,8 +88,9 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const style = body.style || 'style1';
     const author = (body.author || body.sender || 'Bạn đọc ẩn danh ♡').trim().slice(0, 50);
     const content = (body.content || body.text || '').trim().slice(0, 500);
-    const timeString = body.time || new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-    const createdAt = Date.now();
+    const now = new Date();
+    const timeString = body.time || `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const createdAt = typeof body.createdAt === 'number' ? body.createdAt : Date.now();
 
     if (!content) {
       return new Response(
@@ -80,7 +99,19 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       );
     }
 
-    await env.DB.prepare(
+    // Tự động tạo bảng nếu chưa có
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS guest_notes (
+        id TEXT PRIMARY KEY,
+        style TEXT NOT NULL DEFAULT 'style1',
+        author TEXT NOT NULL,
+        content TEXT NOT NULL,
+        time_string TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      )
+    `).run().catch(() => {});
+
+    await db.prepare(
       `INSERT INTO guest_notes (id, style, author, content, time_string, created_at)
        VALUES (?, ?, ?, ?, ?, ?)`
     )

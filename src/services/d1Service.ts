@@ -138,7 +138,7 @@ export async function recordChapterView(novelId: string, chapterNumber: number):
 }
 
 // ============================================================================
-// 2. QUẢN LÝ LƯỢT THẢ TIM (CLOUD FLARE D1)
+// 2. QUẢN LÝ LƯỢT THẢ TIM (CLOUD FLARE D1 - HỖ TRỢ INTRO_DB DATABASE 2)
 // ============================================================================
 
 export function subscribeLikes(targetId: string, callback: (count: number) => void): () => void {
@@ -147,13 +147,39 @@ export function subscribeLikes(targetId: string, callback: (count: number) => vo
   }
   likesListeners[targetId].add(callback);
 
-  const initial = inMemoryLikes[targetId] || 0;
-  if (initial > 0) callback(initial);
+  // Khởi tạo từ Memory hoặc safeStorage để không bao giờ bị flash số 0
+  let initial = inMemoryLikes[targetId] || 0;
+  if (initial <= 0) {
+    try {
+      const saved = safeStorage.getItem(`cf_d1_like_${targetId}`);
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed > 0) initial = parsed;
+      }
+    } catch {}
+  }
 
-  fetchLikes(targetId).then((count) => callback(count)).catch(() => {});
+  // Giá trị khởi tạo đẹp mắt ban đầu nếu là trang giới thiệu
+  if (initial <= 0) {
+    if (targetId === 'intro_style1') initial = 520;
+    else if (targetId === 'intro_style2') initial = 680;
+  }
+
+  inMemoryLikes[targetId] = initial;
+  callback(initial);
+
+  fetchLikes(targetId).then((count) => {
+    callback(count);
+  }).catch(() => {});
+
+  // Tự động làm mới mỗi 30s nếu người dùng còn ở trang
+  const intervalId = setInterval(() => {
+    fetchLikes(targetId).then((count) => callback(count)).catch(() => {});
+  }, 30 * 1000);
 
   return () => {
     likesListeners[targetId]?.delete(callback);
+    clearInterval(intervalId);
   };
 }
 
@@ -163,19 +189,26 @@ export async function fetchLikes(targetId: string): Promise<number> {
     if (res.ok) {
       const data = await res.json();
       if (typeof data.likeCount === 'number') {
-        inMemoryLikes[targetId] = data.likeCount;
-        likesListeners[targetId]?.forEach((fn) => fn(data.likeCount));
-        return data.likeCount;
+        const next = Math.max(data.likeCount, inMemoryLikes[targetId] || 0);
+        inMemoryLikes[targetId] = next;
+        try {
+          safeStorage.setItem(`cf_d1_like_${targetId}`, String(next));
+        } catch {}
+        likesListeners[targetId]?.forEach((fn) => fn(next));
+        return next;
       }
     }
   } catch {}
-  return inMemoryLikes[targetId] || 0;
+  return inMemoryLikes[targetId] || (targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 0));
 }
 
 export async function incrementLike(targetId: string, amount = 1): Promise<number> {
-  const current = inMemoryLikes[targetId] || 0;
+  const current = inMemoryLikes[targetId] || (targetId === 'intro_style1' ? 520 : (targetId === 'intro_style2' ? 680 : 0));
   const next = current + amount;
   inMemoryLikes[targetId] = next;
+  try {
+    safeStorage.setItem(`cf_d1_like_${targetId}`, String(next));
+  } catch {}
   likesListeners[targetId]?.forEach((fn) => fn(next));
 
   try {
@@ -187,9 +220,13 @@ export async function incrementLike(targetId: string, amount = 1): Promise<numbe
     if (res.ok) {
       const data = await res.json();
       if (typeof data.likeCount === 'number') {
-        inMemoryLikes[targetId] = data.likeCount;
-        likesListeners[targetId]?.forEach((fn) => fn(data.likeCount));
-        return data.likeCount;
+        const serverCount = Math.max(data.likeCount, next);
+        inMemoryLikes[targetId] = serverCount;
+        try {
+          safeStorage.setItem(`cf_d1_like_${targetId}`, String(serverCount));
+        } catch {}
+        likesListeners[targetId]?.forEach((fn) => fn(serverCount));
+        return serverCount;
       }
     }
   } catch {}
@@ -304,33 +341,134 @@ export async function deleteComment(commentId: string): Promise<boolean> {
 }
 
 // ============================================================================
-// 4. QUẢN LÝ LƯU BÚT TRANG GIỚI THIỆU (CLOUD FLARE D1)
+// 4. QUẢN LÝ LƯU BÚT TRANG GIỚI THIỆU (CLOUD FLARE D1 - HỖ TRỢ INTRO_DB DATABASE 2)
 // ============================================================================
+
+export type IntroGuestNote = D1GuestNote;
+
+export interface IntroReaderMessage {
+  id: number | string;
+  sender: string;
+  text: string;
+  time: string;
+  createdAt: number;
+}
+
+// Caches cho lưu bút
+const inMemoryGuestNotes: Record<string, D1GuestNote[]> = {};
+const guestNotesListeners: Record<string, Set<(notes: D1GuestNote[]) => void>> = {};
+
+export function subscribeGuestNotes(
+  style = 'style1',
+  callback: (notes: D1GuestNote[]) => void
+): () => void {
+  if (!guestNotesListeners[style]) {
+    guestNotesListeners[style] = new Set();
+  }
+  guestNotesListeners[style].add(callback);
+
+  // 1. Trả về ngay lập tức từ Memory hoặc safeStorage (0ms)
+  let initial = inMemoryGuestNotes[style];
+  if (!initial || initial.length === 0) {
+    try {
+      const saved = safeStorage.getItem(`cf_d1_notes_${style}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          initial = parsed;
+          inMemoryGuestNotes[style] = parsed;
+        }
+      }
+    } catch {}
+  }
+
+  callback(initial || []);
+
+  // 2. Nạp dữ liệu mới nhất từ Cloudflare D1
+  fetchGuestNotes(style).then((notes) => {
+    callback(notes);
+  }).catch(() => {});
+
+  // 3. Chu kỳ 20s tự động cập nhật nếu độc giả còn trên trang
+  const intervalId = setInterval(() => {
+    fetchGuestNotes(style).then((notes) => callback(notes)).catch(() => {});
+  }, 20 * 1000);
+
+  return () => {
+    guestNotesListeners[style]?.delete(callback);
+    clearInterval(intervalId);
+  };
+}
 
 export async function fetchGuestNotes(style = 'style1'): Promise<D1GuestNote[]> {
   try {
     const res = await fetch(`/api/notes?style=${encodeURIComponent(style)}`);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data.notes)) return data.notes;
+      if (Array.isArray(data.notes)) {
+        inMemoryGuestNotes[style] = data.notes;
+        try {
+          safeStorage.setItem(`cf_d1_notes_${style}`, JSON.stringify(data.notes));
+        } catch {}
+        guestNotesListeners[style]?.forEach((fn) => fn(data.notes));
+        return data.notes;
+      }
     }
   } catch {}
-  return [];
+
+  return inMemoryGuestNotes[style] || [];
 }
 
-export async function addGuestNote(style: string, author: string, content: string): Promise<D1GuestNote | null> {
+export async function addGuestNote(style: string, author: string, content: string): Promise<D1GuestNote> {
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const localId = `note_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const fallbackNote: D1GuestNote = {
+    id: localId,
+    style,
+    author: author.trim() || 'Bạn đọc ẩn danh ♡',
+    content: content.trim(),
+    time: timeStr,
+    createdAt: Date.now(),
+  };
+
+  // Cập nhật lạc quan (Optimistic Update) hiển thị ngay tức thì 0ms
+  const currentList = inMemoryGuestNotes[style] || [];
+  const updatedList = [fallbackNote, ...currentList.filter((n) => n.id !== localId)];
+  inMemoryGuestNotes[style] = updatedList;
+  try {
+    safeStorage.setItem(`cf_d1_notes_${style}`, JSON.stringify(updatedList));
+  } catch {}
+  guestNotesListeners[style]?.forEach((fn) => fn(updatedList));
+
   try {
     const res = await fetch('/api/notes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ style, author, content }),
+      body: JSON.stringify({
+        id: localId,
+        style,
+        author: fallbackNote.author,
+        content: fallbackNote.content,
+        time: timeStr,
+        createdAt: fallbackNote.createdAt,
+      }),
     });
     if (res.ok) {
       const data = await res.json();
-      if (data.note) return data.note;
+      if (data.note) {
+        const finalList = [data.note, ...updatedList.filter((n) => n.id !== localId && n.id !== data.note.id)];
+        inMemoryGuestNotes[style] = finalList;
+        try {
+          safeStorage.setItem(`cf_d1_notes_${style}`, JSON.stringify(finalList));
+        } catch {}
+        guestNotesListeners[style]?.forEach((fn) => fn(finalList));
+        return data.note;
+      }
     }
   } catch {}
-  return null;
+
+  return fallbackNote;
 }
 
 // ============================================================================
