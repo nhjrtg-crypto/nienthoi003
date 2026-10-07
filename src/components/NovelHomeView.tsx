@@ -1528,150 +1528,150 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       }
     }
 
-    // Theme tối (isDark === true): Áp dụng chuẩn Glassmorphism đồng bộ với thẻ truyện trong Tiểu thuyết đã hoàn
+    // Theme tối (isDark === true): Áp dụng chuẩn đổ màu cho khối êm dịu, bớt đường viền con vụn vặt, giữ viền ngoài thanh mảnh
     switch (th) {
       case 'sage':
         return {
           outerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(20, 35, 24, 0.50) 45%, rgba(12, 21, 16, 0.65) 100%)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(20, 35, 24, 0.55) 45%, rgba(12, 21, 16, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
           },
           innerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
           },
           iconBtnStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+            boxShadow: 'none',
           },
           iconColor: 'text-[#8cb391]',
           titleColor: 'text-[#e5f0e7]',
           subtitleColor: 'text-[#8cb391]',
           chevronColor: 'text-[#8cb391]',
-          dividerClass: 'border-white/10',
-          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-[#8cb391]',
           itemDateClass: 'text-[#8cb391]',
         };
       case 'mocha':
         return {
           outerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(35, 24, 18, 0.50) 45%, rgba(21, 16, 12, 0.65) 100%)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(35, 24, 18, 0.55) 45%, rgba(21, 16, 12, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
           },
           innerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
           },
           iconBtnStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+            boxShadow: 'none',
           },
           iconColor: 'text-[#c49f8f]',
           titleColor: 'text-[#f5ece6]',
           subtitleColor: 'text-[#c49f8f]',
           chevronColor: 'text-[#c49f8f]',
-          dividerClass: 'border-white/10',
-          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-[#c49f8f]',
           itemDateClass: 'text-[#c49f8f]',
         };
       case 'amethyst-haze':
         return {
           outerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(25, 18, 42, 0.50) 45%, rgba(17, 10, 28, 0.65) 100%)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.18)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(25, 18, 42, 0.55) 45%, rgba(17, 10, 28, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
           },
           innerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
           },
           iconBtnStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+            boxShadow: 'none',
           },
           iconColor: 'text-purple-300',
           titleColor: 'text-purple-100',
           subtitleColor: 'text-purple-300',
           chevronColor: 'text-purple-300',
-          dividerClass: 'border-white/10',
-          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-purple-300',
           itemDateClass: 'text-purple-300',
         };
       case 'cosmic':
         return {
           outerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(19, 17, 53, 0.50) 45%, rgba(10, 12, 36, 0.65) 100%)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(19, 17, 53, 0.55) 45%, rgba(10, 12, 36, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
           },
           innerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
           },
           iconBtnStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+            boxShadow: 'none',
           },
           iconColor: 'text-pink-400',
           titleColor: 'text-purple-100',
           subtitleColor: 'text-pink-300',
           chevronColor: 'text-pink-300',
-          dividerClass: 'border-white/10',
-          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-pink-300',
           itemDateClass: 'text-pink-400',
         };
       case 'notebook':
         return {
           outerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(28, 24, 21, 0.50) 45%, rgba(16, 14, 12, 0.65) 100%)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(28, 24, 21, 0.55) 45%, rgba(16, 14, 12, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
           },
           innerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
           },
           iconBtnStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+            boxShadow: 'none',
           },
           iconColor: 'text-zinc-300',
           titleColor: 'text-zinc-100',
           subtitleColor: 'text-zinc-400',
           chevronColor: 'text-zinc-400',
-          dividerClass: 'border-white/10',
-          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-zinc-100',
           itemDateClass: 'text-zinc-400',
         };
@@ -1679,29 +1679,29 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       default:
         return {
           outerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(20, 30, 42, 0.50) 45%, rgba(11, 17, 24, 0.65) 100%)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(20, 30, 42, 0.55) 45%, rgba(11, 17, 24, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
           },
           innerStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.02)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
           },
           iconBtnStyle: {
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: 'none',
             background: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+            boxShadow: 'none',
           },
           iconColor: 'text-[#8bb0cf]',
           titleColor: 'text-[#edf4fa]',
           subtitleColor: 'text-[#8bb0cf]',
           chevronColor: 'text-[#8bb0cf]',
-          dividerClass: 'border-white/10',
-          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-[#8bb0cf]',
           itemDateClass: 'text-[#8bb0cf]',
         };
@@ -4334,11 +4334,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           {(() => {
             const recentStyles = getRecentUpdatesCardStyles(theme, isDarkEffective);
 
-            // Chế độ tối: Áp dụng Glassmorphism toàn diện đồng bộ với thẻ truyện trong mục Tiểu thuyết đã hoàn
+            // Chế độ tối: Áp dụng chuẩn đổ màu cho khối êm dịu, bớt đường viền con vụn vặt, giữ viền ngoài thanh mảnh
             if (isDarkEffective) {
               return (
                 <div
-                  className={`rounded-[26px] sm:rounded-[30px] p-4 sm:p-5 space-y-3.5 border transition-all duration-300 relative overflow-hidden backdrop-blur-2xl ${tStyles.card}`}
+                  className="rounded-[26px] sm:rounded-[30px] p-4 sm:p-5 space-y-3.5 transition-all duration-300 relative overflow-hidden backdrop-blur-2xl"
+                  style={recentStyles.outerStyle}
                 >
                   {/* 1. HEADER: Nút tròn bên trái, Tiêu đề + Phụ đề ở giữa, Mũi tên dropdown bên phải */}
                   <div
@@ -4346,36 +4347,36 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     onClick={() => setIsRealtimeUpdatesOpen(!isRealtimeUpdatesOpen)}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      {/* Nút tròn biểu tượng Glassmorphism */}
+                      {/* Nút tròn biểu tượng đổ màu khối mềm, bỏ viền gắt */}
                       <div
-                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 select-none bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] ${tStyles.sectionIcon}`}
+                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 select-none bg-white/[0.08] backdrop-blur-md ${recentStyles.iconColor}`}
                       >
                         <Clock className="w-4 h-4" />
                       </div>
 
                       {/* Tiêu đề & Phụ đề */}
                       <div className="min-w-0">
-                        <h3 className={`text-sm sm:text-base font-bold truncate ${tStyles.cardTitle}`}>
+                        <h3 className={`text-sm sm:text-base font-bold truncate ${recentStyles.titleColor}`}>
                           Truyện Vừa Mới Đăng
                         </h3>
-                        <p className={`text-[10px] font-mono tracking-wider uppercase truncate font-semibold ${tStyles.badgeText}`}>
+                        <p className={`text-[10px] font-mono tracking-wider uppercase truncate font-semibold ${recentStyles.subtitleColor}`}>
                           CHƯƠNG MỚI
                         </p>
                       </div>
                     </div>
 
-                    {/* Mũi tên dropdown bên phải Glassmorphic */}
-                    <div className={`w-7.5 h-7.5 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-md border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] ${isRealtimeUpdatesOpen ? 'rotate-0' : '-rotate-90'} ${tStyles.sectionIcon}`}>
+                    {/* Mũi tên dropdown bên phải đổ màu khối mềm, bỏ viền gắt */}
+                    <div className={`w-7.5 h-7.5 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-md ${isRealtimeUpdatesOpen ? 'rotate-0' : '-rotate-90'} ${recentStyles.chevronColor}`}>
                       <ChevronDown className="w-4 h-4" />
                     </div>
                   </div>
 
-                  {/* 2. ĐƯỜNG PHÂN CÁCH NÉT MẢNH GLASSMORPHIC */}
-                  <div className={`border-b ${tStyles.cardFooterBorder} -mx-4 sm:-mx-5 my-2.5`} />
+                  {/* 2. ĐƯỜNG PHÂN CÁCH NÉT MẢNH (GIỮ NƠI PHÙ HỢP) */}
+                  <div className={`border-b ${recentStyles.dividerClass} -mx-4 sm:-mx-5 my-2.5`} />
 
-                  {/* 3. DANH SÁCH TRUYỆN MỚI CẬP NHẬT */}
+                  {/* 3. DANH SÁCH TRUYỆN MỚI CẬP NHẬT (ĐỔ MÀU KHỐI, BỚT ĐƯỜNG VIỀN) */}
                   {isRealtimeUpdatesOpen && (
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       {novels.slice(0, 4).map((n) => {
                         const lastChap = n.chapters && n.chapters.length > 0 ? n.chapters[n.chapters.length - 1] : null;
                         const rawDate = lastChap?.publishedAt || n.chapters?.[0]?.publishedAt || n.updatedAt || n.createdAt;
@@ -4399,23 +4400,25 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                               onSelectNovel(n);
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 sm:gap-3 group transition-all duration-200 cursor-pointer bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_8px_rgba(0,0,0,0.2)]"
+                            className={`p-2 sm:p-2.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 sm:gap-3 group transition-all duration-200 cursor-pointer ${recentStyles.itemHoverClass}`}
                           >
+                            {/* Ảnh bìa giữ viền mỏng tinh tế ở nơi phù hợp để tách biệt nền */}
                             <img
                               src={getDirectImageUrl(n.coverImage, n.id || n.title)}
                               onError={(e) => handleCoverImageError(e, n.id || n.title)}
                               alt={n.title}
-                              className={`w-9 h-12 sm:w-10 sm:h-13 rounded-lg sm:rounded-xl object-cover shrink-0 border ${tStyles.cardCoverBorder} shadow-xs group-hover:scale-105 transition-transform duration-300`}
+                              className="w-9 h-12 sm:w-10 sm:h-13 rounded-lg sm:rounded-xl object-cover shrink-0 border border-white/10 shadow-xs group-hover:scale-105 transition-transform duration-300"
                             />
                             <div className="flex-1 min-w-0">
-                              <h4 className={`text-xs sm:text-[13px] font-semibold truncate transition-colors ${tStyles.cardTitle} ${tStyles.cardTitleHover}`}>
+                              <h4 className={`text-xs sm:text-[13px] font-semibold truncate transition-colors ${recentStyles.titleColor} ${recentStyles.itemTitleHoverClass}`}>
                                 {n.title}
                               </h4>
                               <div className="flex items-center justify-between gap-1.5 mt-0.5 sm:mt-1">
-                                <span className={`text-[10px] sm:text-[11px] truncate max-w-[130px] sm:max-w-[160px] ${tStyles.cardAuthor}`}>
+                                <span className={`text-[10px] sm:text-[11px] truncate max-w-[130px] sm:max-w-[160px] opacity-75 ${recentStyles.subtitleColor}`}>
                                   {n.latestChapter?.title || 'Chương mới'}
                                 </span>
-                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-medium border shadow-2xs shrink-0 ${tStyles.cardTag}`}>
+                                {/* Badge ngày tháng: đổ màu khối nhẹ, bỏ viền chằng chịt */}
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-medium shrink-0 bg-white/[0.06] text-stone-300">
                                   {displayDate}
                                 </span>
                               </div>

@@ -65,6 +65,7 @@ import {
   Pin,
   Clapperboard,
   Film,
+  Reply,
 } from 'lucide-react';
 import {
   getDirectImageUrl,
@@ -3006,31 +3007,31 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               {isNoteStyle ? (
                 <>
                   <MessageCircle className="w-3.5 h-3.5 opacity-80 text-amber-500" />
-                  <span>Lời nhắn bạn đọc ({comments.length})</span>
+                  <span>Lời nhắn bạn đọc</span>
                 </>
               ) : isCinemaStyle ? (
                 <>
                   <Camera className="w-3.5 h-3.5 opacity-90 text-neutral-800 dark:text-neutral-200" />
-                  <span>[03] Production Logs ({comments.length})</span>
+                  <span>[03] Production Logs</span>
                 </>
               ) : isCyberStyle ? (
                 <>
                   <Zap className="w-3.5 h-3.5 opacity-90 text-emerald-400" />
-                  <span>[03] Neural Logs ({comments.length})</span>
+                  <span>[03] Neural Logs</span>
                 </>
               ) : isWaxSealStyle ? (
                 <>
                   <Stamp className="w-3.5 h-3.5 opacity-90 text-rose-700 dark:text-rose-400" />
-                  <span>Lưu Bút Bạn Đọc ({comments.length})</span>
+                  <span>Lưu Bút Bạn Đọc</span>
                 </>
               ) : isEditorialStyle ? (
                 <>
                   <MessageCircle className="w-3.5 h-3.5 opacity-80" />
-                  <span>[03] READERS' CRITIQUE ({comments.length})</span>
+                  <span>[03] READERS' CRITIQUE</span>
                 </>
               ) : (
                 <>
-                  <span>Bình luận ({comments.length})</span>
+                  <span>Bình luận</span>
                   {isJournalStyle && <span className="text-xs font-mono opacity-50 hidden sm:inline">· 讨论</span>}
                 </>
               )}

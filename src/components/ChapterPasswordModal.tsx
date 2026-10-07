@@ -12,6 +12,7 @@ export interface NovelPasswordConfig {
   hintLines: string[];
   cleanPassword: string;
   isSpecial: boolean;
+  placeholder?: string;
 }
 
 /**
@@ -21,22 +22,22 @@ export interface NovelPasswordConfig {
  *        Tôi-thích-đọc-truyện-công-ngoại-tình
  *        Tôi-phân-biệt-được-giữa-truyện-và-đời-thực
  *        Tôi-sẽ-không-bình-luận-chê-bai
- *    - Gợi ý: Copy 3 dòng chữ, bỏ dấu gạch ngang giữa các chữ để xác nhận đọc truyện.
  *    - Mật khẩu đúng:
  *        Tôi thích đọc truyện công ngoại tình
  *        Tôi phân biệt được giữa truyện và đời thực
  *        Tôi sẽ không bình luận chê bai
+ *    - Placeholder: Tôi thích đọc truyện công ngoại tình
  *
  * 2. (Q1) CHIẾM HỮU CỰC ĐỘ & THÁI HẬU XINH ĐẸP ĐANG MANG THAI
  *    - 3 dòng:
  *        Tôi-thích-thể-loại-này
  *        Tôi-phân-biệt-được-giữa-truyện-và-đời-thực
  *        Tôi-sẽ-không-bình-luận-chê-bai
- *    - Gợi ý: Copy 3 dòng chữ, bỏ dấu gạch ngang giữa các chữ để xác nhận đọc truyện.
  *    - Mật khẩu đúng:
  *        Tôi thích thể loại này
  *        Tôi phân biệt được giữa truyện và đời thực
  *        Tôi sẽ không bình luận chê bai
+ *    - Placeholder: Tôi thích thể loại này
  *
  * 3. Các truyện khác: Mặc định NIENTHOIDOCTRUYEN
  */
@@ -47,6 +48,7 @@ export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfi
       hintLines: [],
       cleanPassword: DEFAULT_CORRECT_CHAPTER_PASS,
       isSpecial: false,
+      placeholder: 'Nhập pass...',
     };
   }
 
@@ -71,6 +73,7 @@ export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfi
       cleanPassword:
         'Tôi thích đọc truyện công ngoại tình\nTôi phân biệt được giữa truyện và đời thực\nTôi sẽ không bình luận chê bai',
       isSpecial: true,
+      placeholder: 'Tôi thích đọc truyện công ngoại tình',
     };
   }
 
@@ -94,6 +97,7 @@ export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfi
       cleanPassword:
         'Tôi thích thể loại này\nTôi phân biệt được giữa truyện và đời thực\nTôi sẽ không bình luận chê bai',
       isSpecial: true,
+      placeholder: 'Tôi thích thể loại này',
     };
   }
 
@@ -103,6 +107,7 @@ export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfi
     hintLines: [],
     cleanPassword: DEFAULT_CORRECT_CHAPTER_PASS,
     isSpecial: false,
+    placeholder: 'Nhập pass...',
   };
 };
 
@@ -369,7 +374,7 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
                         handleSubmit();
                       }
                     }}
-                    placeholder="Nhập pass..."
+                    placeholder={config.placeholder || 'Nhập pass...'}
                     className={`w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-mono leading-relaxed tracking-normal border outline-none transition-all resize-y min-h-[96px] ${
                       errorMsg
                         ? 'border-[#822a33] ring-2 ring-[#822a33]/20 bg-[#822a33]/5 text-[#822a33] dark:text-[#e89098]'

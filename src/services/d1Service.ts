@@ -6,6 +6,7 @@
 
 import { safeStorage } from '../utils/safeStorage';
 import { saveCustomCoverToAllStores } from '../utils/imageUtils';
+import { formatCommentDate } from '../utils/dateUtils';
 
 export interface D1Comment {
   id: string;
@@ -442,13 +443,7 @@ export async function addComment(commentData: {
     badge: commentData.badge || 'Độc Giả',
     rating: commentData.rating || 5,
     likes: 0,
-    createdAt: new Date().toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
+    createdAt: formatCommentDate(),
     createdTimestamp: Date.now(),
   };
 
