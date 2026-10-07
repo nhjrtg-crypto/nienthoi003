@@ -12,6 +12,7 @@ import {
   ThumbsUp,
   Tag,
   CheckCircle2,
+  Trash2,
 } from 'lucide-react';
 import { Novel, NovelChapter, NovelComment } from '../types';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
@@ -1407,6 +1408,8 @@ interface SpiralNotebookViewProps {
   onToggleLike?: () => void;
   allNovels?: Novel[];
   onSelectNovel?: (novel: Novel) => void;
+  isAdmin?: boolean;
+  onDeleteComment?: (comment: NovelComment) => void;
 }
 
 export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
@@ -1425,6 +1428,8 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
   onToggleLike,
   allNovels = [],
   onSelectNovel,
+  isAdmin = false,
+  onDeleteComment,
 }) => {
   const [chapterSearch, setChapterSearch] = useState('');
   const [chapterSortAsc, setChapterSortAsc] = useState(true);
@@ -1821,7 +1826,20 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                                 </span>
                               )}
                             </div>
-                            <span className="text-[10px] font-mono opacity-60">{normalizeCommentDate(cm.createdAt)}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-mono opacity-60">{normalizeCommentDate(cm.createdAt)}</span>
+                              {isAdmin && onDeleteComment && (
+                                <button
+                                  type="button"
+                                  onClick={() => onDeleteComment(cm)}
+                                  className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/15 transition-colors cursor-pointer"
+                                  title="Xóa bình luận này (Quản trị viên)"
+                                  aria-label="Xóa bình luận"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
                           </div>
                           <p className="text-[13px] sm:text-sm opacity-90 leading-relaxed pl-9">
                             {cm.content}

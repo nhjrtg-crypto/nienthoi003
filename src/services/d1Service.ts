@@ -421,6 +421,7 @@ export async function fetchComments(novelId: string, chapterNumber?: number): Pr
 }
 
 export async function addComment(commentData: {
+  id?: string;
   truyenId: string;
   chapterNumber?: number;
   chapterTitle?: string;
@@ -431,7 +432,7 @@ export async function addComment(commentData: {
   rating?: number;
 }): Promise<D1Comment> {
   const payload = {
-    id: `c_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    id: commentData.id || `c_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     truyenId: commentData.truyenId,
     chapterNumber: commentData.chapterNumber,
     chapterTitle: commentData.chapterTitle,
@@ -504,6 +505,7 @@ export async function deleteComment(commentId: string, novelId?: string, chapter
       novelId ? `d1_comments_${novelId}_all` : null,
       novelId && typeof chapterNumber === 'number' ? `d1_comments_${novelId}_${chapterNumber}` : null,
       novelId ? `d1_comments_${novelId}_undefined` : null,
+      novelId ? `d1_comments_${novelId}_null` : null,
       novelId ? `cosmo_novel_comments_${novelId}` : null,
       novelId ? `cosmo_cached_comments_${novelId}` : null,
     ].filter(Boolean) as string[];
@@ -514,7 +516,7 @@ export async function deleteComment(commentId: string, novelId?: string, chapter
         try {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed)) {
-            const cleaned = parsed.filter((c: any) => c && String(c.id) !== targetId && !deletedSet.has(String(c.id)));
+            const cleaned = parsed.filter((c: any) => c && String(c.id).trim() !== targetId && !deletedSet.has(String(c.id).trim()));
             safeStorage.setItem(key, JSON.stringify(cleaned));
           }
         } catch {}
@@ -522,23 +524,7 @@ export async function deleteComment(commentId: string, novelId?: string, chapter
     }
   } catch {}
 
-  // 3. Báo cho tất cả subscriber giao diện cập nhật ngay lập tức
-  if (novelId) {
-    const keyAll = getCommentSubscriptionKey(novelId, undefined);
-    const keyChap = getCommentSubscriptionKey(novelId, chapterNumber);
-    [keyAll, keyChap].forEach((k) => {
-      const listeners = commentListeners[k];
-      if (listeners && listeners.size > 0) {
-        try {
-          const raw = safeStorage.getItem(`d1_comments_${novelId}_all`);
-          const list = raw ? JSON.parse(raw).filter((c: any) => c && String(c.id) !== targetId && !deletedSet.has(String(c.id))) : [];
-          listeners.forEach((fn) => fn(list));
-        } catch {}
-      }
-    });
-  }
-
-  // 4. Xóa thật sự trong cơ sở dữ liệu Cloudflare D1
+  // 3. Xóa thật sự trong cơ sở dữ liệu Cloudflare D1
   let isDeleted = false;
   try {
     const resDelete = await fetch(`/api/comments?id=${encodeURIComponent(targetId)}`, {
@@ -557,8 +543,22 @@ export async function deleteComment(commentId: string, novelId?: string, chapter
     if (resPost.ok) isDeleted = true;
   } catch {}
 
-  // 5. Cập nhật lại dữ liệu từ Cloudflare D1
+  // 4. Báo cho tất cả subscriber giao diện cập nhật ngay lập tức
   if (novelId) {
+    const keyAll = getCommentSubscriptionKey(novelId, undefined);
+    const keyChap = getCommentSubscriptionKey(novelId, chapterNumber);
+    [keyAll, keyChap].forEach((k) => {
+      const listeners = commentListeners[k];
+      if (listeners && listeners.size > 0) {
+        try {
+          const raw = safeStorage.getItem(`d1_comments_${novelId}_all`);
+          const list = raw ? JSON.parse(raw).filter((c: any) => c && String(c.id).trim() !== targetId && !deletedSet.has(String(c.id).trim())) : [];
+          listeners.forEach((fn) => fn(list));
+        } catch {}
+      }
+    });
+
+    // 5. Cập nhật lại dữ liệu từ Cloudflare D1
     fetchComments(novelId, chapterNumber).catch(() => {});
   }
 

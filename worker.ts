@@ -339,13 +339,14 @@ export default {
             );
           }
 
-          if (body.action === 'delete' && (body.commentId || body.id)) {
-            const commentId = String(body.commentId || body.id).trim();
-            await env.DB.prepare('DELETE FROM comments WHERE id = ?')
-              .bind(commentId)
+          if ((body.action === 'delete' || body.method === 'DELETE') && (body.commentId || body.id)) {
+            const rawId = String(body.commentId || body.id);
+            const trimmedId = rawId.trim();
+            await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
+              .bind(rawId, trimmedId)
               .run();
             return new Response(
-              JSON.stringify({ success: true, commentId, deleted: true }),
+              JSON.stringify({ success: true, commentId: trimmedId, deleted: true }),
               { headers: { 'Content-Type': 'application/json' } }
             );
           }
@@ -427,16 +428,23 @@ export default {
           );
         }
         try {
-          const commentId = url.searchParams.get('id');
+          let commentId = url.searchParams.get('id') || url.searchParams.get('commentId');
+          if (!commentId) {
+            const body = await request.json().catch(() => ({})) as any;
+            commentId = body?.id || body?.commentId;
+          }
+
           if (!commentId) {
             return new Response(
               JSON.stringify({ success: false, error: 'Thiếu comment id' }),
               { status: 400, headers: { 'Content-Type': 'application/json' } }
             );
           }
-          await env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(commentId).run();
+          const rawId = String(commentId);
+          const trimmedId = rawId.trim();
+          await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?').bind(rawId, trimmedId).run();
           return new Response(
-            JSON.stringify({ success: true, commentId }),
+            JSON.stringify({ success: true, commentId: trimmedId, deleted: true }),
             { headers: { 'Content-Type': 'application/json' } }
           );
         } catch (error: any) {

@@ -47,7 +47,7 @@ import {
   saveCustomCoverToAllStores,
   getDirectImageUrl,
 } from './utils/imageUtils';
-import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1 } from './services/d1Service';
+import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1, getDeletedCommentIds } from './services/d1Service';
 
 interface SavedViewState {
   viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
@@ -153,7 +153,13 @@ function convertFirestoreTruyenToNovel(ft: FirestoreTruyen): Novel {
     comments: (() => {
       try {
         const saved = safeStorage.getItem(`cosmo_novel_comments_${ft.id}`);
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            const deletedSet = getDeletedCommentIds();
+            return parsed.filter((c: any) => c && !deletedSet.has(String(c.id).trim()));
+          }
+        }
       } catch {}
       return [];
     })(),

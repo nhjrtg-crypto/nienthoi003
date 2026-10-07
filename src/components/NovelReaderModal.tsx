@@ -40,6 +40,8 @@ import {
   addComment as addD1Comment,
   likeComment as likeD1Comment,
   deleteComment as deleteD1Comment,
+  getDeletedCommentIds,
+  markCommentAsDeleted,
 } from '../services/d1Service';
 import { ChapterEditorModal } from './ChapterEditorModal';
 import { ChapterPasswordModal, isChapterPasswordUnlocked } from './ChapterPasswordModal';
@@ -209,9 +211,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const isHeaderVisible = useHeaderScroll({ threshold: 40, delta: 6 });
   const shouldShowHeader = isHeaderVisible || showSettings || showChapterList || showCommentsPopup;
 
-  // 18+ Chapter Password Gate (Nhập mật khẩu một lần, lưu vĩnh viễn)
-  const [isChapterUnlocked, setIsChapterUnlocked] = useState<boolean>(() => isChapterPasswordUnlocked());
-  const [showPasswordModal, setShowPasswordModal] = useState<boolean>(() => !isChapterPasswordUnlocked());
+  // 18+ Chapter Password Gate (Nhập mật khẩu một lần theo truyện hoặc toàn cục)
+  const [isChapterUnlocked, setIsChapterUnlocked] = useState<boolean>(() => isChapterPasswordUnlocked(novel));
+  const [showPasswordModal, setShowPasswordModal] = useState<boolean>(() => !isChapterPasswordUnlocked(novel));
+
+  // Đồng bộ trạng thái khóa khi mở sang bộ truyện khác
+  useEffect(() => {
+    const unlocked = isChapterPasswordUnlocked(novel);
+    setIsChapterUnlocked(unlocked);
+    setShowPasswordModal(!unlocked);
+  }, [novel?.id]);
 
   const handleUnlockSuccess = () => {
     setIsChapterUnlocked(true);
@@ -567,41 +576,41 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
   useEffect(() => {
     if (!novel?.id) return;
+    const deletedSet = getDeletedCommentIds();
     try {
       const saved = safeStorage.getItem(`cosmo_novel_comments_${novel.id}`);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setChapterComments(parsed.filter((c: NovelComment) => !isBotComment(c)));
+          setChapterComments(parsed.filter((c: NovelComment) => !isBotComment(c) && !deletedSet.has(String(c.id).trim())));
         }
       }
     } catch {}
 
     // Lắng nghe bình luận chương 100% thời gian thực từ Cloudflare D1 (Ngắt kết nối hoàn toàn khỏi Firebase)
     const unsubscribe = subscribeD1Comments(novel.id, null, (d1Comments) => {
-      const mappedFromD1: NovelComment[] = d1Comments.map((c) => ({
-        id: c.id,
-        truyenId: c.truyenId,
-        author: c.author,
-        avatar: c.avatar || '',
-        content: c.content,
-        createdAt: c.createdAt,
-        ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
-        likes: c.likes || 0,
-        badge: c.badge || 'Độc Giả',
-        chapterNumber: c.chapterNumber,
-        chapterTitle: c.chapterTitle,
-      }));
+      const currentDeletedSet = getDeletedCommentIds();
+      const mappedFromD1: NovelComment[] = d1Comments
+        .filter((c) => !currentDeletedSet.has(String(c.id).trim()))
+        .map((c) => ({
+          id: c.id,
+          truyenId: c.truyenId,
+          author: c.author,
+          avatar: c.avatar || '',
+          content: c.content,
+          createdAt: c.createdAt,
+          ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
+          likes: c.likes || 0,
+          badge: c.badge || 'Độc Giả',
+          chapterNumber: c.chapterNumber,
+          chapterTitle: c.chapterTitle,
+        }));
 
-      const base = (novel.comments || []).filter((c) => !isBotComment(c));
-      const d1Ids = new Set(mappedFromD1.map((c) => c.id));
-      const remaining = base.filter((c) => !d1Ids.has(c.id));
-      const merged = [...mappedFromD1, ...remaining];
-      setChapterComments(merged);
+      setChapterComments(mappedFromD1);
       try {
-        safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(merged));
+        safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(mappedFromD1));
       } catch {}
-      onUpdateNovel?.({ ...novel, comments: merged });
+      onUpdateNovel?.({ ...novel, comments: mappedFromD1 });
     });
 
     return () => {
@@ -654,6 +663,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
     try {
       await addD1Comment({
+        id: tempComment.id,
         truyenId: novel.id,
         author: finalAuthor,
         content: tempComment.content,
@@ -682,13 +692,28 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const handleDeleteChapterComment = async (commentId: string) => {
     if (!isAdmin || !novel) return;
     if (!window.confirm('Bạn có chắc chắn muốn xóa bình luận này không?')) return;
-    const updated = chapterComments.filter((c) => c.id !== commentId);
+    const targetId = String(commentId).trim();
+
+    // 1. Đánh dấu vĩnh viễn đã xóa
+    markCommentAsDeleted(targetId);
+
+    // 2. Cập nhật state cục bộ ngay lập tức
+    const updated = chapterComments.filter((c) => String(c.id).trim() !== targetId);
     setChapterComments(updated);
     try {
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
     } catch {}
-    onUpdateNovel?.({ ...novel, comments: updated });
-    deleteD1Comment(commentId, novel.id, chapterNumber ?? undefined).catch(() => {});
+
+    // 3. Đồng bộ vào novel.comments trong state cha
+    const cleanNovelComments = (novel.comments || []).filter((c) => String(c.id).trim() !== targetId);
+    onUpdateNovel?.({ ...novel, comments: cleanNovelComments });
+
+    // 4. Xóa thật sự trong cơ sở dữ liệu Cloudflare D1
+    try {
+      await deleteD1Comment(targetId, novel.id, chapterNumber ?? undefined);
+    } catch (e) {
+      console.warn('Lỗi khi xóa bình luận trên Cloudflare D1:', e);
+    }
   };
 
   const getAvatarBgColor = (name: string): string => {
@@ -1963,6 +1988,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       {/* 18+ Chapter Password Gate Modal (Pop up xác thực mật khẩu chương truyện) */}
       <ChapterPasswordModal
         isOpen={!isChapterUnlocked || showPasswordModal}
+        novel={novel}
         onSuccess={handleUnlockSuccess}
         onCancel={handleCancelPassword}
         isDarkMode={isDarkEffective}

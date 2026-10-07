@@ -126,15 +126,16 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       );
     }
 
-    // 1.1 Thao tác Xóa bình luận qua POST action (Đảm bảo hoạt động trên mọi mạng)
-    if (body.action === 'delete' && (body.commentId || body.id)) {
-      const commentId = String(body.commentId || body.id).trim();
-      await env.DB.prepare('DELETE FROM comments WHERE id = ?')
-        .bind(commentId)
+    // 1.1 Thao tác Xóa bình luận qua POST action (Đảm bảo xóa thật sự trên Cloudflare D1)
+    if ((body.action === 'delete' || body.method === 'DELETE') && (body.commentId || body.id)) {
+      const rawId = String(body.commentId || body.id);
+      const trimmedId = rawId.trim();
+      await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
+        .bind(rawId, trimmedId)
         .run();
 
       return new Response(
-        JSON.stringify({ success: true, commentId, deleted: true }),
+        JSON.stringify({ success: true, commentId: trimmedId, deleted: true }),
         { headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -224,7 +225,12 @@ export const onRequestDelete = async (context: EventContext): Promise<Response> 
 
   try {
     const url = new URL(request.url);
-    const commentId = url.searchParams.get('id');
+    let commentId = url.searchParams.get('id') || url.searchParams.get('commentId');
+    if (!commentId) {
+      const body = await request.json().catch(() => ({})) as any;
+      commentId = body?.id || body?.commentId;
+    }
+
     if (!commentId) {
       return new Response(
         JSON.stringify({ success: false, error: 'Thiếu comment id' }),
@@ -232,12 +238,14 @@ export const onRequestDelete = async (context: EventContext): Promise<Response> 
       );
     }
 
-    await env.DB.prepare('DELETE FROM comments WHERE id = ?')
-      .bind(commentId)
+    const rawId = String(commentId);
+    const trimmedId = rawId.trim();
+    await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
+      .bind(rawId, trimmedId)
       .run();
 
     return new Response(
-      JSON.stringify({ success: true, commentId }),
+      JSON.stringify({ success: true, commentId: trimmedId, deleted: true }),
       { headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error: any) {

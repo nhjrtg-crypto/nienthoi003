@@ -76,11 +76,14 @@ app.post('/api/comments', (req, res) => {
   }
 
   if (body.action === 'delete') {
-    const idToDelete = body.commentId || body.id;
-    if (idToDelete) {
-      const idx = inMemoryComments.findIndex((c) => c.id === idToDelete);
-      if (idx !== -1) inMemoryComments.splice(idx, 1);
-      return res.json({ success: true, commentId: idToDelete, deleted: true });
+    const rawId = String(body.commentId || body.id || '').trim();
+    if (rawId) {
+      let idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+      while (idx !== -1) {
+        inMemoryComments.splice(idx, 1);
+        idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+      }
+      return res.json({ success: true, commentId: rawId, deleted: true });
     }
   }
 
@@ -104,15 +107,16 @@ app.post('/api/comments', (req, res) => {
 });
 
 app.delete('/api/comments', (req, res) => {
-  const idToDelete = req.query.id;
-  if (!idToDelete) {
+  const rawId = String(req.query.id || req.body?.id || '').trim();
+  if (!rawId) {
     return res.status(400).json({ success: false, error: 'Thiếu comment id' });
   }
-  const idx = inMemoryComments.findIndex((c) => c.id === idToDelete);
-  if (idx !== -1) {
+  let idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+  while (idx !== -1) {
     inMemoryComments.splice(idx, 1);
+    idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
   }
-  res.json({ success: true, commentId: idToDelete, deleted: true });
+  res.json({ success: true, commentId: rawId, deleted: true });
 });
 
 const distPath = path.join(__dirname, 'dist');

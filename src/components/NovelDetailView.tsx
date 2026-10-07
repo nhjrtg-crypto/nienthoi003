@@ -103,6 +103,8 @@ import {
   addComment as addD1Comment,
   likeComment as likeD1Comment,
   deleteComment as deleteD1Comment,
+  getDeletedCommentIds,
+  markCommentAsDeleted,
   fetchLikes as fetchD1Likes,
   incrementLike as incrementD1Like,
   saveNovelCoverToD1,
@@ -847,15 +849,17 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     }
   });
 
-  // Synchronize and subscribe to comments in real-time from Firestore & safeStorage
+  // Synchronize and subscribe to comments in real-time from Cloudflare D1 & safeStorage
   useEffect(() => {
-    let initialList: NovelComment[] = (novel.comments || []).filter((c) => !isBotComment(c));
+    const deletedSet = getDeletedCommentIds();
+    let initialList: NovelComment[] = (novel.comments || [])
+      .filter((c) => !isBotComment(c) && !deletedSet.has(String(c.id).trim()));
     try {
       const saved = safeStorage.getItem(`cosmo_novel_comments_${novel.id}`);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          initialList = parsed.filter((c: NovelComment) => !isBotComment(c));
+          initialList = parsed.filter((c: NovelComment) => !isBotComment(c) && !deletedSet.has(String(c.id).trim()));
         }
       }
     } catch {}
@@ -864,37 +868,34 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(initialList));
     } catch {}
 
-    // Only subscribe to comments from Firestore if user opens the comments tab
+    // Only subscribe to comments from Cloudflare D1 if user opens the comments tab
     if (activeTab !== 'comments') return;
 
     // Lắng nghe bình luận thời gian thực 100% từ Cloudflare D1 (Ngắt kết nối hoàn toàn khỏi Firebase)
     const unsubscribe = subscribeD1Comments(novel.id, undefined, (d1Comments) => {
-      const mappedFromD1: NovelComment[] = d1Comments.map((c) => ({
-        id: c.id,
-        truyenId: c.truyenId,
-        author: c.author,
-        content: c.content,
-        createdAt: c.createdAt,
-        ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
-        likes: c.likes || 0,
-        badge: c.badge || 'Độc Giả',
-        rating: c.rating || 5,
-        avatar: c.avatar || '',
-        chapterNumber: c.chapterNumber,
-        chapterTitle: c.chapterTitle,
-      }));
+      const currentDeletedSet = getDeletedCommentIds();
+      const mappedFromD1: NovelComment[] = d1Comments
+        .filter((c) => !currentDeletedSet.has(String(c.id).trim()))
+        .map((c) => ({
+          id: c.id,
+          truyenId: c.truyenId,
+          author: c.author,
+          content: c.content,
+          createdAt: c.createdAt,
+          ngayTao: new Date(c.createdTimestamp || Date.now()).toISOString(),
+          likes: c.likes || 0,
+          badge: c.badge || 'Độc Giả',
+          rating: c.rating || 5,
+          avatar: c.avatar || '',
+          chapterNumber: c.chapterNumber,
+          chapterTitle: c.chapterTitle,
+        }));
 
-      // Kết hợp bình luận cục bộ nếu có
-      const baseComments = (novel.comments || []).filter((c) => !isBotComment(c));
-      const d1Ids = new Set(mappedFromD1.map((c) => c.id));
-      const remainingBase = baseComments.filter((c) => !d1Ids.has(c.id));
-      const merged = [...mappedFromD1, ...remainingBase];
-
-      setComments(merged);
+      setComments(mappedFromD1);
       try {
-        safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(merged));
+        safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(mappedFromD1));
       } catch {}
-      onUpdateNovel?.({ ...novel, comments: merged });
+      onUpdateNovel?.({ ...novel, comments: mappedFromD1 });
     });
 
     return () => {
@@ -1700,6 +1701,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
     try {
       await addD1Comment({
+        id: tempComment.id,
         truyenId: novel.id,
         author: finalAuthor,
         content: tempComment.content,
@@ -1731,18 +1733,33 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const handleConfirmDeleteComment = async () => {
     if (!isAdmin || !commentToDelete) return;
 
-    const targetId = commentToDelete.id;
-    const updated = comments.filter((c) => c.id !== targetId);
+    const targetId = String(commentToDelete.id).trim();
+    const chapNum = commentToDelete.chapterNumber;
+
+    // 1. Đánh dấu vĩnh viễn đã xóa
+    markCommentAsDeleted(targetId);
+
+    // 2. Cập nhật state cục bộ ngay lập tức
+    const updated = comments.filter((c) => String(c.id).trim() !== targetId);
     setComments(updated);
     try {
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
     } catch {}
-    onUpdateNovel?.({ ...novel, comments: updated });
+
+    // 3. Cập nhật đồng bộ vào novel.comments trong state cha
+    const cleanNovelComments = (novel.comments || []).filter((c) => String(c.id).trim() !== targetId);
+    onUpdateNovel?.({ ...novel, comments: cleanNovelComments });
 
     setIsDeleteCommentModalOpen(false);
     setCommentToDelete(null);
 
-    deleteD1Comment(targetId, novel.id).catch(() => {});
+    // 4. Xóa thật sự trong cơ sở dữ liệu Cloudflare D1
+    try {
+      await deleteD1Comment(targetId, novel.id, chapNum);
+      triggerToast('Đã xóa bình luận', 'Bình luận đã được xóa vĩnh viễn khỏi Cloudflare D1.');
+    } catch (e) {
+      console.warn('Lỗi khi xóa bình luận trên Cloudflare D1:', e);
+    }
   };
 
   const handleOpenEditChapter = async (chap: NovelChapter) => {
@@ -2504,6 +2521,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               onUpdateNovel?.({ ...novel, comments: updated });
               try {
                 addD1Comment({
+                  id: tempComment.id,
                   truyenId: novel.id,
                   author: tempComment.author,
                   content: tempComment.content,
@@ -2523,6 +2541,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             onToggleLike={handleLike}
             allNovels={allNovels}
             onSelectNovel={onSelectNovel}
+            isAdmin={isAdmin}
+            onDeleteComment={handleOpenDeleteComment}
           />
         ) : (
           /* Novel Detail Card (Kiểu chuẩn: Kết nối mục bìa truyện và 3 mục Giới thiệu, Mục lục, Bình luận thành chung một khối) */
