@@ -16,6 +16,11 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const novelId = url.searchParams.get('novelId');
   const chapterNumber = url.searchParams.get('chapterNumber');
 
+  const getHeaders = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=5, s-maxage=10, stale-while-revalidate=30',
+  };
+
   // Fallback nếu chưa kết nối D1
   if (!env.DB) {
     return new Response(
@@ -25,7 +30,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         totalViews: 3000,
         todayViews: 0,
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   }
 
@@ -45,7 +50,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
             chapterNumber: chapNum,
             views: row ? row.views : 0,
           }),
-          { headers: { 'Content-Type': 'application/json' } }
+          { headers: getHeaders }
         );
       } else {
         const row = await env.DB.prepare(
@@ -59,7 +64,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
             novelId,
             views: row && row.totalNovelViews ? row.totalNovelViews : 0,
           }),
-          { headers: { 'Content-Type': 'application/json' } }
+          { headers: getHeaders }
         );
       }
     }
@@ -82,7 +87,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         totalViews: row.total_views,
         todayViews: row.today_views,
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   } catch (error: any) {
     return new Response(

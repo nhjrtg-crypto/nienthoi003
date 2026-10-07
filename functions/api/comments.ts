@@ -19,6 +19,11 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const limitParam = parseInt(url.searchParams.get('limit') || '50', 10);
   const limit = Math.min(Math.max(limitParam, 1), 100);
 
+  const getHeaders = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=5, s-maxage=10, stale-while-revalidate=30',
+  };
+
   if (!env.DB) {
     return new Response(
       JSON.stringify({
@@ -26,7 +31,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         source: 'fallback',
         comments: [],
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   }
 
@@ -89,7 +94,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         success: true,
         comments: results || [],
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   } catch (error: any) {
     return new Response(

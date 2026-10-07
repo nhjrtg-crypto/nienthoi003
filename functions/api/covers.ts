@@ -16,10 +16,15 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const url = new URL(request.url);
   const novelId = url.searchParams.get('novelId');
 
+  const getHeaders = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600',
+  };
+
   if (!env.DB) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback', covers: {} }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   }
 
@@ -43,7 +48,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
       return new Response(
         JSON.stringify({ success: true, novelId, coverUrl: row ? row.cover_url : null }),
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: getHeaders }
       );
     }
 
@@ -65,7 +70,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
     return new Response(
       JSON.stringify({ success: true, covers }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   } catch (error: any) {
     return new Response(JSON.stringify({ success: false, error: error.message }), {

@@ -12,14 +12,34 @@ interface EventContext {
   env: Env;
 }
 
+// Helper tìm D1 database cho intro/likes (hỗ trợ mọi tên biến binding có thể)
+function getIntroDatabase(env: any): any {
+  return (
+    env.INTRO_DB ||
+    env.intro_db ||
+    env.nienthoi_intro_db ||
+    env['nienthoi-intro-db'] ||
+    env.NIENTHOI_INTRO_DB ||
+    env.INTRO_D1 ||
+    env.intro_d1 ||
+    env.DB ||
+    env.db
+  );
+}
+
 export const onRequestGet = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
   const url = new URL(request.url);
   const rawTarget = url.searchParams.get('targetId') || 'global';
   const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
 
+  const getHeaders = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=5, s-maxage=10, stale-while-revalidate=30',
+  };
+
   // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/thả tim) nếu có, fallback về DB
-  const db = (targetId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+  const db = (targetId === 'intro_page') ? getIntroDatabase(env) : (getIntroDatabase(env) || env.DB);
 
   if (!db) {
     return new Response(
@@ -29,7 +49,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         targetId,
         likeCount: targetId === 'intro_page' ? 30 : 100,
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   }
 
@@ -69,7 +89,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         targetId,
         likeCount: count,
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   } catch (error: any) {
     return new Response(
@@ -93,7 +113,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
 
     // Ưu tiên INTRO_DB (Database thứ 2) nếu có
-    const db = (targetId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+    const db = (targetId === 'intro_page') ? getIntroDatabase(env) : (getIntroDatabase(env) || env.DB);
 
     if (!db) {
       return new Response(

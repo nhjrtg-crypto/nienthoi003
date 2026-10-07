@@ -9,7 +9,7 @@ import {
   ArrowUpDown,
   MessageSquare,
   Send,
-  ThumbsUp,
+  Reply,
   Tag,
   CheckCircle2,
   Trash2,
@@ -1373,23 +1373,27 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
 }
 
 // Cấu hình các lỗ còng rời:
-// - Điện thoại: Giữ nguyên 10 lỗ phân bố đều khắp chiều dọc
-// - Máy tính (md+): Giảm số lượng xuống 14 lỗ (vừa vặn, không quá dày)
+// - Điện thoại: Tăng thêm số lượng lỗ tròn còng sổ (18 lỗ) phân bố đều khắp chiều dọc
+// - Máy tính (md+): Giữ nguyên 14 lỗ (vừa vặn, thanh lịch)
 const BINDER_HOLE_CONFIGS = [
   { id: 0, responsive: 'flex' },
   { id: 1, responsive: 'flex' },
-  { id: 2, responsive: 'hidden md:flex' },
-  { id: 3, responsive: 'flex' },
+  { id: 2, responsive: 'flex' },
+  { id: 3, responsive: 'flex md:hidden' },
   { id: 4, responsive: 'flex' },
-  { id: 5, responsive: 'hidden md:flex' },
+  { id: 5, responsive: 'flex' },
   { id: 6, responsive: 'flex' },
-  { id: 7, responsive: 'flex' },
-  { id: 8, responsive: 'hidden md:flex' },
+  { id: 7, responsive: 'flex md:hidden' },
+  { id: 8, responsive: 'flex' },
   { id: 9, responsive: 'flex' },
-  { id: 10, responsive: 'flex' },
-  { id: 11, responsive: 'hidden md:flex' },
+  { id: 10, responsive: 'flex md:hidden' },
+  { id: 11, responsive: 'flex' },
   { id: 12, responsive: 'flex' },
   { id: 13, responsive: 'flex' },
+  { id: 14, responsive: 'flex md:hidden' },
+  { id: 15, responsive: 'flex' },
+  { id: 16, responsive: 'flex' },
+  { id: 17, responsive: 'flex' },
 ];
 
 interface SpiralNotebookViewProps {
@@ -1763,7 +1767,7 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                   </div>
 
                   {/* Form viết bình luận */}
-                  <form onSubmit={handleSubmitComment} className={`p-4 sm:p-5 rounded-2xl ${sTheme.commentFormBg} border ${sTheme.commentFormBorder} space-y-3 shadow-2xs transition-colors`}>
+                  <form id="spiral-comment-form" onSubmit={handleSubmitComment} className={`p-4 sm:p-5 rounded-2xl ${sTheme.commentFormBg} border ${sTheme.commentFormBorder} space-y-3 shadow-2xs transition-colors`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-black tracking-wider uppercase ${sTheme.commentsHeaderText} block`}>
                       ĐỂ LẠI GHI CHÚ BÌNH LUẬN TRONG SỔ:
                     </span>
@@ -1844,6 +1848,23 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                           <p className="text-[13px] sm:text-sm opacity-90 leading-relaxed pl-9">
                             {cm.content}
                           </p>
+                          <div className="pl-9 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const mention = `@${cm.author} `;
+                                if (!newCommentText.includes(mention)) {
+                                  setNewCommentText((prev) => `${mention}${prev}`);
+                                }
+                                const formEl = document.getElementById('spiral-comment-form');
+                                formEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              }}
+                              className={`flex items-center gap-1.5 text-xs font-semibold cursor-pointer opacity-75 hover:opacity-100 transition-opacity ${sTheme.paperText}`}
+                            >
+                              <Reply className="w-3 h-3" />
+                              <span>Trả lời</span>
+                            </button>
+                          </div>
                         </div>
                       ))
                     )}

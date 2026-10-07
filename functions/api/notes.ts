@@ -12,6 +12,21 @@ interface EventContext {
   env: Env;
 }
 
+// Helper tìm D1 database cho intro/notes (hỗ trợ mọi tên biến binding có thể)
+function getIntroDatabase(env: any): any {
+  return (
+    env.INTRO_DB ||
+    env.intro_db ||
+    env.nienthoi_intro_db ||
+    env['nienthoi-intro-db'] ||
+    env.NIENTHOI_INTRO_DB ||
+    env.INTRO_D1 ||
+    env.intro_d1 ||
+    env.DB ||
+    env.db
+  );
+}
+
 export const onRequestGet = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -19,8 +34,13 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const limitParam = parseInt(url.searchParams.get('limit') || '50', 10);
   const limit = Math.min(Math.max(limitParam, 1), 100);
 
+  const getHeaders = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=5, s-maxage=10, stale-while-revalidate=30',
+  };
+
   // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/lưu bút) nếu có, fallback về DB
-  const db = env.INTRO_DB || env.DB;
+  const db = getIntroDatabase(env);
 
   if (!db) {
     return new Response(
@@ -29,7 +49,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         source: 'fallback',
         notes: [],
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   }
 
@@ -61,7 +81,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         success: true,
         notes: results || [],
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      { headers: getHeaders }
     );
   } catch (error: any) {
     return new Response(
@@ -73,7 +93,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
-  const db = env.INTRO_DB || env.DB;
+  const db = getIntroDatabase(env);
 
   if (!db) {
     return new Response(

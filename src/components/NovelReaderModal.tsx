@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Send,
   ThumbsUp,
+  Reply,
   Lock,
   KeyRound,
 } from 'lucide-react';
@@ -1601,6 +1602,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
           {/* Form viết bình luận */}
           <form
+            id="chapter-comment-form"
             onSubmit={handlePostChapterComment}
             className={`p-4 sm:p-5 rounded-2xl border space-y-3 transition-colors ${tStyles.card}`}
           >
@@ -1740,11 +1742,18 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   <div className="flex items-center gap-3 pl-10.5 pt-0.5">
                     <button
                       type="button"
-                      onClick={() => handleLikeChapterComment(cm.id)}
+                      onClick={() => {
+                        const mention = `@${cm.author} `;
+                        if (!newCommentContent.includes(mention)) {
+                          setNewCommentContent((prev) => `${mention}${prev}`);
+                        }
+                        const el = document.getElementById('chapter-comment-form');
+                        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
                       className={`flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-colors ${tStyles.cardAuthor} hover:text-purple-500`}
                     >
-                      <ThumbsUp className="w-3.5 h-3.5" />
-                      <span>{cm.likes || 0} Thích</span>
+                      <Reply className="w-3.5 h-3.5" />
+                      <span>Trả lời</span>
                     </button>
                   </div>
                 </div>
@@ -1968,11 +1977,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                         <div className="flex items-center gap-3 pl-9 pt-0.5">
                           <button
                             type="button"
-                            onClick={() => handleLikeChapterComment(cm.id)}
+                            onClick={() => {
+                              const mention = `@${cm.author} `;
+                              if (!newCommentContent.includes(mention)) {
+                                setNewCommentContent((prev) => `${mention}${prev}`);
+                              }
+                            }}
                             className={`flex items-center gap-1.5 text-[11px] font-semibold cursor-pointer transition-colors ${tStyles.cardAuthor} hover:text-purple-500`}
                           >
-                            <ThumbsUp className="w-3 h-3" />
-                            <span>{cm.likes || 0} Thích</span>
+                            <Reply className="w-3 h-3" />
+                            <span>Trả lời</span>
                           </button>
                         </div>
                       </div>

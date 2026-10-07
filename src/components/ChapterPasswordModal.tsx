@@ -329,7 +329,12 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
                 </div>
                 <div className="space-y-1 select-all font-mono leading-relaxed bg-black/5 dark:bg-white/5 p-3 rounded-lg border border-zinc-300/40 dark:border-zinc-700/40">
                   {config.hintLines.map((line, idx) => (
-                    <div key={idx} className="break-all font-medium text-xs sm:text-sm text-zinc-800 dark:text-zinc-100">
+                    <div
+                      key={idx}
+                      className={`break-all font-semibold text-xs sm:text-sm ${
+                        isDarkMode ? 'text-white' : 'text-zinc-900'
+                      }`}
+                    >
                       {line}
                     </div>
                   ))}

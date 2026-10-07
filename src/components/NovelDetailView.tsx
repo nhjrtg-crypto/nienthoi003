@@ -2751,13 +2751,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   : ''
               }`}
             >
-          {/* 3 LỖ ĐỤC CÒNG SỔ BÊN MÉP TRÁI VÀ ĐƯỜNG NẾP GẤP (KIỂU 2: SỔ TAY) */}
+          {/* LỖ ĐỤC CÒNG SỔ BÊN MÉP TRÁI VÀ ĐƯỜNG NẾP GẤP (KIỂU 2: SỔ TAY) */}
           {isJournalStyle && (
             <>
-              <div className="absolute left-2.5 sm:left-3.5 top-12 bottom-12 flex flex-col justify-around pointer-events-none select-none z-10">
+              <div className="absolute left-2.5 sm:left-3.5 top-8 bottom-8 sm:top-12 sm:bottom-12 flex flex-col justify-around pointer-events-none select-none z-10">
                 <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
                 <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
                 <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
+                <div className="flex sm:hidden w-3.5 h-3.5 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
+                <div className="flex sm:hidden w-3.5 h-3.5 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
               </div>
               <div className="absolute left-8 sm:left-11 top-0 bottom-0 w-[1px] border-r border-dashed border-[#E5DCD6] dark:border-zinc-700/60 pointer-events-none" />
             </>
@@ -4429,6 +4431,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               >
                 {/* Submit Comment Form */}
                 <form
+                  id="detail-comment-form"
                   onSubmit={handlePostComment}
                   className={`p-6 sm:p-7 rounded-3xl border shadow-xs space-y-4 ${
                     isJournalStyle
@@ -4619,11 +4622,19 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
                       <div className="flex items-center gap-4 pt-1">
                         <button
-                          onClick={() => handleLikeComment(comment.id)}
+                          type="button"
+                          onClick={() => {
+                            const mention = `@${comment.author} `;
+                            if (!newCommentText.includes(mention)) {
+                              setNewCommentText((prev) => `${mention}${prev}`);
+                            }
+                            const formEl = document.getElementById('detail-comment-form');
+                            formEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }}
                           className={`flex items-center gap-2 text-[14px] sm:text-[15px] font-sans font-bold transition-colors cursor-pointer ${tStyles.cardAuthor} ${tStyles.heroTitleHover}`}
                         >
-                          <ThumbsUp className="w-4 h-4" />
-                          <span>{comment.likes} Thích</span>
+                          <Reply className="w-4 h-4" />
+                          <span>Trả lời</span>
                         </button>
                       </div>
                     </div>

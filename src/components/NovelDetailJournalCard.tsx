@@ -90,11 +90,13 @@ export const NovelDetailJournalCard: React.FC<NovelDetailJournalCardProps> = ({
           backgroundPosition: '0 48px',
         }}
       >
-        {/* 3 LỖ ĐỤC CÒNG SỔ BÊN MÉP TRÁI (THEO ẢNH MẪU) */}
-        <div className="absolute left-2.5 sm:left-3.5 top-12 bottom-12 flex flex-col justify-around pointer-events-none select-none z-10">
+        {/* LỖ ĐỤC CÒNG SỔ BÊN MÉP TRÁI (THEO ẢNH MẪU): Tăng thêm lỗ trên mobile, giữ nguyên trên máy tính */}
+        <div className="absolute left-2.5 sm:left-3.5 top-8 bottom-8 sm:top-12 sm:bottom-12 flex flex-col justify-around pointer-events-none select-none z-10">
           <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
           <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
           <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
+          <div className="flex sm:hidden w-3.5 h-3.5 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
+          <div className="flex sm:hidden w-3.5 h-3.5 rounded-full bg-[#E8DFD8] dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-inner" />
         </div>
 
         {/* ĐƯỜNG CHỈ NẾP GẤP DỌC MÉP TRÁI SỔ (VERTICAL MARGIN FOLD) */}
