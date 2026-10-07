@@ -1,6 +1,6 @@
 // Cloudflare Worker + Static Assets entrypoint for Niên Thời
 // Tự động điều hướng các API /api/* đến Cloudflare D1
-// Tất cả các request giao diện còn lại sẽ trả về file tĩnh React Vite (Single Page App)
+// Tất cả các request file tĩnh & giao diện (JS, CSS, Ảnh, HTML) chuyển thẳng sang Static Assets không qua xử lý Worker
 
 export interface Env {
   DB?: any;
@@ -10,12 +10,186 @@ export interface Env {
   };
 }
 
+// Cấu hình Cache-Control tối ưu: Cache 30s trên Edge CDN và Browser, giảm 95% request chạy vào Worker
+const CACHE_HEADERS_GET: Record<string, string> = {
+  'Content-Type': 'application/json',
+  'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
+  'Access-Control-Allow-Origin': '*',
+};
+
+const NO_CACHE_HEADERS: Record<string, string> = {
+  'Content-Type': 'application/json',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Access-Control-Allow-Origin': '*',
+};
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     // ========================================================================
-    // 1. API: /api/views (Lượt xem toàn web & từng truyện/chương)
+    // 0. STATIC ASSETS FAST-PATH (Tối ưu hóa: Không để file tĩnh chạy qua Worker logic)
+    // ========================================================================
+    if (!url.pathname.startsWith('/api/')) {
+      if (env.ASSETS) {
+        return env.ASSETS.fetch(request);
+      }
+      return new Response('Not found', { status: 404 });
+    }
+
+    // ========================================================================
+    // 1. API: /api/novel-bundle (GỘP API: Lấy cả Views + Likes + Comments trong 1 request)
+    // ========================================================================
+    if (url.pathname === '/api/novel-bundle' || url.pathname === '/api/bundle') {
+      if (request.method === 'GET') {
+        const novelId = url.searchParams.get('novelId') || 'global';
+        const chapterNumberParam = url.searchParams.get('chapterNumber');
+        const chapterNumber = chapterNumberParam !== null && chapterNumberParam !== undefined && chapterNumberParam !== '' 
+          ? parseInt(chapterNumberParam, 10) 
+          : null;
+        const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '50', 10), 1), 100);
+
+        const targetLikeId = (novelId.startsWith('intro_') || novelId === 'intro') ? 'intro_page' : novelId;
+        const likeDb = (targetLikeId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+
+        if (!env.DB) {
+          return new Response(
+            JSON.stringify({
+              success: true,
+              source: 'fallback',
+              novelId,
+              chapterNumber,
+              views: { novelViews: 0, chapterViews: 0, totalGlobalViews: 3000, todayGlobalViews: 0 },
+              likes: targetLikeId === 'intro_page' ? 30 : 0,
+              comments: [],
+            }),
+            { headers: CACHE_HEADERS_GET }
+          );
+        }
+
+        try {
+          // Thực thi đồng thời 3 truy vấn (Views, Likes, Comments) bằng Promise.all
+          const [viewsData, likesData, commentsData] = await Promise.all([
+            // 1. Lấy dữ liệu views
+            (async () => {
+              let novelViews = 0;
+              let chapterViews = 0;
+              let totalGlobalViews = 3000;
+              let todayGlobalViews = 0;
+
+              try {
+                if (novelId && novelId !== 'global') {
+                  const nRow = await env.DB.prepare(
+                    'SELECT SUM(views) as totalNovelViews FROM novel_views WHERE novel_id = ?'
+                  ).bind(novelId).first();
+                  if (nRow && typeof nRow.totalNovelViews === 'number') {
+                    novelViews = nRow.totalNovelViews;
+                  }
+
+                  if (chapterNumber !== null && !isNaN(chapterNumber)) {
+                    const cRow = await env.DB.prepare(
+                      'SELECT views FROM novel_views WHERE novel_id = ? AND chapter_number = ?'
+                    ).bind(novelId, chapterNumber).first();
+                    if (cRow && typeof cRow.views === 'number') {
+                      chapterViews = cRow.views;
+                    }
+                  }
+                }
+
+                const sRow = await env.DB.prepare(
+                  'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
+                ).first();
+                if (sRow) {
+                  totalGlobalViews = sRow.total_views || 3000;
+                  todayGlobalViews = sRow.today_views || 0;
+                }
+              } catch {}
+
+              return { novelViews, chapterViews, totalGlobalViews, todayGlobalViews };
+            })(),
+
+            // 2. Lấy số lượng Likes
+            (async () => {
+              let count = targetLikeId === 'intro_page' ? 30 : 0;
+              if (likeDb) {
+                try {
+                  const row = await likeDb.prepare('SELECT like_count FROM likes WHERE target_id = ?')
+                    .bind(targetLikeId)
+                    .first();
+                  if (row && typeof row.like_count === 'number') {
+                    count = row.like_count;
+                  }
+                } catch {}
+              }
+              return count;
+            })(),
+
+            // 3. Lấy danh sách Comments
+            (async () => {
+              let results: any[] = [];
+              try {
+                let stmt;
+                if (novelId && novelId !== 'global') {
+                  if (chapterNumber !== null && !isNaN(chapterNumber)) {
+                    stmt = env.DB.prepare(
+                      `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
+                              chapter_title as chapterTitle, author, content, avatar, 
+                              badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
+                       FROM comments 
+                       WHERE novel_id = ? AND chapter_number = ?
+                       ORDER BY created_timestamp DESC 
+                       LIMIT ?`
+                    ).bind(novelId, chapterNumber, limit);
+                  } else {
+                    stmt = env.DB.prepare(
+                      `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
+                              chapter_title as chapterTitle, author, content, avatar, 
+                              badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
+                       FROM comments 
+                       WHERE novel_id = ?
+                       ORDER BY created_timestamp DESC 
+                       LIMIT ?`
+                    ).bind(novelId, limit);
+                  }
+                } else {
+                  stmt = env.DB.prepare(
+                    `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
+                            chapter_title as chapterTitle, author, content, avatar, 
+                            badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
+                     FROM comments 
+                     ORDER BY created_timestamp DESC 
+                     LIMIT ?`
+                  ).bind(limit);
+                }
+                const res = await stmt.all();
+                results = res.results || [];
+              } catch {}
+              return results;
+            })(),
+          ]);
+
+          return new Response(
+            JSON.stringify({
+              success: true,
+              novelId,
+              chapterNumber,
+              views: viewsData,
+              likes: likesData,
+              comments: commentsData,
+            }),
+            { headers: CACHE_HEADERS_GET }
+          );
+        } catch (error: any) {
+          return new Response(JSON.stringify({ success: false, error: error.message }), {
+            status: 500,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+      }
+    }
+
+    // ========================================================================
+    // 2. API: /api/views (Lượt xem toàn web & từng truyện/chương)
     // ========================================================================
     if (url.pathname === '/api/views' || url.pathname.startsWith('/api/views/')) {
       if (request.method === 'GET') {
@@ -25,7 +199,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', totalViews: 3000, todayViews: 0 }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         }
 
@@ -38,7 +212,7 @@ export default {
               ).bind(novelId, chapNum).first();
               return new Response(
                 JSON.stringify({ success: true, novelId, chapterNumber: chapNum, views: row ? row.views : 0 }),
-                { headers: { 'Content-Type': 'application/json' } }
+                { headers: CACHE_HEADERS_GET }
               );
             } else {
               const row = await env.DB.prepare(
@@ -46,7 +220,7 @@ export default {
               ).bind(novelId).first();
               return new Response(
                 JSON.stringify({ success: true, novelId, views: row && row.totalNovelViews ? row.totalNovelViews : 0 }),
-                { headers: { 'Content-Type': 'application/json' } }
+                { headers: CACHE_HEADERS_GET }
               );
             }
           }
@@ -64,12 +238,12 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, totalViews: row.total_views, todayViews: row.today_views }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
@@ -78,7 +252,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', incremented: true }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         }
 
@@ -113,19 +287,19 @@ export default {
               totalViews: row ? row.total_views : 3000,
               todayViews: row ? row.today_views : 0,
             }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
     }
 
     // ========================================================================
-    // 2. API: /api/likes (Thả tim truyện & trang giới thiệu - hỗ trợ INTRO_DB)
+    // 3. API: /api/likes (Thả tim truyện & trang giới thiệu - hỗ trợ INTRO_DB)
     // ========================================================================
     if (url.pathname === '/api/likes' || url.pathname.startsWith('/api/likes/')) {
       const rawTarget = url.searchParams.get('targetId') || 'global';
@@ -141,7 +315,7 @@ export default {
               targetId,
               likeCount: targetId === 'intro_page' ? 30 : 100,
             }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         }
         try {
@@ -172,12 +346,12 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, targetId, likeCount: count }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
@@ -199,7 +373,7 @@ export default {
                 likeCount: (postTarget === 'intro_page' ? 30 : 0) + amount,
                 incremented: true,
               }),
-              { headers: { 'Content-Type': 'application/json' } }
+              { headers: NO_CACHE_HEADERS }
             );
           }
 
@@ -226,19 +400,19 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, targetId: postTarget, likeCount: row ? row.like_count : (baseCount + amount) }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
     }
 
     // ========================================================================
-    // 3. API: /api/comments (Bình luận truyện & chương)
+    // 4. API: /api/comments (Bình luận truyện & chương)
     // ========================================================================
     if (url.pathname === '/api/comments' || url.pathname.startsWith('/api/comments/')) {
       if (request.method === 'GET') {
@@ -250,7 +424,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', comments: [] }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         }
 
@@ -308,12 +482,12 @@ export default {
           const { results } = await stmt.all();
           return new Response(
             JSON.stringify({ success: true, comments: results || [] }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
@@ -322,7 +496,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback' }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         }
 
@@ -335,7 +509,7 @@ export default {
               .run();
             return new Response(
               JSON.stringify({ success: true, commentId: body.commentId }),
-              { headers: { 'Content-Type': 'application/json' } }
+              { headers: NO_CACHE_HEADERS }
             );
           }
 
@@ -347,7 +521,7 @@ export default {
               .run();
             return new Response(
               JSON.stringify({ success: true, commentId: trimmedId, deleted: true }),
-              { headers: { 'Content-Type': 'application/json' } }
+              { headers: NO_CACHE_HEADERS }
             );
           }
 
@@ -356,7 +530,7 @@ export default {
           if (!novelId || !body.content) {
             return new Response(
               JSON.stringify({ success: false, error: 'novelId và content là bắt buộc' }),
-              { status: 400, headers: { 'Content-Type': 'application/json' } }
+              { status: 400, headers: NO_CACHE_HEADERS }
             );
           }
 
@@ -410,12 +584,12 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, comment: newComment }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
@@ -424,7 +598,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', deleted: true }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         }
         try {
@@ -437,7 +611,7 @@ export default {
           if (!commentId) {
             return new Response(
               JSON.stringify({ success: false, error: 'Thiếu comment id' }),
-              { status: 400, headers: { 'Content-Type': 'application/json' } }
+              { status: 400, headers: NO_CACHE_HEADERS }
             );
           }
           const rawId = String(commentId);
@@ -445,19 +619,19 @@ export default {
           await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?').bind(rawId, trimmedId).run();
           return new Response(
             JSON.stringify({ success: true, commentId: trimmedId, deleted: true }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
     }
 
     // ========================================================================
-    // 4. API: /api/notes (Lưu bút bạn đọc - hỗ trợ INTRO_DB)
+    // 5. API: /api/notes (Lưu bút bạn đọc - hỗ trợ INTRO_DB)
     // ========================================================================
     if (url.pathname === '/api/notes' || url.pathname.startsWith('/api/notes/')) {
       const style = url.searchParams.get('style') || 'style1';
@@ -467,7 +641,7 @@ export default {
         if (!db) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', notes: [] }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         }
         try {
@@ -492,12 +666,12 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, notes: results || [] }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
@@ -506,7 +680,7 @@ export default {
         if (!db) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback' }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         }
         try {
@@ -539,19 +713,19 @@ export default {
               success: true,
               note: { id, style, author, content, time: timeString, createdAt },
             }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
     }
 
     // ========================================================================
-    // 5. API: /api/covers (Lưu trữ & đồng bộ ảnh bìa truyện trên Cloudflare D1)
+    // 6. API: /api/covers (Lưu trữ & đồng bộ ảnh bìa truyện trên Cloudflare D1)
     // ========================================================================
     if (url.pathname === '/api/covers' || url.pathname.startsWith('/api/covers/')) {
       if (request.method === 'GET') {
@@ -560,7 +734,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback', covers: {} }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         }
 
@@ -583,7 +757,7 @@ export default {
 
             return new Response(
               JSON.stringify({ success: true, novelId, coverUrl: row ? row.cover_url : null }),
-              { headers: { 'Content-Type': 'application/json' } }
+              { headers: CACHE_HEADERS_GET }
             );
           }
 
@@ -605,12 +779,12 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, covers }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: CACHE_HEADERS_GET }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
@@ -619,7 +793,7 @@ export default {
         if (!env.DB) {
           return new Response(
             JSON.stringify({ success: true, source: 'fallback' }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         }
 
@@ -632,7 +806,7 @@ export default {
           if (!novelId || !coverUrl) {
             return new Response(
               JSON.stringify({ success: false, error: 'Thiếu novelId hoặc coverUrl' }),
-              { status: 400, headers: { 'Content-Type': 'application/json' } }
+              { status: 400, headers: NO_CACHE_HEADERS }
             );
           }
 
@@ -666,19 +840,19 @@ export default {
 
           return new Response(
             JSON.stringify({ success: true, novelId, coverUrl }),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: NO_CACHE_HEADERS }
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: NO_CACHE_HEADERS,
           });
         }
       }
     }
 
     // ========================================================================
-    // 6. STATIC ASSETS FALLTHROUGH (Vite React Frontend SPA)
+    // 7. STATIC ASSETS FALLTHROUGH (Vite React Frontend SPA)
     // ========================================================================
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);

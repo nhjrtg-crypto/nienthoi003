@@ -36,7 +36,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
   const getHeaders = {
     'Content-Type': 'application/json',
-    'Cache-Control': 'public, max-age=5, s-maxage=10, stale-while-revalidate=30',
+    'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
   };
 
   // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/lưu bút) nếu có, fallback về DB

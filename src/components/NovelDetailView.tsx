@@ -109,6 +109,7 @@ import {
   fetchLikes as fetchD1Likes,
   incrementLike as incrementD1Like,
   saveNovelCoverToD1,
+  fetchNovelBundle,
 } from '../services/d1Service';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
 import { LUA_NHAU_NOVEL } from '../data/luaNhauData';
@@ -550,9 +551,12 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   // Luôn đặt kiểu chuẩn làm mặc định khi bấm vào trang thông tin chi tiết truyện
   const [detailLayoutOption, setDetailLayoutOption] = useState<'option1' | 'spiral'>('option1');
 
-  // Reset về kiểu Chuẩn mỗi khi mở một truyện mới
+  // Reset về kiểu Chuẩn mỗi khi mở một truyện mới và tải gộp Views + Likes + Comments
   useEffect(() => {
     setDetailLayoutOption('option1');
+    if (novel.id) {
+      fetchNovelBundle(novel.id).catch(() => {});
+    }
   }, [novel.id]);
 
   // Thanh Đọc Nổi (Sticky Floating Action Bar): xuất hiện khi cuộn xuống cho trang kiểu chuẩn

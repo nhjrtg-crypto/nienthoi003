@@ -69,6 +69,46 @@ let inMemoryGlobalViews = 3000;
 let lastViewsFetchTime = 0;
 const globalViewsListeners = new Set<(views: number) => void>();
 
+// ============================================================================
+// CHỐNG ĐẾM TRÙNG VIEW THEO PHIÊN (Session-based View Deduplication)
+// Mỗi chương chỉ ghi nhận 1 view / phiên duyệt web (tránh spam khi F5 / đổi theme / re-render)
+// ============================================================================
+const SESSION_VIEWED_CHAPTERS_KEY = 'cosmo_session_viewed_chapters';
+const inMemorySessionViewedChapters = new Set<string>();
+
+export function hasRecordedChapterViewThisSession(novelId: string, chapterNumber: number): boolean {
+  const key = `${novelId}:${chapterNumber}`;
+  if (inMemorySessionViewedChapters.has(key)) return true;
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      const raw = sessionStorage.getItem(SESSION_VIEWED_CHAPTERS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.includes(key)) {
+          inMemorySessionViewedChapters.add(key);
+          return true;
+        }
+      }
+    }
+  } catch {}
+  return false;
+}
+
+export function markChapterViewRecordedThisSession(novelId: string, chapterNumber: number): void {
+  const key = `${novelId}:${chapterNumber}`;
+  inMemorySessionViewedChapters.add(key);
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      const raw = sessionStorage.getItem(SESSION_VIEWED_CHAPTERS_KEY);
+      const list: string[] = raw ? JSON.parse(raw) : [];
+      if (!list.includes(key)) {
+        list.push(key);
+        sessionStorage.setItem(SESSION_VIEWED_CHAPTERS_KEY, JSON.stringify(list));
+      }
+    }
+  } catch {}
+}
+
 // Thả tim caches
 const inMemoryLikes: Record<string, number> = {};
 const lastLikesFetchTime: Record<string, number> = {};
@@ -178,6 +218,16 @@ export async function incrementGlobalView(amount = 1): Promise<number> {
 }
 
 export async function recordChapterView(novelId: string, chapterNumber: number): Promise<void> {
+  if (!novelId || typeof chapterNumber !== 'number') return;
+
+  // Chống đếm trùng view: Nếu chương này đã được xem trong phiên hiện tại, bỏ qua không gửi request lặp lại
+  if (hasRecordedChapterViewThisSession(novelId, chapterNumber)) {
+    return;
+  }
+
+  // Đánh dấu đã xem trong phiên này
+  markChapterViewRecordedThisSession(novelId, chapterNumber);
+
   // 1. Tự động tăng lượt xem toàn web cộng dồn
   incrementGlobalView(1);
 
@@ -694,6 +744,84 @@ export async function deleteComment(commentId: string, novelId?: string, chapter
   }
 
   return isDeleted;
+}
+
+// ============================================================================
+// 3.5. GỘP API (BUNDLE API): Lấy đồng thời Views + Likes + Comments trong 1 request
+// ============================================================================
+
+export interface NovelBundleResult {
+  views: {
+    novelViews: number;
+    chapterViews: number;
+    totalGlobalViews: number;
+    todayGlobalViews: number;
+  };
+  likes: number;
+  comments: D1Comment[];
+}
+
+export async function fetchNovelBundle(
+  novelId: string,
+  chapterNumber?: number | null,
+  force = false
+): Promise<NovelBundleResult | null> {
+  if (!novelId) return null;
+
+  return deduplicatedFetch(`get_bundle_${novelId}_${chapterNumber ?? 'all'}`, async () => {
+    try {
+      let url = `/api/novel-bundle?novelId=${encodeURIComponent(novelId)}`;
+      if (typeof chapterNumber === 'number') {
+        url += `&chapterNumber=${chapterNumber}`;
+      }
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          // 1. Cập nhật lượt xem toàn web nếu có
+          if (data.views && typeof data.views.totalGlobalViews === 'number' && data.views.totalGlobalViews > 0) {
+            inMemoryGlobalViews = Math.max(inMemoryGlobalViews, data.views.totalGlobalViews);
+            lastViewsFetchTime = Date.now();
+            safeStorage.setItem('cf_d1_global_views', String(inMemoryGlobalViews));
+            globalViewsListeners.forEach((fn) => fn(inMemoryGlobalViews));
+          }
+
+          // 2. Cập nhật lượt thả tim
+          if (typeof data.likes === 'number') {
+            const targetId = normalizeLikeTargetId(novelId);
+            const currentLocal = inMemoryLikes[targetId] || 0;
+            const nextLikes = Math.max(data.likes, currentLocal);
+            inMemoryLikes[targetId] = nextLikes;
+            lastLikesFetchTime[targetId] = Date.now();
+            try {
+              safeStorage.setItem(`cf_d1_like_${targetId}`, String(nextLikes));
+            } catch {}
+            notifyLikeListeners(targetId, nextLikes);
+          }
+
+          // 3. Cập nhật bình luận
+          if (Array.isArray(data.comments)) {
+            const deletedSet = getDeletedCommentIds();
+            const cleanComments = data.comments.filter((c: D1Comment) => c && !deletedSet.has(String(c.id)));
+            const subKey = getCommentSubscriptionKey(novelId, chapterNumber);
+            const cacheKey = `d1_comments_${novelId}_${chapterNumber ?? 'all'}`;
+            lastCommentsFetchTime[subKey] = Date.now();
+            safeStorage.setItem(cacheKey, JSON.stringify(cleanComments));
+            commentListeners[subKey]?.forEach((fn) => fn(cleanComments));
+          }
+
+          return {
+            views: data.views,
+            likes: data.likes,
+            comments: data.comments,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('[D1] fetchNovelBundle error:', e);
+    }
+    return null;
+  });
 }
 
 // ============================================================================
