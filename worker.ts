@@ -192,7 +192,13 @@ export default {
 
           if (!postDb) {
             return new Response(
-              JSON.stringify({ success: true, source: 'fallback', targetId: postTarget, incremented: true }),
+              JSON.stringify({
+                success: true,
+                source: 'fallback',
+                targetId: postTarget,
+                likeCount: (postTarget === 'intro_page' ? 30 : 0) + amount,
+                incremented: true,
+              }),
               { headers: { 'Content-Type': 'application/json' } }
             );
           }
@@ -329,6 +335,17 @@ export default {
               .run();
             return new Response(
               JSON.stringify({ success: true, commentId: body.commentId }),
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+          }
+
+          if (body.action === 'delete' && (body.commentId || body.id)) {
+            const commentId = String(body.commentId || body.id).trim();
+            await env.DB.prepare('DELETE FROM comments WHERE id = ?')
+              .bind(commentId)
+              .run();
+            return new Response(
+              JSON.stringify({ success: true, commentId, deleted: true }),
               { headers: { 'Content-Type': 'application/json' } }
             );
           }

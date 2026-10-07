@@ -126,6 +126,19 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       );
     }
 
+    // 1.1 Thao tác Xóa bình luận qua POST action (Đảm bảo hoạt động trên mọi mạng)
+    if (body.action === 'delete' && (body.commentId || body.id)) {
+      const commentId = String(body.commentId || body.id).trim();
+      await env.DB.prepare('DELETE FROM comments WHERE id = ?')
+        .bind(commentId)
+        .run();
+
+      return new Response(
+        JSON.stringify({ success: true, commentId, deleted: true }),
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // 2. Thao tác Đăng bình luận mới
     const id = body.id || `c_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const novelId = body.truyenId || body.novelId;

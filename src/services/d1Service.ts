@@ -154,6 +154,25 @@ export function normalizeLikeTargetId(targetId: string): string {
   return targetId;
 }
 
+export function getStoredLikes(rawTargetId: string): number {
+  const targetId = normalizeLikeTargetId(rawTargetId);
+  try {
+    const saved =
+      safeStorage.getItem(`cf_d1_like_${targetId}`) ||
+      (targetId === 'intro_page'
+        ? safeStorage.getItem('cf_d1_like_intro_style1') || safeStorage.getItem('cf_d1_like_intro_style2')
+        : null);
+
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      if (!isNaN(parsed) && parsed > 0 && parsed !== 521) {
+        return parsed;
+      }
+    }
+  } catch {}
+  return targetId === 'intro_page' ? 30 : 0;
+}
+
 function notifyLikeListeners(targetId: string, count: number): void {
   likesListeners[targetId]?.forEach((fn) => fn(count));
   // Đồng bộ cho cả intro_page, intro_style1, intro_style2 nếu là tim giới thiệu
@@ -178,40 +197,19 @@ export function subscribeLikes(rawTargetId: string, callback: (count: number) =>
     likesListeners[rawTargetId].add(callback);
   }
 
-  // Khởi tạo từ Memory hoặc safeStorage để không bao giờ bị flash số 0
-  let initial = inMemoryLikes[targetId] || 0;
-  try {
-    const saved =
-      safeStorage.getItem(`cf_d1_like_${targetId}`) ||
-      (targetId === 'intro_page'
-        ? safeStorage.getItem('cf_d1_like_intro_style1') || safeStorage.getItem('cf_d1_like_intro_style2')
-        : null);
+  // Khởi tạo từ Memory hoặc safeStorage để không bao giờ bị flash số 0 hoặc reset
+  const stored = getStoredLikes(targetId);
+  let initial = Math.max(inMemoryLikes[targetId] || 0, stored, targetId === 'intro_page' ? 30 : 0);
 
-    if (saved) {
-      const parsed = parseInt(saved, 10);
-      if (!isNaN(parsed) && parsed > 0) {
-        // Chỉ loại bỏ số ảo cũ 521 nếu có
-        if (targetId === 'intro_page' && parsed === 521) {
-          initial = 30;
-          safeStorage.setItem('cf_d1_like_intro_page', '30');
-        } else {
-          initial = parsed;
-        }
-      }
+  inMemoryLikes[targetId] = initial;
+  try {
+    safeStorage.setItem(`cf_d1_like_${targetId}`, String(initial));
+    if (targetId === 'intro_page') {
+      safeStorage.setItem('cf_d1_like_intro_style1', String(initial));
+      safeStorage.setItem('cf_d1_like_intro_style2', String(initial));
     }
   } catch {}
 
-  // Mặc định bắt đầu từ số 30 cho trang giới thiệu
-  if (targetId === 'intro_page' && (initial < 30 || initial === 521)) {
-    initial = 30;
-    try {
-      safeStorage.setItem('cf_d1_like_intro_page', '30');
-      safeStorage.setItem('cf_d1_like_intro_style1', '30');
-      safeStorage.setItem('cf_d1_like_intro_style2', '30');
-    } catch {}
-  }
-
-  inMemoryLikes[targetId] = initial;
   callback(initial);
 
   fetchLikes(targetId)
@@ -238,6 +236,9 @@ export function subscribeLikes(rawTargetId: string, callback: (count: number) =>
 
 export async function fetchLikes(rawTargetId: string): Promise<number> {
   const targetId = normalizeLikeTargetId(rawTargetId);
+  const stored = getStoredLikes(targetId);
+  const currentLocal = Math.max(inMemoryLikes[targetId] || 0, stored, targetId === 'intro_page' ? 30 : 0);
+
   try {
     const res = await fetch(`/api/likes?targetId=${encodeURIComponent(targetId)}`);
     if (res.ok) {
@@ -245,9 +246,9 @@ export async function fetchLikes(rawTargetId: string): Promise<number> {
       if (typeof data.likeCount === 'number') {
         const serverCount = data.likeCount;
         if (serverCount === 521) {
-          return inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
+          return currentLocal;
         }
-        const currentLocal = inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
+        // Giữ giá trị lớn nhất tuyệt đối giữa serverCount và currentLocal để không bị giật lùi về 30
         const next = Math.max(serverCount, currentLocal);
         inMemoryLikes[targetId] = next;
         try {
@@ -262,12 +263,15 @@ export async function fetchLikes(rawTargetId: string): Promise<number> {
       }
     }
   } catch {}
-  return inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
+
+  inMemoryLikes[targetId] = currentLocal;
+  return currentLocal;
 }
 
 export async function incrementLike(rawTargetId: string, amount = 1): Promise<number> {
   const targetId = normalizeLikeTargetId(rawTargetId);
-  const current = inMemoryLikes[targetId] || (targetId === 'intro_page' ? 30 : 0);
+  const stored = getStoredLikes(targetId);
+  const current = Math.max(inMemoryLikes[targetId] || 0, stored, targetId === 'intro_page' ? 30 : 0);
   const next = current + amount;
   inMemoryLikes[targetId] = next;
   try {
@@ -312,6 +316,27 @@ export async function incrementLike(rawTargetId: string, amount = 1): Promise<nu
 
 const commentListeners: Record<string, Set<(comments: D1Comment[]) => void>> = {};
 
+const DELETED_COMMENTS_STORAGE_KEY = 'd1_deleted_comment_ids';
+
+export function getDeletedCommentIds(): Set<string> {
+  try {
+    const raw = safeStorage.getItem(DELETED_COMMENTS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return new Set(parsed.map(String));
+    }
+  } catch {}
+  return new Set();
+}
+
+export function markCommentAsDeleted(commentId: string): void {
+  try {
+    const set = getDeletedCommentIds();
+    set.add(String(commentId));
+    safeStorage.setItem(DELETED_COMMENTS_STORAGE_KEY, JSON.stringify(Array.from(set)));
+  } catch {}
+}
+
 function getCommentSubscriptionKey(novelId: string, chapterNumber?: number | null): string {
   return `${novelId}_${typeof chapterNumber === 'number' ? chapterNumber : 'all'}`;
 }
@@ -327,14 +352,15 @@ export function subscribeComments(
   }
   commentListeners[key].add(callback);
 
-  // 1. Phục hồi ngay từ safeStorage để không bao giờ bị chớp trắng giao diện
+  // 1. Phục hồi ngay từ safeStorage để không bao giờ bị chớp trắng giao diện (loại bỏ hoàn toàn comment đã bị xóa)
   const cacheKey = `d1_comments_${novelId}_${typeof chapterNumber === 'number' ? chapterNumber : 'all'}`;
   try {
     const saved = safeStorage.getItem(cacheKey);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed)) {
-        callback(parsed);
+        const deletedSet = getDeletedCommentIds();
+        callback(parsed.filter((c: D1Comment) => c && !deletedSet.has(String(c.id))));
       }
     }
   } catch {}
@@ -360,6 +386,8 @@ export function subscribeComments(
 
 export async function fetchComments(novelId: string, chapterNumber?: number): Promise<D1Comment[]> {
   const cacheKey = `d1_comments_${novelId}_${chapterNumber ?? 'all'}`;
+  const deletedSet = getDeletedCommentIds();
+
   try {
     let url = `/api/comments?novelId=${encodeURIComponent(novelId)}`;
     if (typeof chapterNumber === 'number') {
@@ -369,10 +397,11 @@ export async function fetchComments(novelId: string, chapterNumber?: number): Pr
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data.comments)) {
-        safeStorage.setItem(cacheKey, JSON.stringify(data.comments));
+        const cleanComments = data.comments.filter((c: D1Comment) => c && !deletedSet.has(String(c.id)));
+        safeStorage.setItem(cacheKey, JSON.stringify(cleanComments));
         const key = getCommentSubscriptionKey(novelId, chapterNumber);
-        commentListeners[key]?.forEach((fn) => fn(data.comments));
-        return data.comments;
+        commentListeners[key]?.forEach((fn) => fn(cleanComments));
+        return cleanComments;
       }
     }
   } catch {}
@@ -380,7 +409,12 @@ export async function fetchComments(novelId: string, chapterNumber?: number): Pr
   // Fallback đọc cache local nếu ngoại tuyến
   try {
     const saved = safeStorage.getItem(cacheKey);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((c: D1Comment) => c && !deletedSet.has(String(c.id)));
+      }
+    }
   } catch {}
 
   return [];
@@ -457,17 +491,78 @@ export async function likeComment(commentId: string, novelId?: string, chapterNu
 }
 
 export async function deleteComment(commentId: string, novelId?: string, chapterNumber?: number): Promise<boolean> {
+  if (!commentId) return false;
+  const targetId = String(commentId).trim();
+
+  // 1. Đánh dấu vĩnh viễn ID bình luận này đã bị xóa
+  markCommentAsDeleted(targetId);
+  const deletedSet = getDeletedCommentIds();
+
+  // 2. Lập tức dọn sạch triệt để khỏi tất cả các khóa lưu trữ bộ nhớ và localStorage
   try {
-    const res = await fetch(`/api/comments?id=${encodeURIComponent(commentId)}`, {
+    const cacheKeysToClean = [
+      novelId ? `d1_comments_${novelId}_all` : null,
+      novelId && typeof chapterNumber === 'number' ? `d1_comments_${novelId}_${chapterNumber}` : null,
+      novelId ? `d1_comments_${novelId}_undefined` : null,
+      novelId ? `cosmo_novel_comments_${novelId}` : null,
+      novelId ? `cosmo_cached_comments_${novelId}` : null,
+    ].filter(Boolean) as string[];
+
+    for (const key of cacheKeysToClean) {
+      const raw = safeStorage.getItem(key);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            const cleaned = parsed.filter((c: any) => c && String(c.id) !== targetId && !deletedSet.has(String(c.id)));
+            safeStorage.setItem(key, JSON.stringify(cleaned));
+          }
+        } catch {}
+      }
+    }
+  } catch {}
+
+  // 3. Báo cho tất cả subscriber giao diện cập nhật ngay lập tức
+  if (novelId) {
+    const keyAll = getCommentSubscriptionKey(novelId, undefined);
+    const keyChap = getCommentSubscriptionKey(novelId, chapterNumber);
+    [keyAll, keyChap].forEach((k) => {
+      const listeners = commentListeners[k];
+      if (listeners && listeners.size > 0) {
+        try {
+          const raw = safeStorage.getItem(`d1_comments_${novelId}_all`);
+          const list = raw ? JSON.parse(raw).filter((c: any) => c && String(c.id) !== targetId && !deletedSet.has(String(c.id))) : [];
+          listeners.forEach((fn) => fn(list));
+        } catch {}
+      }
+    });
+  }
+
+  // 4. Xóa thật sự trong cơ sở dữ liệu Cloudflare D1
+  let isDeleted = false;
+  try {
+    const resDelete = await fetch(`/api/comments?id=${encodeURIComponent(targetId)}`, {
       method: 'DELETE',
     });
-    if (novelId) {
-      fetchComments(novelId, chapterNumber).catch(() => {});
-    }
-    return res.ok;
-  } catch {
-    return false;
+    if (resDelete.ok) isDeleted = true;
+  } catch {}
+
+  // Phương thức dự phòng qua POST action=delete (hoạt động tốt với mọi loại proxy/CDN)
+  try {
+    const resPost = await fetch('/api/comments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', commentId: targetId, id: targetId }),
+    });
+    if (resPost.ok) isDeleted = true;
+  } catch {}
+
+  // 5. Cập nhật lại dữ liệu từ Cloudflare D1
+  if (novelId) {
+    fetchComments(novelId, chapterNumber).catch(() => {});
   }
+
+  return isDeleted;
 }
 
 // ============================================================================

@@ -2853,16 +2853,495 @@
   outline-offset: 2px;
 }
 
+/* ========================================================================= */
+/* THEME FROST - CHẾ ĐỘ SÁNG (LIGHT MODE): THẺ TRUYỆN MỤC TIỂU THUYẾT ĐÃ HOÀN */
+/* ========================================================================= */
 
+/* 1. Khung thẻ chính (Thẻ truyện) */
+.frost-light-novel-card {
+  border-radius: 16px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    /* Lớp 1 - Mặt nền kính bên trong (padding-box) */
+    linear-gradient(135deg, 
+      rgba(234, 242, 253, 0.85) 0%, 
+      rgba(241, 246, 254, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(241, 246, 254, 0.80) 82%, 
+      rgba(234, 242, 253, 0.85) 100%
+    ) padding-box,
+    /* Lớp 2 - Đường viền chuyển sắc bao quanh (border-box) */
+    linear-gradient(to bottom, 
+      rgba(215, 230, 245, 0.70) 0%,   /* Mép trên: xanh xám rất nhạt */
+      rgba(198, 220, 238, 0.78) 40%,  /* Đoạn giữa: chuyển sắc êm dịu */
+      rgba(182, 205, 226, 0.88) 100%  /* Mép dưới: xanh xám đậm hơn */
+    ) border-box !important;
+  box-shadow: 
+    5px 5px 15px rgba(165, 185, 210, 0.22),    /* Bóng nổi mềm góc dưới-phải (xanh pastel) */
+    -4px -4px 14px rgba(255, 255, 255, 0.92),  /* Ánh sáng hắt góc trên-trái (trắng sáng) */
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important; /* Đường sáng phản chiếu siêu mảnh mép trên */
+  transition: all 0.3s ease !important;
+}
 
+.frost-light-novel-card:hover {
+  box-shadow: 
+    7px 7px 20px rgba(165, 185, 210, 0.32),
+    -6px -6px 18px rgba(255, 255, 255, 1.00),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+}
 
+/* 2. Chi tiết các thành phần trang trí bên trong thẻ */
+/* A. Tag thể loại (#Tiên Hiệp, #Huyền Huyễn...) */
+.frost-light-novel-tag {
+  border: 1px solid transparent !important;
+  background: 
+    /* Mặt nền tag (padding-box) */
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 250, 255, 0.85) 100%) padding-box,
+    /* Màu viền (border-box) */
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(225, 238, 250, 0.6) 45%, rgba(175, 198, 222, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(165, 188, 212, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #526982 !important; /* Màu chữ: #526982 (xanh xám ghi đậm) */
+}
 
+/* Nút bấm Theme Frost Chế độ sáng (Áp dụng kiểu dáng, màu sắc và hiệu ứng chuẩn tags) */
+.frost-light-btn {
+  border: 1px solid transparent !important;
+  background: 
+    /* Mặt nền tag (padding-box) */
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 250, 255, 0.85) 100%) padding-box,
+    /* Màu viền (border-box) */
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(225, 238, 250, 0.6) 45%, rgba(175, 198, 222, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(165, 188, 212, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #526982 !important;
+  transition: all 0.25s ease !important;
+}
 
+.frost-light-btn:hover {
+  box-shadow: 
+    0 4px 10px rgba(165, 188, 212, 0.32), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  color: #0284c7 !important;
+}
 
+.frost-light-btn:active,
+.frost-light-btn-active {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(238, 246, 255, 0.92) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(186, 225, 255, 0.75) 45%, rgba(145, 195, 235, 0.88) 100%) border-box !important;
+  box-shadow: 
+    0 3px 8px rgba(140, 175, 210, 0.28), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 2px rgba(180, 210, 240, 0.2) !important;
+  color: #0284c7 !important;
+}
 
+/* Thanh chứa dãy nút phân loại của Tiểu Thuyết Đã Hoàn (Theme Frost Chế độ sáng) */
+.frost-light-tabs-container {
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, rgba(234, 242, 253, 0.75) 0%, rgba(241, 246, 254, 0.70) 50%, rgba(255, 255, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(215, 230, 245, 0.70) 0%, rgba(198, 220, 238, 0.78) 50%, rgba(182, 205, 226, 0.88) 100%) border-box !important;
+  box-shadow: 
+    3px 3px 10px rgba(165, 185, 210, 0.16),
+    -3px -3px 10px rgba(255, 255, 255, 0.90),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
 
+/* C. Đường gạch ngăn cách chân thẻ */
+.frost-light-novel-divider {
+  border-top: 1px solid rgba(186, 230, 254, 0.6) !important; /* xanh ngọc siêu mảnh mờ */
+}
 
+/* ========================================================================= */
+/* THEME SAGE - CHẾ ĐỘ SÁNG (LIGHT MODE): NEUMORPHISM PHA GLASSMORPHISM */
+/* ========================================================================= */
+.sage-light-novel-card {
+  border-radius: 16px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(234, 246, 237, 0.85) 0%, 
+      rgba(240, 249, 243, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(240, 249, 243, 0.80) 82%, 
+      rgba(234, 246, 237, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      rgba(210, 232, 215, 0.70) 0%, 
+      rgba(192, 222, 198, 0.78) 40%, 
+      rgba(175, 208, 182, 0.88) 100%
+    ) border-box !important;
+  box-shadow: 
+    5px 5px 15px rgba(150, 185, 160, 0.22), 
+    -4px -4px 14px rgba(255, 255, 255, 0.92), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.3s ease !important;
+}
 
+.sage-light-novel-card:hover {
+  box-shadow: 
+    7px 7px 20px rgba(150, 185, 160, 0.32),
+    -6px -6px 18px rgba(255, 255, 255, 1.00),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+}
 
+.sage-light-novel-tag {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(243, 251, 246, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(205, 236, 216, 0.6) 45%, rgba(158, 206, 174, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(150, 190, 165, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #466244 !important;
+}
 
+.sage-light-btn {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(243, 251, 246, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(205, 236, 216, 0.6) 45%, rgba(158, 206, 174, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(150, 190, 165, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #466244 !important;
+  transition: all 0.25s ease !important;
+}
 
+.sage-light-btn:hover {
+  box-shadow: 
+    0 4px 10px rgba(150, 190, 165, 0.32), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  color: #274225 !important;
+}
+
+.sage-light-btn:active,
+.sage-light-btn-active {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 250, 243, 0.92) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(165, 225, 185, 0.75) 45%, rgba(125, 195, 150, 0.88) 100%) border-box !important;
+  box-shadow: 
+    0 3px 8px rgba(130, 180, 145, 0.28), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 2px rgba(160, 215, 180, 0.2) !important;
+  color: #274225 !important;
+}
+
+.sage-light-tabs-container {
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, rgba(235, 246, 238, 0.75) 0%, rgba(242, 250, 244, 0.70) 50%, rgba(255, 255, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(210, 232, 215, 0.70) 0%, rgba(192, 222, 198, 0.78) 50%, rgba(175, 208, 182, 0.88) 100%) border-box !important;
+  box-shadow: 
+    3px 3px 10px rgba(150, 185, 160, 0.16),
+    -3px -3px 10px rgba(255, 255, 255, 0.90),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.sage-light-novel-divider {
+  border-top: 1px solid rgba(165, 225, 185, 0.6) !important;
+}
+
+/* ========================================================================= */
+/* THEME MOCHA - CHẾ ĐỘ SÁNG (LIGHT MODE): NEUMORPHISM PHA GLASSMORPHISM */
+/* ========================================================================= */
+.mocha-light-novel-card {
+  border-radius: 16px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(252, 246, 238, 0.85) 0%, 
+      rgba(255, 250, 243, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(255, 250, 243, 0.80) 82%, 
+      rgba(252, 246, 238, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      rgba(236, 220, 202, 0.70) 0%, 
+      rgba(224, 204, 182, 0.78) 40%, 
+      rgba(210, 186, 162, 0.88) 100%
+    ) border-box !important;
+  box-shadow: 
+    5px 5px 15px rgba(190, 165, 140, 0.22), 
+    -4px -4px 14px rgba(255, 255, 255, 0.92), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.3s ease !important;
+}
+
+.mocha-light-novel-card:hover {
+  box-shadow: 
+    7px 7px 20px rgba(190, 165, 140, 0.32),
+    -6px -6px 18px rgba(255, 255, 255, 1.00),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+}
+
+.mocha-light-novel-tag {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 242, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(245, 220, 200, 0.6) 45%, rgba(220, 185, 160, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(190, 155, 130, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #7a6256 !important;
+}
+
+.mocha-light-btn {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 242, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(245, 220, 200, 0.6) 45%, rgba(220, 185, 160, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(190, 155, 130, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #7a6256 !important;
+  transition: all 0.25s ease !important;
+}
+
+.mocha-light-btn:hover {
+  box-shadow: 
+    0 4px 10px rgba(190, 155, 130, 0.32), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  color: #a37764 !important;
+}
+
+.mocha-light-btn:active,
+.mocha-light-btn-active {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 248, 240, 0.92) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(245, 205, 175, 0.75) 45%, rgba(215, 165, 130, 0.88) 100%) border-box !important;
+  box-shadow: 
+    0 3px 8px rgba(185, 145, 115, 0.28), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 2px rgba(230, 190, 160, 0.2) !important;
+  color: #a37764 !important;
+}
+
+.mocha-light-tabs-container {
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, rgba(252, 246, 238, 0.75) 0%, rgba(255, 250, 244, 0.70) 50%, rgba(255, 255, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(236, 220, 202, 0.70) 0%, rgba(224, 204, 182, 0.78) 50%, rgba(210, 186, 162, 0.88) 100%) border-box !important;
+  box-shadow: 
+    3px 3px 10px rgba(190, 165, 140, 0.16),
+    -3px -3px 10px rgba(255, 255, 255, 0.90),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.mocha-light-novel-divider {
+  border-top: 1px solid rgba(235, 195, 165, 0.6) !important;
+}
+
+/* ========================================================================= */
+/* THEME AMETHYST HAZE - CHẾ ĐỘ SÁNG: NEUMORPHISM PHA GLASSMORPHISM */
+/* ========================================================================= */
+.amethyst-light-novel-card {
+  border-radius: 16px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(247, 242, 253, 0.85) 0%, 
+      rgba(251, 247, 255, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(251, 247, 255, 0.80) 82%, 
+      rgba(247, 242, 253, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      rgba(226, 215, 238, 0.70) 0%, 
+      rgba(212, 198, 228, 0.78) 40%, 
+      rgba(196, 178, 216, 0.88) 100%
+    ) border-box !important;
+  box-shadow: 
+    5px 5px 15px rgba(175, 155, 198, 0.22), 
+    -4px -4px 14px rgba(255, 255, 255, 0.92), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.3s ease !important;
+}
+
+.amethyst-light-novel-card:hover {
+  box-shadow: 
+    7px 7px 20px rgba(175, 155, 198, 0.32),
+    -6px -6px 18px rgba(255, 255, 255, 1.00),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+}
+
+.amethyst-light-novel-tag {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 246, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(235, 220, 250, 0.6) 45%, rgba(205, 185, 230, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(175, 150, 205, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #6b5887 !important;
+}
+
+.amethyst-light-btn {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 246, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(235, 220, 250, 0.6) 45%, rgba(205, 185, 230, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(175, 150, 205, 0.18), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #6b5887 !important;
+  transition: all 0.25s ease !important;
+}
+
+.amethyst-light-btn:hover {
+  box-shadow: 
+    0 4px 10px rgba(175, 150, 205, 0.32), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  color: #7e58a6 !important;
+}
+
+.amethyst-light-btn:active,
+.amethyst-light-btn-active {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 245, 255, 0.92) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(225, 195, 250, 0.75) 45%, rgba(188, 150, 225, 0.88) 100%) border-box !important;
+  box-shadow: 
+    0 3px 8px rgba(165, 135, 200, 0.28), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 2px rgba(210, 180, 240, 0.2) !important;
+  color: #7e58a6 !important;
+}
+
+.amethyst-light-tabs-container {
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, rgba(247, 242, 253, 0.75) 0%, rgba(251, 247, 255, 0.70) 50%, rgba(255, 255, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(226, 215, 238, 0.70) 0%, rgba(212, 198, 228, 0.78) 50%, rgba(196, 178, 216, 0.88) 100%) border-box !important;
+  box-shadow: 
+    3px 3px 10px rgba(175, 155, 198, 0.16),
+    -3px -3px 10px rgba(255, 255, 255, 0.90),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.amethyst-light-novel-divider {
+  border-top: 1px solid rgba(215, 185, 245, 0.6) !important;
+}
+
+/* ========================================================================= */
+/* THEME NOTEBOOK - CHẾ ĐỘ SÁNG: NEUMORPHISM PHA GLASSMORPHISM */
+/* ========================================================================= */
+.notebook-light-novel-card {
+  border-radius: 16px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(248, 248, 248, 0.85) 0%, 
+      rgba(252, 252, 252, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(252, 252, 252, 0.80) 82%, 
+      rgba(248, 248, 248, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      rgba(228, 228, 228, 0.70) 0%, 
+      rgba(214, 214, 214, 0.78) 40%, 
+      rgba(198, 198, 198, 0.88) 100%
+    ) border-box !important;
+  box-shadow: 
+    5px 5px 15px rgba(170, 170, 170, 0.18), 
+    -4px -4px 14px rgba(255, 255, 255, 0.95), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  transition: all 0.3s ease !important;
+}
+
+.notebook-light-novel-card:hover {
+  box-shadow: 
+    7px 7px 20px rgba(170, 170, 170, 0.28),
+    -6px -6px 18px rgba(255, 255, 255, 1.00),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+}
+
+.notebook-light-novel-tag {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(230, 230, 230, 0.6) 45%, rgba(195, 195, 195, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(170, 170, 170, 0.16), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #525252 !important;
+}
+
+.notebook-light-btn {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(230, 230, 230, 0.6) 45%, rgba(195, 195, 195, 0.8) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(170, 170, 170, 0.16), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #525252 !important;
+  transition: all 0.25s ease !important;
+}
+
+.notebook-light-btn:hover {
+  box-shadow: 
+    0 4px 10px rgba(170, 170, 170, 0.28), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  color: #171717 !important;
+}
+
+.notebook-light-btn:active,
+.notebook-light-btn-active {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 248, 248, 0.92) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(215, 215, 215, 0.75) 45%, rgba(175, 175, 175, 0.88) 100%) border-box !important;
+  box-shadow: 
+    0 3px 8px rgba(160, 160, 160, 0.24), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 2px rgba(200, 200, 200, 0.2) !important;
+  color: #171717 !important;
+}
+
+.notebook-light-tabs-container {
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, rgba(248, 248, 248, 0.75) 0%, rgba(252, 252, 252, 0.70) 50%, rgba(255, 255, 255, 0.85) 100%) padding-box,
+    linear-gradient(to bottom, rgba(228, 228, 228, 0.70) 0%, rgba(214, 214, 214, 0.78) 50%, rgba(198, 198, 198, 0.88) 100%) border-box !important;
+  box-shadow: 
+    3px 3px 10px rgba(170, 170, 170, 0.14),
+    -3px -3px 10px rgba(255, 255, 255, 0.90),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.notebook-light-novel-divider {
+  border-top: 1px solid rgba(210, 210, 210, 0.6) !important;
+}

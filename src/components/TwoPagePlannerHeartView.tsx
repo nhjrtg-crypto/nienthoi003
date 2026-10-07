@@ -193,8 +193,12 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
     }
 
     setHasLiked(true);
-    setHeartsCount((prev) => Math.max(prev + 1, 31));
+    const nextHearts = Math.max(heartsCount + 1, 31);
+    setHeartsCount(nextHearts);
     try {
+      safeStorage.setItem('cf_d1_like_intro_page', String(nextHearts));
+      safeStorage.setItem('cf_d1_like_intro_style1', String(nextHearts));
+      safeStorage.setItem('cf_d1_like_intro_style2', String(nextHearts));
       safeStorage.setItem('cosmo_has_liked_intro', 'true');
       safeStorage.setItem('cosmo_has_liked_style1', 'true');
       safeStorage.setItem('cosmo_has_liked_tama', 'true');

@@ -242,8 +242,8 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
       return {
         primaryBtn: isDark
           ? 'bg-gradient-to-r from-[#7e739f] via-[#9d8bb8] to-[#d59aa7] hover:brightness-110 text-white shadow-sm hover:shadow-md border border-purple-400/40 active:scale-95 transition-all'
-          : 'bg-[#6D4978] hover:bg-[#593963] text-white shadow-sm hover:shadow-md border border-[#593963] active:scale-95 transition-all',
-        rerollIcon: isDark ? 'text-purple-300' : 'text-purple-600',
+          : 'amethyst-light-btn font-bold !text-[#6b5887] hover:!text-[#7e58a6] active:scale-95 transition-all cursor-pointer',
+        rerollIcon: isDark ? 'text-purple-300' : 'text-[#7e58a6]',
         loadingDots: ['bg-[#7e739f]', 'bg-[#b3a8cb]', 'bg-[#d59aa7]'],
         metaIcon: isDark ? 'text-purple-300' : 'text-purple-400',
         titleHover: 'hover:text-purple-300',
@@ -252,8 +252,8 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
       return {
         primaryBtn: isDark
           ? 'bg-gradient-to-r from-slate-600 via-sky-600 to-blue-600 hover:brightness-110 text-white shadow-sm hover:shadow-md border border-sky-400/40 active:scale-95 transition-all'
-          : 'bg-gradient-to-r from-slate-700 to-sky-700 hover:brightness-105 text-white shadow-sm hover:shadow-md border border-sky-300/40 active:scale-95 transition-all',
-        rerollIcon: isDark ? 'text-sky-300' : 'text-sky-600',
+          : 'frost-light-btn font-bold !text-[#526982] hover:!text-[#0284c7] active:scale-95 transition-all cursor-pointer',
+        rerollIcon: isDark ? 'text-sky-300' : 'text-[#0284c7]',
         loadingDots: ['bg-sky-500', 'bg-cyan-400', 'bg-blue-300'],
         metaIcon: isDark ? 'text-sky-300' : 'text-sky-400',
         titleHover: 'hover:text-sky-300',
@@ -262,8 +262,8 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
       return {
         primaryBtn: isDark
           ? 'bg-gradient-to-r from-[#466244] via-[#5c825a] to-[#7fa67b] hover:brightness-110 text-white shadow-sm hover:shadow-md border border-emerald-400/40 active:scale-95 transition-all'
-          : 'bg-gradient-to-r from-[#3e573c] to-[#5a7d57] hover:brightness-105 text-white shadow-sm hover:shadow-md border border-emerald-300/40 active:scale-95 transition-all',
-        rerollIcon: isDark ? 'text-emerald-300' : 'text-emerald-600',
+          : 'sage-light-btn font-bold !text-[#466244] hover:!text-[#274225] active:scale-95 transition-all cursor-pointer',
+        rerollIcon: isDark ? 'text-emerald-300' : 'text-[#274225]',
         loadingDots: ['bg-emerald-500', 'bg-teal-400', 'bg-lime-300'],
         metaIcon: isDark ? 'text-emerald-300' : 'text-emerald-400',
         titleHover: 'hover:text-emerald-300',
@@ -272,8 +272,8 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
       return {
         primaryBtn: isDark
           ? 'bg-gradient-to-r from-[#A37764] via-[#b68875] to-[#cba38e] hover:brightness-110 text-white shadow-sm hover:shadow-md border border-amber-400/40 active:scale-95 transition-all'
-          : 'bg-[#2C2926] hover:bg-[#1A1816] text-[#FAF7F2] shadow-sm hover:shadow-md border border-[#3D3833] active:scale-95 transition-all',
-        rerollIcon: isDark ? 'text-amber-300' : 'text-amber-600',
+          : 'mocha-light-btn font-bold !text-[#7a6256] hover:!text-[#a37764] active:scale-95 transition-all cursor-pointer',
+        rerollIcon: isDark ? 'text-amber-300' : 'text-[#a37764]',
         loadingDots: ['bg-amber-500', 'bg-yellow-400', 'bg-orange-300'],
         metaIcon: isDark ? 'text-amber-300' : 'text-amber-400',
         titleHover: 'hover:text-amber-300',
@@ -283,8 +283,8 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
       return {
         primaryBtn: isDark
           ? 'bg-white hover:bg-neutral-100 text-neutral-950 shadow-sm hover:shadow-md font-extrabold border border-white/40 active:scale-95 transition-all'
-          : 'bg-[#2C2926] hover:bg-[#1A1816] text-white shadow-sm hover:shadow-md border border-neutral-700 active:scale-95 transition-all',
-        rerollIcon: isDark ? 'text-neutral-300' : 'text-neutral-600',
+          : 'notebook-light-btn font-bold !text-[#525252] hover:!text-[#171717] active:scale-95 transition-all cursor-pointer',
+        rerollIcon: isDark ? 'text-neutral-300' : 'text-neutral-900',
         loadingDots: isDark
           ? ['bg-neutral-200', 'bg-neutral-400', 'bg-neutral-500']
           : ['bg-neutral-800', 'bg-neutral-600', 'bg-neutral-400'],

@@ -337,6 +337,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
   // Trang hiện tại cho mục "TRUYỆN VỪA MỚI ĐĂNG" (hiển thị 3 truyện theo phong cách Polaroid)
   const [polaroidPage, setPolaroidPage] = useState(0);
+  const [isRealtimeUpdatesOpen, setIsRealtimeUpdatesOpen] = useState(true);
 
   const activeRecentReads = useMemo(() => recentReads.slice(0, 10), [recentReads]);
 
@@ -573,14 +574,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           novelTitle: 'text-zinc-900',
           chevronColor: 'text-zinc-400 group-hover:text-zinc-700',
           badge: 'bg-zinc-100 text-zinc-700 border-zinc-200',
-          navBtn: 'bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-250 shadow-xs',
+          navBtn: 'notebook-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#171717]',
           timeSubtext: 'text-zinc-500',
           timeIcon: 'text-zinc-400',
           progressTrack: 'bg-zinc-200/80',
           progressBar: 'bg-zinc-700',
           progressThumb: 'bg-zinc-900 border-white ring-2 ring-zinc-300/60',
           pctText: 'text-zinc-800 font-semibold',
-          continueBtn: 'text-zinc-800 hover:text-black font-semibold',
+          continueBtn: 'notebook-light-btn px-3 py-1.5 rounded-full text-xs font-semibold hover:!text-[#171717]',
           divider: 'border-zinc-200',
           coverBorder: 'border-zinc-250',
           coverBg: 'bg-zinc-100',
@@ -597,14 +598,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           novelTitle: 'text-slate-900',
           chevronColor: 'text-slate-400 group-hover:text-slate-600',
           badge: 'bg-slate-100/90 text-slate-700 border-slate-200',
-          navBtn: 'bg-white/90 hover:bg-slate-50 text-slate-700 border-slate-200 shadow-xs',
+          navBtn: 'frost-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#0284c7]',
           timeSubtext: 'text-slate-500',
           timeIcon: 'text-slate-400',
           progressTrack: 'bg-slate-200/80',
           progressBar: 'bg-[#64748b]',
           progressThumb: 'bg-[#475569] border-white ring-2 ring-slate-300/60',
           pctText: 'text-slate-800 font-semibold',
-          continueBtn: 'text-slate-700 hover:text-slate-950 font-semibold',
+          continueBtn: 'frost-light-btn px-3 py-1.5 rounded-full text-xs font-semibold hover:!text-[#0284c7]',
           divider: 'border-slate-200/80',
           coverBorder: 'border-slate-200/80',
           coverBg: 'bg-slate-100/70',
@@ -621,14 +622,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           novelTitle: 'text-stone-900',
           chevronColor: 'text-stone-400 group-hover:text-stone-600',
           badge: 'bg-stone-100/90 text-stone-700 border-stone-200',
-          navBtn: 'bg-white/90 hover:bg-stone-50 text-stone-700 border-stone-200 shadow-xs',
+          navBtn: 'sage-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#274225]',
           timeSubtext: 'text-stone-500',
           timeIcon: 'text-stone-400',
           progressTrack: 'bg-stone-200/80',
           progressBar: 'bg-[#6a7f6c]',
           progressThumb: 'bg-[#566858] border-white ring-2 ring-stone-300/60',
           pctText: 'text-stone-800 font-semibold',
-          continueBtn: 'text-stone-700 hover:text-stone-950 font-semibold',
+          continueBtn: 'sage-light-btn px-3 py-1.5 rounded-full text-xs font-semibold hover:!text-[#274225]',
           divider: 'border-stone-200/80',
           coverBorder: 'border-stone-200/80',
           coverBg: 'bg-stone-100/70',
@@ -645,14 +646,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           novelTitle: 'text-stone-900',
           chevronColor: 'text-stone-400 group-hover:text-stone-600',
           badge: 'bg-stone-100/90 text-stone-700 border-stone-200',
-          navBtn: 'bg-white/90 hover:bg-stone-50 text-stone-700 border-stone-200 shadow-xs',
+          navBtn: 'mocha-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#a37764]',
           timeSubtext: 'text-stone-500',
           timeIcon: 'text-stone-400',
           progressTrack: 'bg-stone-200/80',
           progressBar: 'bg-[#8a7567]',
           progressThumb: 'bg-[#736053] border-white ring-2 ring-stone-300/60',
           pctText: 'text-stone-800 font-semibold',
-          continueBtn: 'text-stone-700 hover:text-stone-950 font-semibold',
+          continueBtn: 'mocha-light-btn px-3 py-1.5 rounded-full text-xs font-semibold hover:!text-[#a37764]',
           divider: 'border-stone-200/80',
           coverBorder: 'border-stone-200/80',
           coverBg: 'bg-stone-100/70',
@@ -669,14 +670,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           novelTitle: 'text-slate-900',
           chevronColor: 'text-slate-400 group-hover:text-slate-600',
           badge: 'bg-slate-100/90 text-slate-700 border-slate-200',
-          navBtn: 'bg-white/90 hover:bg-slate-50 text-slate-700 border-slate-200 shadow-xs',
+          navBtn: 'amethyst-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#7e58a6]',
           timeSubtext: 'text-slate-500',
           timeIcon: 'text-slate-400',
           progressTrack: 'bg-slate-200/80',
           progressBar: 'bg-slate-600',
           progressThumb: 'bg-slate-700 border-white ring-2 ring-slate-300/60',
           pctText: 'text-slate-800 font-semibold',
-          continueBtn: 'text-slate-700 hover:text-slate-950 font-semibold',
+          continueBtn: 'amethyst-light-btn px-3 py-1.5 rounded-full text-xs font-semibold hover:!text-[#7e58a6]',
           divider: 'border-slate-200/80',
           coverBorder: 'border-slate-200/80',
           coverBg: 'bg-slate-100/70',
@@ -694,14 +695,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           novelTitle: 'text-[#21182e]',
           chevronColor: 'text-[#8e81a3] group-hover:text-[#6a5b8a]',
           badge: 'bg-[#f1edf7] text-[#605177] border-[#ded8ea]',
-          navBtn: 'bg-white/95 hover:bg-[#f7f4fb] text-[#3d324f] border-[#ded8ea] shadow-xs',
+          navBtn: 'amethyst-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#7e58a6]',
           timeSubtext: 'text-[#7d7291]',
           timeIcon: 'text-[#9d92b0]',
           progressTrack: 'bg-[#e6e0ef]',
           progressBar: 'bg-[#7e739f]',
           progressThumb: 'bg-[#655985] border-white ring-2 ring-purple-200/60',
           pctText: 'text-[#413656] font-semibold',
-          continueBtn: 'text-[#4e3f68] hover:text-[#2d243a] font-semibold',
+          continueBtn: 'amethyst-light-btn px-3 py-1.5 rounded-full text-xs font-semibold hover:!text-[#7e58a6]',
           divider: 'border-[#eae5f2]',
           coverBorder: 'border-[#ded8ea]',
           coverBg: 'bg-[#f5f1fa]',
@@ -1066,12 +1067,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       switch (th) {
         case 'slate-haze':
           return {
-            container: 'bg-[#f3f7fc] border border-[#d8dfe9] shadow-inner',
-            activePill: 'bg-[#87909d] border border-[#767f8c] shadow-xs',
-            activeText: 'text-white',
-            inactiveText: 'text-[#64748b] hover:text-[#101723]',
+            container: 'bg-[#eaf2f9] border border-[#cde0f3] shadow-inner',
+            activePill: 'bg-white border border-[#bfe0fa] shadow-sm',
+            activeText: 'text-[#0284c7]',
+            inactiveText: 'text-[#526982] hover:text-[#0284c7]',
             getActivePill: () => ({ gradient: '', glow: '' }),
-            getInactiveText: () => 'text-[#64748b] hover:text-[#101723]',
+            getInactiveText: () => 'text-[#526982] hover:text-[#0284c7]',
           };
         case 'sage':
           return {
@@ -1361,6 +1362,350 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       getActivePill,
       getInactiveText,
     };
+  };
+
+  // Helper styling for Khối Truyện Vừa Mới Đăng (Kiểu Neumorphism + Glassmorphism 2 đường viền đồng bộ cho tất cả themes)
+  const getRecentUpdatesCardStyles = (th: NovelThemeId, isDark: boolean) => {
+    if (!isDark) {
+      switch (th) {
+        case 'sage':
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 242, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(162, 198, 172, 0.92) 0%, rgba(182, 215, 192, 0.58) 7%, rgba(205, 230, 212, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(140, 180, 155, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 252, 248, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(180, 226, 196, 0.6) 0%, rgba(165, 214, 184, 0.5) 45%, rgba(150, 204, 172, 0.55) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(160, 200, 175, 0.15)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(243,251,246,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(205,236,216,0.6) 45%, rgba(158,206,174,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(150,190,165,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#3b6848]',
+            titleColor: 'text-[#223929]',
+            subtitleColor: 'text-[#74907d]',
+            chevronColor: 'text-[#556953]',
+            dividerClass: 'border-[#e3efe6]',
+            itemHoverClass: 'hover:bg-emerald-50/60',
+            itemTitleHoverClass: 'group-hover:text-emerald-700',
+            itemDateClass: 'text-emerald-600',
+          };
+        case 'mocha':
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(254, 247, 240, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(215, 185, 165, 0.92) 0%, rgba(230, 205, 188, 0.58) 7%, rgba(242, 225, 212, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(195, 160, 135, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 251, 247, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(240, 208, 185, 0.6) 0%, rgba(232, 195, 170, 0.5) 45%, rgba(224, 182, 155, 0.55) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(210, 175, 150, 0.15)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,248,242,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(245,220,200,0.6) 45%, rgba(220,185,160,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(190,155,130,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#8c5e47]',
+            titleColor: 'text-[#3d271e]',
+            subtitleColor: 'text-[#9d7d6f]',
+            chevronColor: 'text-[#7d675e]',
+            dividerClass: 'border-[#f2e4dc]',
+            itemHoverClass: 'hover:bg-amber-50/60',
+            itemTitleHoverClass: 'group-hover:text-amber-700',
+            itemDateClass: 'text-amber-600',
+          };
+        case 'amethyst-haze':
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 245, 253, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(200, 185, 220, 0.92) 0%, rgba(215, 202, 232, 0.58) 7%, rgba(232, 222, 245, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(180, 160, 205, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(252, 250, 255, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(225, 205, 245, 0.6) 0%, rgba(215, 192, 238, 0.5) 45%, rgba(205, 180, 232, 0.55) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(195, 175, 218, 0.15)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,246,255,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(235,220,250,0.6) 45%, rgba(205,185,230,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(175,150,205,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#6b5887]',
+            titleColor: 'text-[#322345]',
+            subtitleColor: 'text-[#9382ab]',
+            chevronColor: 'text-[#6b5e7d]',
+            dividerClass: 'border-[#ede5f7]',
+            itemHoverClass: 'hover:bg-purple-50/60',
+            itemTitleHoverClass: 'group-hover:text-purple-700',
+            itemDateClass: 'text-purple-600',
+          };
+        case 'cosmic':
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(246, 247, 255, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(190, 195, 230, 0.92) 0%, rgba(205, 210, 240, 0.58) 7%, rgba(225, 230, 248, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(170, 175, 220, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 251, 255, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(210, 218, 252, 0.6) 0%, rgba(198, 208, 248, 0.5) 45%, rgba(188, 198, 245, 0.55) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(185, 192, 230, 0.15)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(247,248,255,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(220,228,255,0.6) 45%, rgba(190,200,245,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(165,175,220,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#5b589e]',
+            titleColor: 'text-[#282548]',
+            subtitleColor: 'text-[#8a87b5]',
+            chevronColor: 'text-[#65538e]',
+            dividerClass: 'border-[#e8eaf7]',
+            itemHoverClass: 'hover:bg-indigo-50/60',
+            itemTitleHoverClass: 'group-hover:text-indigo-700',
+            itemDateClass: 'text-indigo-600',
+          };
+        case 'notebook':
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 248, 242, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(210, 205, 192, 0.92) 0%, rgba(225, 220, 208, 0.58) 7%, rgba(238, 235, 225, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(185, 180, 168, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(253, 251, 246, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(232, 226, 210, 0.6) 0%, rgba(222, 215, 198, 0.5) 45%, rgba(212, 204, 186, 0.55) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(200, 192, 175, 0.15)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,247,240,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(235,230,218,0.6) 45%, rgba(210,202,185,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(180,172,158,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#6e6858]',
+            titleColor: 'text-[#38342a]',
+            subtitleColor: 'text-[#918a78]',
+            chevronColor: 'text-[#68614e]',
+            dividerClass: 'border-[#ebe6d8]',
+            itemHoverClass: 'hover:bg-amber-50/40',
+            itemTitleHoverClass: 'group-hover:text-[#524d3e]',
+            itemDateClass: 'text-[#78716c]',
+          };
+        case 'slate-haze':
+        default:
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(238, 246, 255, 0.75) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(155, 180, 208, 0.92) 0%, rgba(175, 200, 224, 0.58) 7%, rgba(195, 218, 238, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(160, 185, 215, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 252, 255, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(195, 225, 252, 0.6) 0%, rgba(182, 216, 248, 0.5) 45%, rgba(172, 210, 246, 0.55) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(180, 204, 228, 0.12)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(246,250,255,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(225,238,250,0.6) 45%, rgba(175,198,222,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(165,188,212,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#526982]',
+            titleColor: 'text-[#2b3a4a]',
+            subtitleColor: 'text-[#8798ac]',
+            chevronColor: 'text-slate-500',
+            dividerClass: 'border-[#e5eff8]',
+            itemHoverClass: 'hover:bg-sky-50/60',
+            itemTitleHoverClass: 'group-hover:text-sky-600',
+            itemDateClass: 'text-sky-600',
+          };
+      }
+    }
+
+    // Theme tối (isDark === true): Áp dụng chuẩn Glassmorphism đồng bộ với thẻ truyện trong Tiểu thuyết đã hoàn
+    switch (th) {
+      case 'sage':
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(20, 35, 24, 0.50) 45%, rgba(12, 21, 16, 0.65) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+          },
+          iconColor: 'text-[#8cb391]',
+          titleColor: 'text-[#e5f0e7]',
+          subtitleColor: 'text-[#8cb391]',
+          chevronColor: 'text-[#8cb391]',
+          dividerClass: 'border-white/10',
+          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          itemTitleHoverClass: 'group-hover:text-[#8cb391]',
+          itemDateClass: 'text-[#8cb391]',
+        };
+      case 'mocha':
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(35, 24, 18, 0.50) 45%, rgba(21, 16, 12, 0.65) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+          },
+          iconColor: 'text-[#c49f8f]',
+          titleColor: 'text-[#f5ece6]',
+          subtitleColor: 'text-[#c49f8f]',
+          chevronColor: 'text-[#c49f8f]',
+          dividerClass: 'border-white/10',
+          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          itemTitleHoverClass: 'group-hover:text-[#c49f8f]',
+          itemDateClass: 'text-[#c49f8f]',
+        };
+      case 'amethyst-haze':
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(25, 18, 42, 0.50) 45%, rgba(17, 10, 28, 0.65) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.18)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+          },
+          iconColor: 'text-purple-300',
+          titleColor: 'text-purple-100',
+          subtitleColor: 'text-purple-300',
+          chevronColor: 'text-purple-300',
+          dividerClass: 'border-white/10',
+          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          itemTitleHoverClass: 'group-hover:text-purple-300',
+          itemDateClass: 'text-purple-300',
+        };
+      case 'cosmic':
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(19, 17, 53, 0.50) 45%, rgba(10, 12, 36, 0.65) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+          },
+          iconColor: 'text-pink-400',
+          titleColor: 'text-purple-100',
+          subtitleColor: 'text-pink-300',
+          chevronColor: 'text-pink-300',
+          dividerClass: 'border-white/10',
+          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          itemTitleHoverClass: 'group-hover:text-pink-300',
+          itemDateClass: 'text-pink-400',
+        };
+      case 'notebook':
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(28, 24, 21, 0.50) 45%, rgba(16, 14, 12, 0.65) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+          },
+          iconColor: 'text-zinc-300',
+          titleColor: 'text-zinc-100',
+          subtitleColor: 'text-zinc-400',
+          chevronColor: 'text-zinc-400',
+          dividerClass: 'border-white/10',
+          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          itemTitleHoverClass: 'group-hover:text-zinc-100',
+          itemDateClass: 'text-zinc-400',
+        };
+      case 'slate-haze':
+      default:
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(20, 30, 42, 0.50) 45%, rgba(11, 17, 24, 0.65) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.25)',
+          },
+          iconColor: 'text-[#8bb0cf]',
+          titleColor: 'text-[#edf4fa]',
+          subtitleColor: 'text-[#8bb0cf]',
+          chevronColor: 'text-[#8bb0cf]',
+          dividerClass: 'border-white/10',
+          itemHoverClass: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
+          itemTitleHoverClass: 'group-hover:text-[#8bb0cf]',
+          itemDateClass: 'text-[#8bb0cf]',
+        };
+    }
   };
 
   // Helper styling for Theme-Appropriate Pastel & Dot-Grid (Áp dụng cho Hero & Mục Polaroid theo ảnh mẫu)
@@ -2092,130 +2437,130 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       switch (theme) {
         case 'sage':
           return {
-            outer: 'border-[#2d4432]/80 bg-[#111c14]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
-            inner: 'bg-[#131d15]/60 backdrop-blur-md border-[#2d4432]/60 shadow-md',
-            divider: 'border-[#2d4432]',
-            dashedDivider: 'border-[#2d4432]',
-            cutout: 'bg-[#111c14]/80 backdrop-blur-md border border-[#2d4432] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
-            kicker: 'text-[#8cb391]/80',
+            outer: 'border-0 bg-gradient-to-br from-[#142318] via-[#0f1b13] to-[#0a130d] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+            inner: 'border-0 bg-white/[0.02] shadow-inner',
+            divider: 'border-0',
+            dashedDivider: 'border-0 opacity-0',
+            cutout: 'bg-[#0f1b13] border-0',
+            kicker: 'text-[#8cb391]',
             title: 'text-[#eaf2eb] hover:text-[#a3d4a9]',
             meta: 'text-[#9db6a1]',
             author: 'text-[#eaf2eb]',
             synopsis: 'text-[#b8cebc]',
-            btnPrimary: 'bg-gradient-to-r from-[#2a362e] via-[#334238] to-[#3c4e43] hover:from-[#334238] hover:to-[#485d50] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
-            btnSecondary: 'border-[#2d4432] bg-[#162218]/80 hover:bg-[#1f3022] text-[#cee0d1]',
-            dotActive: 'bg-[#8cb391] ring-1 ring-[#8cb391]/50 shadow-xs',
-            dotInactive: 'bg-[#233527]',
-            barcode: 'bg-[#3f5f46]',
-            coverBorder: 'border-[#2d4432] bg-[#1a271c]',
-            borderHeroLine: 'border-[#2d4432]',
-            fullBadge: 'bg-[#334238] text-white border border-white/15',
+            btnPrimary: 'border-0 bg-gradient-to-r from-[#2d4432] via-[#39563f] to-[#46694e] hover:from-[#344f3a] hover:to-[#507859] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border-0 bg-white/[0.08] hover:bg-white/[0.16] text-[#cee0d1] shadow-xs',
+            dotActive: 'bg-[#8cb391] shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#46694e]',
+            coverBorder: 'border-0 bg-[#0d1710]',
+            borderHeroLine: 'border-0',
+            fullBadge: 'border-0 bg-emerald-500/25 text-emerald-200 font-black',
           };
         case 'mocha':
           return {
-            outer: 'border-[#543b2f]/80 bg-[#1b1511]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
-            inner: 'bg-[#191410]/60 backdrop-blur-md border-[#543b2f]/60 shadow-md',
-            divider: 'border-[#543b2f]',
-            dashedDivider: 'border-[#543b2f]',
-            cutout: 'bg-[#1b1511]/80 backdrop-blur-md border border-[#543b2f] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
-            kicker: 'text-[#d4a38c]/80',
+            outer: 'border-0 bg-gradient-to-br from-[#241913] via-[#1a120e] to-[#120b08] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+            inner: 'border-0 bg-white/[0.02] shadow-inner',
+            divider: 'border-0',
+            dashedDivider: 'border-0 opacity-0',
+            cutout: 'bg-[#1a120e] border-0',
+            kicker: 'text-[#d4a38c]',
             title: 'text-[#f5ece6] hover:text-[#e8b9a2]',
             meta: 'text-[#c2b0a2]',
             author: 'text-[#f5ece6]',
             synopsis: 'text-[#d6c7bc]',
-            btnPrimary: 'bg-gradient-to-r from-[#362923] via-[#42332c] to-[#4f3e35] hover:from-[#42332c] hover:to-[#5c493f] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
-            btnSecondary: 'border-[#543b2f] bg-[#221a15]/80 hover:bg-[#2e231c] text-[#e0d3c9]',
-            dotActive: 'bg-[#d4a38c] ring-1 ring-[#d4a38c]/50 shadow-xs',
-            dotInactive: 'bg-[#38261e]',
-            barcode: 'bg-[#735241]',
-            coverBorder: 'border-[#543b2f] bg-[#221914]',
-            borderHeroLine: 'border-[#543b2f]',
-            fullBadge: 'bg-[#42332c] text-white border border-white/15',
+            btnPrimary: 'border-0 bg-gradient-to-r from-[#4d362b] via-[#5c4134] to-[#6d4d3d] hover:from-[#573d31] hover:to-[#7a5745] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border-0 bg-white/[0.08] hover:bg-white/[0.16] text-[#e0d3c9] shadow-xs',
+            dotActive: 'bg-[#d4a38c] shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#825c48]',
+            coverBorder: 'border-0 bg-[#17100b]',
+            borderHeroLine: 'border-0',
+            fullBadge: 'border-0 bg-amber-500/25 text-amber-200 font-black',
           };
         case 'slate-haze':
           return {
-            outer: 'border-[#334b63]/80 bg-[#0f1724]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
-            inner: 'bg-[#121c2c]/60 backdrop-blur-md border-[#334b63]/60 shadow-md',
-            divider: 'border-[#334b63]',
-            dashedDivider: 'border-[#334b63]',
-            cutout: 'bg-[#0f1724]/80 backdrop-blur-md border border-[#334b63] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
-            kicker: 'text-[#8ba0b5]/80',
+            outer: 'border-0 bg-gradient-to-br from-[#142132] via-[#0d1624] to-[#080e18] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+            inner: 'border-0 bg-white/[0.02] shadow-inner',
+            divider: 'border-0',
+            dashedDivider: 'border-0 opacity-0',
+            cutout: 'bg-[#0d1624] border-0',
+            kicker: 'text-[#8ba0b5]',
             title: 'text-[#edf4fa] hover:text-[#b4d2ed]',
             meta: 'text-[#8ba0b5]',
             author: 'text-[#edf4fa]',
             synopsis: 'text-[#b9cddf]',
-            btnPrimary: 'bg-gradient-to-r from-[#26313e] via-[#2e3b4b] to-[#374659] hover:from-[#2e3b4b] hover:to-[#43556c] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
-            btnSecondary: 'border-[#334b63] bg-[#162334]/80 hover:bg-[#1e2f46] text-[#cee0d1]',
-            dotActive: 'bg-[#7bb0e0] ring-1 ring-[#7bb0e0]/50 shadow-xs',
-            dotInactive: 'bg-[#1c2c3e]',
-            barcode: 'bg-[#486380]',
-            coverBorder: 'border-[#334b63] bg-[#131e2e]',
-            borderHeroLine: 'border-[#334b63]',
-            fullBadge: 'bg-[#2e3b4b] text-white border border-white/15',
+            btnPrimary: 'border-0 bg-gradient-to-r from-[#2c435c] via-[#355170] to-[#406287] hover:from-[#324d69] hover:to-[#4a729c] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border-0 bg-white/[0.08] hover:bg-white/[0.16] text-[#cee0d1] shadow-xs',
+            dotActive: 'bg-[#7bb0e0] shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#406287]',
+            coverBorder: 'border-0 bg-[#0d1624]',
+            borderHeroLine: 'border-0',
+            fullBadge: 'border-0 bg-sky-500/25 text-sky-200 font-black',
           };
         case 'notebook':
           return {
-            outer: 'border-stone-700/80 bg-stone-900/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
-            inner: 'bg-[#181a20]/60 backdrop-blur-md border-stone-800/80 shadow-md',
-            divider: 'border-stone-700',
-            dashedDivider: 'border-stone-700',
-            cutout: 'bg-stone-900/80 backdrop-blur-md border border-stone-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
-            kicker: 'text-neutral-500',
-            title: 'text-neutral-100 hover:text-rose-400',
+            outer: 'border-0 bg-gradient-to-br from-[#222226] via-[#18181c] to-[#101013] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+            inner: 'border-0 bg-white/[0.02] shadow-inner',
+            divider: 'border-0',
+            dashedDivider: 'border-0 opacity-0',
+            cutout: 'bg-[#18181c] border-0',
+            kicker: 'text-neutral-400',
+            title: 'text-neutral-100 hover:text-white',
             meta: 'text-neutral-400',
             author: 'text-neutral-200',
             synopsis: 'text-neutral-300',
-            btnPrimary: 'bg-gradient-to-r from-[#2b2b30] via-[#35353b] to-[#404047] hover:from-[#35353b] hover:to-[#4d4d57] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
-            btnSecondary: 'border-stone-700 bg-stone-800/80 hover:bg-stone-800 text-stone-200',
-            dotActive: 'bg-neutral-200 ring-1 ring-white/40 shadow-xs',
-            dotInactive: 'bg-neutral-700',
-            barcode: 'bg-stone-600',
-            coverBorder: 'border-stone-700 bg-stone-800',
-            borderHeroLine: 'border-stone-700',
-            fullBadge: 'bg-[#35353b] text-white border border-white/15',
+            btnPrimary: 'border-0 bg-gradient-to-r from-[#38383f] via-[#44444c] to-[#52525c] hover:from-[#404047] hover:to-[#5e5e69] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border-0 bg-white/[0.08] hover:bg-white/[0.16] text-stone-200 shadow-xs',
+            dotActive: 'bg-neutral-200 shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#52525c]',
+            coverBorder: 'border-0 bg-[#161619]',
+            borderHeroLine: 'border-0',
+            fullBadge: 'border-0 bg-zinc-600/40 text-zinc-200 font-black',
           };
         case 'cosmic':
           return {
-            outer: 'border-[#5c3a8a]/80 bg-[#120a24]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
-            inner: 'bg-[#180e30]/60 backdrop-blur-md border-[#5c3a8a]/60 shadow-md',
-            divider: 'border-[#5c3a8a]',
-            dashedDivider: 'border-[#5c3a8a]',
-            cutout: 'bg-[#120a24]/80 backdrop-blur-md border border-[#5c3a8a] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
-            kicker: 'text-indigo-300/80',
+            outer: 'border-0 bg-gradient-to-br from-[#1d1648] via-[#120d30] to-[#09061c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+            inner: 'border-0 bg-white/[0.02] shadow-inner',
+            divider: 'border-0',
+            dashedDivider: 'border-0 opacity-0',
+            cutout: 'bg-[#120d30] border-0',
+            kicker: 'text-indigo-300',
             title: 'text-neutral-100 hover:text-indigo-300',
-            meta: 'text-indigo-300/70',
+            meta: 'text-indigo-300',
             author: 'text-neutral-100',
-            synopsis: 'text-indigo-200/80',
-            btnPrimary: 'bg-gradient-to-r from-[#392257] via-[#482b6e] to-[#593687] hover:from-[#482b6e] hover:to-[#653d99] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
-            btnSecondary: 'border-[#5c3a8a] bg-[#1d1238]/80 hover:bg-[#27184b] text-indigo-200',
-            dotActive: 'bg-[#a78bfa] ring-1 ring-[#a78bfa]/50 shadow-xs',
-            dotInactive: 'bg-[#291748]',
-            barcode: 'bg-[#7a4eb8]',
-            coverBorder: 'border-[#5c3a8a] bg-[#1a0f33]',
-            borderHeroLine: 'border-[#5c3a8a]',
-            fullBadge: 'bg-[#482b6e] text-white border border-white/15',
+            synopsis: 'text-indigo-200/90',
+            btnPrimary: 'border-0 bg-gradient-to-r from-[#4d2d78] via-[#5e3793] to-[#7142b0] hover:from-[#573387] hover:to-[#7f4bc7] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border-0 bg-white/[0.08] hover:bg-white/[0.16] text-indigo-200 shadow-xs',
+            dotActive: 'bg-[#a78bfa] shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#7142b0]',
+            coverBorder: 'border-0 bg-[#120d30]',
+            borderHeroLine: 'border-0',
+            fullBadge: 'border-0 bg-indigo-500/25 text-indigo-200 font-black',
           };
         case 'amethyst-haze':
         default:
           return {
-            outer: 'border-[#4c356e]/80 bg-[#181224]/55 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10',
-            inner: 'bg-[#1a1427]/60 backdrop-blur-md border-[#4c356e]/60 shadow-md',
-            divider: 'border-[#4c356e]',
-            dashedDivider: 'border-[#4c356e]',
-            cutout: 'bg-[#181224]/80 backdrop-blur-md border border-[#4c356e] shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
-            kicker: 'text-neutral-400',
-            title: 'text-neutral-100 hover:text-purple-400',
-            meta: 'text-neutral-400',
+            outer: 'border-0 bg-gradient-to-br from-[#1d1330] via-[#140b22] to-[#0c0615] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+            inner: 'border-0 bg-white/[0.02] shadow-inner',
+            divider: 'border-0',
+            dashedDivider: 'border-0 opacity-0',
+            cutout: 'bg-[#140b22] border-0',
+            kicker: 'text-purple-300',
+            title: 'text-neutral-100 hover:text-purple-300',
+            meta: 'text-purple-300',
             author: 'text-neutral-100',
-            synopsis: 'text-neutral-300',
-            btnPrimary: 'bg-gradient-to-r from-[#32253f] via-[#3d2e4d] to-[#49385c] hover:from-[#3d2e4d] hover:to-[#55426b] ring-1 ring-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.35)] text-white font-bold',
-            btnSecondary: 'border-stone-700 bg-stone-800/80 hover:bg-stone-800 text-stone-200',
-            dotActive: 'bg-[#a78bfa] ring-1 ring-[#a78bfa]/50 shadow-xs',
-            dotInactive: 'bg-stone-800',
-            barcode: 'bg-[#6b4c9a]',
-            coverBorder: 'border-[#4c356e] bg-[#1f172e]',
-            borderHeroLine: 'border-[#4c356e]',
-            fullBadge: 'bg-[#3d2e4d] text-white border border-white/15',
+            synopsis: 'text-purple-200/90',
+            btnPrimary: 'border-0 bg-gradient-to-r from-[#452d5e] via-[#533671] to-[#634187] hover:from-[#4c3167] hover:to-[#704998] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border-0 bg-white/[0.08] hover:bg-white/[0.16] text-purple-200 shadow-xs',
+            dotActive: 'bg-[#a78bfa] shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#634187]',
+            coverBorder: 'border-0 bg-[#140b22]',
+            borderHeroLine: 'border-0',
+            fullBadge: 'border-0 bg-purple-500/25 text-purple-200 font-black',
           };
       }
     }
@@ -2224,7 +2569,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     switch (theme) {
       case 'sage':
         return {
-          outer: 'border-[#cad8c6] bg-[#f4f8f2]/90 shadow-lg',
+          outer: 'border-[#c8d8c6] bg-[#f0f4ef]/90 shadow-lg',
           inner: 'bg-white border-[#dce6d9] shadow-md',
           divider: 'border-stone-200',
           dashedDivider: 'border-stone-300',
@@ -2234,14 +2579,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           meta: 'text-[#4d664a]',
           author: 'text-[#1c291e]',
           synopsis: 'text-[#394a3b]',
-          btnPrimary: 'bg-[#466244] hover:bg-[#384937] border border-[#384937] text-white shadow-xs',
-          btnSecondary: 'border-[#cad8c6] bg-[#f4f8f2] hover:bg-[#eaf1e8] text-[#2c3d2e]',
+          btnPrimary: 'sage-light-btn font-bold !text-[#466244] hover:!text-[#274225]',
+          btnSecondary: 'sage-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
           dotActive: 'bg-[#466244] ring-1 ring-[#466244]/30 shadow-xs',
           dotInactive: 'bg-[#cad8c6]',
           barcode: 'bg-neutral-800',
           coverBorder: 'border-black/10 bg-white',
           borderHeroLine: 'border-stone-200/80',
-          fullBadge: 'bg-[#466244] text-white',
+          fullBadge: 'sage-light-novel-tag font-bold',
         };
       case 'mocha':
         return {
@@ -2255,14 +2600,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           meta: 'text-[#8c7a6e]',
           author: 'text-[#3a2a2a]',
           synopsis: 'text-[#614b43]',
-          btnPrimary: 'bg-[#A37764] hover:bg-[#8c5f4d] border border-[#8c5f4d] text-white shadow-xs',
-          btnSecondary: 'border-[#e4d9bc] bg-[#f8f4ee] hover:bg-[#ede5da] text-[#3a2a2a]',
+          btnPrimary: 'mocha-light-btn font-bold !text-[#7a6256] hover:!text-[#a37764]',
+          btnSecondary: 'mocha-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
           dotActive: 'bg-[#A37764] ring-1 ring-[#A37764]/30 shadow-xs',
           dotInactive: 'bg-[#e4d9bc]',
           barcode: 'bg-neutral-800',
           coverBorder: 'border-black/10 bg-white',
           borderHeroLine: 'border-stone-200/80',
-          fullBadge: 'bg-[#A37764] text-white',
+          fullBadge: 'mocha-light-novel-tag font-bold',
         };
       case 'slate-haze':
         return {
@@ -2276,14 +2621,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           meta: 'text-[#58738e]',
           author: 'text-[#192635]',
           synopsis: 'text-[#38516b]',
-          btnPrimary: 'bg-[#87909d] hover:bg-[#767f8c] border border-[#767f8c] text-white shadow-xs',
-          btnSecondary: 'border-[#c8d6e5] bg-[#f2f6fa] hover:bg-[#e4edf5] text-[#192635]',
-          dotActive: 'bg-[#87909d] ring-1 ring-[#87909d]/30 shadow-xs',
+          btnPrimary: 'frost-light-btn font-bold !text-[#526982] hover:!text-[#0284c7]',
+          btnSecondary: 'frost-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
+          dotActive: 'bg-[#0284c7] ring-1 ring-[#0284c7]/30 shadow-xs',
           dotInactive: 'bg-[#c8d6e5]',
           barcode: 'bg-neutral-800',
           coverBorder: 'border-black/10 bg-white',
           borderHeroLine: 'border-stone-200/80',
-          fullBadge: 'bg-[#87909d] text-white',
+          fullBadge: 'frost-light-novel-tag font-bold',
         };
       case 'notebook':
         return {
@@ -2297,14 +2642,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           meta: 'text-neutral-500',
           author: 'text-neutral-800',
           synopsis: 'text-neutral-600',
-          btnPrimary: 'bg-[#262626] hover:bg-[#171717] border border-[#171717] text-white shadow-xs',
-          btnSecondary: 'border-stone-300 bg-stone-50 hover:bg-stone-100 text-stone-700',
+          btnPrimary: 'notebook-light-btn font-bold !text-[#525252] hover:!text-[#171717]',
+          btnSecondary: 'notebook-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
           dotActive: 'bg-[#262626] ring-1 ring-black/20 shadow-xs',
           dotInactive: 'bg-neutral-300',
           barcode: 'bg-neutral-800',
           coverBorder: 'border-black/10 bg-white',
           borderHeroLine: 'border-stone-200/80',
-          fullBadge: 'bg-[#262626] text-white',
+          fullBadge: 'notebook-light-novel-tag font-bold',
         };
       case 'amethyst-haze':
       default:
@@ -2319,14 +2664,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           meta: 'text-neutral-600 dark:text-neutral-400',
           author: 'text-stone-900 dark:text-stone-100 font-semibold',
           synopsis: 'text-stone-700 dark:text-stone-300',
-          btnPrimary: 'bg-[#6b5f82] hover:bg-[#594d70] border border-[#594d70] text-white shadow-xs',
-          btnSecondary: 'border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-200',
+          btnPrimary: 'amethyst-light-btn font-bold !text-[#6b5887] hover:!text-[#7e58a6]',
+          btnSecondary: 'amethyst-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
           dotActive: 'bg-[#6b5f82] ring-1 ring-[#6b5f82]/30 shadow-xs',
           dotInactive: 'bg-stone-300 dark:bg-stone-700',
           barcode: 'bg-neutral-800',
           coverBorder: 'border-black/10 bg-white',
           borderHeroLine: 'border-stone-200/80',
-          fullBadge: 'bg-[#6b5f82] text-white',
+          fullBadge: 'amethyst-light-novel-tag font-bold',
         };
     }
   }, [theme, isDarkEffective]);
@@ -2352,16 +2697,121 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
     switch (th) {
       case 'slate-haze':
-        return 'bg-[#f3f7fc] text-[#3e566d] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+        return 'frost-light-btn hover:!text-[#0284c7]';
       case 'sage':
-        return 'bg-[#f0f4ef] text-[#3f573d] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+        return 'sage-light-btn hover:!text-[#274225]';
       case 'mocha':
-        return 'bg-[#f7f3ed] text-[#6d4d3c] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+        return 'mocha-light-btn hover:!text-[#a37764]';
       case 'notebook':
-        return 'bg-[#f5f5f5] text-[#2c2c2c] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+        return 'notebook-light-btn hover:!text-[#171717]';
       case 'amethyst-haze':
       default:
-        return 'bg-[#f7f5fb] text-[#4d3d63] border border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+        return 'amethyst-light-btn hover:!text-[#7e58a6]';
+    }
+  };
+
+  // Kiểu nút Neumorphism + Glassmorphism cho chế độ sáng theo phong cách theme Frost áp dụng cho tất cả các theme
+  const getLightModeNeumorphicBtnStyles = (th: NovelThemeId) => {
+    switch (th) {
+      case 'slate-haze':
+        return {
+          btn: 'frost-light-btn',
+          text: 'text-[#526982] hover:text-[#0284c7]',
+          expand: 'frost-light-btn !text-[#526982] hover:!text-[#0284c7]',
+        };
+      case 'sage':
+        return {
+          btn: 'sage-light-btn',
+          text: 'text-[#466244] hover:text-[#274225]',
+          expand: 'sage-light-btn !text-[#466244] hover:!text-[#274225]',
+        };
+      case 'mocha':
+        return {
+          btn: 'mocha-light-btn',
+          text: 'text-[#7a6256] hover:text-[#a37764]',
+          expand: 'mocha-light-btn !text-[#7a6256] hover:!text-[#a37764]',
+        };
+      case 'notebook':
+        return {
+          btn: 'notebook-light-btn',
+          text: 'text-[#525252] hover:text-[#171717]',
+          expand: 'notebook-light-btn !text-[#525252] hover:!text-[#171717]',
+        };
+      case 'amethyst-haze':
+      case 'cosmic':
+      default:
+        return {
+          btn: 'amethyst-light-btn',
+          text: 'text-[#6b5887] hover:text-[#7e58a6]',
+          expand: 'amethyst-light-btn !text-[#6b5887] hover:!text-[#7e58a6]',
+        };
+    }
+  };
+
+  // Cấu hình đổ màu khối mềm mại không viền (Filled Block) cho chế độ tối
+  const getDarkModeFilledBlockStyles = (th: NovelThemeId) => {
+    switch (th) {
+      case 'sage':
+        return {
+          cardBg: 'bg-gradient-to-br from-[#142318] via-[#0f1b13] to-[#0a130d] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-emerald-500/20 text-emerald-300',
+          badgeBg: 'bg-emerald-500/20 text-emerald-300',
+          title: 'text-[#eaf2eb] group-hover:text-emerald-300',
+          subtitle: 'text-emerald-400',
+          chevron: 'text-emerald-300 bg-white/[0.05] hover:bg-white/[0.1]',
+        };
+      case 'mocha':
+        return {
+          cardBg: 'bg-gradient-to-br from-[#241913] via-[#1a120e] to-[#120b08] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-amber-500/20 text-amber-300',
+          badgeBg: 'bg-amber-500/20 text-amber-300',
+          title: 'text-[#f5ece6] group-hover:text-amber-300',
+          subtitle: 'text-amber-400',
+          chevron: 'text-amber-300 bg-white/[0.05] hover:bg-white/[0.1]',
+        };
+      case 'amethyst-haze':
+        return {
+          cardBg: 'bg-gradient-to-br from-[#1d1330] via-[#140b22] to-[#0c0615] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-purple-500/20 text-purple-300',
+          badgeBg: 'bg-purple-500/20 text-purple-300',
+          title: 'text-purple-100 group-hover:text-purple-300',
+          subtitle: 'text-purple-300',
+          chevron: 'text-purple-300 bg-white/[0.05] hover:bg-white/[0.1]',
+        };
+      case 'cosmic':
+        return {
+          cardBg: 'bg-gradient-to-br from-[#1d1648] via-[#120d30] to-[#09061c] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-indigo-500/20 text-indigo-300',
+          badgeBg: 'bg-indigo-500/20 text-indigo-300',
+          title: 'text-purple-100 group-hover:text-indigo-300',
+          subtitle: 'text-pink-400',
+          chevron: 'text-indigo-300 bg-white/[0.05] hover:bg-white/[0.1]',
+        };
+      case 'notebook':
+        return {
+          cardBg: 'bg-gradient-to-br from-[#222226] via-[#18181c] to-[#101013] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-zinc-700/60 text-zinc-200',
+          badgeBg: 'bg-zinc-700/50 text-zinc-200',
+          title: 'text-zinc-100 group-hover:text-white',
+          subtitle: 'text-zinc-400',
+          chevron: 'text-zinc-300 bg-white/[0.05] hover:bg-white/[0.1]',
+        };
+      case 'slate-haze':
+      default:
+        return {
+          cardBg: 'bg-gradient-to-br from-[#142132] via-[#0d1624] to-[#080e18] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-sky-500/20 text-sky-300',
+          badgeBg: 'bg-sky-500/20 text-sky-300',
+          title: 'text-[#edf4fa] group-hover:text-sky-300',
+          subtitle: 'text-sky-400',
+          chevron: 'text-sky-300 bg-white/[0.05] hover:bg-white/[0.1]',
+        };
     }
   };
 
@@ -2879,46 +3329,54 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               />
 
               {/* Nút Khám phá giới thiệu về trang web */}
-              <button
-                id="btn-intro-about-website"
-                onClick={() => {
-                  if (onOpenLightIntro) {
-                    onOpenLightIntro();
-                  } else {
-                    onBackToPortfolio();
-                  }
-                }}
-                className={`relative z-10 ${
-                  isDarkEffective ? 'p-0 border-0' : 'p-[1px]'
-                } rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer select-none ${
-                  isDarkEffective ? 'bg-transparent shadow-none' : `${introButtonStyles.borderGradient} ${introButtonStyles.borderShadow}`
-                }`}
-                title="Khám phá giới thiệu về trang web và hồ sơ tác giả sáng lập"
-              >
-                <span
-                  className={`relative flex items-center gap-2.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide overflow-hidden ${introButtonStyles.textColor} ${introButtonStyles.innerShadow} ${
-                    isDarkEffective ? `${introButtonStyles.btnGradient} ${introButtonStyles.btnGlow}` : ''
-                  }`}
-                  style={!isDarkEffective ? {
-                    backgroundColor: introButtonStyles.btnBg,
-                  } : undefined}
-                >
-                  <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
-                    <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
-                  </span>
-
-                  <span className="relative flex h-2.5 w-2.5 shrink-0 z-30">
+              {(() => {
+                const lightBtn = getLightModeNeumorphicBtnStyles(theme);
+                return (
+                  <button
+                    id="btn-intro-about-website"
+                    onClick={() => {
+                      if (onOpenLightIntro) {
+                        onOpenLightIntro();
+                      } else {
+                        onBackToPortfolio();
+                      }
+                    }}
+                    className={`relative z-10 ${
+                      !isDarkEffective
+                        ? lightBtn.btn
+                        : 'p-0 border-0 bg-transparent shadow-none'
+                    } rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer select-none`}
+                    title="Khám phá giới thiệu về trang web và hồ sơ tác giả sáng lập"
+                  >
                     <span
-                      className={`animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-75 ${introButtonStyles.dotPing}`}
-                    />
-                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-xs ${introButtonStyles.dotColor}`} />
-                  </span>
+                      className={`relative flex items-center gap-2.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide overflow-hidden ${
+                        !isDarkEffective
+                          ? lightBtn.text
+                          : introButtonStyles.textColor
+                      } ${
+                        !isDarkEffective ? '' : introButtonStyles.innerShadow
+                      } ${
+                        isDarkEffective ? `${introButtonStyles.btnGradient} ${introButtonStyles.btnGlow}` : ''
+                      }`}
+                    >
+                      <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
+                        <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
+                      </span>
 
-                  <span className="relative z-30 font-bold tracking-wider uppercase">
-                    GIỚI THIỆU VỀ TRANG WEB
-                  </span>
-                </span>
-              </button>
+                      <span className="relative flex h-2.5 w-2.5 shrink-0 z-30">
+                        <span
+                          className={`animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-75 ${introButtonStyles.dotPing}`}
+                        />
+                        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-xs ${introButtonStyles.dotColor}`} />
+                      </span>
+
+                      <span className="relative z-30 font-bold tracking-wider uppercase">
+                        GIỚI THIỆU VỀ TRANG WEB
+                      </span>
+                    </span>
+                  </button>
+                );
+              })()}
             </div>
           </div>
 
@@ -3327,13 +3785,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <motion.button
                         key={tab.id}
                         id={`btn-tab-${tab.id}`}
-                        whileHover={isDarkEffective ? { scale: 1.04 } : undefined}
-                        whileTap={isDarkEffective ? { scale: 0.94 } : undefined}
+                        whileHover={isDarkEffective ? { scale: 1.04 } : { scale: 1.02 }}
+                        whileTap={{ scale: 0.96 }}
                         transition={{ type: 'spring', stiffness: 450, damping: 26 }}
                         onClick={() => {
                           setSelectedCategory(tab.id);
                         }}
-                        className={`relative px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors duration-200 cursor-pointer whitespace-nowrap rounded-full select-none ${
+                        className={`relative px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-200 cursor-pointer whitespace-nowrap rounded-full select-none ${
                           isActive
                             ? `${completedCategoryTabsStyles.activeText} font-bold`
                             : `${inactiveClass} font-medium`
@@ -3350,7 +3808,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                               <div className="absolute top-0.5 inset-x-1.5 h-[38%] rounded-t-full bg-gradient-to-b from-white/35 to-transparent pointer-events-none" />
                             </motion.div>
                           ) : (
-                            <div
+                            <motion.div
+                              layoutId="activeCompletedCategoryPillLight"
+                              transition={{ type: 'spring', stiffness: 500, damping: 32 }}
                               className={`absolute inset-0 rounded-full z-0 ${completedCategoryTabsStyles.activePill}`}
                             />
                           )
@@ -3521,13 +3981,19 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     onClick={() => {
                       setIsGridExpanded(!isGridExpanded);
                     }}
-                    className={`hv-11__btn--stack relative px-6 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
-                      isDarkEffective ? 'border-0 border-transparent' : `border ${expandButtonStyles.btnBorder}`
-                    } select-none ${expandButtonStyles.textColor}`}
-                    style={{
-                      backgroundColor: expandButtonStyles.btnBg,
-                      ['--btn-stack-shadow' as any]: expandButtonStyles.shadowColor,
-                    }}
+                    className={`relative px-6 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer select-none ${
+                      !isDarkEffective
+                        ? getLightModeNeumorphicBtnStyles(theme).expand
+                        : `hv-11__btn--stack border-0 border-transparent ${expandButtonStyles.textColor}`
+                    }`}
+                    style={
+                      !isDarkEffective
+                        ? undefined
+                        : {
+                            backgroundColor: expandButtonStyles.btnBg,
+                            ['--btn-stack-shadow' as any]: expandButtonStyles.shadowColor,
+                          }
+                    }
                   >
                     {isGridExpanded ? (
                       <>
@@ -3864,65 +4330,207 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             isDarkMode={isDarkEffective}
           />
 
-          {/* Khối Truyện Vừa Mới Đăng */}
-          <div className={`p-6 rounded-3xl space-y-4 transition-colors duration-200 ${tStyles.sideCard}`}>
-            <div className="flex items-center justify-between">
-              <h3 className={`text-sm font-bold ${themeFontHeading} flex items-center gap-2 ${tStyles.cardTitle}`}>
-                <Clock className={`w-4 h-4 ${tStyles.sectionIcon}`} />
-                <span>Truyện Vừa Mới Đăng</span>
-              </h3>
-            </div>
+          {/* Khối Truyện Vừa Mới Đăng (Ở chế độ tối: áp dụng Glassmorphism đồng bộ với danh mục truyện trong Tiểu thuyết đã hoàn; Ở chế độ sáng: Neumorphism pha Glassmorphism 2 đường viền) */}
+          {(() => {
+            const recentStyles = getRecentUpdatesCardStyles(theme, isDarkEffective);
 
-            {/* Top ranked items */}
-            <div className="space-y-2.5">
-              {rankedNovels.slice(0, 5).map((n, idx) => {
-                return (
+            // Chế độ tối: Áp dụng Glassmorphism toàn diện đồng bộ với thẻ truyện trong mục Tiểu thuyết đã hoàn
+            if (isDarkEffective) {
+              return (
+                <div
+                  className={`rounded-[26px] sm:rounded-[30px] p-4 sm:p-5 space-y-3.5 border transition-all duration-300 relative overflow-hidden backdrop-blur-2xl ${tStyles.card}`}
+                >
+                  {/* 1. HEADER: Nút tròn bên trái, Tiêu đề + Phụ đề ở giữa, Mũi tên dropdown bên phải */}
                   <div
-                    key={n.id}
-                    onClick={() => {
-                      onSelectNovel(n);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className={`p-2.5 rounded-2xl flex items-center gap-3 group ${getHoverPressLiftBorderRevealStyle(
-                      theme,
-                      isDarkEffective
-                    )}`}
+                    className="flex items-center justify-between gap-3 cursor-pointer select-none"
+                    onClick={() => setIsRealtimeUpdatesOpen(!isRealtimeUpdatesOpen)}
                   >
-                    {/* Rank Badge */}
-                    <div
-                      className={`w-6 h-6 rounded-lg font-mono font-black text-xs flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 group-active:scale-95 ${getRankMedalStyle(
-                        idx,
-                        theme,
-                        isDarkEffective,
-                        tStyles.leaderboardRankBadge
-                      )}`}
-                    >
-                      {idx + 1}
-                    </div>
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* Nút tròn biểu tượng Glassmorphism */}
+                      <div
+                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 select-none bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] ${tStyles.sectionIcon}`}
+                      >
+                        <Clock className="w-4 h-4" />
+                      </div>
 
-                    <img
-                      src={getDirectImageUrl(n.coverImage, n.id || n.title)}
-                      onError={(e) => handleCoverImageError(e, n.id || n.title)}
-                      alt={n.title}
-                      className="w-10 h-14 rounded-lg object-cover shrink-0 transition-transform duration-200 group-hover:scale-105 group-active:scale-95"
-                    />
-
-                    <div className="flex-1 min-w-0">
-                      <h4 className={`text-xs font-novel-title transition-colors truncate ${tStyles.cardTitle} ${tStyles.cardTitleHover}`}>
-                        {n.title}
-                      </h4>
-                      <span className={`text-[10px] block truncate ${tStyles.cardAuthor}`}>
-                        {n.author.name}
-                      </span>
-                      <div className={`text-[10px] font-sans font-medium flex items-center gap-1.5 opacity-80 ${tStyles.badgeText}`}>
-                        <span>Hoàn thành</span>
+                      {/* Tiêu đề & Phụ đề */}
+                      <div className="min-w-0">
+                        <h3 className={`text-sm sm:text-base font-bold truncate ${tStyles.cardTitle}`}>
+                          Truyện Vừa Mới Đăng
+                        </h3>
+                        <p className={`text-[10px] font-mono tracking-wider uppercase truncate font-semibold ${tStyles.badgeText}`}>
+                          CHƯƠNG MỚI
+                        </p>
                       </div>
                     </div>
+
+                    {/* Mũi tên dropdown bên phải Glassmorphic */}
+                    <div className={`w-7.5 h-7.5 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-md border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] ${isRealtimeUpdatesOpen ? 'rotate-0' : '-rotate-90'} ${tStyles.sectionIcon}`}>
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
+
+                  {/* 2. ĐƯỜNG PHÂN CÁCH NÉT MẢNH GLASSMORPHIC */}
+                  <div className={`border-b ${tStyles.cardFooterBorder} -mx-4 sm:-mx-5 my-2.5`} />
+
+                  {/* 3. DANH SÁCH TRUYỆN MỚI CẬP NHẬT */}
+                  {isRealtimeUpdatesOpen && (
+                    <div className="space-y-2">
+                      {novels.slice(0, 4).map((n) => {
+                        const lastChap = n.chapters && n.chapters.length > 0 ? n.chapters[n.chapters.length - 1] : null;
+                        const rawDate = lastChap?.publishedAt || n.chapters?.[0]?.publishedAt || n.updatedAt || n.createdAt;
+                        let displayDate = '13/09/2026';
+                        if (rawDate) {
+                          if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(rawDate)) {
+                            displayDate = rawDate;
+                          } else if (/^\d{4}-\d{2}-\d{2}/.test(rawDate)) {
+                            const parts = rawDate.split('T')[0].split('-');
+                            if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                          } else {
+                            const d = new Date(rawDate);
+                            if (!isNaN(d.getTime())) displayDate = d.toLocaleDateString('vi-VN');
+                          }
+                        }
+
+                        return (
+                          <div
+                            key={n.id}
+                            onClick={() => {
+                              onSelectNovel(n);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 sm:gap-3 group transition-all duration-200 cursor-pointer bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.09] border border-white/10 hover:border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_8px_rgba(0,0,0,0.2)]"
+                          >
+                            <img
+                              src={getDirectImageUrl(n.coverImage, n.id || n.title)}
+                              onError={(e) => handleCoverImageError(e, n.id || n.title)}
+                              alt={n.title}
+                              className={`w-9 h-12 sm:w-10 sm:h-13 rounded-lg sm:rounded-xl object-cover shrink-0 border ${tStyles.cardCoverBorder} shadow-xs group-hover:scale-105 transition-transform duration-300`}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h4 className={`text-xs sm:text-[13px] font-semibold truncate transition-colors ${tStyles.cardTitle} ${tStyles.cardTitleHover}`}>
+                                {n.title}
+                              </h4>
+                              <div className="flex items-center justify-between gap-1.5 mt-0.5 sm:mt-1">
+                                <span className={`text-[10px] sm:text-[11px] truncate max-w-[130px] sm:max-w-[160px] ${tStyles.cardAuthor}`}>
+                                  {n.latestChapter?.title || 'Chương mới'}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-medium border shadow-2xs shrink-0 ${tStyles.cardTag}`}>
+                                  {displayDate}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // Chế độ sáng: Giữ nguyên Neumorphism pha Glassmorphism 2 đường viền đồng bộ
+            return (
+              <div
+                className="p-[2.5px] sm:p-[3px] rounded-[28px] sm:rounded-[30px] transition-all duration-300"
+                style={recentStyles.outerStyle}
+              >
+                {/* ĐƯỜNG VIỀN THỨ 2 BÊN TRONG: Kế tiếp là một đường viền màu nhạt dịu mát */}
+                <div
+                  className="p-4 sm:p-5 rounded-[25px] sm:rounded-[27px] space-y-3 backdrop-blur-xl transition-all duration-300"
+                  style={recentStyles.innerStyle}
+                >
+                  {/* 1. HEADER: Nút tròn bên trái, Tiêu đề + Phụ đề ở giữa, Mũi tên dropdown bên phải */}
+                  <div
+                    className="flex items-center justify-between gap-3 cursor-pointer select-none"
+                    onClick={() => setIsRealtimeUpdatesOpen(!isRealtimeUpdatesOpen)}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* Nút tròn biểu tượng Neumorphism */}
+                      <div
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 select-none backdrop-blur-md"
+                        style={recentStyles.iconBtnStyle}
+                      >
+                        <Clock className={`w-4 h-4 ${recentStyles.iconColor}`} />
+                      </div>
+
+                      {/* Tiêu đề & Phụ đề */}
+                      <div className="min-w-0">
+                        <h3 className={`text-sm sm:text-base font-bold truncate ${recentStyles.titleColor}`}>
+                          Truyện Vừa Mới Đăng
+                        </h3>
+                        <p className={`text-[10px] font-mono tracking-wider uppercase truncate ${recentStyles.subtitleColor}`}>
+                          CHƯƠNG MỚI
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Mũi tên dropdown bên phải */}
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 ${isRealtimeUpdatesOpen ? 'rotate-0' : '-rotate-90'} ${recentStyles.chevronColor}`}>
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                  </div>
+
+                  {/* 2. ĐƯỜNG PHÂN CÁCH NÉT MẢNH */}
+                  <div className={`border-b ${recentStyles.dividerClass} -mx-4 sm:-mx-5 my-2.5`} />
+
+                  {/* 3. DANH SÁCH TRUYỆN MỚI CẬP NHẬT */}
+                  {isRealtimeUpdatesOpen && (
+                    <div className="space-y-1.5">
+                      {novels.slice(0, 4).map((n) => {
+                        // Lấy chính xác ngày đăng chương
+                        const lastChap = n.chapters && n.chapters.length > 0 ? n.chapters[n.chapters.length - 1] : null;
+                        const rawDate = lastChap?.publishedAt || n.chapters?.[0]?.publishedAt || n.updatedAt || n.createdAt;
+                        let displayDate = '13/09/2026';
+                        if (rawDate) {
+                          if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(rawDate)) {
+                            displayDate = rawDate;
+                          } else if (/^\d{4}-\d{2}-\d{2}/.test(rawDate)) {
+                            const parts = rawDate.split('T')[0].split('-');
+                            if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                          } else {
+                            const d = new Date(rawDate);
+                            if (!isNaN(d.getTime())) displayDate = d.toLocaleDateString('vi-VN');
+                          }
+                        }
+
+                        return (
+                          <div
+                            key={n.id}
+                            onClick={() => {
+                              onSelectNovel(n);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className={`p-2 rounded-xl flex items-center gap-2.5 sm:gap-3 group transition-all duration-200 cursor-pointer ${recentStyles.itemHoverClass}`}
+                          >
+                            <img
+                              src={getDirectImageUrl(n.coverImage, n.id || n.title)}
+                              onError={(e) => handleCoverImageError(e, n.id || n.title)}
+                              alt={n.title}
+                              className="w-9 h-12 rounded-lg object-cover shrink-0 border border-white/60 dark:border-white/10 group-hover:scale-105 transition-transform"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h4 className={`text-xs font-semibold truncate transition-colors ${recentStyles.itemTitleHoverClass}`}>
+                                {n.title}
+                              </h4>
+                              <div className="flex items-center justify-between gap-1 mt-0.5">
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[140px]">
+                                  {n.latestChapter?.title || 'Chương mới'}
+                                </span>
+                                <span className={`text-[9px] font-mono font-medium shrink-0 ${recentStyles.itemDateClass}`}>
+                                  {displayDate}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
         </div>
 

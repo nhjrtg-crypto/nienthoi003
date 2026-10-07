@@ -236,8 +236,12 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
       if (!hasLiked) {
         setHasLiked(true);
-        setTamaHearts((prev) => Math.max(prev + 1, 31));
+        const nextHearts = Math.max(tamaHearts + 1, 31);
+        setTamaHearts(nextHearts);
         try {
+          safeStorage.setItem('cf_d1_like_intro_page', String(nextHearts));
+          safeStorage.setItem('cf_d1_like_intro_style1', String(nextHearts));
+          safeStorage.setItem('cf_d1_like_intro_style2', String(nextHearts));
           safeStorage.setItem('cosmo_has_liked_intro', 'true');
           safeStorage.setItem('cosmo_has_liked_style1', 'true');
           safeStorage.setItem('cosmo_has_liked_tama', 'true');
@@ -282,8 +286,12 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     }
 
     setHasLiked(true);
-    setTamaHearts((prev) => Math.max(prev + 1, 31));
+    const nextHearts = Math.max(tamaHearts + 1, 31);
+    setTamaHearts(nextHearts);
     try {
+      safeStorage.setItem('cf_d1_like_intro_page', String(nextHearts));
+      safeStorage.setItem('cf_d1_like_intro_style1', String(nextHearts));
+      safeStorage.setItem('cf_d1_like_intro_style2', String(nextHearts));
       safeStorage.setItem('cosmo_has_liked_intro', 'true');
       safeStorage.setItem('cosmo_has_liked_style1', 'true');
       safeStorage.setItem('cosmo_has_liked_tama', 'true');
