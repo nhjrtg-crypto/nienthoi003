@@ -1033,9 +1033,11 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           <button
             onClick={handlePrev}
             disabled={!hasPrev}
-            className={`p-2 rounded-xl border transition-all flex items-center justify-center ${
+            className={`p-2 rounded-xl border transition-colors flex items-center justify-center ${
               hasPrev
-                ? `${tStyles.carouselNavBtn} cursor-pointer`
+                ? isDarkEffective
+                  ? 'bg-white/[0.08] hover:bg-white/[0.16] border-white/20 text-white cursor-pointer shadow-xs'
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 cursor-pointer shadow-xs'
                 : 'opacity-30 cursor-not-allowed pointer-events-none border-zinc-500/20'
             }`}
             title={hasPrev ? 'Chương trước' : 'Đã ở chương đầu tiên'}
@@ -1044,15 +1046,19 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          {/* NÚT MỤC LỤC Ở TRÊN THANH HEADER NẰM GIỮA HAI NÚT MŨI TÊN CHUYỂN CHƯƠNG */}
+          {/* NÚT MỤC LỤC Ở TRÊN THANH HEADER NẰM GIỮA HAI NÚT MŨI TÊN CHUYỂN CHƯƠNG - Giữ nguyên kích cỡ to, không bị thu nhỏ */}
           <div className="relative" ref={chapterMenuRef}>
             <button
               onClick={() => {
                 setShowChapterList(!showChapterList);
                 setShowSettings(false);
               }}
-              className={`px-3 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold shadow-xs ${
-                showChapterList ? tStyles.categoryTabActive : tStyles.carouselNavBtn
+              className={`px-3 py-1.5 rounded-xl border transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold shadow-xs ${
+                showChapterList
+                  ? tStyles.categoryTabActive
+                  : isDarkEffective
+                  ? 'bg-white/[0.08] hover:bg-white/[0.16] border-white/20 text-white'
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800'
               }`}
               title="Mục lục các chương"
             >
@@ -1127,9 +1133,11 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           <button
             onClick={handleNext}
             disabled={!hasNext}
-            className={`p-2 rounded-xl border transition-all flex items-center justify-center ${
+            className={`p-2 rounded-xl border transition-colors flex items-center justify-center ${
               hasNext
-                ? `${tStyles.carouselNavBtn} cursor-pointer`
+                ? isDarkEffective
+                  ? 'bg-white/[0.08] hover:bg-white/[0.16] border-white/20 text-white cursor-pointer shadow-xs'
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 cursor-pointer shadow-xs'
                 : 'opacity-30 cursor-not-allowed pointer-events-none border-zinc-500/20'
             }`}
             title={hasNext ? 'Chương tiếp theo' : 'Đã ở chương cuối cùng'}
@@ -1150,8 +1158,12 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               setShowChapterList(false);
               setShowSettings(false);
             }}
-            className={`p-2 rounded-xl sm:rounded-full border transition-all cursor-pointer flex items-center justify-center shadow-xs ${
-              showCommentsPopup ? tStyles.categoryTabActive : tStyles.carouselNavBtn
+            className={`p-2 rounded-xl border transition-colors cursor-pointer flex items-center justify-center shadow-xs ${
+              showCommentsPopup
+                ? tStyles.categoryTabActive
+                : isDarkEffective
+                ? 'bg-white/[0.08] hover:bg-white/[0.16] border-white/20 text-white'
+                : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800'
             }`}
             title="Bình luận chương nhanh (không cần cuộn)"
             aria-label="Bình luận chương nhanh"
@@ -1159,15 +1171,19 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             <MessageSquare className="w-4 h-4" />
           </button>
 
-          {/* Reading Display Settings (Cài Đặt) Popover -> Ô giống nút chọn giao diện theme */}
+          {/* Reading Display Settings (Cài Đặt) Popover -> Không thay đổi hình dạng khi bấm */}
           <div className="relative" ref={settingsMenuRef}>
             <button
               onClick={() => {
                 setShowSettings(!showSettings);
                 setShowChapterList(false);
               }}
-              className={`p-2 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-full border transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold shadow-xs ${
-                showSettings ? tStyles.categoryTabActive : tStyles.carouselNavBtn
+              className={`px-3 py-1.5 rounded-xl border transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold shadow-xs ${
+                showSettings
+                  ? tStyles.categoryTabActive
+                  : isDarkEffective
+                  ? 'bg-white/[0.08] hover:bg-white/[0.16] border-white/20 text-white'
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800'
               }`}
               title="Tùy chỉnh giao diện đọc"
             >
@@ -1840,7 +1856,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                 {/* Form bình luận nhanh */}
                 <form
                   onSubmit={handlePostChapterComment}
-                  className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.card}`}
+                  className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.commentForm || tStyles.card}`}
                 >
                   <div className="flex flex-col sm:flex-row gap-2.5 items-start sm:items-center">
                     <div className="w-full sm:w-1/2">
@@ -1917,7 +1933,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   </div>
 
                   {displayedComments.length === 0 ? (
-                    <div className={`p-6 text-center rounded-2xl border space-y-1.5 border-dashed ${tStyles.card}`}>
+                    <div className={`p-6 text-center rounded-2xl border space-y-1.5 border-dashed ${tStyles.commentCard || tStyles.card}`}>
                       <MessageSquare className="w-6 h-6 mx-auto opacity-30" />
                       <p className={`text-xs font-medium ${tStyles.cardAuthor}`}>
                         Chương {chapterNumber} chưa có bình luận nào. Hãy là người đầu tiên để lại cảm nghĩ nhé!
@@ -1927,7 +1943,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                     displayedComments.map((cm) => (
                       <div
                         key={cm.id}
-                        className={`p-3.5 rounded-2xl border space-y-2 transition-colors ${tStyles.card}`}
+                        className={`p-3.5 rounded-2xl border space-y-2 transition-colors ${tStyles.commentCard || tStyles.card}`}
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">

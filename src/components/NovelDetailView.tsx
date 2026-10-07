@@ -1115,20 +1115,21 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     switch (theme) {
       case 'notebook':
         return {
-          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#24201c]/50 to-[#12100e]/65 backdrop-blur-2xl border border-white/20 text-[#F7F4EE] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_20px_rgba(247,244,238,0.08)]' : 'bg-white border-[#e5e5e5] text-[#171717]',
+          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#24201c]/50 to-[#12100e]/65 backdrop-blur-2xl border border-white/20 text-[#F7F4EE] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_20px_rgba(247,244,238,0.08)]' : 'notebook-light-novel-card text-[#171717]',
           cardBgSolid: isDarkEffective ? 'bg-[#141210]' : 'bg-white',
-          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'bg-white border-b border-[#e5e5e5]',
-          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#F7F4EE] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#e5e5e5] text-[#525252]',
-          activeTabBorderClass: isDarkEffective ? 'border-[#F7F4EE]' : 'border-[#737373]',
+          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'notebook-light-tabs-container',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#F7F4EE] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#e5e5e5] text-[#171717] shadow-xs',
+          activeTabBorderClass: isDarkEffective ? 'border-[#F7F4EE]' : 'border-[#737373] text-[#171717]',
           statusBadge: isDarkEffective ? 'bg-neutral-800 border border-neutral-700 text-[#F7F4EE] shadow-xs' : 'bg-[#737373] text-white',
-          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#F7F4EE] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#e5e5e5] text-[#171717]',
-          tagPill: isDarkEffective ? 'bg-white/[0.07] backdrop-blur-md text-[#D9D4C9] border border-white/15 hover:bg-white/[0.14]' : 'bg-white text-[#525252] border border-[#e5e5e5] hover:bg-[#fafafa]',
-          authorBadge: isDarkEffective ? 'bg-white/[0.07] backdrop-blur-md text-[#F7F4EE] border border-white/15' : 'bg-white text-[#171717] border border-[#e5e5e5]',
-          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#D9D4C9] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-white border-[#e5e5e5] text-[#525252]',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#F7F4EE] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'notebook-light-tabs-container text-[#171717]',
+          tagPill: isDarkEffective ? 'bg-white/[0.07] backdrop-blur-md text-[#D9D4C9] border border-white/15 hover:bg-white/[0.14]' : 'notebook-light-novel-tag',
+          authorBadge: isDarkEffective ? 'bg-white/[0.07] backdrop-blur-md text-[#F7F4EE] border border-white/15' : 'notebook-light-novel-tag text-[#171717]',
+          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#D9D4C9] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'notebook-light-novel-card text-[#525252]',
           noteIcon: isDarkEffective ? 'text-[#d9d4c9]' : 'text-[#737373]',
-          primaryBtn: isDarkEffective ? 'bg-[#F7F4EE] hover:bg-white text-[#141210] font-bold shadow-lg shadow-white/15' : 'bg-[#737373] hover:bg-[#525252] text-white font-semibold shadow-sm',
-          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#F7F4EE] border border-white/20' : 'bg-white hover:bg-[#fafafa] text-[#171717] border border-[#e5e5e5]',
-          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#F7F4EE] border border-white/15' : 'bg-white hover:bg-[#fafafa] text-[#171717] border border-[#e5e5e5]',
+          primaryBtn: isDarkEffective ? 'bg-[#F7F4EE] hover:bg-white text-[#141210] font-bold shadow-lg shadow-white/15' : 'notebook-light-btn-active font-bold cursor-pointer',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#F7F4EE] border border-white/20' : 'notebook-light-btn font-medium cursor-pointer',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#F7F4EE] border border-white/15' : 'notebook-light-btn font-medium cursor-pointer',
+          tabDividerClass: isDarkEffective ? 'border-white/10' : 'notebook-light-novel-divider',
           coverGradient: isDarkEffective
             ? 'bg-gradient-to-br from-[#2b221a] via-[#352a21] to-[#403328]'
             : 'bg-gradient-to-br from-[#f5f5f5] via-[#ffffff] to-[#e5e5e5]',
@@ -1144,8 +1145,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           coverOverlay: isDarkEffective
             ? 'bg-gradient-to-t from-[#141210]/80 via-[#141210]/25 to-transparent'
             : 'bg-gradient-to-t from-white/80 via-transparent to-transparent',
-          // Theme-aware poster styles (Đồng bộ chuẩn xác Paper: Nền #ffffff, Viền #e5e5e5, Chủ đạo #ffffff, Nút #737373)
-          posterCardBorder: isDarkEffective ? 'border border-white/20 shadow-[0_24px_60px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_25px_rgba(255,255,255,0.1)]' : 'border border-[#e5e5e5]',
+          // Theme-aware poster styles (Đồng bộ chuẩn xác Paper)
+          posterCardBorder: isDarkEffective ? 'border border-white/20 shadow-[0_24px_60px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_25px_rgba(255,255,255,0.1)]' : 'notebook-light-novel-card',
           posterGradient: isDarkEffective
             ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(36, 32, 28, 0.52) 35%, rgba(18, 16, 14, 0.65) 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #fafafa 35%, #f5f5f5 70%, #eeeeee 100%)',
@@ -1158,24 +1159,24 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           posterArcBottomRight: isDarkEffective
             ? 'radial-gradient(circle at center, rgba(184, 178, 165, 0.25) 0%, rgba(184, 178, 165, 0.08) 45%, transparent 75%)'
             : 'radial-gradient(circle at center, rgba(229, 229, 229, 0.5) 0%, rgba(229, 229, 229, 0.15) 50%, transparent 75%)',
-          posterStatusBadgeBg: isDarkEffective ? 'bg-neutral-800 border border-neutral-700 text-[#F7F4EE] shadow-xs' : 'bg-[#737373] text-white',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-neutral-800 border border-neutral-700 text-[#F7F4EE] shadow-xs' : 'bg-[#737373] text-white shadow-xs',
           posterPrimaryBtn: isDarkEffective
             ? 'bg-[#F7F4EE] hover:bg-white text-[#181614] font-bold shadow-lg shadow-white/15'
-            : 'bg-[#737373] hover:bg-[#525252] text-white shadow-sm font-semibold',
+            : 'notebook-light-btn-active font-bold cursor-pointer',
           posterTextColor: isDarkEffective ? 'text-[#F7F4EE]' : 'text-[#171717]',
           posterSubTextColor: isDarkEffective ? 'text-[#D9D4C9]' : 'text-[#525252]',
           posterMutedText: isDarkEffective ? 'text-[#9A958C]' : 'text-[#737373]',
           posterTagClass: isDarkEffective
             ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] text-[#F7F4EE] border border-white/20'
-            : 'bg-white hover:bg-[#fafafa] text-[#171717] border border-[#e5e5e5] shadow-2xs',
+            : 'notebook-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#D9D4C9] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'border-[#e5e5e5] bg-white text-[#525252] shadow-xs',
+            : 'notebook-light-novel-card text-[#525252]',
           posterNoteTitle: isDarkEffective ? 'text-[#F7F4EE]' : 'text-[#171717]',
           posterNoteContent: isDarkEffective ? 'text-[#D9D4C9]' : 'text-[#525252]',
           posterReadNextBtn: isDarkEffective
             ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] border border-white/20 text-[#F7F4EE] shadow-md'
-            : 'bg-white hover:bg-[#fafafa] text-[#171717] border border-[#e5e5e5] shadow-xs',
+            : 'notebook-light-btn font-bold cursor-pointer',
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(28, 25, 23, 0.85) 0%, rgba(20, 18, 16, 0.95) 100%)'
@@ -1193,20 +1194,21 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         };
       case 'mocha':
         return {
-          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#231812]/50 to-[#15100c]/65 backdrop-blur-2xl border border-white/20 text-[#ece2da] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'bg-[#f7f3eb] border-[#E4D9BC] text-[#3A2A2A]',
+          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#231812]/50 to-[#15100c]/65 backdrop-blur-2xl border border-white/20 text-[#ece2da] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'mocha-light-novel-card text-[#3A2A2A]',
           cardBgSolid: isDarkEffective ? 'bg-[#15100c]' : 'bg-[#f7f3eb]',
-          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'bg-white border-b border-[#E4D9BC]',
-          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#e4dbd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#E4D9BC] text-[#3A2A2A]',
-          activeTabBorderClass: isDarkEffective ? 'border-amber-600' : 'border-[#A37764]',
-          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-amber-700 to-[#8c6046] text-white shadow-md shadow-amber-950/30' : 'bg-[#A37764] text-white',
-          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#ece2da] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#E4D9BC] text-[#3A2A2A]',
-          tagPill: isDarkEffective ? 'bg-amber-500/15 backdrop-blur-md text-amber-200 border border-amber-400/30 hover:bg-amber-500/25' : 'bg-[#f0e9dc] text-[#3A2A2A] border border-[#E4D9BC] hover:bg-white',
-          authorBadge: isDarkEffective ? 'bg-amber-500/15 backdrop-blur-md text-amber-200 border border-amber-400/30' : 'bg-[#f0e9dc] text-[#3A2A2A] border border-[#E4D9BC]',
-          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#e4dbd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-[#F8F4EE] border-[#E4D9BC] text-[#8C7A6E]',
+          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'mocha-light-tabs-container',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#e4dbd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#E4D9BC] text-[#3A2A2A] shadow-xs',
+          activeTabBorderClass: isDarkEffective ? 'border-amber-600' : 'border-[#A37764] text-[#A37764]',
+          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-amber-700 to-[#8c6046] text-white shadow-md shadow-amber-950/30' : 'bg-[#A37764] text-white shadow-xs',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#ece2da] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'mocha-light-tabs-container text-[#3A2A2A]',
+          tagPill: isDarkEffective ? 'bg-amber-500/15 backdrop-blur-md text-amber-200 border border-amber-400/30 hover:bg-amber-500/25' : 'mocha-light-novel-tag',
+          authorBadge: isDarkEffective ? 'bg-amber-500/15 backdrop-blur-md text-amber-200 border border-amber-400/30' : 'mocha-light-novel-tag text-[#3A2A2A]',
+          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#e4dbd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'mocha-light-novel-card text-[#7a6256]',
           noteIcon: isDarkEffective ? 'text-amber-400' : 'text-[#A37764]',
-          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-amber-700 to-[#8c6046] hover:from-amber-600 hover:to-[#9c6d52] text-white font-semibold shadow-lg shadow-amber-950/35' : 'bg-[#A37764] hover:bg-[#8f6452] text-white font-semibold',
-          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#e0d3c9] border border-white/20' : 'bg-[#f0e9dc] hover:bg-[#e7dfcf] text-[#3A2A2A] border border-[#E4D9BC]',
-          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#cfbaa9] border border-white/15' : 'bg-[#F8F4EE] hover:bg-[#f0e9dc] text-[#3A2A2A] border border-[#E4D9BC]',
+          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-amber-700 to-[#8c6046] hover:from-amber-600 hover:to-[#9c6d52] text-white font-semibold shadow-lg shadow-amber-950/35' : 'mocha-light-btn-active font-bold cursor-pointer',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#e0d3c9] border border-white/20' : 'mocha-light-btn font-medium cursor-pointer',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#cfbaa9] border border-white/15' : 'mocha-light-btn font-medium cursor-pointer',
+          tabDividerClass: isDarkEffective ? 'border-white/10' : 'mocha-light-novel-divider',
           coverGradient: isDarkEffective
             ? 'bg-gradient-to-br from-[#24160f] via-[#2f1d13] to-[#3a2418]'
             : 'bg-gradient-to-br from-[#F8F4EE] via-[#f5f1e6] to-[#E4D9BC]',
@@ -1223,7 +1225,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-gradient-to-t from-[#120b08]/80 via-[#120b08]/25 to-transparent'
             : 'bg-gradient-to-t from-white/40 via-transparent to-transparent',
           // Theme-aware poster styles (Đồng bộ chuẩn xác màu sắc Linen dịu mắt)
-          posterCardBorder: isDarkEffective ? 'border border-[#3d271c]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'border border-[#3A2A2A]/[0.08]',
+          posterCardBorder: isDarkEffective ? 'border border-[#3d271c]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'mocha-light-novel-card',
           posterGradient: isDarkEffective
             ? 'linear-gradient(135deg, rgba(28, 18, 13, 0.9) 0%, rgba(20, 13, 9, 0.95) 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #f5f1e6 35%, #F8F4EE 70%, #ede6d8 100%)',
@@ -1236,24 +1238,24 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           posterArcBottomRight: isDarkEffective
             ? 'radial-gradient(circle at center, rgba(120, 85, 65, 0.1) 0%, rgba(80, 55, 40, 0.03) 50%, transparent 75%)'
             : 'radial-gradient(circle at center, rgba(228, 217, 188, 0.5) 0%, rgba(228, 217, 188, 0.15) 50%, transparent 75%)',
-          posterStatusBadgeBg: isDarkEffective ? 'bg-[#4d3424] text-[#d6c2b4] border border-[#6b4c37]/40 shadow-xs' : 'bg-[#A37764] text-white',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-[#4d3424] text-[#d6c2b4] border border-[#6b4c37]/40 shadow-xs' : 'bg-[#A37764] text-white shadow-xs',
           posterPrimaryBtn: isDarkEffective
             ? 'bg-[#4d3424] hover:bg-[#5c3e2e] text-[#d6c2b4] shadow-xs font-semibold'
-            : 'bg-[#A37764] hover:bg-[#8f6452] text-white shadow-sm font-semibold',
+            : 'mocha-light-btn-active font-bold cursor-pointer',
           posterTextColor: isDarkEffective ? 'text-[#cbbbaf]' : 'text-[#3A2A2A]',
           posterSubTextColor: isDarkEffective ? 'text-[#9c897d]' : 'text-[#8C7A6E]',
           posterMutedText: isDarkEffective ? 'text-[#705e53]' : 'text-[#8C7A6E]',
           posterTagClass: isDarkEffective
             ? 'bg-[#2b1c14]/60 backdrop-blur-md border border-[#4a3224]/40 text-[#bda99b] hover:border-[#694834]/50'
-            : 'bg-[#F8F4EE] hover:bg-white text-[#3A2A2A] border border-[#E4D9BC] shadow-2xs',
+            : 'mocha-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-[#3d271c]/50 bg-[#170f0b]/80 text-[#a89588]'
-            : 'border-[#E4D9BC] bg-[#F8F4EE] text-[#8C7A6E] shadow-xs',
+            : 'mocha-light-novel-card text-[#7a6256]',
           posterNoteTitle: isDarkEffective ? 'text-[#cbbbaf]' : 'text-[#3A2A2A]',
           posterNoteContent: isDarkEffective ? 'text-[#a89588]' : 'text-[#8C7A6E]',
           posterReadNextBtn: isDarkEffective
             ? 'bg-[#1f140e]/70 backdrop-blur-md hover:bg-[#2b1c14]/80 border border-[#3d271c]/40 text-[#bda99b] shadow-xs'
-            : 'bg-transparent hover:bg-[#F8F4EE] text-[#3A2A2A] border border-[#E4D9BC] shadow-xs',
+            : 'mocha-light-btn font-bold cursor-pointer',
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(30, 20, 14, 0.85) 0%, rgba(20, 13, 9, 0.95) 100%)'
@@ -1271,20 +1273,21 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         };
       case 'slate-haze':
         return {
-          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#121c27]/50 to-[#0b1118]/65 backdrop-blur-2xl border border-white/20 text-[#dce7f0] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
+          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#121c27]/50 to-[#0b1118]/65 backdrop-blur-2xl border border-white/20 text-[#dce7f0] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'frost-light-novel-card text-[#101723]',
           cardBgSolid: isDarkEffective ? 'bg-[#0b1118]' : 'bg-white',
-          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'bg-white border-b border-[#d8dfe9]',
-          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
-          activeTabBorderClass: isDarkEffective ? 'border-[#5d7e9d]' : 'border-[#87909d]',
-          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-[#3e566d] to-[#4d6a85] text-white shadow-md shadow-[#0c141d]/30' : 'bg-[#87909d] text-white',
-          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#d8dfe9] text-[#101723]',
-          tagPill: isDarkEffective ? 'bg-[#4d6a85]/20 backdrop-blur-md text-[#dce7f0] border border-[#4d6a85]/35 hover:bg-[#4d6a85]/30' : 'bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9] hover:bg-white',
-          authorBadge: isDarkEffective ? 'bg-[#4d6a85]/20 backdrop-blur-md text-[#dce7f0] border border-[#4d6a85]/35' : 'bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
-          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#cbdde9] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-white border-[#d8dfe9] text-[#475569]',
+          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'frost-light-tabs-container',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#d8dfe9] text-[#101723] shadow-xs',
+          activeTabBorderClass: isDarkEffective ? 'border-[#5d7e9d]' : 'border-[#0284c7] text-[#0284c7]',
+          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-[#3e566d] to-[#4d6a85] text-white shadow-md shadow-[#0c141d]/30' : 'bg-[#87909d] text-white shadow-xs',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'frost-light-tabs-container text-[#101723]',
+          tagPill: isDarkEffective ? 'bg-[#4d6a85]/20 backdrop-blur-md text-[#dce7f0] border border-[#4d6a85]/35 hover:bg-[#4d6a85]/30' : 'frost-light-novel-tag',
+          authorBadge: isDarkEffective ? 'bg-[#4d6a85]/20 backdrop-blur-md text-[#dce7f0] border border-[#4d6a85]/35' : 'frost-light-novel-tag text-[#101723]',
+          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#cbdde9] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'frost-light-novel-card text-[#526982]',
           noteIcon: isDarkEffective ? 'text-[#8bb0cf]' : 'text-[#87909d]',
-          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-[#3e566d] via-[#4d6a85] to-[#5d7e9d] hover:from-[#47627d] hover:via-[#577795] hover:to-[#688cae] text-white font-semibold shadow-lg shadow-[#0c141d]/35' : 'bg-[#87909d] hover:bg-[#767f8c] text-white font-semibold',
-          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#cfdce8] border border-white/20' : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
-          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#b8cedf] border border-white/15' : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9]',
+          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-[#3e566d] via-[#4d6a85] to-[#5d7e9d] hover:from-[#47627d] hover:via-[#577795] hover:to-[#688cae] text-white font-semibold shadow-lg shadow-[#0c141d]/35' : 'frost-light-btn-active font-bold cursor-pointer',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#cfdce8] border border-white/20' : 'frost-light-btn font-medium cursor-pointer',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#b8cedf] border border-white/15' : 'frost-light-btn font-medium cursor-pointer',
+          tabDividerClass: isDarkEffective ? 'border-white/10' : 'frost-light-novel-divider',
           coverGradient: isDarkEffective
             ? 'bg-gradient-to-br from-[#101b27] via-[#162536] to-[#1c2e42]'
             : 'bg-gradient-to-br from-[#d8dfe9] via-[#f3f7fc] to-[#f9fcff]',
@@ -1301,7 +1304,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-gradient-to-t from-[#0b1118]/80 via-[#0b1118]/25 to-transparent'
             : 'bg-gradient-to-t from-[#f9fcff]/80 via-transparent to-transparent',
           // Theme-aware poster styles (Đồng bộ chuẩn xác màu sắc Frost phong cách Linen dịu mắt)
-          posterCardBorder: isDarkEffective ? 'border border-[#314659]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'border border-[#d8dfe9]',
+          posterCardBorder: isDarkEffective ? 'border border-[#314659]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'frost-light-novel-card',
           posterGradient: isDarkEffective
             ? 'linear-gradient(135deg, rgba(16, 25, 36, 0.9) 0%, rgba(11, 17, 24, 0.95) 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #f9fcff 35%, #f3f7fc 70%, #e2eaf4 100%)',
@@ -1314,24 +1317,24 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           posterArcBottomRight: isDarkEffective
             ? 'radial-gradient(circle at center, rgba(77, 106, 133, 0.1) 0%, rgba(45, 65, 84, 0.03) 50%, transparent 75%)'
             : 'radial-gradient(circle at center, rgba(216, 223, 233, 0.5) 0%, rgba(216, 223, 233, 0.15) 50%, transparent 75%)',
-          posterStatusBadgeBg: isDarkEffective ? 'bg-[#314659] text-[#dce7f0] border border-[#4d6a85]/40 shadow-xs' : 'bg-[#87909d] text-white',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-[#314659] text-[#dce7f0] border border-[#4d6a85]/40 shadow-xs' : 'bg-[#87909d] text-white shadow-xs',
           posterPrimaryBtn: isDarkEffective
             ? 'bg-[#314659] hover:bg-[#3e566d] text-[#dce7f0] shadow-xs font-semibold'
-            : 'bg-[#87909d] hover:bg-[#767f8c] text-white shadow-sm font-semibold',
+            : 'frost-light-btn-active font-bold cursor-pointer',
           posterTextColor: isDarkEffective ? 'text-[#dce7f0]' : 'text-[#101723]',
           posterSubTextColor: isDarkEffective ? 'text-[#a6c2d8]' : 'text-[#475569]',
           posterMutedText: isDarkEffective ? 'text-[#728fa5]' : 'text-[#64748b]',
           posterTagClass: isDarkEffective
             ? 'bg-[#182535]/60 backdrop-blur-md border border-[#314659]/40 text-[#cbdde9] hover:border-[#4d6a85]/50'
-            : 'bg-[#f3f7fc] hover:bg-white text-[#101723] border border-[#d8dfe9] shadow-2xs',
+            : 'frost-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-[#314659]/50 bg-[#0e1722]/80 text-[#a6c2d8]'
-            : 'border-[#d8dfe9] bg-white text-[#475569] shadow-xs',
+            : 'frost-light-novel-card text-[#526982]',
           posterNoteTitle: isDarkEffective ? 'text-[#dce7f0]' : 'text-[#101723]',
           posterNoteContent: isDarkEffective ? 'text-[#a6c2d8]' : 'text-[#475569]',
           posterReadNextBtn: isDarkEffective
             ? 'bg-[#14212e]/70 backdrop-blur-md hover:bg-[#1c2d3e]/80 border border-[#314659]/40 text-[#cbdde9] shadow-xs'
-            : 'bg-[#f9fcff] hover:bg-[#f3f7fc] text-[#101723] border border-[#d8dfe9] shadow-xs',
+            : 'frost-light-btn font-bold cursor-pointer',
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(16, 25, 36, 0.85) 0%, rgba(11, 17, 24, 0.95) 100%)'
@@ -1349,20 +1352,21 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         };
       case 'amethyst-haze':
         return {
-          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#1a122e]/50 to-[#0c0817]/65 backdrop-blur-2xl border border-white/20 text-purple-100 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_20px_rgba(168,85,247,0.1)]' : 'bg-[#f8f6fc] border-[#ded7eb] text-[#211c2f]',
+          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#1a122e]/50 to-[#0c0817]/65 backdrop-blur-2xl border border-white/20 text-purple-100 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_20px_rgba(168,85,247,0.1)]' : 'amethyst-light-novel-card text-[#211c2f]',
           cardBgSolid: isDarkEffective ? 'bg-[#0e0a1b]' : 'bg-[#f8f6fc]',
-          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'bg-white border-b border-[#ded7eb]',
-          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#ded7eb] text-[#211c2f]',
-          activeTabBorderClass: isDarkEffective ? 'border-purple-400' : 'border-[#685d85]',
-          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30' : 'bg-[#6a5b8a] text-white',
-          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-purple-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#ded7eb] text-[#211c2f]',
-          tagPill: isDarkEffective ? 'bg-purple-500/15 backdrop-blur-md text-purple-200 border border-purple-400/30 hover:bg-purple-500/25' : 'bg-[#ede9f5] text-[#34294a] hover:bg-[#e4ddf0] border border-[#ded7eb]',
-          authorBadge: isDarkEffective ? 'bg-purple-500/15 backdrop-blur-md text-purple-200 border border-purple-400/30' : 'bg-[#ede9f5] text-[#211c2f] border border-[#ded7eb]',
-          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-[#f7f4fb] border-[#ded7eb] text-[#423956]',
+          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'amethyst-light-tabs-container',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#dfdae8] text-[#211c2f] shadow-xs',
+          activeTabBorderClass: isDarkEffective ? 'border-purple-400' : 'border-[#7e58a6] text-[#7e58a6]',
+          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30' : 'bg-[#7e739f] text-white shadow-xs',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-purple-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'amethyst-light-tabs-container text-[#211c2f]',
+          tagPill: isDarkEffective ? 'bg-purple-500/15 backdrop-blur-md text-purple-200 border border-purple-400/30 hover:bg-purple-500/25' : 'amethyst-light-novel-tag',
+          authorBadge: isDarkEffective ? 'bg-purple-500/15 backdrop-blur-md text-purple-200 border border-purple-400/30' : 'amethyst-light-novel-tag text-[#211c2f]',
+          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'amethyst-light-novel-card text-[#6b5887]',
           noteIcon: isDarkEffective ? 'text-purple-400' : 'text-[#6a5b8a]',
-          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-purple-600/35' : 'bg-[#6a5b8a] hover:bg-[#574972] text-white',
-          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#bdaedc] border border-white/20' : 'bg-[#ede9f5] hover:bg-[#e2d9ec] text-[#211c2f] border border-[#cac6d6]',
-          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-stone-300 border border-white/15' : 'bg-[#f7f4fb] hover:bg-[#ede9f5] text-[#211c2f] border border-[#ded7eb]',
+          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-purple-600/35' : 'amethyst-light-btn-active font-bold cursor-pointer',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#bdaedc] border border-white/20' : 'amethyst-light-btn font-medium cursor-pointer',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-stone-300 border border-white/15' : 'amethyst-light-btn font-medium cursor-pointer',
+          tabDividerClass: isDarkEffective ? 'border-white/10' : 'amethyst-light-novel-divider',
           coverGradient: isDarkEffective
             ? 'bg-gradient-to-br from-[#1d142d] via-[#281b3d] to-[#33224f]'
             : 'bg-gradient-to-br from-[#e0d4eb] via-[#cfbede] to-[#bba3cd]',
@@ -1379,7 +1383,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-gradient-to-t from-[#0e0a1b]/80 via-[#0e0a1b]/25 to-transparent'
             : 'bg-gradient-to-t from-white/40 via-transparent to-transparent',
           // Theme-aware poster styles (Đồng bộ chuẩn xác màu sắc trang chủ Amethyst Haze)
-          posterCardBorder: isDarkEffective ? 'border border-white/20 shadow-[0_24px_60px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_25px_rgba(168,85,247,0.15)]' : 'border border-[#211c2f]/[0.08]',
+          posterCardBorder: isDarkEffective ? 'border border-white/20 shadow-[0_24px_60px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_25px_rgba(168,85,247,0.15)]' : 'amethyst-light-novel-card',
           posterGradient: isDarkEffective
             ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(26, 18, 46, 0.52) 35%, rgba(12, 8, 23, 0.65) 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #f7f4fb 35%, #ebe5f3 70%, #ded6e9 100%)',
@@ -1392,24 +1396,24 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           posterArcBottomRight: isDarkEffective
             ? 'radial-gradient(circle at center, rgba(168, 85, 247, 0.35) 0%, rgba(99, 102, 241, 0.15) 50%, transparent 75%)'
             : 'radial-gradient(circle at center, rgba(218, 215, 231, 0.5) 0%, rgba(218, 215, 231, 0.12) 50%, transparent 75%)',
-          posterStatusBadgeBg: isDarkEffective ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border border-purple-400/30 shadow-md shadow-purple-600/30' : 'bg-[#7e739f] text-white',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border border-purple-400/30 shadow-md shadow-purple-600/30' : 'bg-[#7e739f] text-white shadow-xs',
           posterPrimaryBtn: isDarkEffective
             ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-600/35 font-semibold'
-            : 'bg-[#7e739f] hover:bg-[#6c618c] text-white shadow-sm font-semibold',
+            : 'amethyst-light-btn-active font-bold cursor-pointer',
           posterTextColor: isDarkEffective ? 'text-[#f0edf7]' : 'text-[#211c2f]',
           posterSubTextColor: isDarkEffective ? 'text-[#cfc4e5]' : 'text-[#544a6b]',
           posterMutedText: isDarkEffective ? 'text-[#9789ad]' : 'text-[#8d82a6]',
           posterTagClass: isDarkEffective
             ? 'bg-purple-500/15 backdrop-blur-md border border-purple-400/30 text-purple-200 hover:border-purple-400/50'
-            : 'bg-[#ede9f5] hover:bg-white text-[#34294a] border border-[#d3cde1] shadow-2xs',
+            : 'amethyst-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#bfb2d4] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'border-[#ded8ea] bg-[#f7f4fb] text-[#423956] shadow-xs',
+            : 'amethyst-light-novel-card text-[#6b5887]',
           posterNoteTitle: isDarkEffective ? 'text-[#f0edf7]' : 'text-[#211c2f]',
           posterNoteContent: isDarkEffective ? 'text-[#bfb2d4]' : 'text-[#423956]',
           posterReadNextBtn: isDarkEffective
             ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] border border-white/20 text-[#d6cde8] shadow-md'
-            : 'bg-white hover:bg-[#f7f4fb] text-[#211c2f] border border-[#cac6d6] shadow-xs',
+            : 'amethyst-light-btn font-bold cursor-pointer',
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(26, 18, 46, 0.88) 0%, rgba(12, 8, 23, 0.96) 100%)'
@@ -1441,6 +1445,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           primaryBtn: 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-500 hover:to-pink-500 shadow-md shadow-pink-600/30',
           secondaryBtn: 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-purple-200 border border-white/20',
           outlineBtn: 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-purple-200 border border-white/15',
+          tabDividerClass: 'border-white/10',
           coverGradient: 'bg-gradient-to-br from-[#0a1232] via-[#111e50] to-[#0c364e]',
           circleTopLeft: 'bg-gradient-to-br from-[#050b20] to-[#0a1538] border border-cyan-400/25',
           circleBehindCover: 'bg-gradient-to-tr from-cyan-400/30 via-purple-500/25 to-pink-500/20 border border-cyan-300/35 shadow-inner',
@@ -1479,20 +1484,21 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       case 'sage':
       default:
         return {
-          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#142318]/50 to-[#0c1510]/65 backdrop-blur-2xl border border-white/20 text-[#e0ede2] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'bg-[#f2f7f1] border-[#cad8c6]/80 text-[#1c2b1e]',
+          cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#142318]/50 to-[#0c1510]/65 backdrop-blur-2xl border border-white/20 text-[#e0ede2] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]' : 'sage-light-novel-card text-[#1c2b1e]',
           cardBgSolid: isDarkEffective ? 'bg-[#0c1510]' : 'bg-[#f2f7f1]',
-          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'bg-white border-b border-[#cad8c6]/80',
-          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#d5e5d8] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#cad8c6] text-[#1c2b1e]',
-          activeTabBorderClass: isDarkEffective ? 'border-emerald-600' : 'border-[#466244]',
-          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-emerald-700 to-green-700 text-white shadow-md shadow-emerald-900/30' : 'bg-[#466244] text-white',
-          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#e0ede2] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'bg-white border-[#cad8c6] text-[#1c2b1e]',
-          tagPill: isDarkEffective ? 'bg-emerald-500/15 backdrop-blur-md text-emerald-200 border border-emerald-400/30 hover:bg-emerald-500/25' : 'bg-[#eaf1e8] text-[#1c2b1e] hover:bg-[#dfebdc] border border-[#cad8c6]',
-          authorBadge: isDarkEffective ? 'bg-emerald-500/15 backdrop-blur-md text-emerald-200 border border-emerald-400/30' : 'bg-[#eaf1e8] text-[#1c2b1e] border border-[#cad8c6]',
-          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#d5e5d8] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-[#f4f8f2] border-[#cad8c6] text-[#394a3b]',
+          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'sage-light-tabs-container',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#d5e5d8] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-white border-[#cad8c6] text-[#1c2b1e] shadow-xs',
+          activeTabBorderClass: isDarkEffective ? 'border-emerald-600' : 'border-[#274225] text-[#274225]',
+          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-emerald-700 to-green-700 text-white shadow-md shadow-emerald-900/30' : 'bg-[#466244] text-white shadow-xs',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#e0ede2] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'sage-light-tabs-container text-[#1c2b1e]',
+          tagPill: isDarkEffective ? 'bg-emerald-500/15 backdrop-blur-md text-emerald-200 border border-emerald-400/30 hover:bg-emerald-500/25' : 'sage-light-novel-tag',
+          authorBadge: isDarkEffective ? 'bg-emerald-500/15 backdrop-blur-md text-emerald-200 border border-emerald-400/30' : 'sage-light-novel-tag text-[#1c2b1e]',
+          noteBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#d5e5d8] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'sage-light-novel-card text-[#466244]',
           noteIcon: isDarkEffective ? 'text-emerald-400' : 'text-[#466244]',
-          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-emerald-700 to-green-700 hover:from-emerald-600 hover:to-green-600 text-white font-semibold shadow-lg shadow-emerald-900/35' : 'bg-[#466244] hover:bg-[#395037] text-white font-semibold shadow-sm',
-          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#cee0d1] border border-white/20' : 'bg-[#eaf1e8] hover:bg-[#deeada] text-[#1c2b1e] border border-[#cad8c6]/80',
-          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#a9c9ad] border border-white/15' : 'bg-[#f4f8f2] hover:bg-[#eaf1e8] text-[#1c2b1e] border border-[#cad8c6]',
+          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-emerald-700 to-green-700 hover:from-emerald-600 hover:to-green-600 text-white font-semibold shadow-lg shadow-emerald-900/35' : 'sage-light-btn-active font-bold cursor-pointer',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#cee0d1] border border-white/20' : 'sage-light-btn font-medium cursor-pointer',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#a9c9ad] border border-white/15' : 'sage-light-btn font-medium cursor-pointer',
+          tabDividerClass: isDarkEffective ? 'border-white/10' : 'sage-light-novel-divider',
           coverGradient: isDarkEffective
             ? 'bg-gradient-to-br from-[#0c1a0f] via-[#102214] to-[#142a19]'
             : 'bg-gradient-to-br from-[#c7ddc5] via-[#b3d1b1] to-[#9ec39b]',
@@ -1509,7 +1515,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-gradient-to-t from-[#0c140d]/80 via-[#0c140d]/25 to-transparent'
             : 'bg-gradient-to-t from-white/40 via-transparent to-transparent',
           // Theme-aware poster styles (Đồng bộ chuẩn xác màu sắc Sage dịu mắt)
-          posterCardBorder: isDarkEffective ? 'border border-[#233827]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'border border-[#cad8c6]',
+          posterCardBorder: isDarkEffective ? 'border border-[#233827]/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'sage-light-novel-card',
           posterGradient: isDarkEffective
             ? 'linear-gradient(135deg, rgba(16, 26, 18, 0.9) 0%, rgba(10, 18, 12, 0.95) 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #f4f8f2 35%, #ebf3e8 70%, #dceadc 100%)',
@@ -1522,24 +1528,24 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           posterArcBottomRight: isDarkEffective
             ? 'radial-gradient(circle at center, rgba(50, 78, 52, 0.1) 0%, rgba(30, 48, 32, 0.03) 50%, transparent 75%)'
             : 'radial-gradient(circle at center, rgba(152, 184, 148, 0.4) 0%, rgba(152, 184, 148, 0.12) 50%, transparent 75%)',
-          posterStatusBadgeBg: isDarkEffective ? 'bg-[#253828] text-[#c2d4bf] border border-[#39563d]/40 shadow-xs' : 'bg-[#466244] text-white',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-[#253828] text-[#c2d4bf] border border-[#39563d]/40 shadow-xs' : 'bg-[#466244] text-white shadow-xs',
           posterPrimaryBtn: isDarkEffective
             ? 'bg-[#2a402d] hover:bg-[#34523a] text-[#c2d4bf] shadow-xs font-semibold'
-            : 'bg-[#466244] hover:bg-[#395037] text-white shadow-sm font-semibold',
+            : 'sage-light-btn-active font-bold cursor-pointer',
           posterTextColor: isDarkEffective ? 'text-[#b8cbb5]' : 'text-[#1c2b1e]',
           posterSubTextColor: isDarkEffective ? 'text-[#879e84]' : 'text-[#485b4b]',
           posterMutedText: isDarkEffective ? 'text-[#5d735a]' : 'text-[#7d937b]',
           posterTagClass: isDarkEffective
             ? 'bg-[#1a2b1d]/60 backdrop-blur-md border border-[#2c4731]/40 text-[#a1b89e] hover:border-[#3e6345]/50'
-            : 'bg-white/85 hover:bg-white text-[#2c3e2e] border border-[#cbd7c8] shadow-2xs',
+            : 'sage-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-[#233827]/50 bg-[#0f1911]/80 text-[#8ea38a]'
-            : 'border-[#cad8c6] bg-[#f4f8f2] text-[#394a3b] shadow-xs',
+            : 'sage-light-novel-card text-[#466244]',
           posterNoteTitle: isDarkEffective ? 'text-[#b8cbb5]' : 'text-[#1c2b1e]',
           posterNoteContent: isDarkEffective ? 'text-[#8ea38a]' : 'text-[#394a3b]',
           posterReadNextBtn: isDarkEffective
             ? 'bg-[#162318]/70 backdrop-blur-md hover:bg-[#1d3020]/80 border border-[#233827]/40 text-[#a1b89e] shadow-xs'
-            : 'bg-white hover:bg-[#f4f8f2] text-[#1c2b1e] border border-[#cad8c6] shadow-xs',
+            : 'sage-light-btn font-bold cursor-pointer',
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(20, 35, 24, 0.85) 0%, rgba(12, 21, 16, 0.95) 100%)'
@@ -4462,7 +4468,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                       ? isDarkEffective
                         ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
                         : 'bg-white border-stone-300 text-stone-900 shadow-xs'
-                      : detailThemeExtras.innerBox
+                      : tStyles.commentForm || detailThemeExtras.innerBox
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -4571,7 +4577,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                           ? isDarkEffective
                             ? 'bg-[#15161A] border-zinc-800 text-zinc-200'
                             : 'bg-white border-stone-300 text-stone-900 shadow-2xs'
-                          : tStyles.card
+                          : tStyles.commentCard || tStyles.card
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">

@@ -2859,7 +2859,7 @@
 
 /* 1. Khung thẻ chính (Thẻ truyện) */
 .frost-light-novel-card {
-  border-radius: 16px !important;
+  border-radius: var(--card-radius, 16px) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1.5px solid transparent !important;
@@ -2966,7 +2966,7 @@
 /* THEME SAGE - CHẾ ĐỘ SÁNG (LIGHT MODE): NEUMORPHISM PHA GLASSMORPHISM */
 /* ========================================================================= */
 .sage-light-novel-card {
-  border-radius: 16px !important;
+  border-radius: var(--card-radius, 16px) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1.5px solid transparent !important;
@@ -3062,7 +3062,7 @@
 /* THEME MOCHA - CHẾ ĐỘ SÁNG (LIGHT MODE): NEUMORPHISM PHA GLASSMORPHISM */
 /* ========================================================================= */
 .mocha-light-novel-card {
-  border-radius: 16px !important;
+  border-radius: var(--card-radius, 16px) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1.5px solid transparent !important;
@@ -3158,7 +3158,7 @@
 /* THEME AMETHYST HAZE - CHẾ ĐỘ SÁNG: NEUMORPHISM PHA GLASSMORPHISM */
 /* ========================================================================= */
 .amethyst-light-novel-card {
-  border-radius: 16px !important;
+  border-radius: var(--card-radius, 16px) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1.5px solid transparent !important;
@@ -3254,7 +3254,7 @@
 /* THEME NOTEBOOK - CHẾ ĐỘ SÁNG: NEUMORPHISM PHA GLASSMORPHISM */
 /* ========================================================================= */
 .notebook-light-novel-card {
-  border-radius: 16px !important;
+  border-radius: var(--card-radius, 16px) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1.5px solid transparent !important;
