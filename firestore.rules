@@ -1,60 +1,73 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Thống kê hệ thống và bộ đếm tổng lượt xem toàn web / lượt đọc thực
-    match /he_thong/{docId} {
-      allow read: if true;
-      allow write: if true;
+
+    // Helper functions kiểm tra tính hợp lệ
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
-    // Danh sách truyện
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // 1. Danh mục Truyện và Chương:
+    // Đọc công khai cho toàn bộ độc giả, chặn mọi hành vi tự ý ghi/sửa/xóa từ bên ngoài
     match /truyen/{truyenId} {
       allow read: if true;
-      allow write: if true;
+      allow write: if false;
 
-      // Danh sách chương truyện
       match /chuong/{chuongId} {
         allow read: if true;
-        allow write: if true;
+        allow write: if false;
       }
 
-      // Bình luận độc giả theo truyện
       match /binh_luan/{commentId} {
         allow read: if true;
-        allow write: if true;
+        allow write: if false;
       }
     }
 
-    // Bình luận độc giả
+    // 2. Bình luận độc giả (nếu có truy vấn)
     match /binh_luan/{commentId} {
       allow read: if true;
-      allow create: if true;
-      allow update, delete: if true;
+      allow create: if isValidId(commentId)
+        && incoming().author is string
+        && incoming().author.size() <= 100
+        && incoming().content is string
+        && incoming().content.size() <= 2000;
+      allow update, delete: if false;
     }
 
-    // Thống kê thả tim trang giới thiệu (Style 1 và Style 2)
-    match /gioi_thieu_stats/{styleId} {
-      allow read: if true;
-      allow write: if true;
+    // 3. Toàn bộ các tính năng:
+    // - Bộ đếm lượt đọc & lượt xem toàn web
+    // - Thả tim trang giới thiệu
+    // - Lưu bút & Lời nhắn bạn đọc
+    // được kết nối và xử lý 100% qua Cloudflare D1.
+    // Tuyệt đối KHÔNG lưu trữ hoặc cho phép truy cập trên Firestore (Zero-Trust Security).
+    match /he_thong/{document=**} {
+      allow read, write: if false;
     }
 
-    // Lưu bút / Lời nhắn trang giới thiệu Style 1 (Sổ Kế Hoạch 2 Mặt)
-    match /gioi_thieu_notes_style1/{noteId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if true;
+    match /stats/{document=**} {
+      allow read, write: if false;
     }
 
-    // Lưu bút / Lời nhắn trang giới thiệu Style 2 (Máy Trứng Tamagotchi)
-    match /gioi_thieu_notes_style2/{noteId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if true;
+    match /gioi_thieu_stats/{document=**} {
+      allow read, write: if false;
     }
 
-    // Mặc định các collection khác
+    match /gioi_thieu_notes_style1/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /gioi_thieu_notes_style2/{document=**} {
+      allow read, write: if false;
+    }
+
+    // 4. Chặn mặc định tất cả các collection khác
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

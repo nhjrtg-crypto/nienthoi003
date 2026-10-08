@@ -119,6 +119,92 @@ app.delete('/api/comments', (req, res) => {
   res.json({ success: true, commentId: rawId, deleted: true });
 });
 
+// In-memory notes storage for server
+const inMemoryNotes = {
+  style1: [],
+  style2: [],
+};
+
+app.get('/api/notes', (req, res) => {
+  const style = req.query.style === 'style2' ? 'style2' : 'style1';
+  res.json({ success: true, notes: inMemoryNotes[style] || [] });
+});
+
+app.post('/api/notes', (req, res) => {
+  const body = req.body || {};
+  const style = body.style === 'style2' ? 'style2' : 'style1';
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const note = {
+    id: body.id || `note_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    style,
+    author: (body.author || 'Bạn đọc ẩn danh ♡').trim(),
+    content: (body.content || '').trim(),
+    time: body.time || timeStr,
+    createdAt: body.createdAt || Date.now(),
+  };
+  if (!inMemoryNotes[style]) inMemoryNotes[style] = [];
+  inMemoryNotes[style].unshift(note);
+  res.json({ success: true, note });
+});
+
+app.get('/api/novel-bundle', (req, res) => {
+  const novelId = req.query.novelId || 'global';
+  const chapterNumber = req.query.chapterNumber ? parseInt(req.query.chapterNumber, 10) : null;
+  const targetLikeId = (novelId.startsWith('intro_') || novelId === 'intro') ? 'intro_page' : novelId;
+  const likeCount = inMemoryStats.likes[targetLikeId] ?? (targetLikeId === 'intro_page' ? 30 : 0);
+  let comments = inMemoryComments;
+  if (novelId && novelId !== 'global') {
+    comments = comments.filter((c) => c.truyenId === novelId || c.novelId === novelId);
+  }
+  if (chapterNumber !== null && !isNaN(chapterNumber)) {
+    comments = comments.filter((c) => c.chapterNumber === chapterNumber);
+  }
+  res.json({
+    success: true,
+    novelId,
+    chapterNumber,
+    views: {
+      novelViews: 0,
+      chapterViews: 0,
+      totalGlobalViews: inMemoryStats.views.total,
+      todayGlobalViews: 0,
+    },
+    likes: likeCount,
+    comments,
+  });
+});
+
+// In-memory covers storage for server
+const inMemoryCovers = {};
+
+app.get('/api/covers', (req, res) => {
+  const novelId = req.query.novelId;
+  if (novelId) {
+    const coverUrl = inMemoryCovers[novelId] || null;
+    return res.json({ success: true, novelId, coverUrl });
+  }
+  res.json({ success: true, covers: inMemoryCovers });
+});
+
+app.post('/api/covers', (req, res) => {
+  const body = req.body || {};
+  const novelId = (body.novelId || '').trim();
+  const coverUrl = (body.coverUrl || '').trim();
+  const novelTitle = (body.novelTitle || '').trim();
+
+  if (!novelId || !coverUrl) {
+    return res.status(400).json({ success: false, error: 'Thiếu novelId hoặc coverUrl' });
+  }
+
+  inMemoryCovers[novelId] = coverUrl;
+  if (novelTitle) {
+    inMemoryCovers[novelTitle] = coverUrl;
+  }
+
+  res.json({ success: true, novelId, coverUrl });
+});
+
 const distPath = path.join(__dirname, 'dist');
 
 if (fs.existsSync(distPath)) {

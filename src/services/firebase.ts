@@ -39,6 +39,17 @@ import firebaseConfigJson from '../../firebase-applet-config.json';
 import { safeStorage } from '../utils/safeStorage';
 import { NovelComment } from '../types';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
+import {
+  getGlobalViews,
+  fetchGlobalViews,
+  fetchLikes,
+  subscribeLikes,
+  incrementLike,
+  fetchGuestNotes,
+  subscribeGuestNotes,
+  addGuestNote,
+  D1GuestNote,
+} from './d1Service';
 
 // User Firebase credentials & public key
 export const FIREBASE_VAPID_KEY = 'BN5xOKCoNDN3YQphaPVOGHB2aTjx3TRyA0aVWxntVfMPIDRnxW7G7dv3VBX4gEFud-ffYJo1Cka9p6pjQMj6a2g';
@@ -83,7 +94,7 @@ export const auth = getAuth(app);
 // Test connection on demand without forcing unhandled network errors
 export async function testFirebaseConnection(): Promise<boolean> {
   try {
-    const testSnap = await getDoc(doc(db, 'he_thong', 'daily_reads_tracker'));
+    const testSnap = await getDoc(doc(db, 'truyen', 'ping'));
     return testSnap.exists();
   } catch (error) {
     if (error instanceof Error && (error.message.includes('offline') || error.message.includes('unavailable'))) {
@@ -528,65 +539,18 @@ export function queuePendingNovelRead(novelId: string, count = 1): void {
 }
 
 export async function flushPendingReadsToFirestore(): Promise<void> {
-  if (isSyncing) return;
-  if (pendingTrackerReads === 0 && pendingNovelReads.size === 0) return;
-
-  const readsToSync = pendingTrackerReads;
-  const novelsToSync = new Map(pendingNovelReads);
-
-  // Reset trước để gom các lượt mới trong lúc đang sync
+  // Bộ đếm lượt đọc & lượt xem toàn web liên kết 100% với Cloudflare D1
+  // Tuyệt đối không ghi hoặc lưu dữ liệu lên Firestore
   pendingTrackerReads = 0;
   pendingNovelReads.clear();
-
   if (syncTimer) {
     clearTimeout(syncTimer);
     syncTimer = null;
   }
-
-  isSyncing = true;
-  try {
-    const promises: Promise<any>[] = [];
-    const activeCycle = getCycleKey();
-
-    // 1. Đồng bộ lên tracker toàn web (Cộng dồn vĩnh viễn)
-    if (readsToSync > 0) {
-      const trackerDocRef = doc(db, 'he_thong', 'daily_reads_tracker');
-      promises.push(
-        setDoc(
-          trackerDocRef,
-          {
-            totalWebsiteReads: increment(readsToSync),
-            totalWebsiteViews: increment(readsToSync),
-            todayReads: increment(readsToSync),
-            cycleKey: activeCycle,
-            dailyLimit: 50000,
-            updatedAt: new Date().toISOString(),
-          },
-          { merge: true }
-        ).catch((err) => {
-          if (isFirestoreQuotaError(err)) markQuotaExceeded();
-          console.warn('[Firestore] Notice syncing tracker reads:', err);
-        })
-      );
-    }
-
-    // 2. Lượt đọc của từng truyện đã được đồng bộ 100% qua Cloudflare D1 (bảng novel_views / views)
-    // Đã ngắt kết nối hoàn toàn khỏi Firestore collection 'truyen'
-
-    await Promise.allSettled(promises);
-  } catch (err) {
-    console.warn('[Firestore] Error flushing batched reads:', err);
-  } finally {
-    isSyncing = false;
-  }
 }
 
 function scheduleReadsSync(): void {
-  if (syncTimer) return;
-  syncTimer = setTimeout(() => {
-    syncTimer = null;
-    flushPendingReadsToFirestore();
-  }, 30 * 60 * 1000); // 30 phút gom đồng bộ lượt xem lên Firestore 1 lần theo yêu cầu người dùng
+  // Không lập lịch ghi Firestore
 }
 
 // Bắt sự kiện khi người dùng chuyển tab, ẩn ứng dụng hoặc rời trang để đồng bộ tức thì
@@ -620,17 +584,13 @@ export function recordWebsiteVisit(): void {
   const sessionKey = 'cosmo_website_session_visit';
   try {
     if (window.sessionStorage && sessionStorage.getItem(sessionKey)) {
-      return; // Phiên truy cập này đã được ghi nhận 1 lượt xem, không đếm lặp
+      return;
     }
-  } catch {}
-
-  try {
     if (window.sessionStorage) {
       sessionStorage.setItem(sessionKey, '1');
     }
   } catch {}
 
-  // Tăng biến đếm cục bộ ngay lập tức (Optimistic update)
   sessionFirestoreReads += 1;
   globalTodayReads += 1;
   globalWebsiteReads += 1;
@@ -641,31 +601,6 @@ export function recordWebsiteVisit(): void {
 
   notifyReadListeners();
   notifyWebsiteViewListeners();
-
-  // Đưa vào hàng đợi gom lượt đọc để đồng bộ nguyên tử lên Firestore
-  queuePendingTrackerRead(1);
-
-  const logItem: FirestoreReadLogItem = {
-    id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-    timestamp: new Date().toISOString(),
-    timeStr: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-    count: 1,
-    source: 'Truy cập website',
-  };
-
-  try {
-    const logKey = 'cosmo_fs_reads_logs';
-    let logs: FirestoreReadLogItem[] = [];
-    const rawLogs = safeStorage.getItem(logKey);
-    if (rawLogs) {
-      try {
-        logs = JSON.parse(rawLogs);
-      } catch {}
-    }
-    logs.unshift(logItem);
-    if (logs.length > 30) logs = logs.slice(0, 30);
-    safeStorage.setItem(logKey, JSON.stringify(logs));
-  } catch {}
 }
 
 export async function recordPageView(
@@ -676,19 +611,17 @@ export async function recordPageView(
   if (typeof window === 'undefined') return;
   if (isAutomatedBot()) return;
 
-  // 1. Khi bấm vào xem trang giới thiệu: tính +1 lượt đọc vào footer (1 lần mỗi phiên đọc)
   if (pageType === 'about') {
     const sessionKey = 'cosmo_about_view_session';
     try {
       if (window.sessionStorage && sessionStorage.getItem(sessionKey)) {
-        return; // Đã ghi nhận trong phiên hiện tại
+        return;
       }
       if (window.sessionStorage) {
         sessionStorage.setItem(sessionKey, '1');
       }
     } catch {}
 
-    // Cập nhật giao diện lập tức (Optimistic update)
     sessionFirestoreReads += 1;
     globalTodayReads += 1;
     globalWebsiteReads += 1;
@@ -699,47 +632,20 @@ export async function recordPageView(
 
     notifyReadListeners();
     notifyWebsiteViewListeners();
-
-    // Gom lượt đọc gửi lên Firestore tracker (cộng dồn vĩnh viễn trên server)
-    queuePendingTrackerRead(1);
-
-    const logItem: FirestoreReadLogItem = {
-      id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      timestamp: new Date().toISOString(),
-      timeStr: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      count: 1,
-      source: 'Xem trang Giới thiệu',
-    };
-
-    try {
-      const logKey = 'cosmo_fs_reads_logs';
-      let logs: FirestoreReadLogItem[] = [];
-      const rawLogs = safeStorage.getItem(logKey);
-      if (rawLogs) {
-        try {
-          logs = JSON.parse(rawLogs);
-        } catch {}
-      }
-      logs.unshift(logItem);
-      if (logs.length > 30) logs = logs.slice(0, 30);
-      safeStorage.setItem(logKey, JSON.stringify(logs));
-    } catch {}
     return;
   }
 
-  // 2. Khi bấm vào xem trang thông tin truyện: tính +1 lượt đọc cho truyện VÀ +1 vào footer (1 lần mỗi phiên đọc)
   if (pageType === 'novel-info' && detailId) {
     const sessionKey = `cosmo_novel_view_${detailId}`;
     try {
       if (window.sessionStorage && sessionStorage.getItem(sessionKey)) {
-        return; // Đã xem truyện này trong phiên hiện tại
+        return;
       }
       if (window.sessionStorage) {
         sessionStorage.setItem(sessionKey, '1');
       }
     } catch {}
 
-    // Cập nhật giao diện lập tức (Optimistic update)
     sessionFirestoreReads += 1;
     globalTodayReads += 1;
     globalWebsiteReads += 1;
@@ -750,32 +656,6 @@ export async function recordPageView(
 
     notifyReadListeners();
     notifyWebsiteViewListeners();
-
-    // Đưa vào hàng đợi gom lượt đọc để đồng bộ nguyên tử lên Firestore
-    queuePendingTrackerRead(1);
-    queuePendingNovelRead(detailId, 1);
-
-    const logItem: FirestoreReadLogItem = {
-      id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      timestamp: new Date().toISOString(),
-      timeStr: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      count: 1,
-      source: `Xem thông tin: ${pageTitle || 'Truyện'}`,
-    };
-
-    try {
-      const logKey = 'cosmo_fs_reads_logs';
-      let logs: FirestoreReadLogItem[] = [];
-      const rawLogs = safeStorage.getItem(logKey);
-      if (rawLogs) {
-        try {
-          logs = JSON.parse(rawLogs);
-        } catch {}
-      }
-      logs.unshift(logItem);
-      if (logs.length > 30) logs = logs.slice(0, 30);
-      safeStorage.setItem(logKey, JSON.stringify(logs));
-    } catch {}
   }
 }
 
@@ -861,83 +741,17 @@ function notifyReadListeners(): void {
  * Đảm bảo cộng dồn chính xác mọi lượt đọc trên tất cả thiết bị (điện thoại, PC, laptop...).
  */
 export async function fetchGlobalReadStats(force = false): Promise<FirestoreReadStats> {
-  const now = Date.now();
-  if (!force && now - lastTrackerFetchTime < STATS_CACHE_TTL_MS && globalWebsiteReads > 0) {
-    return getFirestoreReadStats();
-  }
-  if (isFetchingTracker) {
-    return getFirestoreReadStats();
-  }
-
-  isFetchingTracker = true;
   try {
-    const trackerDocRef = doc(db, 'he_thong', 'daily_reads_tracker');
-    const snapshot = await getDoc(trackerDocRef);
-    lastTrackerFetchTime = Date.now();
-
-    const activeCycle = getCycleKey();
-    if (snapshot.exists()) {
-      const data = snapshot.data();
-      const docCycle = data?.cycleKey;
-      const firestoreCount = typeof data?.todayReads === 'number' ? data.todayReads : 0;
-      const firestoreTotalReads = typeof data?.totalWebsiteReads === 'number'
-        ? data.totalWebsiteReads
-        : (typeof data?.totalWebsiteViews === 'number' ? data.totalWebsiteViews : 0);
-
-      globalWebsiteReads = firestoreTotalReads;
-
-      if (docCycle === activeCycle) {
-        globalTodayReads = firestoreCount;
-      } else {
-        // Chu kỳ mới (sau 14:00 ngày hôm sau)
-        globalTodayReads = 0;
-        setDoc(
-          trackerDocRef,
-          {
-            todayReads: 0,
-            cycleKey: activeCycle,
-            dailyLimit: 50000,
-            updatedAt: new Date().toISOString(),
-          },
-          { merge: true }
-        ).catch(() => {});
-      }
-
-      // Lưu cache an toàn vào safeStorage
+    const d1Views = await fetchGlobalViews(force);
+    if (typeof d1Views === 'number' && d1Views > 0) {
+      globalWebsiteReads = Math.max(globalWebsiteReads, d1Views);
       try {
         safeStorage.setItem(STORAGE_KEY_TOTAL_READS, String(globalWebsiteReads));
       } catch {}
-
-      notifyWebsiteViewListeners();
-      notifyReadListeners();
-    } else {
-      // Khởi tạo tài liệu trên Firestore nếu chưa có
-      globalTodayReads = 0;
-      globalWebsiteReads = Math.max(globalWebsiteReads, 1);
-      setDoc(
-        trackerDocRef,
-        {
-          todayReads: 0,
-          totalWebsiteReads: globalWebsiteReads,
-          totalWebsiteViews: globalWebsiteReads,
-          cycleKey: activeCycle,
-          dailyLimit: 50000,
-          updatedAt: new Date().toISOString(),
-        },
-        { merge: true }
-      ).catch(() => {});
       notifyWebsiteViewListeners();
       notifyReadListeners();
     }
-  } catch (err) {
-    if (isFirestoreQuotaError(err)) {
-      markQuotaExceeded();
-    } else if (!isFirestoreOfflineError(err)) {
-      console.warn('[Firestore] Notice fetching daily_reads_tracker:', err);
-    }
-  } finally {
-    isFetchingTracker = false;
-  }
+  } catch {}
 
   return getFirestoreReadStats();
 }
@@ -945,8 +759,7 @@ export async function fetchGlobalReadStats(force = false): Promise<FirestoreRead
 let lastManualRefreshTime = 0;
 export async function refreshFirestoreReadStats(): Promise<FirestoreReadStats> {
   const now = Date.now();
-  // Chống spam click liên tục vào nút reload: chỉ gọi Firestore nếu cách lần bấm trước > 30 giây
-  if (now - lastManualRefreshTime < 30000) {
+  if (now - lastManualRefreshTime < 10000) {
     return getFirestoreReadStats();
   }
   lastManualRefreshTime = now;
@@ -1474,7 +1287,7 @@ export interface IntroGuestNote {
 }
 
 export interface IntroReaderMessage {
-  id: number;
+  id: number | string;
   sender: string;
   text: string;
   time: string;
@@ -1485,374 +1298,91 @@ export interface IntroReaderMessage {
 // HỆ THỐNG ĐỒNG BỘ LƯỢT THẢ TIM TRANG GIỚI THIỆU (STYLE 1 & STYLE 2)
 // Lưu trữ vĩnh viễn trên Firestore, phản hồi 0ms trên UI & ghi tức thì
 // ============================================================================
-let pendingStyle1Hearts = 0;
-let pendingStyle2Hearts = 0;
-let heartsSyncTimer: any = null;
-let isHeartsSyncing = false;
-
-// Đọc bộ đệm an toàn từ safeStorage để không bao giờ bị flash số 0 khi tải lại trang
-let cachedStyle1Hearts = (() => {
-  try {
-    const raw = safeStorage.getItem('cosmo_intro_hearts_style1');
-    const val = raw ? parseInt(raw, 10) : 0;
-    return isNaN(val) || val < 0 ? 0 : val;
-  } catch {
-    return 0;
-  }
-})();
-
-let cachedStyle2Hearts = (() => {
-  try {
-    const raw = safeStorage.getItem('cosmo_intro_hearts_style2');
-    const val = raw ? parseInt(raw, 10) : 0;
-    return isNaN(val) || val < 0 ? 0 : val;
-  } catch {
-    return 0;
-  }
-})();
-
-let lastFetchStyle1HeartsTime = 0;
-let lastFetchStyle2HeartsTime = 0;
-const style1HeartsListeners = new Set<(count: number) => void>();
-const style2HeartsListeners = new Set<(count: number) => void>();
-
 export async function flushPendingHeartsToFirestore(): Promise<void> {
-  if (isHeartsSyncing) return;
-  if (pendingStyle1Hearts === 0 && pendingStyle2Hearts === 0) return;
-
-  const s1Count = pendingStyle1Hearts;
-  const s2Count = pendingStyle2Hearts;
-  pendingStyle1Hearts = 0;
-  pendingStyle2Hearts = 0;
-
-  if (heartsSyncTimer) {
-    clearTimeout(heartsSyncTimer);
-    heartsSyncTimer = null;
-  }
-
-  isHeartsSyncing = true;
-  try {
-    const promises: Promise<any>[] = [];
-    if (s1Count > 0) {
-      const docRef = doc(db, 'gioi_thieu_stats', 'style1');
-      promises.push(
-        setDoc(
-          docRef,
-          {
-            heartsCount: increment(s1Count),
-            updatedAt: new Date().toISOString(),
-          },
-          { merge: true }
-        ).catch((err) => console.warn('[Firestore] Error syncing style1 hearts:', err))
-      );
-    }
-    if (s2Count > 0) {
-      const docRef = doc(db, 'gioi_thieu_stats', 'style2');
-      promises.push(
-        setDoc(
-          docRef,
-          {
-            heartsCount: increment(s2Count),
-            updatedAt: new Date().toISOString(),
-          },
-          { merge: true }
-        ).catch((err) => console.warn('[Firestore] Error syncing style2 hearts:', err))
-      );
-    }
-    await Promise.allSettled(promises);
-  } catch (err) {
-    console.warn('[Firestore] Error flushing hearts:', err);
-  } finally {
-    isHeartsSyncing = false;
-  }
+  // Thả tim trang giới thiệu liên kết 100% với Cloudflare D1
 }
 
 function scheduleHeartsSync(): void {
-  if (heartsSyncTimer) return;
-  // Đồng bộ nhanh chóng sau 1,5 giây (thay vì đợi 30 phút gây mất tim khi tắt tab)
-  heartsSyncTimer = setTimeout(() => {
-    heartsSyncTimer = null;
-    flushPendingHeartsToFirestore();
-  }, 1500);
-}
-
-// Bắt sự kiện chuyển tab / đóng trang để đồng bộ tim không bị mất
-if (typeof window !== 'undefined') {
-  try {
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        flushPendingHeartsToFirestore();
-      }
-    });
-    window.addEventListener('pagehide', () => {
-      flushPendingHeartsToFirestore();
-    });
-    window.addEventListener('beforeunload', () => {
-      flushPendingHeartsToFirestore();
-    });
-  } catch {}
+  // Không cần sync Firestore
 }
 
 /**
- * Đọc số tim của Style 1 hoặc Style 2 từ Firestore (Có cache và lưu an toàn)
+ * Đọc số tim của Style 1 hoặc Style 2 từ Cloudflare D1
  */
-export async function fetchIntroHearts(style: 'style1' | 'style2', force = false): Promise<number> {
-  const now = Date.now();
-  const lastTime = style === 'style1' ? lastFetchStyle1HeartsTime : lastFetchStyle2HeartsTime;
-  const currentCached = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
-
-  if (!force && now - lastTime < 5 * 60 * 1000 && currentCached > 0) {
-    return currentCached;
-  }
-
-  try {
-    const docRef = doc(db, 'gioi_thieu_stats', style);
-    const snap = await getDoc(docRef);
-    if (style === 'style1') lastFetchStyle1HeartsTime = Date.now();
-    else lastFetchStyle2HeartsTime = Date.now();
-
-    if (snap.exists()) {
-      const data = snap.data();
-      const count = typeof data?.heartsCount === 'number' ? data.heartsCount : 0;
-      if (style === 'style1') {
-        // Lấy số lớn hơn giữa cache và server để không bị lùi số nếu vừa thả tim
-        cachedStyle1Hearts = Math.max(cachedStyle1Hearts, count);
-        safeStorage.setItem('cosmo_intro_hearts_style1', String(cachedStyle1Hearts));
-        style1HeartsListeners.forEach((fn) => fn(cachedStyle1Hearts));
-        return cachedStyle1Hearts;
-      } else {
-        cachedStyle2Hearts = Math.max(cachedStyle2Hearts, count);
-        safeStorage.setItem('cosmo_intro_hearts_style2', String(cachedStyle2Hearts));
-        style2HeartsListeners.forEach((fn) => fn(cachedStyle2Hearts));
-        return cachedStyle2Hearts;
-      }
-    } else {
-      // Document chưa tồn tại trên Firestore -> tự động khởi tạo document
-      setDoc(
-        docRef,
-        {
-          heartsCount: currentCached > 0 ? currentCached : 0,
-          updatedAt: new Date().toISOString(),
-        },
-        { merge: true }
-      ).catch(() => {});
-    }
-  } catch (err) {
-    console.warn(`[Firestore] Notice fetching ${style} hearts:`, err);
-  }
-  return currentCached;
+export async function fetchIntroHearts(style: 'style1' | 'style2' = 'style1', force = false): Promise<number> {
+  return fetchLikes('intro_page', force);
 }
 
 /**
- * Lắng nghe số lượt thả tim thời gian thực từ Firestore và cache bộ nhớ
+ * Lắng nghe số lượt thả tim từ Cloudflare D1
  */
 export function subscribeToIntroHearts(
-  style: 'style1' | 'style2',
+  style: 'style1' | 'style2' = 'style1',
   callback: (count: number) => void,
   _onError?: (error: unknown) => void
 ): Unsubscribe {
-  const listeners = style === 'style1' ? style1HeartsListeners : style2HeartsListeners;
-  listeners.add(callback);
-
-  // Trả về số tim trong cache ngay tức thì (0ms, không độ trễ)
-  const initial = style === 'style1' ? cachedStyle1Hearts : cachedStyle2Hearts;
-  callback(initial);
-
-  // Nạp từ Firestore lần đầu nếu chưa nạp trong 5 phút qua
-  fetchIntroHearts(style, false).then((count) => callback(count)).catch(() => {});
-
-  // Chu kỳ 5 phút làm mới lại 1 lần từ máy chủ nếu độc giả còn ở lại trang
-  const intervalId = setInterval(() => {
-    fetchIntroHearts(style, true).then((count) => callback(count)).catch(() => {});
-  }, 5 * 60 * 1000);
-
-  return () => {
-    listeners.delete(callback);
-    clearInterval(intervalId);
-  };
+  return subscribeLikes('intro_page', callback);
 }
 
 /**
- * Thả tim: Tăng trên giao diện ngay tức thì, lưu safeStorage, sau đó đồng bộ nhanh lên Firestore
+ * Thả tim qua Cloudflare D1
  */
-export async function incrementIntroHearts(style: 'style1' | 'style2'): Promise<void> {
-  if (style === 'style1') {
-    cachedStyle1Hearts += 1;
-    safeStorage.setItem('cosmo_intro_hearts_style1', String(cachedStyle1Hearts));
-    style1HeartsListeners.forEach((fn) => fn(cachedStyle1Hearts));
-    pendingStyle1Hearts += 1;
-  } else {
-    cachedStyle2Hearts += 1;
-    safeStorage.setItem('cosmo_intro_hearts_style2', String(cachedStyle2Hearts));
-    style2HeartsListeners.forEach((fn) => fn(cachedStyle2Hearts));
-    pendingStyle2Hearts += 1;
-  }
-  scheduleHeartsSync();
+export async function incrementIntroHearts(style: 'style1' | 'style2' = 'style1'): Promise<void> {
+  await incrementLike('intro_page', 1);
 }
-
-// In-memory cache for intro notes
-let cachedStyle1Notes: IntroGuestNote[] = [];
-let cachedStyle2Notes: IntroReaderMessage[] = [];
-let lastFetchStyle1NotesTime = 0;
-let lastFetchStyle2NotesTime = 0;
-const style1NotesListeners = new Set<(notes: IntroGuestNote[]) => void>();
-const style2NotesListeners = new Set<(notes: IntroReaderMessage[]) => void>();
 
 export async function fetchIntroNotesStyle1(force = false): Promise<IntroGuestNote[]> {
-  const now = Date.now();
-  if (!force && now - lastFetchStyle1NotesTime < 30 * 60 * 1000 && cachedStyle1Notes.length > 0) {
-    return cachedStyle1Notes;
-  }
-  try {
-    const collRef = collection(db, 'gioi_thieu_notes_style1');
-    const q = query(collRef, orderBy('createdAt', 'desc'), limit(25));
-    const snapshot = await getDocs(q);
-    lastFetchStyle1NotesTime = Date.now();
-    const notes: IntroGuestNote[] = [];
-    snapshot.forEach((d) => {
-      const data = d.data();
-      notes.push({
-        id: d.id,
-        author: data.author || 'Bạn đọc ẩn danh ♡',
-        content: data.content || '',
-        time: data.time || '',
-        createdAt: typeof data.createdAt === 'number' ? data.createdAt : 0,
-      });
-    });
-    cachedStyle1Notes = notes;
-    style1NotesListeners.forEach((fn) => fn(notes));
-    return notes;
-  } catch (err) {
-    console.warn('[Firebase] Notice fetching style 1 notes:', err);
-    return cachedStyle1Notes;
-  }
+  return fetchGuestNotes('style1', force);
 }
 
-/**
- * Lắng nghe danh sách tin nhắn độc giả trong Sổ Kế Hoạch 2 Mặt (Nạp tĩnh 1 lần + Cache, KHÔNG onSnapshot)
- */
 export function subscribeToIntroNotesStyle1(
   callback: (notes: IntroGuestNote[]) => void,
   _onError?: (error: unknown) => void
 ): Unsubscribe {
-  style1NotesListeners.add(callback);
-  if (cachedStyle1Notes.length > 0) {
-    callback(cachedStyle1Notes);
-  }
-  fetchIntroNotesStyle1(false).then((notes) => callback(notes)).catch(() => {});
-  return () => {
-    style1NotesListeners.delete(callback);
-  };
+  return subscribeGuestNotes('style1', callback);
 }
 
-/**
- * Thêm tin nhắn mới vào Sổ Kế Hoạch 2 Mặt (Style 1) lưu Firestore vĩnh viễn
- */
 export async function addIntroNoteStyle1(author: string, content: string): Promise<IntroGuestNote> {
-  const collRef = collection(db, 'gioi_thieu_notes_style1');
-  const newDocRef = doc(collRef);
-  const now = new Date();
-  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(
-    now.getMinutes()
-  ).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(
-    now.getMonth() + 1
-  ).padStart(2, '0')}`;
-
-  const payload: IntroGuestNote = {
-    id: newDocRef.id,
-    author: author.trim() || 'Bạn đọc ẩn danh ♡',
-    content: content.trim(),
-    time: timeStr,
-    createdAt: Date.now(),
-  };
-
-  try {
-    await setDoc(newDocRef, payload);
-    cachedStyle1Notes.unshift(payload);
-    style1NotesListeners.forEach((fn) => fn([...cachedStyle1Notes]));
-    return payload;
-  } catch (error) {
-    handleFirestoreError(error, OperationType.WRITE, `gioi_thieu_notes_style1/${newDocRef.id}`);
-  }
+  return addGuestNote('style1', author, content);
 }
 
 export async function fetchIntroNotesStyle2(force = false): Promise<IntroReaderMessage[]> {
-  const now = Date.now();
-  if (!force && now - lastFetchStyle2NotesTime < 30 * 60 * 1000 && cachedStyle2Notes.length > 0) {
-    return cachedStyle2Notes;
-  }
-  try {
-    const collRef = collection(db, 'gioi_thieu_notes_style2');
-    const q = query(collRef, orderBy('createdAt', 'desc'), limit(25));
-    const snapshot = await getDocs(q);
-    lastFetchStyle2NotesTime = Date.now();
-    const messages: IntroReaderMessage[] = [];
-    snapshot.forEach((d) => {
-      const data = d.data();
-      messages.push({
-        id: typeof data.id === 'number' ? data.id : (data.createdAt || Date.now()),
-        sender: data.sender || 'Độc giả ẩn danh',
-        text: data.text || '',
-        time: data.time || 'Vừa xong',
-        createdAt: typeof data.createdAt === 'number' ? data.createdAt : 0,
-      });
-    });
-    cachedStyle2Notes = messages;
-    style2NotesListeners.forEach((fn) => fn(messages));
-    return messages;
-  } catch (err) {
-    console.warn('[Firebase] Notice fetching style 2 notes:', err);
-    return cachedStyle2Notes;
-  }
+  const notes = await fetchGuestNotes('style2', force);
+  return notes.map((n) => ({
+    id: n.id,
+    sender: n.author,
+    text: n.content,
+    time: n.time,
+    createdAt: n.createdAt,
+  }));
 }
 
-/**
- * Lắng nghe danh sách lời nhắn độc giả Máy Trứng Tamagotchi (Nạp tĩnh 1 lần + Cache, KHÔNG onSnapshot)
- */
 export function subscribeToIntroNotesStyle2(
   callback: (messages: IntroReaderMessage[]) => void,
   _onError?: (error: unknown) => void
 ): Unsubscribe {
-  style2NotesListeners.add(callback);
-  if (cachedStyle2Notes.length > 0) {
-    callback(cachedStyle2Notes);
-  }
-  fetchIntroNotesStyle2(false).then((msgs) => callback(msgs)).catch(() => {});
-  return () => {
-    style2NotesListeners.delete(callback);
-  };
+  return subscribeGuestNotes('style2', (notes) => {
+    callback(
+      notes.map((n) => ({
+        id: n.id,
+        sender: n.author,
+        text: n.content,
+        time: n.time,
+        createdAt: n.createdAt,
+      }))
+    );
+  });
 }
 
-/**
- * Thêm lời nhắn mới vào Máy Trứng Tamagotchi (Style 2) lưu Firestore vĩnh viễn
- */
 export async function addIntroNoteStyle2(sender: string, text: string): Promise<IntroReaderMessage> {
-  const collRef = collection(db, 'gioi_thieu_notes_style2');
-  const newDocRef = doc(collRef);
-  const now = new Date();
-  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(
-    now.getMinutes()
-  ).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(
-    now.getMonth() + 1
-  ).padStart(2, '0')}`;
-  const nowTs = Date.now();
-
-  const payload: IntroReaderMessage = {
-    id: nowTs,
-    sender: sender.trim() || 'Độc giả ẩn danh',
-    text: text.trim(),
-    time: timeStr,
-    createdAt: nowTs,
+  const note = await addGuestNote('style2', sender, text);
+  return {
+    id: note.id,
+    sender: note.author,
+    text: note.content,
+    time: note.time,
+    createdAt: note.createdAt,
   };
-
-  try {
-    await setDoc(newDocRef, payload);
-    cachedStyle2Notes.unshift(payload);
-    style2NotesListeners.forEach((fn) => fn([...cachedStyle2Notes]));
-    return payload;
-  } catch (error) {
-    handleFirestoreError(error, OperationType.WRITE, `gioi_thieu_notes_style2/${newDocRef.id}`);
-  }
 }
 
 export {

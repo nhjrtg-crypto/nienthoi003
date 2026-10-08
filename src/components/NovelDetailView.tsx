@@ -873,9 +873,6 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(initialList));
     } catch {}
 
-    // Only subscribe to comments from Cloudflare D1 if user opens the comments tab
-    if (activeTab !== 'comments') return;
-
     // Lắng nghe bình luận thời gian thực 100% từ Cloudflare D1 (Ngắt kết nối hoàn toàn khỏi Firebase)
     const unsubscribe = subscribeD1Comments(novel.id, undefined, (d1Comments) => {
       const currentDeletedSet = getDeletedCommentIds();

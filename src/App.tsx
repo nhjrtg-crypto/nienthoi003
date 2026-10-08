@@ -38,7 +38,6 @@ import {
   getStoredAdminSession,
   clearAdminSession,
   isBotComment,
-  recordPageView,
 } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import {
@@ -927,17 +926,15 @@ export default function App() {
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber, pendingNovelId]);
 
-  // Ghi nhận lượt đọc vào bộ đếm Footer:
+  // Ghi nhận lượt đọc vào bộ đếm Footer qua Cloudflare D1:
   // 1. Khi bấm vào xem trang giới thiệu (about-light hoặc portfolio) -> tính +1 lượt đọc
   // 2. Khi bấm vào xem trang thông tin truyện (novel-detail) -> tính +1 lượt đọc cho truyện và +1 vào footer
   // 3. KHÔNG tính khi nạp danh sách truyện (novel-home), đúng theo chỉ thị người dùng.
   useEffect(() => {
     if (viewMode === 'about-light' || viewMode === 'portfolio') {
       incrementGlobalView(1).catch(() => {});
-      recordPageView('about', 'Trang giới thiệu');
     } else if (viewMode === 'novel-detail' && readingChapterNumber === null && selectedNovel) {
       incrementGlobalView(1).catch(() => {});
-      recordPageView('novel-info', selectedNovel.title, selectedNovel.id);
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber]);
 
@@ -1318,7 +1315,15 @@ export default function App() {
           </main>
 
           {/* Cosmic Footer */}
-          <Footer />
+          <Footer
+            onOpenIntro={() => {
+              setSelectedNovel(null);
+              setReadingChapterNumber(null);
+              setLightIntroOption('style1');
+              setViewMode('about-light');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
 
           {/* Project Details Modal */}
           <ProjectModal

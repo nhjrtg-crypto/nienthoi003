@@ -427,6 +427,41 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
   const CHAPTERS_PER_PAGE = 20;
 
+  // Màu nền của số chương được chọn trong mục lục: đổ màu trầm hợp theme, bỏ hiệu ứng (không shadow, không gradient chói)
+  const getReaderActiveChapterStyle = (th: NovelThemeId, isDark: boolean): string => {
+    if (isDark) {
+      switch (th) {
+        case 'slate-haze':
+          return 'bg-[#223547] text-[#e2ecf5]';
+        case 'sage':
+          return 'bg-[#233a28] text-[#e2ede4]';
+        case 'mocha':
+          return 'bg-[#38281f] text-[#f4ece5]';
+        case 'notebook':
+          return 'bg-[#303034] text-[#f4f4f5]';
+        case 'amethyst-haze':
+        case 'cosmic':
+        default:
+          return 'bg-[#35254d] text-[#f3e8ff]';
+      }
+    } else {
+      switch (th) {
+        case 'slate-haze':
+          return 'bg-[#435c77] text-white';
+        case 'sage':
+          return 'bg-[#446247] text-white';
+        case 'mocha':
+          return 'bg-[#6b4e3e] text-white';
+        case 'notebook':
+          return 'bg-[#3f3f46] text-white';
+        case 'amethyst-haze':
+        case 'cosmic':
+        default:
+          return 'bg-[#614b7b] text-white';
+      }
+    }
+  };
+
   useEffect(() => {
     if (chapterNumber) {
       setChapterPage(Math.ceil(chapterNumber / CHAPTERS_PER_PAGE));
@@ -1100,9 +1135,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                     return (
                       <div
                         key={chap.id || `chap-${chap.chapterNumber}`}
-                        className={`w-full px-2 py-1 rounded-lg text-xs flex items-center justify-between transition-all group ${
+                        className={`w-full px-2 py-1 rounded-lg text-xs flex items-center justify-between group ${
                           isCurrent
-                            ? `${tStyles.categoryTabActive} font-semibold shadow-2xs`
+                            ? `${getReaderActiveChapterStyle(readerTheme, isDarkEffective)} font-semibold`
                             : isDarkEffective
                             ? 'hover:bg-zinc-800/70 text-zinc-300 hover:text-white'
                             : 'hover:bg-zinc-100 text-zinc-700 hover:text-zinc-900'

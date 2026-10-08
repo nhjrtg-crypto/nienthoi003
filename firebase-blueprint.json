@@ -48,54 +48,6 @@
         "avatar": { "type": "string", "description": "URL ảnh đại diện nếu có" }
       },
       "required": ["truyenId", "author", "content"]
-    },
-    "HeThong": {
-      "title": "HeThong",
-      "description": "Lưu trữ thống kê hệ thống, lượt đọc hàng ngày và tổng lượt xem toàn web tích lũy",
-      "type": "object",
-      "properties": {
-        "date": { "type": "string", "description": "Ngày theo chu kỳ reset hạn mức" },
-        "todayReads": { "type": "number", "description": "Tổng lượt đọc thực Firestore trong ngày tích lũy toàn hệ thống" },
-        "totalWebsiteReads": { "type": "number", "description": "Tổng lượt đọc chương toàn web tích lũy vĩnh viễn trên mọi thiết bị" },
-        "totalWebsiteViews": { "type": "number", "description": "Tổng lượt xem toàn web tích lũy qua các phiên truy cập của độc giả" },
-        "updatedAt": { "type": "string", "description": "Thời gian cập nhật ISO string" },
-        "dailyLimit": { "type": "number", "description": "Giới hạn đọc trong ngày (50000)" }
-      },
-      "required": ["date", "todayReads"]
-    },
-    "GioiThieuStats": {
-      "title": "GioiThieuStats",
-      "description": "Thống kê lượt thả tim trang giới thiệu theo từng phong cách style1 và style2",
-      "type": "object",
-      "properties": {
-        "heartsCount": { "type": "number", "description": "Số lượt thả tim tích lũy trên mọi thiết bị" },
-        "updatedAt": { "type": "string", "description": "Thời gian cập nhật gần nhất" }
-      },
-      "required": ["heartsCount"]
-    },
-    "GioiThieuNoteStyle1": {
-      "title": "GioiThieuNoteStyle1",
-      "description": "Những tin nhắn đã gửi trong sổ lưu bút Sổ Kế Hoạch 2 Mặt (Style 1)",
-      "type": "object",
-      "properties": {
-        "author": { "type": "string", "description": "Tên độc giả gửi tin nhắn" },
-        "content": { "type": "string", "description": "Nội dung lời nhắn" },
-        "time": { "type": "string", "description": "Chuỗi thời gian hiển thị (vd: 14:20 26/09)" },
-        "createdAt": { "type": "number", "description": "Timestamp thời gian gửi để sắp xếp" }
-      },
-      "required": ["author", "content", "createdAt"]
-    },
-    "GioiThieuNoteStyle2": {
-      "title": "GioiThieuNoteStyle2",
-      "description": "Lời nhắn độc giả trong Máy Trứng Tamagotchi (Style 2)",
-      "type": "object",
-      "properties": {
-        "sender": { "type": "string", "description": "Tên hoặc biệt danh độc giả" },
-        "text": { "type": "string", "description": "Nội dung lời nhắn" },
-        "time": { "type": "string", "description": "Chuỗi thời gian hiển thị" },
-        "createdAt": { "type": "number", "description": "Timestamp thời gian gửi để sắp xếp" }
-      },
-      "required": ["sender", "text", "createdAt"]
     }
   },
   "firestore": {
@@ -110,22 +62,6 @@
     "/truyen/{truyenId}/binh_luan/{binhLuanId}": {
       "schema": "BinhLuan",
       "description": "Sub-collection chứa bình luận của độc giả cho từng truyện"
-    },
-    "/he_thong/{docId}": {
-      "schema": "HeThong",
-      "description": "Thống kê hệ thống, lượt đọc toàn cầu tích lũy"
-    },
-    "/gioi_thieu_stats/{styleId}": {
-      "schema": "GioiThieuStats",
-      "description": "Lưu trữ số lượt thả tim cho Style 1 và Style 2"
-    },
-    "/gioi_thieu_notes_style1/{noteId}": {
-      "schema": "GioiThieuNoteStyle1",
-      "description": "Tin nhắn độc giả gửi vào Sổ Kế Hoạch 2 Mặt"
-    },
-    "/gioi_thieu_notes_style2/{noteId}": {
-      "schema": "GioiThieuNoteStyle2",
-      "description": "Lời nhắn độc giả gửi trong Máy Trứng Tamagotchi"
     }
   }
 }

@@ -38,11 +38,13 @@ import {
 } from 'lucide-react';
 import { Novel, NovelGenre, DarkBackgroundOption, DARK_BG_OPTIONS } from '../types';
 import { AdminUserLike } from '../services/firebase';
+import { cosmicAudio } from '../utils/audioSynth';
 import { NOVEL_GENRES } from '../data/novelData';
 import { NovelThemeId, NOVEL_THEME_OPTIONS, getNovelThemeStyles } from '../utils/themeStyles';
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { WebLogo } from './WebLogo';
 import { RandomNovelPicker } from './RandomNovelPicker';
+import { IntroAboutButton, ClassicIntroAboutButton } from './IntroAboutButton';
 import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { Footer } from './Footer';
 import { CosmicStarsBackground } from './CosmicStarsBackground';
@@ -158,6 +160,7 @@ interface NovelHomeViewProps {
   onOpenPublishModal: () => void;
   onBackToPortfolio: () => void;
   onOpenLightIntro?: () => void;
+  onOpenAboutView?: () => void;
   isAdmin?: boolean;
   currentUser?: AdminUserLike | null;
   onOpenAdminAuth?: () => void;
@@ -173,6 +176,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   onOpenPublishModal,
   onBackToPortfolio,
   onOpenLightIntro,
+  onOpenAboutView,
   isAdmin = false,
   currentUser = null,
   onOpenAdminAuth,
@@ -1054,6 +1058,24 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   };
 
+  // Helper styling cho nút "Giới thiệu về trang web" trên hero banner ở chế độ sáng giống kiểu tags trong Tiểu Thuyết Đã Hoàn
+  const getLightTagButtonClass = (th: NovelThemeId): string => {
+    switch (th) {
+      case 'slate-haze':
+        return 'frost-light-btn';
+      case 'sage':
+        return 'sage-light-btn';
+      case 'mocha':
+        return 'mocha-light-btn';
+      case 'notebook':
+        return 'notebook-light-btn';
+      case 'amethyst-haze':
+      case 'cosmic':
+      default:
+        return 'amethyst-light-btn';
+    }
+  };
+
   // Helper styling for completed novel category filter tabs (Nút phân loại mục Tiểu Thuyết Đã Hoàn)
   // - Ở theme sáng: Khôi phục lại như cũ trước khi áp dụng 5 hiệu ứng (nền thanh container sáng với shadow-inner, màu nút active chuẩn của theme) - GIỮ NGUYÊN
   // - Ở theme tối: Chuyển sắc rõ ràng, mỗi nút mang một sắc thái riêng biệt nổi bật, toàn bộ thanh biến chuyển màu sắc hài hòa khi bấm nút khác nhau
@@ -1476,27 +1498,27 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           return {
             outerStyle: {
               border: '1.5px solid transparent',
-              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 248, 242, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(210, 205, 192, 0.92) 0%, rgba(225, 220, 208, 0.58) 7%, rgba(238, 235, 225, 0.22) 15%, transparent 24%) border-box',
-              boxShadow: '0 12px 32px rgba(185, 180, 168, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+              background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.4) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(212, 212, 216, 0.9) 0%, rgba(228, 228, 231, 0.6) 7%, rgba(244, 244, 245, 0.25) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02)',
             },
             innerStyle: {
               border: '1px solid transparent',
-              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(253, 251, 246, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(232, 226, 210, 0.6) 0%, rgba(222, 215, 198, 0.5) 45%, rgba(212, 204, 186, 0.55) 100%) border-box',
-              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(200, 192, 175, 0.15)',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 252, 252, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(228, 228, 231, 0.7) 0%, rgba(212, 212, 216, 0.5) 45%, rgba(228, 228, 231, 0.6) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.98), inset 0 -1px 2px rgba(200, 200, 205, 0.12)',
             },
             iconBtnStyle: {
               border: '1px solid transparent',
-              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,247,240,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(235,230,218,0.6) 45%, rgba(210,202,185,0.8) 100%) border-box',
-              boxShadow: '0 2px 5px rgba(180,172,158,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(228,228,231,0.6) 45%, rgba(212,212,216,0.8) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255,255,255,0.95)',
             },
-            iconColor: 'text-[#6e6858]',
-            titleColor: 'text-[#38342a]',
-            subtitleColor: 'text-[#918a78]',
-            chevronColor: 'text-[#68614e]',
-            dividerClass: 'border-[#ebe6d8]',
-            itemHoverClass: 'hover:bg-amber-50/40',
-            itemTitleHoverClass: 'group-hover:text-[#524d3e]',
-            itemDateClass: 'text-[#78716c]',
+            iconColor: 'text-[#525252]',
+            titleColor: 'text-[#171717]',
+            subtitleColor: 'text-[#737373]',
+            chevronColor: 'text-[#525252]',
+            dividerClass: 'border-[#e5e5e5]',
+            itemHoverClass: 'hover:bg-zinc-100/70',
+            itemTitleHoverClass: 'group-hover:text-[#171717]',
+            itemDateClass: 'text-[#737373]',
           };
         case 'slate-haze':
         default:
@@ -2261,34 +2283,42 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   }, [theme, isDarkEffective]);
 
   // Cấu hình phong cách cho nút "GIỚI THIỆU VỀ TRANG WEB"
-  // - Ở chế độ tối: Màu nút giống màu nút trong mục tiểu thuyết đã hoàn theo từng theme
-  // - Ở chế độ sáng: Giữ nguyên không thay đổi
   const introButtonStyles = useMemo(() => {
     if (isCosmic) {
       return isDarkEffective
         ? {
+            gradientBorder: 'bg-[linear-gradient(90deg,#2e1065,#a855f7,#ec4899,#06b6d4,#2e1065)]',
+            glowShadow: 'shadow-[0_0_8px_rgba(168,85,247,0.35)]',
+            glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(236,72,153,0.45)]',
+            pulseHaloBg: 'bg-indigo-600/20',
+            btnInnerBg: 'bg-[#2e1065] hover:bg-[#3b1580]',
+            textColor: 'text-white font-bold',
+            dotColor: 'bg-cyan-200',
+            dotPing: 'bg-pink-400',
+            // Fallback compatibility properties
             btnBg: '',
             btnGradient: 'bg-gradient-to-r from-[#818cf8] via-[#c084fc] to-[#e879f9]',
-            btnGlow: 'shadow-[0_4px_16px_rgba(168,85,247,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
-            textColor: 'text-white font-bold',
-            borderGradient: 'bg-transparent',
+            btnGlow: 'shadow-[0_4px_16px_rgba(168,85,247,0.45)]',
             borderShadow: 'shadow-none',
             innerShadow: 'shadow-xs',
             haloCushion: 'bg-gradient-to-r from-[#818cf8]/40 via-[#c084fc]/30 to-[#e879f9]/40',
-            dotColor: 'bg-white',
-            dotPing: 'bg-white/80',
           }
         : {
+            gradientBorder: 'bg-transparent',
+            glowShadow: 'shadow-xs',
+            glowShadowHover: 'group-hover:shadow-sm',
+            pulseHaloBg: 'opacity-0',
+            btnInnerBg: 'bg-purple-50/90 hover:bg-purple-100/90 border border-purple-200 hover:border-purple-300 shadow-xs',
+            textColor: 'text-purple-800 font-bold',
+            dotColor: 'bg-purple-500',
+            dotPing: 'bg-purple-300',
+            // Fallback compatibility properties
             btnBg: '#faf8fc',
             btnGradient: '',
             btnGlow: '',
-            textColor: 'text-[#3f2e51]',
-            borderGradient: 'bg-gradient-to-r from-[#dbd1e8] via-[#ebe3f4] to-[#d3c7e1]',
             borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
             innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
             haloCushion: 'bg-[#dbd1e8]/30',
-            dotColor: 'bg-[#6b5280]',
-            dotPing: 'bg-[#ad97c2]',
           };
     }
 
@@ -2296,137 +2326,177 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         return isDarkEffective
           ? {
+              gradientBorder: 'bg-[linear-gradient(90deg,#064e3b,#10b981,#34d399,#6ee7b7,#064e3b)]',
+              glowShadow: 'shadow-[0_0_8px_rgba(52,211,153,0.35)]',
+              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(16,185,129,0.45)]',
+              pulseHaloBg: 'bg-emerald-600/20',
+              btnInnerBg: 'bg-[#064e3b] hover:bg-[#065f46]',
+              textColor: 'text-white font-bold',
+              dotColor: 'bg-emerald-200',
+              dotPing: 'bg-teal-400',
               btnBg: '',
               btnGradient: 'bg-gradient-to-r from-[#34d399] to-[#2dd4bf]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(52,211,153,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
-              textColor: 'text-white font-bold',
-              borderGradient: 'bg-transparent',
+              btnGlow: 'shadow-[0_4px_16px_rgba(52,211,153,0.45)]',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-[#34d399]/40 to-[#2dd4bf]/40',
-              dotColor: 'bg-white',
-              dotPing: 'bg-white/80',
             }
           : {
+              gradientBorder: 'bg-transparent',
+              glowShadow: 'shadow-xs',
+              glowShadowHover: 'group-hover:shadow-sm',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-emerald-50/90 hover:bg-emerald-100/90 border border-emerald-200 hover:border-emerald-300 shadow-xs',
+              textColor: 'text-emerald-800 font-bold',
+              dotColor: 'bg-emerald-600',
+              dotPing: 'bg-emerald-400',
               btnBg: '#f7faf7',
               btnGradient: '',
               btnGlow: '',
-              textColor: 'text-[#2a442d]',
-              borderGradient: 'bg-gradient-to-r from-[#c6d7c4] via-[#dce8db] to-[#bed0bd]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
               innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
               haloCushion: 'bg-[#c6d7c4]/30',
-              dotColor: 'bg-[#3b5e3d]',
-              dotPing: 'bg-[#7ca37e]',
             };
 
       case 'notebook':
         return isDarkEffective
           ? {
+              gradientBorder: 'bg-[linear-gradient(90deg,#27272a,#71717a,#a1a1aa,#e4e4e7,#27272a)]',
+              glowShadow: 'shadow-[0_0_8px_rgba(161,161,170,0.3)]',
+              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(228,228,231,0.4)]',
+              pulseHaloBg: 'bg-zinc-600/20',
+              btnInnerBg: 'bg-[#27272a] hover:bg-[#3f3f46]',
+              textColor: 'text-white font-bold',
+              dotColor: 'bg-zinc-200',
+              dotPing: 'bg-zinc-400',
               btnBg: '',
               btnGradient: 'bg-gradient-to-r from-[#94a3b8] to-[#cbd5e1]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(148,163,184,0.4),inset_0_1px_1.5px_rgba(255,255,255,0.6),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
-              textColor: 'text-neutral-900 font-bold',
-              borderGradient: 'bg-transparent',
+              btnGlow: 'shadow-[0_4px_16px_rgba(148,163,184,0.4)]',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-zinc-400/40 via-zinc-300/30 to-zinc-400/40',
-              dotColor: 'bg-neutral-800',
-              dotPing: 'bg-neutral-700',
             }
           : {
+              gradientBorder: 'bg-transparent',
+              glowShadow: 'shadow-xs',
+              glowShadowHover: 'group-hover:shadow-sm',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-zinc-50/90 hover:bg-zinc-100/90 border border-zinc-200 hover:border-zinc-300 shadow-xs',
+              textColor: 'text-zinc-800 font-bold',
+              dotColor: 'bg-zinc-600',
+              dotPing: 'bg-zinc-400',
               btnBg: '#ffffff',
               btnGradient: '',
               btnGlow: '',
-              textColor: 'text-neutral-700',
-              borderGradient: 'bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
               innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
               haloCushion: 'bg-neutral-200/40',
-              dotColor: 'bg-neutral-600',
-              dotPing: 'bg-neutral-400',
             };
 
       case 'mocha':
         return isDarkEffective
           ? {
+              gradientBorder: 'bg-[linear-gradient(90deg,#451a03,#d97706,#f59e0b,#fbbf24,#451a03)]',
+              glowShadow: 'shadow-[0_0_8px_rgba(245,158,11,0.35)]',
+              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(251,191,36,0.45)]',
+              pulseHaloBg: 'bg-amber-600/20',
+              btnInnerBg: 'bg-[#451a03] hover:bg-[#5b2204]',
+              textColor: 'text-white font-bold',
+              dotColor: 'bg-amber-200',
+              dotPing: 'bg-orange-400',
               btnBg: '',
               btnGradient: 'bg-gradient-to-r from-[#fb923c] to-[#f59e0b]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(251,146,60,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
-              textColor: 'text-white font-bold',
-              borderGradient: 'bg-transparent',
+              btnGlow: 'shadow-[0_4px_16px_rgba(251,146,60,0.45)]',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-[#fb923c]/40 to-[#f59e0b]/40',
-              dotColor: 'bg-white',
-              dotPing: 'bg-white/80',
             }
           : {
+              gradientBorder: 'bg-transparent',
+              glowShadow: 'shadow-xs',
+              glowShadowHover: 'group-hover:shadow-sm',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-amber-50/90 hover:bg-amber-100/90 border border-amber-200 hover:border-amber-300 shadow-xs',
+              textColor: 'text-amber-900 font-bold',
+              dotColor: 'bg-amber-600',
+              dotPing: 'bg-amber-400',
               btnBg: '#faf8f5',
               btnGradient: '',
               btnGlow: '',
-              textColor: 'text-[#473b33]',
-              borderGradient: 'bg-gradient-to-r from-[#ded5cb] via-[#ebe4dc] to-[#d6cbbf]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
               innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
               haloCushion: 'bg-[#ded5cb]/30',
-              dotColor: 'bg-[#6d5648]',
-              dotPing: 'bg-[#b39b8c]',
             };
 
       case 'slate-haze':
         return isDarkEffective
           ? {
+              gradientBorder: 'bg-[linear-gradient(90deg,#0c4a6e,#0284c7,#38bdf8,#7dd3fc,#0c4a6e)]',
+              glowShadow: 'shadow-[0_0_8px_rgba(56,189,248,0.35)]',
+              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(125,211,252,0.45)]',
+              pulseHaloBg: 'bg-sky-600/20',
+              btnInnerBg: 'bg-[#0c4a6e] hover:bg-[#075985]',
+              textColor: 'text-white font-bold',
+              dotColor: 'bg-sky-200',
+              dotPing: 'bg-blue-400',
               btnBg: '',
               btnGradient: 'bg-gradient-to-r from-[#38bdf8] to-[#60a5fa]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(56,189,248,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
-              textColor: 'text-white font-bold',
-              borderGradient: 'bg-transparent',
+              btnGlow: 'shadow-[0_4px_16px_rgba(56,189,248,0.45)]',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-[#38bdf8]/40 to-[#60a5fa]/40',
-              dotColor: 'bg-white',
-              dotPing: 'bg-white/80',
             }
           : {
+              gradientBorder: 'bg-transparent',
+              glowShadow: 'shadow-xs',
+              glowShadowHover: 'group-hover:shadow-sm',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-sky-50/90 hover:bg-sky-100/90 border border-sky-200 hover:border-sky-300 shadow-xs',
+              textColor: 'text-sky-900 font-bold',
+              dotColor: 'bg-sky-600',
+              dotPing: 'bg-sky-400',
               btnBg: '#f8fafc',
               btnGradient: '',
               btnGlow: '',
-              textColor: 'text-[#243a49]',
-              borderGradient: 'bg-gradient-to-r from-[#cde0ec] via-[#deedf6] to-[#c4d7e4]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
               innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
               haloCushion: 'bg-[#cde0ec]/30',
-              dotColor: 'bg-[#3a6077]',
-              dotPing: 'bg-[#89aabf]',
             };
 
       case 'amethyst-haze':
       default:
         return isDarkEffective
           ? {
+              gradientBorder: 'bg-[linear-gradient(90deg,#2e1065,#a855f7,#ec4899,#06b6d4,#2e1065)]',
+              glowShadow: 'shadow-[0_0_8px_rgba(168,85,247,0.35)]',
+              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(236,72,153,0.45)]',
+              pulseHaloBg: 'bg-indigo-600/20',
+              btnInnerBg: 'bg-[#2e1065] hover:bg-[#3b1580]',
+              textColor: 'text-white font-bold',
+              dotColor: 'bg-cyan-200',
+              dotPing: 'bg-pink-400',
               btnBg: '',
               btnGradient: 'bg-gradient-to-r from-[#c084fc] to-[#e879f9]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(192,132,252,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]',
-              textColor: 'text-white font-bold',
-              borderGradient: 'bg-transparent',
+              btnGlow: 'shadow-[0_4px_16px_rgba(192,132,252,0.45)]',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
               haloCushion: 'bg-gradient-to-r from-[#c084fc]/40 to-[#e879f9]/40',
-              dotColor: 'bg-white',
-              dotPing: 'bg-white/80',
             }
           : {
+              gradientBorder: 'bg-transparent',
+              glowShadow: 'shadow-xs',
+              glowShadowHover: 'group-hover:shadow-sm',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-purple-50/90 hover:bg-purple-100/90 border border-purple-200 hover:border-purple-300 shadow-xs',
+              textColor: 'text-purple-800 font-bold',
+              dotColor: 'bg-purple-500',
+              dotPing: 'bg-purple-300',
               btnBg: '#faf8fc',
               btnGradient: '',
               btnGlow: '',
-              textColor: 'text-[#3f2e51]',
-              borderGradient: 'bg-gradient-to-r from-[#dbd1e8] via-[#ebe3f4] to-[#d3c7e1]',
               borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
               innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
               haloCushion: 'bg-[#dbd1e8]/30',
-              dotColor: 'bg-[#6b5280]',
-              dotPing: 'bg-[#ad97c2]',
             };
     }
   }, [theme, isDarkEffective, isCosmic]);
@@ -3322,62 +3392,80 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           
           {/* Nút GIỚI THIỆU VỀ TRANG WEB nằm trên mục truyện nổi bật */}
           <div className="mb-4 sm:mb-5 pt-1 pb-2 flex items-center justify-between">
-            <div className="group relative inline-flex items-center">
-              {/* Hiệu ứng Lớp đệm hào quang nhịp thở (Motion Halo Cushion) */}
-              <div 
-                className={`absolute -inset-0.5 rounded-full pointer-events-none animate-halo-cushion blur-xs transition duration-500 ${introButtonStyles.haloCushion}`}
-              />
+            {!isDarkEffective ? (
+              /* CHẾ ĐỘ SÁNG: MÀU SẮC VÀ HIỆU ỨNG GIỐNG KIỂU TAGS TRONG TIỂU THUYẾT ĐÃ HOÀN */
+              <button
+                id="btn-intro-about-website"
+                onClick={() => {
+                  cosmicAudio.playChime('sparkle');
+                  if (onOpenAboutView) {
+                    onOpenAboutView();
+                  } else if (onOpenLightIntro) {
+                    onOpenLightIntro();
+                  } else {
+                    onBackToPortfolio();
+                  }
+                }}
+                className={`relative inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide cursor-pointer transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 select-none ${getLightTagButtonClass(theme)}`}
+                title="Khám phá giới thiệu về trang web - Dư Thủ Ký Visual Journal"
+              >
+                {/* Sóng radar phát xung */}
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-60 bg-current" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-current" />
+                </span>
+                <span className="font-bold tracking-wide">
+                  GIỚI THIỆU VỀ TRANG WEB
+                </span>
+              </button>
+            ) : (
+              <div className="relative inline-flex items-center group">
+                {/* 1. Lớp đệm hào quang chuyển động (Motion Halo Cushion) */}
+                <span
+                  className={`absolute -inset-0.5 rounded-full pointer-events-none animate-halo-cushion transition-all duration-300 ${introButtonStyles.pulseHaloBg}`}
+                />
 
-              {/* Nút Khám phá giới thiệu về trang web */}
-              {(() => {
-                const lightBtn = getLightModeNeumorphicBtnStyles(theme);
-                return (
+                {/* 2. Khung viền chuyển sắc & đổ bóng */}
+                <div
+                  className={`relative p-[1px] rounded-full overflow-hidden animate-gradient-flow transition-all duration-300 ${introButtonStyles.gradientBorder} ${introButtonStyles.glowShadow} ${introButtonStyles.glowShadowHover}`}
+                >
+                  {/* 3. Thẻ button chính */}
                   <button
                     id="btn-intro-about-website"
                     onClick={() => {
-                      if (onOpenLightIntro) {
+                      cosmicAudio.playChime('sparkle');
+                      if (onOpenAboutView) {
+                        onOpenAboutView();
+                      } else if (onOpenLightIntro) {
                         onOpenLightIntro();
                       } else {
                         onBackToPortfolio();
                       }
                     }}
-                    className={`relative z-10 ${
-                      !isDarkEffective
-                        ? lightBtn.btn
-                        : 'p-0 border-0 bg-transparent shadow-none'
-                    } rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer select-none`}
-                    title="Khám phá giới thiệu về trang web và hồ sơ tác giả sáng lập"
+                    className={`relative z-10 flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer active:scale-95 overflow-hidden select-none ${introButtonStyles.btnInnerBg} ${introButtonStyles.textColor}`}
+                    title="Khám phá giới thiệu về trang web - Dư Thủ Ký Visual Journal"
                   >
-                    <span
-                      className={`relative flex items-center gap-2.5 px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide overflow-hidden ${
-                        !isDarkEffective
-                          ? lightBtn.text
-                          : introButtonStyles.textColor
-                      } ${
-                        !isDarkEffective ? '' : introButtonStyles.innerShadow
-                      } ${
-                        isDarkEffective ? `${introButtonStyles.btnGradient} ${introButtonStyles.btnGlow}` : ''
-                      }`}
-                    >
-                      <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
-                        <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
-                      </span>
+                    {/* 4. Hiệu ứng vệt sáng lướt ngang (Soft Shimmer Sweep) */}
+                    <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
+                      <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
+                    </span>
 
-                      <span className="relative flex h-2.5 w-2.5 shrink-0 z-30">
-                        <span
-                          className={`animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-75 ${introButtonStyles.dotPing}`}
-                        />
-                        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-xs ${introButtonStyles.dotColor}`} />
-                      </span>
+                    {/* 5. Chấm tròn phát tín hiệu (Live Ping Dot - 2 lớp) */}
+                    <span className="relative flex h-2.5 w-2.5 shrink-0 z-30">
+                      <span
+                        className={`animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-75 ${introButtonStyles.dotPing}`}
+                      />
+                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-xs ${introButtonStyles.dotColor}`} />
+                    </span>
 
-                      <span className="relative z-30 font-bold tracking-wider uppercase">
-                        GIỚI THIỆU VỀ TRANG WEB
-                      </span>
+                    {/* 6. Tiêu đề nút */}
+                    <span className="relative z-30 font-bold tracking-wide">
+                      GIỚI THIỆU VỀ TRANG WEB
                     </span>
                   </button>
-                );
-              })()}
-            </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* KHUNG BAO NGOÀI PHONG CÁCH VÉ LÊN MÁY BAY / TÀU HỎA */}
@@ -4548,6 +4636,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         theme={theme}
         isDarkMode={isDarkEffective}
         isHomePage={true}
+        onOpenIntro={() => {
+          if (onOpenLightIntro) {
+            onOpenLightIntro();
+          } else {
+            onBackToPortfolio();
+          }
+        }}
       />
 
     </div>
