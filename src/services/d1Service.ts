@@ -316,29 +316,26 @@ export function subscribeLikes(rawTargetId: string, callback: (count: number) =>
 
   callback(initial);
 
-  fetchLikes(targetId)
+  // Lấy dữ liệu mới nhất từ server ngay khi mở trang/chuyển tab (bỏ qua cache)
+  fetchLikes(targetId, true)
     .then((count) => {
       callback(count);
     })
     .catch(() => {});
 
-  // Tối ưu hóa chu kỳ polling: 90s và CHỈ poll khi tab đang hiển thị (tiết kiệm 95% request)
+  // Tối ưu hóa chu kỳ polling: 60s và CHỈ poll khi tab đang hiển thị
   const intervalId = setInterval(() => {
     if (isPageVisible()) {
-      fetchLikes(targetId)
+      fetchLikes(targetId, true)
         .then((count) => callback(count))
         .catch(() => {});
     }
-  }, 90 * 1000);
+  }, 60 * 1000);
 
   // Lắng nghe khi người dùng quay lại tab sau khi ẩn
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'visible') {
-      const now = Date.now();
-      const lastFetch = lastLikesFetchTime[targetId] || 0;
-      if (now - lastFetch >= 60 * 1000) {
-        fetchLikes(targetId).then((count) => callback(count)).catch(() => {});
-      }
+      fetchLikes(targetId, true).then((count) => callback(count)).catch(() => {});
     }
   };
 
@@ -365,13 +362,20 @@ export async function fetchLikes(rawTargetId: string, force = false): Promise<nu
 
   const now = Date.now();
   const lastFetch = lastLikesFetchTime[targetId] || 0;
-  if (!force && now - lastFetch < 45 * 1000 && inMemoryLikes[targetId] !== undefined) {
+  if (!force && now - lastFetch < 30 * 1000 && inMemoryLikes[targetId] !== undefined) {
     return currentLocal;
   }
 
   return deduplicatedFetch(`get_likes_${targetId}`, async () => {
     try {
-      const res = await fetch(`/api/likes?targetId=${encodeURIComponent(targetId)}`);
+      // Thêm _t timestamp và cache: 'no-store' để đảm bảo không bị Cloudflare hay trình duyệt cache cũ
+      const res = await fetch(`/api/likes?targetId=${encodeURIComponent(targetId)}&_t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      });
       if (res.ok) {
         const data = await res.json();
         if (typeof data.likeCount === 'number') {
@@ -410,6 +414,7 @@ function flushPendingLikes(targetId: string): void {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ targetId, amount }),
+    keepalive: true,
   })
     .then((res) => (res.ok ? res.json() : null))
     .then((data) => {
@@ -447,14 +452,30 @@ export async function incrementLike(rawTargetId: string, amount = 1): Promise<nu
   } catch {}
   notifyLikeListeners(targetId, next);
 
-  // 2. Gom nhóm (Batching) và Debounce 800ms để không gửi hàng chục request khi bấm tim liên tục
-  pendingLikesQueue[targetId] = (pendingLikesQueue[targetId] || 0) + amount;
-  if (pendingLikesTimers[targetId]) {
-    clearTimeout(pendingLikesTimers[targetId]);
-  }
-  pendingLikesTimers[targetId] = setTimeout(() => {
-    flushPendingLikes(targetId);
-  }, 800);
+  // 2. Gửi request POST ngay lập tức (với keepalive: true) để đảm bảo đồng bộ tức thì sang máy/thiết bị khác
+  fetch('/api/likes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ targetId, amount }),
+    keepalive: true,
+  })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (data && typeof data.likeCount === 'number' && data.likeCount > 0 && data.likeCount !== 521) {
+        const current = inMemoryLikes[targetId] || 0;
+        const serverCount = Math.max(data.likeCount, current);
+        inMemoryLikes[targetId] = serverCount;
+        try {
+          safeStorage.setItem(`cf_d1_like_${targetId}`, String(serverCount));
+          if (targetId === 'intro_page') {
+            safeStorage.setItem('cf_d1_like_intro_style1', String(serverCount));
+            safeStorage.setItem('cf_d1_like_intro_style2', String(serverCount));
+          }
+        } catch {}
+        notifyLikeListeners(targetId, serverCount);
+      }
+    })
+    .catch(() => {});
 
   return next;
 }

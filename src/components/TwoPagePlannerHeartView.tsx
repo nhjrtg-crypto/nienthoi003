@@ -193,18 +193,19 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
     }
 
     setHasLiked(true);
-    const nextHearts = Math.max(heartsCount + 1, 31);
-    setHeartsCount(nextHearts);
     try {
-      safeStorage.setItem('cf_d1_like_intro_page', String(nextHearts));
-      safeStorage.setItem('cf_d1_like_intro_style1', String(nextHearts));
-      safeStorage.setItem('cf_d1_like_intro_style2', String(nextHearts));
       safeStorage.setItem('cosmo_has_liked_intro', 'true');
       safeStorage.setItem('cosmo_has_liked_style1', 'true');
       safeStorage.setItem('cosmo_has_liked_tama', 'true');
     } catch {}
 
-    incrementLike('intro_page', 1).catch(() => {});
+    // incrementLike tự cập nhật lạc quan tức thì (+1), ghi bộ nhớ đệm và gửi ngay tới server
+    incrementLike('intro_page', 1)
+      .then((newCount) => {
+        setHeartsCount(newCount);
+      })
+      .catch(() => {});
+
     showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
   };
 

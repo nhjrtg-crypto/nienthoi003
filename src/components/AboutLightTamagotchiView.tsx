@@ -236,17 +236,14 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
 
       if (!hasLiked) {
         setHasLiked(true);
-        const nextHearts = Math.max(tamaHearts + 1, 31);
-        setTamaHearts(nextHearts);
         try {
-          safeStorage.setItem('cf_d1_like_intro_page', String(nextHearts));
-          safeStorage.setItem('cf_d1_like_intro_style1', String(nextHearts));
-          safeStorage.setItem('cf_d1_like_intro_style2', String(nextHearts));
           safeStorage.setItem('cosmo_has_liked_intro', 'true');
           safeStorage.setItem('cosmo_has_liked_style1', 'true');
           safeStorage.setItem('cosmo_has_liked_tama', 'true');
         } catch {}
-        incrementLike('intro_page', 1).catch(() => {});
+        incrementLike('intro_page', 1)
+          .then((newCount) => setTamaHearts(newCount))
+          .catch(() => {});
       }
 
       const heartId = Date.now();
@@ -286,12 +283,7 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     }
 
     setHasLiked(true);
-    const nextHearts = Math.max(tamaHearts + 1, 31);
-    setTamaHearts(nextHearts);
     try {
-      safeStorage.setItem('cf_d1_like_intro_page', String(nextHearts));
-      safeStorage.setItem('cf_d1_like_intro_style1', String(nextHearts));
-      safeStorage.setItem('cf_d1_like_intro_style2', String(nextHearts));
       safeStorage.setItem('cosmo_has_liked_intro', 'true');
       safeStorage.setItem('cosmo_has_liked_style1', 'true');
       safeStorage.setItem('cosmo_has_liked_tama', 'true');
@@ -323,7 +315,9 @@ export const AboutLightTamagotchiView: React.FC<AboutLightTamagotchiViewProps> =
     }, 450);
 
     // 3. Cộng dồn điểm tương tác lên Cloudflare D1 (Database 2)
-    incrementLike('intro_page', 1).catch(() => {});
+    incrementLike('intro_page', 1)
+      .then((newCount) => setTamaHearts(newCount))
+      .catch(() => {});
 
     showToast('Cảm ơn bạn đã thả tim ủng hộ! (づ｡◕‿‿◕｡)づ 💖');
   };

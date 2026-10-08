@@ -22,6 +22,11 @@ const inMemoryStats = {
 };
 
 app.get('/api/likes', (req, res) => {
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  });
   const targetId = req.query.targetId === 'intro_page' || String(req.query.targetId || '').startsWith('intro')
     ? 'intro_page'
     : String(req.query.targetId || 'global');
@@ -30,6 +35,11 @@ app.get('/api/likes', (req, res) => {
 });
 
 app.post('/api/likes', (req, res) => {
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  });
   const rawTarget = req.body?.targetId || 'global';
   const targetId = rawTarget === 'intro_page' || String(rawTarget).startsWith('intro')
     ? 'intro_page'

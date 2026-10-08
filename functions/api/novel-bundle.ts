@@ -96,11 +96,11 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         let count = targetLikeId === 'intro_page' ? 30 : 0;
         if (likeDb) {
           try {
-            const row = await likeDb.prepare('SELECT like_count FROM likes WHERE target_id = ?')
-              .bind(targetLikeId)
-              .first();
+            const row: any = targetLikeId === 'intro_page'
+              ? await likeDb.prepare("SELECT MAX(like_count) as like_count FROM likes WHERE target_id IN ('intro_page', 'intro', 'intro_style1', 'intro_style2')").first()
+              : await likeDb.prepare('SELECT like_count FROM likes WHERE target_id = ?').bind(targetLikeId).first();
             if (row && typeof row.like_count === 'number') {
-              count = row.like_count;
+              count = targetLikeId === 'intro_page' ? Math.max(30, row.like_count) : row.like_count;
             }
           } catch {}
         }

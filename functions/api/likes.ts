@@ -35,7 +35,9 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
   const getHeaders = {
     'Content-Type': 'application/json',
-    'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
+    'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+    'Pragma': 'no-cache',
+    'Access-Control-Allow-Origin': '*',
   };
 
   // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/thả tim) nếu có, fallback về DB
@@ -63,30 +65,38 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       )
     `).run().catch(() => {});
 
-    const row = await db.prepare(
-      'SELECT like_count FROM likes WHERE target_id = ?'
-    )
-      .bind(targetId)
-      .first();
+    let row: any = null;
+    if (targetId === 'intro_page') {
+      row = await db.prepare(
+        "SELECT MAX(like_count) as like_count FROM likes WHERE target_id IN ('intro_page', 'intro', 'intro_style1', 'intro_style2')"
+      ).first().catch(() => null);
+    } else {
+      row = await db.prepare(
+        'SELECT like_count FROM likes WHERE target_id = ?'
+      )
+        .bind(targetId)
+        .first()
+        .catch(() => null);
+    }
 
-    let count = row ? row.like_count : 0;
+    let count = row && typeof row.like_count === 'number' ? row.like_count : 0;
     // Khởi tạo tối thiểu từ số 30 cho trang giới thiệu nếu chưa có
     if (targetId === 'intro_page') {
       if (!row || count < 30) {
         count = 30;
         await db.prepare(
           `INSERT INTO likes (target_id, like_count, updated_at) 
-           VALUES (?, 30, CURRENT_TIMESTAMP)
+           VALUES ('intro_page', 30, CURRENT_TIMESTAMP)
            ON CONFLICT(target_id) 
            DO UPDATE SET like_count = CASE WHEN like_count < 30 THEN 30 ELSE like_count END, updated_at = CURRENT_TIMESTAMP`
-        ).bind(targetId).run().catch(() => {});
+        ).run().catch(() => {});
       }
     }
 
     return new Response(
       JSON.stringify({
         success: true,
-        targetId,
+        targetId: 'intro_page',
         likeCount: count,
       }),
       { headers: getHeaders }
@@ -131,7 +141,49 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       )
     `).run().catch(() => {});
 
-    const baseCount = targetId === 'intro_page' ? 30 : 0;
+    if (targetId === 'intro_page') {
+      // Tìm số like hiện tại lớn nhất giữa các alias intro cũ và mới
+      const existingRow: any = await db.prepare(
+        "SELECT MAX(like_count) as max_likes FROM likes WHERE target_id IN ('intro_page', 'intro', 'intro_style1', 'intro_style2')"
+      ).first().catch(() => null);
+
+      const currentMax = existingRow && typeof existingRow.max_likes === 'number' && existingRow.max_likes > 0
+        ? existingRow.max_likes
+        : 30;
+
+      const newCount = Math.max(currentMax + amount, 31);
+
+      await db.prepare(
+        `INSERT INTO likes (target_id, like_count, updated_at) 
+         VALUES ('intro_page', ?, CURRENT_TIMESTAMP)
+         ON CONFLICT(target_id) 
+         DO UPDATE SET like_count = ?, updated_at = CURRENT_TIMESTAMP`
+      )
+        .bind(newCount, newCount)
+        .run();
+
+      // Đồng bộ luôn các alias cũ để tránh lệch dữ liệu nếu có câu lệnh truy vấn cũ
+      await db.prepare(
+        `UPDATE likes SET like_count = ?, updated_at = CURRENT_TIMESTAMP WHERE target_id IN ('intro', 'intro_style1', 'intro_style2')`
+      ).bind(newCount).run().catch(() => {});
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          targetId: 'intro_page',
+          likeCount: newCount,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Access-Control-Allow-Origin': '*',
+          },
+        }
+      );
+    }
+
+    const baseCount = 0;
 
     await db.prepare(
       `INSERT INTO likes (target_id, like_count, updated_at) 
@@ -154,7 +206,13 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
         targetId,
         likeCount: row ? row.like_count : (baseCount + amount),
       }),
-      { headers: { 'Content-Type': 'application/json' } }
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
     );
   } catch (error: any) {
     return new Response(

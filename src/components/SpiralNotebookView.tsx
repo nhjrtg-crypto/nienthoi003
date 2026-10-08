@@ -13,6 +13,7 @@ import {
   Tag,
   CheckCircle2,
   Trash2,
+  Star,
 } from 'lucide-react';
 import { Novel, NovelChapter, NovelComment } from '../types';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
@@ -289,7 +290,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       synopsisHeaderText: 'text-purple-300',
       synopsisBorderLeft: 'border-purple-500/80',
       loreBoxBg: 'bg-white/[0.035] backdrop-blur-2xl',
-      loreBoxBorder: 'border-l-2 border-purple-400/70 border-t-0 border-r-0 border-b-0',
+      loreBoxBorder: 'border border-purple-500/20 border-l-2 border-l-purple-400/80',
       loreTitleText: 'text-purple-200',
       loreIconText: 'text-purple-400',
       loreBodyText: 'text-purple-100/90',
@@ -389,7 +390,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         synopsisHeaderText: 'text-zinc-200',
         synopsisBorderLeft: 'border-zinc-400',
         loreBoxBg: 'bg-white/[0.035] backdrop-blur-xl',
-        loreBoxBorder: 'border-l-2 border-zinc-400/70 border-t-0 border-r-0 border-b-0',
+        loreBoxBorder: 'border border-white/10 border-l-2 border-l-zinc-400/80',
         loreTitleText: 'text-zinc-200',
         loreIconText: 'text-zinc-400',
         loreBodyText: 'text-zinc-300',
@@ -610,7 +611,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         synopsisHeaderText: 'text-[#dce7f0]',
         synopsisBorderLeft: 'border-[#4d6a85]',
         loreBoxBg: 'bg-white/[0.035] backdrop-blur-xl',
-        loreBoxBorder: 'border-l-2 border-[#8bb0cf]/70 border-t-0 border-r-0 border-b-0',
+        loreBoxBorder: 'border border-[#8bb0cf]/20 border-l-2 border-l-[#8bb0cf]/80',
         loreTitleText: 'text-[#dce7f0]',
         loreIconText: 'text-[#8bb0cf]',
         loreBodyText: 'text-stone-300',
@@ -832,7 +833,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         synopsisHeaderText: 'text-[#d7e6d9]',
         synopsisBorderLeft: 'border-[#4d6f53]',
         loreBoxBg: 'bg-[#152317]/30',
-        loreBoxBorder: 'border-l-2 border-[#8cb391]/70 border-t-0 border-r-0 border-b-0',
+        loreBoxBorder: 'border border-[#8cb391]/20 border-l-2 border-l-[#8cb391]/80',
         loreTitleText: 'text-[#d7e6d9]',
         loreIconText: 'text-[#8cb391]',
         loreBodyText: 'text-stone-300',
@@ -1054,7 +1055,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         synopsisHeaderText: 'text-[#ebdcd3]',
         synopsisBorderLeft: 'border-[#8c6150]',
         loreBoxBg: 'bg-[#2a1a14]/30',
-        loreBoxBorder: 'border-l-2 border-[#d4a38c]/70 border-t-0 border-r-0 border-b-0',
+        loreBoxBorder: 'border border-[#d4a38c]/20 border-l-2 border-l-[#d4a38c]/80',
         loreTitleText: 'text-[#ebdcd3]',
         loreIconText: 'text-[#d4a38c]',
         loreBodyText: 'text-stone-300',
@@ -1274,7 +1275,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       synopsisHeaderText: 'text-purple-200',
       synopsisBorderLeft: 'border-purple-400/80',
       loreBoxBg: 'bg-white/[0.035] backdrop-blur-2xl',
-      loreBoxBorder: 'border-l-2 border-purple-400/70 border-t-0 border-r-0 border-b-0',
+      loreBoxBorder: 'border border-purple-500/20 border-l-2 border-l-purple-400/80',
       loreTitleText: 'text-purple-200',
       loreIconText: 'text-purple-300',
       loreBodyText: 'text-purple-100/90',
@@ -1848,21 +1849,36 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
 
                   {/* Thiết lập nhân vật: họa tiết đường kẻ sổ trong nền với khoảng cách 5px (chế độ tối bỏ hẳn họa tiết này) */}
                   {(effectiveWorldLore || novel.worldLore) && (
-                    <div 
-                      className={`p-4 sm:p-5 rounded-xl ${sTheme.loreBoxBg} border ${sTheme.loreBoxBorder} space-y-2 transition-colors duration-300 relative overflow-hidden`}
-                      style={{
-                        backgroundImage: isDarkEffective
-                          ? 'none'
-                          : `repeating-linear-gradient(to bottom, transparent 0px, transparent 5px, ${sTheme.synopsisLineColor} 5px, ${sTheme.synopsisLineColor} 6px)`,
-                        backgroundAttachment: 'local',
-                      }}
-                    >
-                      <span className={`text-xs sm:text-[13px] font-bold ${sTheme.loreTitleText} block relative z-10`}>
-                        <span>Thiết lập nhân vật:</span>
-                      </span>
-                      <p className={`text-[15px] sm:text-[16px] ${sTheme.loreBodyText} leading-relaxed whitespace-pre-line relative z-10`}>
-                        {effectiveWorldLore || novel.worldLore}
-                      </p>
+                    <div className="relative">
+                      {/* Ngôi sao 5 cánh trang trí trên khung viền của mục (nằm bên phải, màu hợp theme) */}
+                      <div 
+                        className={`absolute -top-2.5 sm:-top-3 right-4 sm:right-6 z-20 pointer-events-none select-none flex items-center gap-1.5 px-1.5 py-0.5 rounded-md ${sTheme.paperBg}`}
+                        title="Ngôi sao trang trí"
+                      >
+                        <Star 
+                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${sTheme.loreIconText} fill-current drop-shadow-xs transform -rotate-12`} 
+                        />
+                        <Star 
+                          className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${sTheme.loreIconText} fill-current opacity-80 drop-shadow-2xs transform rotate-12`} 
+                        />
+                      </div>
+
+                      <div 
+                        className={`p-4 sm:p-5 rounded-xl ${sTheme.loreBoxBg} border ${sTheme.loreBoxBorder} space-y-2 transition-colors duration-300 relative overflow-hidden`}
+                        style={{
+                          backgroundImage: isDarkEffective
+                            ? 'none'
+                            : `repeating-linear-gradient(to bottom, transparent 0px, transparent 5px, ${sTheme.synopsisLineColor} 5px, ${sTheme.synopsisLineColor} 6px)`,
+                          backgroundAttachment: 'local',
+                        }}
+                      >
+                        <span className={`text-xs sm:text-[13px] font-bold ${sTheme.loreTitleText} block relative z-10`}>
+                          <span>Thiết lập nhân vật:</span>
+                        </span>
+                        <p className={`text-[15px] sm:text-[16px] ${sTheme.loreBodyText} leading-relaxed whitespace-pre-line relative z-10`}>
+                          {effectiveWorldLore || novel.worldLore}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
