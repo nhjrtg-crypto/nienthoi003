@@ -1157,3 +1157,40 @@ export function getChapterDisplayParts(
     fullCleanTitle: rawTitle || 'Chương',
   };
 }
+
+/**
+ * Lấy style màu nhãn số chương hiển thị trong danh sách bình luận thích ứng theo từng theme và chế độ sáng/tối
+ */
+export function getCommentChapterBadgeStyle(theme: NovelThemeId, isDarkMode: boolean): string {
+  if (isDarkMode) {
+    switch (theme) {
+      case 'sage':
+        return 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/35';
+      case 'mocha':
+        return 'bg-amber-600/20 text-amber-200 border border-amber-500/35';
+      case 'slate-haze':
+        return 'bg-sky-500/20 text-sky-200 border border-sky-400/35';
+      case 'notebook':
+        return 'bg-zinc-700/40 text-zinc-200 border border-zinc-600/50';
+      case 'amethyst-haze':
+      case 'cosmic':
+      default:
+        return 'bg-purple-500/20 text-purple-200 border border-purple-500/35';
+    }
+  } else {
+    switch (theme) {
+      case 'sage':
+        return 'bg-[#dcead9] text-[#244b23] border border-[#bcd2b8]';
+      case 'mocha':
+        return 'bg-[#f0e2d3] text-[#6d4c38] border border-[#dbc6b2]';
+      case 'slate-haze':
+        return 'bg-[#dbeafe] text-[#1e40af] border border-[#bfdbfe]';
+      case 'notebook':
+        return 'bg-zinc-200/90 text-zinc-800 border border-zinc-300';
+      case 'amethyst-haze':
+      case 'cosmic':
+      default:
+        return 'bg-purple-100 text-purple-800 border border-purple-200';
+    }
+  }
+}

@@ -27,6 +27,7 @@ import {
   getExtraChapterBadgeStyle,
   isExtraChapter,
   getChapterDisplayParts,
+  getCommentChapterBadgeStyle,
 } from '../utils/themeStyles';
 import { safeStorage } from '../utils/safeStorage';
 import { saveRecentRead } from '../utils/recentReads';
@@ -409,6 +410,45 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const isDarkEffective = isCosmic || isDarkMode;
   const tStyles = useMemo(() => getNovelThemeStyles(readerTheme, isDarkEffective), [readerTheme, isDarkEffective]);
 
+  // Màu nền khung bình luận phía dưới cùng của chương nhạt hơn theo từng theme
+  const chapterCommentBoxClass = useMemo(() => {
+    if (isDarkEffective) {
+      return 'bg-white/[0.04] backdrop-blur-md border border-white/10 shadow-xs';
+    }
+    switch (readerTheme) {
+      case 'sage':
+        return 'bg-[#f7faf7]/95 border border-[#e2ede3] shadow-2xs text-[#1c2b1e]';
+      case 'mocha':
+        return 'bg-[#fdfaf7]/95 border border-[#f0e7dd] shadow-2xs text-[#3A2A2A]';
+      case 'slate-haze':
+        return 'bg-[#f8fafd]/95 border border-[#e0ecf7] shadow-2xs text-[#101723]';
+      case 'amethyst-haze':
+        return 'bg-[#fdfaff]/95 border border-[#f1e8f9] shadow-2xs text-[#211c2f]';
+      case 'notebook':
+      default:
+        return 'bg-white/90 border border-slate-200/80 shadow-2xs text-stone-800';
+    }
+  }, [readerTheme, isDarkEffective]);
+
+  const chapterCommentItemClass = useMemo(() => {
+    if (isDarkEffective) {
+      return 'bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-2xs';
+    }
+    switch (readerTheme) {
+      case 'sage':
+        return 'bg-white/85 border border-[#e4efe5] text-[#1c2b1e] shadow-2xs';
+      case 'mocha':
+        return 'bg-white/85 border border-[#f2eae1] text-[#3A2A2A] shadow-2xs';
+      case 'slate-haze':
+        return 'bg-white/85 border border-[#e4eef8] text-[#101723] shadow-2xs';
+      case 'amethyst-haze':
+        return 'bg-white/85 border border-[#f3ebfa] text-[#211c2f] shadow-2xs';
+      case 'notebook':
+      default:
+        return 'bg-white/95 border border-slate-200/70 text-stone-800 shadow-2xs';
+    }
+  }, [readerTheme, isDarkEffective]);
+
   const toggleDarkMode = () => {
     if (readerTheme === 'cosmic') {
       return;
@@ -663,10 +703,14 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
   const handlePostChapterComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!authorNameInput.trim()) {
+      alert('Vui lòng nhập tên của bạn trước khi gửi bình luận.');
+      return;
+    }
     if (!newCommentContent.trim() || !novel || chapterNumber === null) return;
 
     setIsSubmittingComment(true);
-    const finalAuthor = authorNameInput.trim() || 'Bạn Đọc';
+    const finalAuthor = authorNameInput.trim();
     const formattedDate = formatCommentDate();
 
     if (rememberName && authorNameInput.trim()) {
@@ -1614,16 +1658,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           </button>
 
           <button
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              setShowChapterList(true);
-            }}
-            className={`px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl border text-xs sm:text-sm font-bold cursor-pointer ${tStyles.carouselNavBtn}`}
-          >
-            Mục Lục ({chapterNumber}/{allChapters.length})
-          </button>
-
-          <button
             onClick={handleNext}
             disabled={!hasNext}
             className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
@@ -1655,13 +1689,14 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           <form
             id="chapter-comment-form"
             onSubmit={handlePostChapterComment}
-            className={`p-4 sm:p-5 rounded-2xl border space-y-3 transition-colors ${tStyles.card}`}
+            className={`p-4 sm:p-5 rounded-2xl border space-y-3 transition-colors ${chapterCommentBoxClass}`}
           >
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
               <div className="w-full sm:w-1/3">
                 <input
                   type="text"
-                  placeholder="Tên của bạn (hoặc để trống là Bạn Đọc)"
+                  required
+                  placeholder="Tên của bạn (Bắt buộc)"
                   value={authorNameInput}
                   onChange={(e) => handleAuthorNameChange(e.target.value)}
                   maxLength={40}
@@ -1726,7 +1761,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           {/* Danh sách bình luận */}
           <div className="space-y-3">
             {displayedComments.length === 0 ? (
-              <div className={`p-8 text-center rounded-2xl border space-y-2 border-dashed ${tStyles.card}`}>
+              <div className={`p-8 text-center rounded-2xl border space-y-2 border-dashed ${chapterCommentItemClass}`}>
                 <MessageSquare className="w-8 h-8 mx-auto opacity-30" />
                 <p className={`text-xs sm:text-sm font-medium ${tStyles.cardAuthor}`}>
                   Chương {chapterNumber} chưa có bình luận nào. Hãy là người đầu tiên để lại cảm nghĩ nhé!
@@ -1736,7 +1771,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               displayedComments.map((cm) => (
                 <div
                   key={cm.id}
-                  className={`p-4 rounded-2xl border space-y-2.5 transition-colors ${tStyles.card}`}
+                  className={`p-4 rounded-2xl border space-y-2.5 transition-colors ${chapterCommentItemClass}`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -1761,7 +1796,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                             {cm.author}
                           </span>
                           {typeof cm.chapterNumber === 'number' && (
-                            <span className="inline-flex items-center px-2 py-0.2 rounded-full text-[10px] font-semibold bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${getCommentChapterBadgeStyle(readerTheme, isDarkEffective)}`}>
                               Chương {cm.chapterNumber}
                             </span>
                           )}
@@ -1897,7 +1932,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                     <div className="w-full sm:w-1/2">
                       <input
                         type="text"
-                        placeholder="Tên của bạn (hoặc để trống là Bạn Đọc)"
+                        required
+                        placeholder="Tên của bạn (Bắt buộc)"
                         value={authorNameInput}
                         onChange={(e) => handleAuthorNameChange(e.target.value)}
                         maxLength={40}
@@ -1998,9 +2034,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                               </div>
                             )}
                             <div className="min-w-0">
-                              <span className={`text-xs font-bold truncate block ${tStyles.cardTitle}`}>
-                                {cm.author}
-                              </span>
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className={`text-xs font-bold truncate block ${tStyles.cardTitle}`}>
+                                  {cm.author}
+                                </span>
+                                {typeof cm.chapterNumber === 'number' && (
+                                  <span className={`inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-semibold ${getCommentChapterBadgeStyle(readerTheme, isDarkEffective)}`}>
+                                    Chương {cm.chapterNumber}
+                                  </span>
+                                )}
+                              </div>
                               <span className={`text-[10px] block font-mono ${tStyles.cardAuthor}`}>
                                 {normalizeCommentDate(cm.createdAt)}
                               </span>

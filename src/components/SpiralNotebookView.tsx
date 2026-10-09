@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Novel, NovelChapter, NovelComment } from '../types';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
-import { NovelThemeId, getChapterDisplayParts } from '../utils/themeStyles';
+import { NovelThemeId, getChapterDisplayParts, getCommentChapterBadgeStyle } from '../utils/themeStyles';
 import { normalizeCommentDate } from '../utils/dateUtils';
 
 interface SpiralThemeStyles {
@@ -58,6 +58,7 @@ interface SpiralThemeStyles {
   statusBadge: string;
   cardInnerBg: string;
   cardInnerBorder: string;
+  authorEditorBoxBg: string;
   iconAccent: string;
   subIconAccent: string;
   tagPill: string;
@@ -183,6 +184,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         statusBadge: 'bg-[#f3e8ff] text-[#5d3f82] border border-[#d8c4ee] shadow-xs font-semibold',
         cardInnerBg: 'bg-white/95',
         cardInnerBorder: 'border border-[#e9d5ff]',
+        authorEditorBoxBg: 'bg-[#f4ecfc]',
         iconAccent: 'text-[#7c3aed]',
         subIconAccent: 'text-[#a855f7]',
         tagPill: 'cosmic-light-novel-tag font-medium',
@@ -280,6 +282,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       statusBadge: 'bg-white/[0.08] backdrop-blur-xl text-purple-200 border border-white/15 shadow-xs',
       cardInnerBg: 'bg-white/[0.04] backdrop-blur-xl',
       cardInnerBorder: 'border-transparent',
+      authorEditorBoxBg: 'bg-white/[0.06]',
       iconAccent: 'text-purple-400',
       subIconAccent: 'text-pink-400',
       tagPill: 'bg-white/[0.05] backdrop-blur-md text-purple-200 border border-transparent hover:bg-white/[0.1] hover:border-white/15 transition-colors',
@@ -380,6 +383,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         statusBadge: 'bg-white/[0.08] backdrop-blur-md text-zinc-100 border border-white/15',
         cardInnerBg: 'bg-white/[0.04] backdrop-blur-md',
         cardInnerBorder: 'border-transparent',
+        authorEditorBoxBg: 'bg-white/[0.06]',
         iconAccent: 'text-zinc-300',
         subIconAccent: 'text-zinc-400',
         tagPill: 'bg-white/[0.05] backdrop-blur-sm text-zinc-200 border border-transparent hover:bg-white/[0.1] hover:border-white/15 transition-colors',
@@ -501,6 +505,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       statusBadge: 'bg-[#f8fafc] text-[#0f172a] border border-[#e2e8f0] shadow-xs font-semibold',
       cardInnerBg: 'bg-white/95',
       cardInnerBorder: 'border border-[#e2e8f0]',
+      authorEditorBoxBg: 'bg-[#f1f5f9]',
       iconAccent: 'text-[#64748b]',
       subIconAccent: 'text-[#94a3b8]',
       tagPill: 'notebook-light-novel-tag font-medium',
@@ -601,6 +606,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         statusBadge: 'bg-white/[0.08] backdrop-blur-md text-[#dce7f0] border border-white/15',
         cardInnerBg: 'bg-white/[0.04] backdrop-blur-md',
         cardInnerBorder: 'border-transparent',
+        authorEditorBoxBg: 'bg-[#182535]/70',
         iconAccent: 'text-[#8bb0cf]',
         subIconAccent: 'text-[#a6c2d8]',
         tagPill: 'bg-white/[0.05] backdrop-blur-sm text-[#dce7f0] border border-transparent hover:bg-white/[0.1] hover:border-white/15 transition-colors',
@@ -722,6 +728,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       statusBadge: 'bg-[#eaf2fd] text-[#526982] border border-[#b6cde2] shadow-xs font-semibold',
       cardInnerBg: 'bg-white/95',
       cardInnerBorder: 'border border-[#d7e6f5]',
+      authorEditorBoxBg: 'bg-[#eaf1f8]',
       iconAccent: 'text-[#526982]',
       subIconAccent: 'text-[#7d99b8]',
       tagPill: 'frost-light-novel-tag font-medium',
@@ -823,6 +830,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         statusBadge: 'bg-[#152317]/90 text-[#d7e6d9]',
         cardInnerBg: 'bg-[#111c14]',
         cardInnerBorder: 'border-transparent',
+        authorEditorBoxBg: 'bg-[#18271b]',
         iconAccent: 'text-[#8cb391]',
         subIconAccent: 'text-[#9db6a1]',
         tagPill: 'bg-[#152317]/60 text-[#d7e6d9] border border-transparent hover:border-[#5e8264]/40 transition-colors',
@@ -944,6 +952,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       statusBadge: 'bg-[#e8f5e9] text-[#466244] border border-[#9ecbae] shadow-xs font-semibold',
       cardInnerBg: 'bg-white/95',
       cardInnerBorder: 'border border-[#c8e6c9]',
+      authorEditorBoxBg: 'bg-[#eaf3e8]',
       iconAccent: 'text-[#466244]',
       subIconAccent: 'text-[#6a8e67]',
       tagPill: 'sage-light-novel-tag font-medium',
@@ -1045,6 +1054,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         statusBadge: 'bg-[#2a1a14]/90 text-[#ebdcd3]',
         cardInnerBg: 'bg-[#1a120d]',
         cardInnerBorder: 'border-transparent',
+        authorEditorBoxBg: 'bg-[#271d16]',
         iconAccent: 'text-[#d4a38c]',
         subIconAccent: 'text-[#c2b0a2]',
         tagPill: 'bg-[#2a1a14]/60 text-[#ebdcd3] border border-transparent hover:border-[#9f7260]/40 transition-colors',
@@ -1166,6 +1176,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       statusBadge: 'bg-[#f7ede2] text-[#7a6256] border border-[#caa27e] shadow-xs font-semibold',
       cardInnerBg: 'bg-white/95',
       cardInnerBorder: 'border border-[#ecd8c4]',
+      authorEditorBoxBg: 'bg-[#f6eee5]',
       iconAccent: 'text-[#7a6256]',
       subIconAccent: 'text-[#a37764]',
       tagPill: 'mocha-light-novel-tag font-medium',
@@ -1265,6 +1276,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       statusBadge: 'bg-white/[0.08] backdrop-blur-xl text-purple-200 border border-white/15 shadow-xs',
       cardInnerBg: 'bg-white/[0.04] backdrop-blur-xl',
       cardInnerBorder: 'border-transparent',
+      authorEditorBoxBg: 'bg-white/[0.06]',
       iconAccent: 'text-purple-300',
       subIconAccent: 'text-pink-300',
       tagPill: 'bg-white/[0.05] backdrop-blur-md text-purple-200 border border-transparent hover:bg-white/[0.1] hover:border-white/15 transition-colors',
@@ -1387,6 +1399,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     statusBadge: 'bg-[#f3e8ff] text-[#6b4e9b] border border-[#c4b5fd] shadow-xs font-semibold',
     cardInnerBg: 'bg-white/95',
     cardInnerBorder: 'border border-[#dfdae8]',
+    authorEditorBoxBg: 'bg-[#f4edf9]',
     iconAccent: 'text-[#6b4e9b]',
     subIconAccent: 'text-[#8b5cf6]',
     tagPill: 'amethyst-light-novel-tag font-medium',
@@ -1632,8 +1645,12 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userName.trim()) {
+      alert('Vui lòng nhập tên của bạn trước khi gửi bình luận.');
+      return;
+    }
     if (!newCommentText.trim()) return;
-    onPostComment(userName.trim() || 'Độc giả ẩn danh', newCommentText.trim());
+    onPostComment(userName.trim(), newCommentText.trim());
     setNewCommentText('');
   };
 
@@ -1789,12 +1806,12 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
 
                     {/* Tác giả & Editor */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-[13px] sm:text-[15px] font-source-sans">
-                      <div className={`flex items-start gap-1.5 p-2.5 rounded-xl ${sTheme.cardInnerBg} border ${sTheme.cardInnerBorder} shadow-2xs transition-colors`}>
+                      <div className={`flex items-start gap-1.5 p-2.5 rounded-xl ${sTheme.authorEditorBoxBg} shadow-2xs transition-colors`}>
                         <span className="opacity-70 shrink-0">Tác giả:</span>
                         <strong className="break-words leading-snug">{novel.author.name}</strong>
                       </div>
 
-                      <div className={`flex items-start gap-1.5 p-2.5 rounded-xl ${sTheme.cardInnerBg} border ${sTheme.cardInnerBorder} shadow-2xs transition-colors`}>
+                      <div className={`flex items-start gap-1.5 p-2.5 rounded-xl ${sTheme.authorEditorBoxBg} shadow-2xs transition-colors`}>
                         <span className="opacity-70 shrink-0">Editor:</span>
                         <strong className="break-words leading-snug">{editorName}</strong>
                       </div>
@@ -1966,9 +1983,10 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                     </span>
                     <input
                       type="text"
+                      required
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Tên hoặc biệt danh của bạn..."
+                      placeholder="Tên của bạn (Bắt buộc)..."
                       className={`w-full sm:w-64 px-3 py-1.5 text-xs sm:text-sm ${sTheme.commentInputBg} border ${sTheme.commentInputBorder} ${sTheme.inputText} rounded-lg focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
                     />
                     <textarea
@@ -2014,11 +2032,7 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                               )}
                               <strong className={`text-xs sm:text-sm font-bold ${sTheme.paperText}`}>{cm.author}</strong>
                               {typeof cm.chapterNumber === 'number' && (
-                                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-semibold ${
-                                  isDarkEffective
-                                    ? 'bg-purple-500/20 backdrop-blur-xs text-purple-200'
-                                    : 'bg-purple-500/15 text-purple-700 border border-purple-500/25'
-                                }`}>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${getCommentChapterBadgeStyle(theme, isDarkEffective)}`}>
                                   Chương {cm.chapterNumber}
                                 </span>
                               )}

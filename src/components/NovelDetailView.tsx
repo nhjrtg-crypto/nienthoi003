@@ -83,6 +83,7 @@ import {
   getExtraChapterBadgeStyle,
   isExtraChapter,
   getChapterDisplayParts,
+  getCommentChapterBadgeStyle,
 } from '../utils/themeStyles';
 import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { Footer } from './Footer';
@@ -1676,14 +1677,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userName.trim()) {
+      alert('Vui lòng nhập tên của bạn trước khi gửi bình luận.');
+      return;
+    }
     if (!newCommentText.trim()) return;
 
-    const finalAuthor = userName.trim() || 'Bạn Đọc';
-    if (userName.trim()) {
-      try {
-        safeStorage.setItem('cosmo_comment_author_name', userName.trim());
-      } catch {}
-    }
+    const finalAuthor = userName.trim();
+    try {
+      safeStorage.setItem('cosmo_comment_author_name', userName.trim());
+    } catch {}
     const formattedDate = formatCommentDate();
 
     const tempComment: NovelComment = {
@@ -4503,9 +4506,10 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
+                      required
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Tên của bạn"
+                      placeholder="Tên của bạn (Bắt buộc)"
                       className={`px-4 py-2.5 rounded-xl text-[14px] sm:text-[16px] font-sans focus:outline-hidden ${tStyles.input}`}
                     />
                   </div>
@@ -4599,7 +4603,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className={`text-[14px] sm:text-[16px] font-sans font-bold truncate ${tStyles.cardTitle}`}>{comment.author}</span>
                               {typeof comment.chapterNumber === 'number' && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold ${getCommentChapterBadgeStyle(theme, isDarkEffective)}`}>
                                   Chương {comment.chapterNumber}
                                 </span>
                               )}
