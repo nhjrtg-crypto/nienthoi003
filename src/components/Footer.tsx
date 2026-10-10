@@ -417,12 +417,12 @@ export function getTicketTheme(theme: string = 'amethyst-haze', isDarkMode: bool
             btnHoverBg: 'hover:bg-[#f1f6fb]',
             btnBorder: 'border-[#c9d7e6]',
             btnText: 'text-[#334155]',
-            catIcon: 'text-[#2563eb]',
-            catIconHover: 'group-hover:text-[#1d4ed8]',
-            cherryIcon: 'text-[#2563eb]',
-            cherryIconHover: 'group-hover:text-[#1d4ed8]',
-            bookIcon: 'text-[#2563eb]',
-            bookIconHover: 'group-hover:text-[#1d4ed8]',
+            catIcon: 'text-[#60a5fa]',
+            catIconHover: 'group-hover:text-[#3b82f6]',
+            cherryIcon: 'text-[#60a5fa]',
+            cherryIconHover: 'group-hover:text-[#3b82f6]',
+            bookIcon: 'text-[#60a5fa]',
+            bookIconHover: 'group-hover:text-[#3b82f6]',
             copyrightText: 'text-[#334155]/70',
           };
 
@@ -508,12 +508,12 @@ export function getTicketTheme(theme: string = 'amethyst-haze', isDarkMode: bool
             btnHoverBg: 'hover:bg-[#faf5ff]',
             btnBorder: 'border-purple-200',
             btnText: 'text-[#581c87]',
-            catIcon: 'text-[#9333ea]',
-            catIconHover: 'group-hover:text-[#7e22ce]',
-            cherryIcon: 'text-[#9333ea]',
-            cherryIconHover: 'group-hover:text-[#7e22ce]',
-            bookIcon: 'text-[#9333ea]',
-            bookIconHover: 'group-hover:text-[#7e22ce]',
+            catIcon: 'text-[#c084fc]',
+            catIconHover: 'group-hover:text-[#a855f7]',
+            cherryIcon: 'text-[#c084fc]',
+            cherryIconHover: 'group-hover:text-[#a855f7]',
+            bookIcon: 'text-[#c084fc]',
+            bookIconHover: 'group-hover:text-[#a855f7]',
             copyrightText: 'text-[#581c87]/75',
           };
   }
@@ -819,11 +819,6 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
             </div>
           </div>
 
-          {/* Đường rãnh xé vé đứt đoạn 1 */}
-          <div
-            className={`hidden md:block w-[1.5px] h-11 border-r-2 border-dashed ${themeStyles.tearLine} my-auto`}
-          />
-
           {/* PHẦN 2 (GIỮA): MÁY QUAY BẢNG LẬT VIEWS */}
           <div className="shrink-0 flex items-center justify-center">
             <LuckySlotReelsButton
@@ -833,29 +828,26 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
             />
           </div>
 
-          {/* Đường rãnh xé vé đứt đoạn 2 */}
-          <div
-            className={`hidden md:block w-[1.5px] h-11 border-r-2 border-dashed ${themeStyles.tearLine} my-auto`}
-          />
+          {/* Đường rãnh xé vé đứt đoạn: Đã bỏ hoàn toàn trên cả điện thoại và máy tính */}
 
           {/* PHẦN 3 (PHẢI): CỤM NÚT LIÊN KẾT CUỐNG VÉ */}
           <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-center">
             {(() => {
-              // Ở chế độ sáng: Áp dụng hiệu ứng và màu sắc giống kiểu tags trong Tiểu Thuyết Đã Hoàn
+              // Ở chế độ sáng: Áp dụng nền mục truyện, bỏ đổ bóng ngoài, 1/2 viền trên trắng, viền dưới giữ nguyên
               const getLightBtnThemeClass = () => {
                 switch (theme) {
                   case 'notebook':
-                    return 'notebook-light-btn notebook-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                    return 'footer-btn-light-notebook !px-3 !py-2 !text-xs !font-bold';
                   case 'sage':
-                    return 'sage-light-btn sage-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                    return 'footer-btn-light-sage !px-3 !py-2 !text-xs !font-bold';
                   case 'mocha':
-                    return 'mocha-light-btn mocha-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                    return 'footer-btn-light-mocha !px-3 !py-2 !text-xs !font-bold';
                   case 'amethyst-haze':
                   case 'cosmic':
-                    return 'amethyst-light-btn amethyst-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                    return 'footer-btn-light-amethyst !px-3 !py-2 !text-xs !font-bold';
                   case 'slate-haze':
                   default:
-                    return 'frost-light-btn frost-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                    return 'footer-btn-light-frost !px-3 !py-2 !text-xs !font-bold';
                 }
               };
 
@@ -971,8 +963,7 @@ export const Footer: React.FC<FooterProps> = ({
   }, []);
 
   const handleIncrement = () => {
-    // Tăng lượt xem thực tế tức thì (Optimistic + Batching D1/Storage), không hiện toast
-    incrementGlobalView(1);
+    // Không cộng lượt xem khi bấm nút theo yêu cầu
   };
 
   const themeStyles = useMemo(() => {
