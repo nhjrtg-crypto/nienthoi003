@@ -524,11 +524,13 @@ interface NovelDetailViewProps {
   currentUser?: AdminUserLike | null;
   onToggleStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteNovel?: (novelId: string) => void;
+  onOpenIntro?: () => void;
 }
 
 export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   novel,
   onBack,
+  onOpenIntro,
   onReadChapter,
   onAddChapter,
   onUpdateChapters,
@@ -5687,6 +5689,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         bgClass={tStyles.footerBg}
         theme={theme}
         isDarkMode={isDarkEffective}
+        onOpenIntro={onOpenIntro}
       />
 
     </div>

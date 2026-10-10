@@ -3,16 +3,20 @@ import { motion } from 'motion/react';
 import { cosmicAudio } from '../utils/audioSynth';
 
 export interface IntroAboutButtonProps {
-  onOpen: () => void;
+  onOpen?: () => void;
   isDarkEffective?: boolean;
   theme?: string;
   introButtonStyles?: any;
+  label?: string;
+  isStatic?: boolean;
 }
 
 export const IntroAboutButton: React.FC<IntroAboutButtonProps> = ({
   onOpen,
   isDarkEffective = false,
   theme = 'cosmic',
+  label = '© 2026 Niên Thời - Jouriee65',
+  isStatic = false,
 }) => {
   // Bảng phối màu mềm mại, nhạt hơn và hơi trầm hơn theo từng theme
   const themeColors = useMemo(() => {
@@ -443,14 +447,20 @@ export const IntroAboutButton: React.FC<IntroAboutButtonProps> = ({
             </motion.div>
 
             {/* THÂN BẢNG TREO BẰNG GỖ PASTEL ĐỔI MÀU HỢP THEME */}
-            <button
+            <div
               id="btn-intro-about-website"
               onClick={() => {
-                cosmicAudio.playChime('sparkle');
-                onOpen();
+                if (!isStatic && onOpen) {
+                  cosmicAudio.playChime('sparkle');
+                  onOpen();
+                }
               }}
-              className={`relative flex flex-col items-center justify-center px-4 xs:px-4.5 sm:px-5 pt-2 pb-2 cursor-pointer overflow-hidden transition-all duration-300 rounded-xl sm:rounded-2xl border-[1.5px] ${themeColors.boardBorder} ${themeColors.boardBg} ${themeColors.boardShadow}`}
-              title="Khám phá giới thiệu về trang web - Dư Thủ Ký"
+              role={isStatic ? 'img' : 'button'}
+              aria-label={label || '© 2026 Niên Thời - Jouriee65'}
+              className={`relative flex flex-col items-center justify-center px-4 xs:px-4.5 sm:px-5 pt-2 pb-2 ${
+                isStatic ? 'cursor-default select-none' : 'cursor-pointer'
+              } overflow-hidden transition-all duration-300 rounded-xl sm:rounded-2xl border-[1.5px] ${themeColors.boardBorder} ${themeColors.boardBg} ${themeColors.boardShadow}`}
+              title={label || "© 2026 Niên Thời - Jouriee65"}
             >
               {/* DÃY HỌA TIẾT CARO (GINGHAM PATTERN) SÁT MÉP TRÊN BẢNG */}
               <div
@@ -476,9 +486,9 @@ export const IntroAboutButton: React.FC<IntroAboutButtonProps> = ({
               {/* DÒNG CHỮ CHÍNH: NẰM TRỌN TRÊN 1 DÒNG DUY NHẤT ĐIỆN THOẠI, ĐỔI MÀU CHỮ HỢP THEME */}
               <span
                 style={{ fontFamily: "'Baloo 2', 'Comfortaa', cursive, sans-serif" }}
-                className={`font-signboard-cute font-extrabold text-[9px] xs:text-[10px] sm:text-[11px] tracking-[0.05em] sm:tracking-[0.07em] uppercase ${themeColors.textColor} ${themeColors.textShadow} select-none whitespace-nowrap leading-none relative z-20 mt-1`}
+                className={`font-signboard-cute font-extrabold text-[9px] xs:text-[10px] sm:text-[11px] tracking-[0.05em] sm:tracking-[0.07em] ${themeColors.textColor} ${themeColors.textShadow} select-none whitespace-nowrap leading-none relative z-20 mt-1`}
               >
-                GIỚI THIỆU VỀ TRANG WEB
+                {label || '© 2026 Niên Thời - Jouriee65'}
               </span>
 
               {/* CHIẾC MIỆNG CƯỜI CHÚM CHÍM CHỮ W & 2 MÁ HỒNG PASTEL TRẦM DỊU */}
@@ -497,7 +507,7 @@ export const IntroAboutButton: React.FC<IntroAboutButtonProps> = ({
                   <circle cx="25" cy="5" r="2" fill={themeColors.blushFill} fillOpacity="0.75" />
                 </svg>
               </div>
-            </button>
+            </div>
           </div>
         </motion.div>
       </div>

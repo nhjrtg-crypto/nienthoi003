@@ -3651,10 +3651,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       )}
 
       {/* Main Content: Novel Grid + Leaderboard */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-16 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-16 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_29%] gap-8">
         
-        {/* Left 3 Cols: Novel Catalog */}
-        <div className="lg:col-span-3 space-y-8">
+        {/* Left: Novel Catalog (Main Content) */}
+        <div className="min-w-0 space-y-8">
           
           {/* MỤC: TRUYỆN ĐỌC GẦN ĐÂY - THIẾT KẾ CHUẨN THEO ẢNH MẪU IMG_20260916_124252 */}
           {(() => {
@@ -4406,8 +4406,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
         </div>
 
-        {/* Right 1 Col: Leaderboards & Community Ticker */}
-        <div className="space-y-6">
+        {/* Right Sidebar: Thanh bên chứa Chọn truyện ngẫu nhiên & Truyện vừa mới đăng (29%) */}
+        <div className="min-w-0 space-y-6">
           
           {/* Mục "Chọn Truyện Ngẫu Nhiên" / "Hôm Nay Đọc Gì" */}
           <RandomNovelPicker
@@ -4502,7 +4502,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                                 {n.title}
                               </h4>
                               <div className="flex items-center justify-between gap-1.5 mt-0.5 sm:mt-1">
-                                <span className={`text-[10px] sm:text-[11px] truncate max-w-[130px] sm:max-w-[160px] opacity-75 ${recentStyles.subtitleColor}`}>
+                                <span className={`text-[10px] sm:text-[11px] truncate max-w-[130px] sm:max-w-[160px] lg:max-w-[210px] opacity-75 ${recentStyles.subtitleColor}`}>
                                   {n.latestChapter?.title || 'Chương mới'}
                                 </span>
                                 {/* Badge ngày tháng: đổ màu khối nhẹ, bỏ viền chằng chịt */}
@@ -4605,7 +4605,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                                 {n.title}
                               </h4>
                               <div className="flex items-center justify-between gap-1 mt-0.5">
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[140px]">
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[140px] sm:max-w-[160px] lg:max-w-[210px]">
                                   {n.latestChapter?.title || 'Chương mới'}
                                 </span>
                                 <span className={`text-[9px] font-mono font-medium shrink-0 ${recentStyles.itemDateClass}`}>

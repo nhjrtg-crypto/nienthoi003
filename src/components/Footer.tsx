@@ -1,9 +1,952 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowUp, BookOpen, RefreshCw } from 'lucide-react';
-import { getGlobalViews, subscribeGlobalViews, fetchGlobalViews } from '../services/d1Service';
-import { IntroAboutButton } from './IntroAboutButton';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Cherry, BookHeart, Cat } from 'lucide-react';
+import { getGlobalViews, subscribeGlobalViews, incrementGlobalView } from '../services/d1Service';
 
-interface FooterProps {
+// =========================================================================
+// 1. FORMAT SỐ HIỂN THỊ (Phân tách hàng nghìn bằng dấu chấm, ví dụ: 128.504)
+// =========================================================================
+export function formatViewCount(count: number): string {
+  return count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+// =========================================================================
+// THEME PALETTE INTERFACE & MAPPINGS (Đồng bộ cả 5 Theme & Sáng / Tối)
+// =========================================================================
+interface TicketThemeStyles {
+  // Ticket container
+  containerBg: string;
+  containerBorder: string;
+  containerRing: string;
+  containerShadow: string;
+  frostedOverlay: string;
+  reflectGradient: string;
+  dashedBorder: string;
+  tearLine: string;
+
+  // Barcode
+  barcodeBoxBg: string;
+  barcodeBoxBorder: string;
+  barcodeBars: string;
+  barcodeText: string;
+
+  // Views button
+  reelsBtnBg: string;
+  reelsBtnBorder: string;
+  reelsBtnHoverShadow: string;
+  viewsBadgeBg: string;
+  viewsBadgeBorder: string;
+  viewsBadgeText: string;
+  reelsTrayBg: string;
+  reelsTrayBorder: string;
+
+  // Solari Split Flap Digit Card
+  cardBg: string;
+  cardBorder: string;
+  cardShadow: string;
+  cardTopBg: string;
+  cardBottomBg: string;
+  cardBorderMid: string;
+  cardText: string;
+  separatorStarFill: string;
+  sparkleColor: string;
+  splitLine: string;
+
+  // Right action buttons
+  btnBg: string;
+  btnHoverBg: string;
+  btnBorder: string;
+  btnText: string;
+  catIcon: string;
+  catIconHover: string;
+  cherryIcon: string;
+  cherryIconHover: string;
+  bookIcon: string;
+  bookIconHover: string;
+
+  // Copyright text
+  copyrightText: string;
+}
+
+export function getTicketTheme(theme: string = 'amethyst-haze', isDarkMode: boolean = false): TicketThemeStyles {
+  switch (theme) {
+    case 'sage':
+      return isDarkMode
+        ? {
+            containerBg: 'bg-gradient-to-r from-[#122316]/85 via-[#0d1a10]/85 to-[#101f14]/85',
+            containerBorder: 'border-white/10',
+            containerRing: 'ring-[#294a2f]/70',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(0,0,0,0.7),inset_0_-3px_10px_rgba(77,111,83,0.25)]',
+            frostedOverlay: 'bg-[#0c1810]/55',
+            reflectGradient: 'from-white/10 to-transparent',
+            dashedBorder: 'border-[#294a2f]/70',
+            tearLine: 'border-[#294a2f]/70',
+            barcodeBoxBg: 'bg-[#132217]',
+            barcodeBoxBorder: 'border-[#294a2f]',
+            barcodeBars: 'bg-[#cfe0d1]',
+            barcodeText: 'text-[#cfe0d1]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#182a1d] via-[#122016] to-[#0b150e]',
+            reelsBtnBorder: 'border-[#2e5235]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(77,111,83,0.25)]',
+            viewsBadgeBg: 'bg-[#142318]',
+            viewsBadgeBorder: 'border-[#2e5235]',
+            viewsBadgeText: 'text-[#8cb391]',
+            reelsTrayBg: 'bg-[#0e1910]',
+            reelsTrayBorder: 'border-[#223626]',
+            cardBg: 'bg-[#132217]',
+            cardBorder: 'border-[#314c36]/50',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.4)]',
+            cardTopBg: 'bg-gradient-to-b from-[#1c3021] to-[#142419]',
+            cardBottomBg: 'bg-gradient-to-b from-[#111e14] to-[#0a130d]',
+            cardBorderMid: 'border-white/5',
+            cardText: 'text-[#e0ede2]',
+            separatorStarFill: 'fill-[#8cb391] text-[#8cb391]',
+            sparkleColor: 'fill-[#8cb391] text-[#8cb391]',
+            splitLine: 'bg-white/10',
+            btnBg: 'bg-[#132217]',
+            btnHoverBg: 'hover:bg-[#1a2d1f]',
+            btnBorder: 'border-[#294a2f]',
+            btnText: 'text-[#d7e6d9]',
+            catIcon: 'text-[#8cb391]',
+            catIconHover: 'group-hover:text-[#bde0c2]',
+            cherryIcon: 'text-[#8cb391]',
+            cherryIconHover: 'group-hover:text-[#bde0c2]',
+            bookIcon: 'text-[#8cb391]',
+            bookIconHover: 'group-hover:text-[#bde0c2]',
+            copyrightText: 'text-[#cfe0d1]/60',
+          }
+        : {
+            containerBg: 'bg-gradient-to-r from-emerald-100/70 via-white/85 to-teal-100/70',
+            containerBorder: 'border-white/80',
+            containerRing: 'ring-[#c2dfc6]/75',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(77,111,83,0.2),inset_0_-4px_12px_rgba(130,175,135,0.2)]',
+            frostedOverlay: 'bg-white/40',
+            reflectGradient: 'from-white/40 to-transparent',
+            dashedBorder: 'border-[#b8d9bd]/80',
+            tearLine: 'border-[#b8d9bd]/80',
+            barcodeBoxBg: 'bg-white/95',
+            barcodeBoxBorder: 'border-[#c2dfc6]',
+            barcodeBars: 'bg-[#244b27]',
+            barcodeText: 'text-[#244b27]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#f2f7f3] via-[#e2eee3] to-[#c5dfc7]',
+            reelsBtnBorder: 'border-[#b8d9bd]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(88,129,87,0.3)]',
+            viewsBadgeBg: 'bg-[#f0f7f1]',
+            viewsBadgeBorder: 'border-[#8cb391]/60',
+            viewsBadgeText: 'text-[#2e6834]',
+            reelsTrayBg: 'bg-[#f6faf7]',
+            reelsTrayBorder: 'border-[#c2dfc6]',
+            cardBg: 'bg-[#f2f8f3]',
+            cardBorder: 'border-[#8cb391]/35',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(88,129,87,0.12)]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#e8f2e9]',
+            cardBottomBg: 'bg-gradient-to-b from-[#dbeade] to-[#c8decb]',
+            cardBorderMid: 'border-[#8cb391]/20',
+            cardText: 'text-[#1e4622]',
+            separatorStarFill: 'fill-[#2e6834] text-[#2e6834]',
+            sparkleColor: 'fill-[#2e6834] text-[#2e6834]',
+            splitLine: 'bg-[#4d6f53]/20',
+            btnBg: 'bg-white/95',
+            btnHoverBg: 'hover:bg-[#f0f7f1]',
+            btnBorder: 'border-[#c2dfc6]',
+            btnText: 'text-[#244b27]',
+            catIcon: 'text-[#3e7e45]',
+            catIconHover: 'group-hover:text-[#25572b]',
+            cherryIcon: 'text-[#3e7e45]',
+            cherryIconHover: 'group-hover:text-[#1e4622]',
+            bookIcon: 'text-[#3e7e45]',
+            bookIconHover: 'group-hover:text-[#25572b]',
+            copyrightText: 'text-[#244b27]/70',
+          };
+
+    case 'mocha':
+      return isDarkMode
+        ? {
+            containerBg: 'bg-gradient-to-r from-[#261b15]/85 via-[#1c130f]/85 to-[#221711]/85',
+            containerBorder: 'border-white/10',
+            containerRing: 'ring-[#4a3529]/70',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(0,0,0,0.7),inset_0_-3px_10px_rgba(163,119,100,0.22)]',
+            frostedOverlay: 'bg-[#1a110c]/55',
+            reflectGradient: 'from-white/10 to-transparent',
+            dashedBorder: 'border-[#4a3529]/70',
+            tearLine: 'border-[#4a3529]/70',
+            barcodeBoxBg: 'bg-[#221711]',
+            barcodeBoxBorder: 'border-[#4a3529]',
+            barcodeBars: 'bg-[#e8d8ce]',
+            barcodeText: 'text-[#e8d8ce]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#2d2019] via-[#201611] to-[#160f0c]',
+            reelsBtnBorder: 'border-[#523c2e]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(163,119,100,0.25)]',
+            viewsBadgeBg: 'bg-[#221611]',
+            viewsBadgeBorder: 'border-[#523c2e]',
+            viewsBadgeText: 'text-[#cbb3a3]',
+            reelsTrayBg: 'bg-[#19120e]',
+            reelsTrayBorder: 'border-[#362821]',
+            cardBg: 'bg-[#241a15]',
+            cardBorder: 'border-[#4a3930]/50',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.4)]',
+            cardTopBg: 'bg-gradient-to-b from-[#33241c] to-[#251a14]',
+            cardBottomBg: 'bg-gradient-to-b from-[#1f1510] to-[#140e0a]',
+            cardBorderMid: 'border-white/5',
+            cardText: 'text-[#f2e6dc]',
+            separatorStarFill: 'fill-[#c49f8f] text-[#c49f8f]',
+            sparkleColor: 'fill-[#c49f8f] text-[#c49f8f]',
+            splitLine: 'bg-white/10',
+            btnBg: 'bg-[#221711]',
+            btnHoverBg: 'hover:bg-[#2e1f18]',
+            btnBorder: 'border-[#4a3529]',
+            btnText: 'text-[#e8d8ce]',
+            catIcon: 'text-[#c49f8f]',
+            catIconHover: 'group-hover:text-[#decbc0]',
+            cherryIcon: 'text-[#c49f8f]',
+            cherryIconHover: 'group-hover:text-[#decbc0]',
+            bookIcon: 'text-[#c49f8f]',
+            bookIconHover: 'group-hover:text-[#decbc0]',
+            copyrightText: 'text-[#e8d8ce]/60',
+          }
+        : {
+            containerBg: 'bg-gradient-to-r from-amber-100/70 via-white/85 to-stone-100/75',
+            containerBorder: 'border-white/80',
+            containerRing: 'ring-[#e4d4ca]/80',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(163,119,100,0.22),inset_0_-4px_12px_rgba(196,159,143,0.22)]',
+            frostedOverlay: 'bg-white/40',
+            reflectGradient: 'from-white/40 to-transparent',
+            dashedBorder: 'border-[#ddccbf]/80',
+            tearLine: 'border-[#ddccbf]/80',
+            barcodeBoxBg: 'bg-white/95',
+            barcodeBoxBorder: 'border-[#e4d4ca]',
+            barcodeBars: 'bg-[#5c4033]',
+            barcodeText: 'text-[#5c4033]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#faf6f2] via-[#f0e6dd] to-[#d8c3b4]',
+            reelsBtnBorder: 'border-[#dfcec2]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(163,119,100,0.3)]',
+            viewsBadgeBg: 'bg-[#f7f1eb]',
+            viewsBadgeBorder: 'border-[#b09180]/60',
+            viewsBadgeText: 'text-[#7c5440]',
+            reelsTrayBg: 'bg-[#faf7f5]',
+            reelsTrayBorder: 'border-[#e4d4ca]',
+            cardBg: 'bg-[#f8f3ee]',
+            cardBorder: 'border-[#c49f8f]/40',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(163,119,100,0.12)]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#f4ebe3]',
+            cardBottomBg: 'bg-gradient-to-b from-[#ebdacf] to-[#ddc7b9]',
+            cardBorderMid: 'border-[#b09180]/20',
+            cardText: 'text-[#4a3328]',
+            separatorStarFill: 'fill-[#8c6046] text-[#8c6046]',
+            sparkleColor: 'fill-[#8c6046] text-[#8c6046]',
+            splitLine: 'bg-[#7d6152]/20',
+            btnBg: 'bg-white/95',
+            btnHoverBg: 'hover:bg-[#f6efe9]',
+            btnBorder: 'border-[#e4d4ca]',
+            btnText: 'text-[#553c30]',
+            catIcon: 'text-[#966750]',
+            catIconHover: 'group-hover:text-[#6a4837]',
+            cherryIcon: 'text-[#966750]',
+            cherryIconHover: 'group-hover:text-[#6a4837]',
+            bookIcon: 'text-[#966750]',
+            bookIconHover: 'group-hover:text-[#6a4837]',
+            copyrightText: 'text-[#5c4033]/70',
+          };
+
+    case 'notebook':
+      return isDarkMode
+        ? {
+            containerBg: 'bg-gradient-to-r from-[#201d18]/85 via-[#171512]/85 to-[#1c1915]/85',
+            containerBorder: 'border-white/10',
+            containerRing: 'ring-[#423c32]/70',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(0,0,0,0.7),inset_0_-3px_10px_rgba(184,178,165,0.2)]',
+            frostedOverlay: 'bg-[#151310]/55',
+            reflectGradient: 'from-white/10 to-transparent',
+            dashedBorder: 'border-[#423c32]/70',
+            tearLine: 'border-[#423c32]/70',
+            barcodeBoxBg: 'bg-[#1f1b17]',
+            barcodeBoxBorder: 'border-[#423c32]',
+            barcodeBars: 'bg-[#e2dbce]',
+            barcodeText: 'text-[#e2dbce]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#2b2620] via-[#1e1b17] to-[#141210]',
+            reelsBtnBorder: 'border-[#474035]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(184,178,165,0.22)]',
+            viewsBadgeBg: 'bg-[#221e19]',
+            viewsBadgeBorder: 'border-[#474035]',
+            viewsBadgeText: 'text-[#c9bead]',
+            reelsTrayBg: 'bg-[#191612]',
+            reelsTrayBorder: 'border-[#363026]',
+            cardBg: 'bg-[#201c18]',
+            cardBorder: 'border-[#474035]/50',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.4)]',
+            cardTopBg: 'bg-gradient-to-b from-[#2d2822] to-[#211d18]',
+            cardBottomBg: 'bg-gradient-to-b from-[#1c1814] to-[#13110e]',
+            cardBorderMid: 'border-white/5',
+            cardText: 'text-[#f2ece2]',
+            separatorStarFill: 'fill-[#b8b2a5] text-[#b8b2a5]',
+            sparkleColor: 'fill-[#b8b2a5] text-[#b8b2a5]',
+            splitLine: 'bg-white/10',
+            btnBg: 'bg-[#1f1b17]',
+            btnHoverBg: 'hover:bg-[#2b2620]',
+            btnBorder: 'border-[#423c32]',
+            btnText: 'text-[#e2dbce]',
+            catIcon: 'text-[#b8b2a5]',
+            catIconHover: 'group-hover:text-[#f2ece2]',
+            cherryIcon: 'text-[#b8b2a5]',
+            cherryIconHover: 'group-hover:text-[#f2ece2]',
+            bookIcon: 'text-[#b8b2a5]',
+            bookIconHover: 'group-hover:text-[#f2ece2]',
+            copyrightText: 'text-[#e2dbce]/60',
+          }
+        : {
+            containerBg: 'bg-white/90',
+            containerBorder: 'border-neutral-200',
+            containerRing: 'ring-neutral-200/80',
+            containerShadow: 'shadow-[inset_0_2px_8px_rgba(0,0,0,0.04)]',
+            frostedOverlay: 'bg-white/40',
+            reflectGradient: 'from-white/40 to-transparent',
+            dashedBorder: 'border-neutral-200',
+            tearLine: 'border-neutral-200',
+            barcodeBoxBg: 'bg-white',
+            barcodeBoxBorder: 'border-neutral-200',
+            barcodeBars: 'bg-neutral-800',
+            barcodeText: 'text-neutral-800',
+            reelsBtnBg: 'bg-gradient-to-b from-white via-neutral-50 to-neutral-200',
+            reelsBtnBorder: 'border-neutral-300',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(0,0,0,0.12)]',
+            viewsBadgeBg: 'bg-white',
+            viewsBadgeBorder: 'border-neutral-300',
+            viewsBadgeText: 'text-neutral-800',
+            reelsTrayBg: 'bg-neutral-50',
+            reelsTrayBorder: 'border-neutral-200',
+            cardBg: 'bg-white',
+            cardBorder: 'border-neutral-200',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]',
+            cardTopBg: 'bg-gradient-to-b from-white to-neutral-50',
+            cardBottomBg: 'bg-gradient-to-b from-neutral-100 to-neutral-200',
+            cardBorderMid: 'border-neutral-200',
+            cardText: 'text-neutral-800',
+            separatorStarFill: 'fill-neutral-700 text-neutral-700',
+            sparkleColor: 'fill-neutral-600 text-neutral-600',
+            splitLine: 'bg-neutral-300',
+            btnBg: 'bg-white',
+            btnHoverBg: 'hover:bg-neutral-50',
+            btnBorder: 'border-neutral-300',
+            btnText: 'text-neutral-800',
+            catIcon: 'text-neutral-600',
+            catIconHover: 'group-hover:text-neutral-900',
+            cherryIcon: 'text-neutral-600',
+            cherryIconHover: 'group-hover:text-neutral-900',
+            bookIcon: 'text-neutral-600',
+            bookIconHover: 'group-hover:text-neutral-900',
+            copyrightText: 'text-neutral-600',
+          };
+
+    case 'slate-haze':
+      return isDarkMode
+        ? {
+            containerBg: 'bg-gradient-to-r from-[#101924]/85 via-[#0b121c]/85 to-[#0e1621]/85',
+            containerBorder: 'border-white/10',
+            containerRing: 'ring-[#22364c]/70',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(0,0,0,0.7),inset_0_-3px_10px_rgba(86,122,156,0.22)]',
+            frostedOverlay: 'bg-[#09111b]/55',
+            reflectGradient: 'from-white/10 to-transparent',
+            dashedBorder: 'border-[#22364c]/70',
+            tearLine: 'border-[#22364c]/70',
+            barcodeBoxBg: 'bg-[#121e2c]',
+            barcodeBoxBorder: 'border-[#22364c]',
+            barcodeBars: 'bg-[#cbd5e1]',
+            barcodeText: 'text-[#cbd5e1]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#162434] via-[#101b28] to-[#0a121d]',
+            reelsBtnBorder: 'border-[#29425e]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(117,149,179,0.25)]',
+            viewsBadgeBg: 'bg-[#121f2d]',
+            viewsBadgeBorder: 'border-[#29425e]',
+            viewsBadgeText: 'text-[#7ea9d1]',
+            reelsTrayBg: 'bg-[#0d1622]',
+            reelsTrayBorder: 'border-[#1d2f44]',
+            cardBg: 'bg-[#142131]',
+            cardBorder: 'border-[#29425e]/50',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.4)]',
+            cardTopBg: 'bg-gradient-to-b from-[#1a2c40] to-[#122030]',
+            cardBottomBg: 'bg-gradient-to-b from-[#0f1b29] to-[#09111b]',
+            cardBorderMid: 'border-white/5',
+            cardText: 'text-[#e2e8f0]',
+            separatorStarFill: 'fill-[#7595b3] text-[#7595b3]',
+            sparkleColor: 'fill-[#7595b3] text-[#7595b3]',
+            splitLine: 'bg-white/10',
+            btnBg: 'bg-[#121e2c]',
+            btnHoverBg: 'hover:bg-[#1a2a3e]',
+            btnBorder: 'border-[#22364c]',
+            btnText: 'text-[#cbd5e1]',
+            catIcon: 'text-[#7595b3]',
+            catIconHover: 'group-hover:text-[#a0bfdc]',
+            cherryIcon: 'text-[#7595b3]',
+            cherryIconHover: 'group-hover:text-[#a0bfdc]',
+            bookIcon: 'text-[#7595b3]',
+            bookIconHover: 'group-hover:text-[#a0bfdc]',
+            copyrightText: 'text-[#cbd5e1]/60',
+          }
+        : {
+            containerBg: 'bg-gradient-to-r from-sky-100/70 via-white/85 to-slate-100/75',
+            containerBorder: 'border-white/80',
+            containerRing: 'ring-[#c9d7e6]/80',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(100,116,139,0.22),inset_0_-4px_12px_rgba(148,163,184,0.22)]',
+            frostedOverlay: 'bg-white/40',
+            reflectGradient: 'from-white/40 to-transparent',
+            dashedBorder: 'border-[#bfd0e2]/80',
+            tearLine: 'border-[#bfd0e2]/80',
+            barcodeBoxBg: 'bg-white/95',
+            barcodeBoxBorder: 'border-[#c9d7e6]',
+            barcodeBars: 'bg-[#334155]',
+            barcodeText: 'text-[#334155]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#f3f7fa] via-[#e2ebf4] to-[#c2d5e7]',
+            reelsBtnBorder: 'border-[#cad8e7]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(37,99,235,0.3)]',
+            viewsBadgeBg: 'bg-[#f0f6fc]',
+            viewsBadgeBorder: 'border-[#93c5fd]/60',
+            viewsBadgeText: 'text-[#2563eb]',
+            reelsTrayBg: 'bg-[#f5f9fc]',
+            reelsTrayBorder: 'border-[#cad8e7]',
+            cardBg: 'bg-[#edf4fa]',
+            cardBorder: 'border-[#93c5fd]/40',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(37,99,235,0.12)]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#e8f1f8]',
+            cardBottomBg: 'bg-gradient-to-b from-[#d7e6f3] to-[#c3d7e8]',
+            cardBorderMid: 'border-[#93c5fd]/20',
+            cardText: 'text-[#1e3a5f]',
+            separatorStarFill: 'fill-[#2563eb] text-[#2563eb]',
+            sparkleColor: 'fill-[#60a5fa] text-[#60a5fa]',
+            splitLine: 'bg-[#3b82f6]/20',
+            btnBg: 'bg-white/95',
+            btnHoverBg: 'hover:bg-[#f1f6fb]',
+            btnBorder: 'border-[#c9d7e6]',
+            btnText: 'text-[#334155]',
+            catIcon: 'text-[#2563eb]',
+            catIconHover: 'group-hover:text-[#1d4ed8]',
+            cherryIcon: 'text-[#2563eb]',
+            cherryIconHover: 'group-hover:text-[#1d4ed8]',
+            bookIcon: 'text-[#2563eb]',
+            bookIconHover: 'group-hover:text-[#1d4ed8]',
+            copyrightText: 'text-[#334155]/70',
+          };
+
+    case 'amethyst-haze':
+    case 'cosmic':
+    default:
+      return isDarkMode
+        ? {
+            containerBg: 'bg-gradient-to-r from-[#1d1330]/85 via-[#140b22]/85 to-[#1a102b]/85',
+            containerBorder: 'border-white/10',
+            containerRing: 'ring-[#6e5585]/60',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(0,0,0,0.7),inset_0_-3px_10px_rgba(168,85,247,0.22)]',
+            frostedOverlay: 'bg-[#120a1f]/55',
+            reflectGradient: 'from-white/10 to-transparent',
+            dashedBorder: 'border-[#6e5585]/60',
+            tearLine: 'border-[#6e5585]/60',
+            barcodeBoxBg: 'bg-[#1f1433]',
+            barcodeBoxBorder: 'border-[#6e5585]/60',
+            barcodeBars: 'bg-[#e9d5ff]',
+            barcodeText: 'text-[#e9d5ff]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#2a1b44] via-[#1d1230] to-[#140b24]',
+            reelsBtnBorder: 'border-[#6e5585]/70',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(192,132,252,0.28)]',
+            viewsBadgeBg: 'bg-[#25173d]',
+            viewsBadgeBorder: 'border-[#8b5cf6]/50',
+            viewsBadgeText: 'text-[#d8b4fe]',
+            reelsTrayBg: 'bg-[#160d26]',
+            reelsTrayBorder: 'border-[#583f70]',
+            cardBg: 'bg-[#1f1335]',
+            cardBorder: 'border-[#6e5585]/50',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.45)]',
+            cardTopBg: 'bg-gradient-to-b from-[#2d1b4a] to-[#201235]',
+            cardBottomBg: 'bg-gradient-to-b from-[#180d2a] to-[#10071e]',
+            cardBorderMid: 'border-white/10',
+            cardText: 'text-[#f3e8ff]',
+            separatorStarFill: 'fill-[#c084fc] text-[#c084fc]',
+            sparkleColor: 'fill-[#c084fc] text-[#c084fc]',
+            splitLine: 'bg-white/15',
+            btnBg: 'bg-[#1d1330]',
+            btnHoverBg: 'hover:bg-[#2b1c47]',
+            btnBorder: 'border-[#6e5585]/60',
+            btnText: 'text-[#f3e8ff]',
+            catIcon: 'text-[#c084fc]',
+            catIconHover: 'group-hover:text-[#e9d5ff]',
+            cherryIcon: 'text-[#c084fc]',
+            cherryIconHover: 'group-hover:text-[#e9d5ff]',
+            bookIcon: 'text-[#c084fc]',
+            bookIconHover: 'group-hover:text-[#e9d5ff]',
+            copyrightText: 'text-[#d8b4fe]/60',
+          }
+        : {
+            containerBg: 'bg-gradient-to-r from-purple-100/75 via-white/85 to-pink-100/75',
+            containerBorder: 'border-purple-200/80',
+            containerRing: 'ring-purple-200/70',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(168,85,247,0.22),inset_0_-4px_12px_rgba(236,72,153,0.18)]',
+            frostedOverlay: 'bg-white/40',
+            reflectGradient: 'from-white/40 to-transparent',
+            dashedBorder: 'border-purple-200/80',
+            tearLine: 'border-purple-200/80',
+            barcodeBoxBg: 'bg-white/95',
+            barcodeBoxBorder: 'border-purple-200',
+            barcodeBars: 'bg-[#581c87]',
+            barcodeText: 'text-[#581c87]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#faf5ff] via-[#f3e8ff] to-[#e9d5ff]',
+            reelsBtnBorder: 'border-purple-200',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(168,85,247,0.32)]',
+            viewsBadgeBg: 'bg-[#f5edff]',
+            viewsBadgeBorder: 'border-[#c084fc]/50',
+            viewsBadgeText: 'text-[#7e22ce]',
+            reelsTrayBg: 'bg-[#faf5ff]',
+            reelsTrayBorder: 'border-purple-200',
+            cardBg: 'bg-[#fdfaff]',
+            cardBorder: 'border-[#c084fc]/35',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(168,85,247,0.12)]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#f3e8ff]',
+            cardBottomBg: 'bg-gradient-to-b from-[#e9d5ff] to-[#d8b4fe]',
+            cardBorderMid: 'border-[#c084fc]/20',
+            cardText: 'text-[#581c87]',
+            separatorStarFill: 'fill-[#9333ea] text-[#9333ea]',
+            sparkleColor: 'fill-[#a855f7] text-[#a855f7]',
+            splitLine: 'bg-[#a855f7]/20',
+            btnBg: 'bg-white/95',
+            btnHoverBg: 'hover:bg-[#faf5ff]',
+            btnBorder: 'border-purple-200',
+            btnText: 'text-[#581c87]',
+            catIcon: 'text-[#9333ea]',
+            catIconHover: 'group-hover:text-[#7e22ce]',
+            cherryIcon: 'text-[#9333ea]',
+            cherryIconHover: 'group-hover:text-[#7e22ce]',
+            bookIcon: 'text-[#9333ea]',
+            bookIconHover: 'group-hover:text-[#7e22ce]',
+            copyrightText: 'text-[#581c87]/75',
+          };
+  }
+}
+
+// =========================================================================
+// 2. Ô CHỮ SỐ LẬT CƠ HỌC 3D (Solari Split-Flap 3D Reel)
+// =========================================================================
+interface SplitFlapDigitProps {
+  char: string;
+  index: number;
+  themeStyles: TicketThemeStyles;
+}
+
+export const SlotSplitFlapDigit: React.FC<SplitFlapDigitProps> = ({ char, themeStyles }) => {
+  const isSeparator = char === '.' || char === ',';
+  const [currentVal, setCurrentVal] = useState(char);
+  const [prevVal, setPrevVal] = useState(char);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [flipKey, setFlipKey] = useState(0);
+
+  // Chỉ khi số thực sự thay đổi giá trị mới kích hoạt animation lật thẻ
+  useEffect(() => {
+    if (isSeparator) return;
+    if (char !== currentVal) {
+      setPrevVal(currentVal);
+      setCurrentVal(char);
+      setIsFlipping(true);
+      setFlipKey((k) => k + 1);
+    }
+  }, [char, currentVal, isSeparator]);
+
+  // Sau khi hoàn thành cú lật (460ms), đưa về trạng thái tĩnh hoàn toàn
+  useEffect(() => {
+    if (isFlipping) {
+      const timer = setTimeout(() => {
+        setIsFlipping(false);
+      }, 460);
+      return () => clearTimeout(timer);
+    }
+  }, [isFlipping, flipKey]);
+
+  // Icon ngôi sao ngăn cách hàng nghìn
+  if (isSeparator) {
+    return (
+      <div className="self-center px-0.5 flex items-center justify-center select-none shrink-0" title="★">
+        <svg
+          viewBox="0 0 24 24"
+          className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${themeStyles.separatorStarFill}`}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+        </svg>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`relative flex flex-col w-[18px] sm:w-[21px] h-[26px] sm:h-[30px] rounded-[3px] ${themeStyles.cardBg} ${themeStyles.cardShadow} border-[0.5px] ${themeStyles.cardBorder} overflow-hidden select-none shrink-0`}
+      style={{ perspective: '320px' }}
+    >
+      {/* 2.1 NỬA TRÊN TĨNH: Nền số mới */}
+      <div className={`absolute top-0 inset-x-0 h-1/2 overflow-hidden ${themeStyles.cardTopBg} border-b-[0.5px] ${themeStyles.cardBorderMid} flex items-end justify-center`}>
+        <span className={`translate-y-[50%] font-mono font-black text-xs sm:text-[13px] ${themeStyles.cardText} leading-none select-none drop-shadow-xs`}>
+          {currentVal}
+        </span>
+      </div>
+
+      {/* 2.2 NỬA DƯỚI TĨNH: Khi lật giữ số cũ để lộ tự nhiên, khi tĩnh hiện số mới */}
+      <div className={`absolute bottom-0 inset-x-0 h-1/2 overflow-hidden ${themeStyles.cardBottomBg} shadow-[inset_0_1px_2px_rgba(0,0,0,0.12)] flex items-start justify-center`}>
+        <span className={`-translate-y-[50%] font-mono font-black text-xs sm:text-[13px] ${themeStyles.cardText} leading-none select-none drop-shadow-xs`}>
+          {isFlipping ? prevVal : currentVal}
+        </span>
+      </div>
+
+      {/* 2.3 HIỆU ỨNG LẬP THẺ 3D (Chỉ kích hoạt trên số vừa thay đổi) */}
+      <AnimatePresence>
+        {isFlipping && (
+          <>
+            {/* Thẻ trên gập úp xuống (0° -> -90°) */}
+            <motion.div
+              key={`slot-top-flip-${flipKey}`}
+              initial={{ rotateX: 0 }}
+              animate={{ rotateX: -90 }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: [0.37, 0, 0.63, 1],
+              }}
+              style={{ transformOrigin: 'bottom', backfaceVisibility: 'hidden' }}
+              className={`absolute top-0 inset-x-0 h-1/2 overflow-hidden ${themeStyles.cardTopBg} border-b-[0.5px] ${themeStyles.cardBorderMid} flex items-end justify-center z-20 pointer-events-none`}
+            >
+              <span className={`translate-y-[50%] font-mono font-black text-xs sm:text-[13px] ${themeStyles.cardText} leading-none select-none drop-shadow-xs`}>
+                {prevVal}
+              </span>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.25 }}
+                transition={{ duration: 0.18 }}
+                className="absolute inset-0 bg-black/20 pointer-events-none"
+              />
+            </motion.div>
+
+            {/* Thẻ dưới rơi tiếp đất (90° -> 0°) */}
+            <motion.div
+              key={`slot-bot-flip-${flipKey}`}
+              initial={{ rotateX: 90 }}
+              animate={{ rotateX: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: 0.24,
+                delay: 0.16,
+                ease: [0.25, 1, 0.5, 1],
+              }}
+              style={{ transformOrigin: 'top', backfaceVisibility: 'hidden' }}
+              className={`absolute bottom-0 inset-x-0 h-1/2 overflow-hidden ${themeStyles.cardBottomBg} shadow-[inset_0_1px_2px_rgba(0,0,0,0.12)] flex items-start justify-center z-30 pointer-events-none`}
+            >
+              <span className={`-translate-y-[50%] font-mono font-black text-xs sm:text-[13px] ${themeStyles.cardText} leading-none select-none drop-shadow-xs`}>
+                {currentVal}
+              </span>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Rãnh cắt ngang giữa 2 nửa thẻ Solari */}
+      <div className={`absolute top-1/2 inset-x-0 -translate-y-1/2 h-[0.5px] ${themeStyles.splitLine} z-40 pointer-events-none`} />
+    </div>
+  );
+};
+
+// =========================================================================
+// 3. NÚT "MÁY QUAY BẢNG LẬT VIEWS" (Views Slot Machine Button)
+// =========================================================================
+interface LuckySlotReelsButtonProps {
+  count: number;
+  onClick: () => void;
+  themeStyles: TicketThemeStyles;
+}
+
+export const LuckySlotReelsButton: React.FC<LuckySlotReelsButtonProps> = ({ count, onClick, themeStyles }) => {
+  const formattedCount = formatViewCount(count);
+
+  return (
+    <div className="relative inline-flex items-center">
+      {/* CÁC NGÔI SAO LẤP LÁNH & TIM PIXEL QUANH NÚT LƯỢT XEM */}
+      {/* 1. Ngôi sao 5 cánh trên góc trái (sao 5 cánh) */}
+      <motion.div
+        animate={{ scale: [0.8, 1.25, 0.8], rotate: [0, 25, 0] }}
+        transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+        className="absolute -top-1.5 -left-1 sm:-left-2 pointer-events-none z-20 drop-shadow-xs"
+      >
+        <svg
+          className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${themeStyles.sparkleColor}`}
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          strokeWidth="1"
+        >
+          <path d="M12 2L15 9L22 9.5L17 14.5L18.5 22L12 18L5.5 22L7 14.5L2 9.5L9 9L12 2Z" />
+        </svg>
+      </motion.div>
+
+      {/* 2. Sao Cyber 4 cánh nép góc trên phải */}
+      <motion.div
+        animate={{ scale: [0.75, 1.3, 0.75], rotate: [0, 45, 0], opacity: [0.7, 1, 0.7] }}
+        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+        className="absolute -top-1.5 right-6 sm:right-8 pointer-events-none z-20 drop-shadow-xs"
+      >
+        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 0C12 7 17 12 24 12C17 12 12 17 12 24C12 17 7 12 0 12C7 12 12 7 12 0Z"
+            className={themeStyles.sparkleColor}
+            fill="currentColor"
+          />
+          <circle cx="12" cy="12" r="2.5" fill="#ffffff" />
+        </svg>
+      </motion.div>
+
+      {/* 3. Ngôi sao 5 cánh nép sườn phải */}
+      <motion.div
+        animate={{ scale: [0.85, 1.2, 0.85], opacity: [0.6, 1, 0.6] }}
+        transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut', delay: 0.35 }}
+        className="absolute top-1/2 -translate-y-1/2 -right-2 sm:-right-2.5 pointer-events-none z-20 drop-shadow-xs"
+      >
+        <svg
+          className={`w-2 h-2 sm:w-2.5 sm:h-2.5 ${themeStyles.sparkleColor}`}
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          strokeWidth="1"
+        >
+          <path d="M12 2L15 9L22 9.5L17 14.5L18.5 22L12 18L5.5 22L7 14.5L2 9.5L9 9L12 2Z" />
+        </svg>
+      </motion.div>
+
+      {/* 4. Trái tim Pixel 8-bit nép góc dưới phải */}
+      <motion.div
+        animate={{ scale: [1, 1.25, 1] }}
+        transition={{ repeat: Infinity, duration: 1.2, times: [0, 0.49, 0.5, 0.99, 1], ease: 'linear' }}
+        className="absolute -bottom-1.5 right-1 sm:right-2 pointer-events-none z-20 drop-shadow-xs"
+      >
+        <svg className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${themeStyles.sparkleColor}`} viewBox="0 0 16 16" fill="currentColor">
+          <rect x="2" y="2" width="4" height="2" />
+          <rect x="10" y="2" width="4" height="2" />
+          <rect x="0" y="4" width="8" height="4" />
+          <rect x="8" y="4" width="8" height="4" />
+          <rect x="2" y="8" width="12" height="2" />
+          <rect x="4" y="10" width="8" height="2" />
+          <rect x="6" y="12" width="4" height="2" />
+          <rect x="7" y="14" width="2" height="1" />
+        </svg>
+      </motion.div>
+
+      {/* 5. Ngôi sao 5 cánh nép đáy trái */}
+      <motion.div
+        animate={{ scale: [0.8, 1.15, 0.8], rotate: [-15, 15, -15] }}
+        transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut', delay: 0.6 }}
+        className="absolute -bottom-1 left-7 sm:left-9 pointer-events-none z-20 drop-shadow-xs"
+      >
+        <svg
+          className={`w-2 h-2 ${themeStyles.sparkleColor}`}
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          strokeWidth="1"
+        >
+          <path d="M12 2L15 9L22 9.5L17 14.5L18.5 22L12 18L5.5 22L7 14.5L2 9.5L9 9L12 2Z" />
+        </svg>
+      </motion.div>
+
+      <button
+        type="button"
+        onClick={onClick}
+        className={`group flex items-center gap-2 p-1.5 sm:p-2 px-2.5 sm:px-3 rounded-2xl ${themeStyles.reelsBtnBg} border-2 ${themeStyles.reelsBtnBorder} shadow-sm ${themeStyles.reelsBtnHoverShadow} active:scale-95 cursor-pointer transition-all shrink-0 select-none relative z-10`}
+        title="Máy Quay Bảng Lật Views (Click để tăng lượt xem)"
+      >
+        {/* Nhãn Views */}
+        <div className={`flex items-center justify-center px-2.5 py-1 sm:py-1.5 rounded-lg ${themeStyles.viewsBadgeBg} border ${themeStyles.viewsBadgeBorder} shadow-2xs shrink-0 select-none`}>
+          <span className={`font-mono font-bold text-xs sm:text-[13px] tracking-wide ${themeStyles.viewsBadgeText}`}>
+            Views
+          </span>
+        </div>
+
+        {/* Dãy thẻ lật cơ học Solari */}
+        <div className={`flex items-center gap-[2.5px] p-1 rounded-xl ${themeStyles.reelsTrayBg} border ${themeStyles.reelsTrayBorder} shadow-inner`}>
+          {formattedCount.split('').map((char, idx) => (
+            <SlotSplitFlapDigit key={idx} char={char} index={idx} themeStyles={themeStyles} />
+          ))}
+        </div>
+      </button>
+    </div>
+  );
+};
+
+// =========================================================================
+// 4. TOÀN BỘ KHUNG "CUỐNG VÉ XEM PHIM" - NỀN TRƠN (Plain Frosted Glass)
+// =========================================================================
+interface MovieTicketPlainFooterProps {
+  views: number;
+  onIncrementViews: () => void;
+  onOpenIntro?: () => void;
+  themeStyles: TicketThemeStyles;
+  theme?: string;
+  isDarkMode?: boolean;
+}
+
+export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
+  views,
+  onIncrementViews,
+  onOpenIntro,
+  themeStyles,
+  theme = 'amethyst-haze',
+  isDarkMode = false,
+}) => {
+  return (
+    <div className="w-full max-w-2xl mx-auto relative select-none font-sans">
+      {/* BỎ KHUNG VIỀN & NỀN CỦA KHUNG CUỐNG VÉ: CÁC NÚT VÀ MÃ VẠCH VẪN GIỮ NGUYÊN NỀN BÊN TRONG */}
+      <div className="relative overflow-hidden transition-all">
+        {/* NỘI DUNG CUỐNG VÉ CHIA 3 PHẦN */}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-2 sm:p-3 px-3 sm:px-6 gap-3.5">
+          {/* PHẦN 1 (TRÁI): MÃ VẠCH BARCODE VINTAGE */}
+          <div className="flex items-center gap-3.5 shrink-0 w-full md:w-auto justify-center md:justify-start">
+            <div
+              className={`hidden xs:flex flex-col items-center justify-center ${themeStyles.barcodeBoxBg} px-2.5 py-1 rounded-lg border ${themeStyles.barcodeBoxBorder} shrink-0 shadow-2xs`}
+            >
+              <div className="flex items-end gap-[1.5px] h-6">
+                <span className={`w-[1.5px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[2.5px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[1px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[2px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[1px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[3px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[1px] h-6 ${themeStyles.barcodeBars}`} />
+                <span className={`w-[2px] h-6 ${themeStyles.barcodeBars}`} />
+              </div>
+              <span
+                className={`text-[7.5px] font-mono ${themeStyles.barcodeText} tracking-tighter mt-0.5 flex items-center gap-0.5 font-bold`}
+              >
+                ★ 2026-VIP ★
+              </span>
+            </div>
+          </div>
+
+          {/* Đường rãnh xé vé đứt đoạn 1 */}
+          <div
+            className={`hidden md:block w-[1.5px] h-11 border-r-2 border-dashed ${themeStyles.tearLine} my-auto`}
+          />
+
+          {/* PHẦN 2 (GIỮA): MÁY QUAY BẢNG LẬT VIEWS */}
+          <div className="shrink-0 flex items-center justify-center">
+            <LuckySlotReelsButton
+              count={views}
+              onClick={onIncrementViews}
+              themeStyles={themeStyles}
+            />
+          </div>
+
+          {/* Đường rãnh xé vé đứt đoạn 2 */}
+          <div
+            className={`hidden md:block w-[1.5px] h-11 border-r-2 border-dashed ${themeStyles.tearLine} my-auto`}
+          />
+
+          {/* PHẦN 3 (PHẢI): CỤM NÚT LIÊN KẾT CUỐNG VÉ */}
+          <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-center">
+            {(() => {
+              // Ở chế độ sáng: Áp dụng hiệu ứng và màu sắc giống kiểu tags trong Tiểu Thuyết Đã Hoàn
+              const getLightBtnThemeClass = () => {
+                switch (theme) {
+                  case 'notebook':
+                    return 'notebook-light-btn notebook-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                  case 'sage':
+                    return 'sage-light-btn sage-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                  case 'mocha':
+                    return 'mocha-light-btn mocha-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                  case 'amethyst-haze':
+                  case 'cosmic':
+                    return 'amethyst-light-btn amethyst-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                  case 'slate-haze':
+                  default:
+                    return 'frost-light-btn frost-light-novel-tag !rounded-xl !px-2.5 !py-2 !text-xs !font-bold';
+                }
+              };
+
+              // Ở chế độ tối: Đổ màu nền nút, bỏ đường viền (border-0 border-transparent)
+              const getDarkBtnThemeClass = () => {
+                switch (theme) {
+                  case 'notebook':
+                    return 'bg-[#2b2722] hover:bg-[#38332c] text-zinc-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
+                  case 'sage':
+                    return 'bg-[#1b2e20] hover:bg-[#253f2c] text-emerald-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
+                  case 'mocha':
+                    return 'bg-[#2f2018] hover:bg-[#3f2b20] text-amber-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
+                  case 'slate-haze':
+                    return 'bg-[#18283a] hover:bg-[#20364e] text-slate-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
+                  case 'amethyst-haze':
+                  case 'cosmic':
+                  default:
+                    return 'bg-[#25173d] hover:bg-[#341f54] text-purple-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
+                }
+              };
+
+              const btnBaseClass = !isDarkMode
+                ? `group flex items-center justify-center gap-1.5 cursor-pointer select-none active:translate-y-0.5 transition-all ${getLightBtnThemeClass()}`
+                : `group flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold active:translate-y-0.5 cursor-pointer transition-all ${getDarkBtnThemeClass()}`;
+
+              return (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onOpenIntro) {
+                        onOpenIntro();
+                      } else {
+                        window.dispatchEvent(new CustomEvent('open-novel-intro'));
+                      }
+                    }}
+                    className={btnBaseClass}
+                    title="Giới thiệu"
+                  >
+                    <Cat
+                      className={`w-3.5 h-3.5 ${themeStyles.catIcon} ${themeStyles.catIconHover} transition-colors duration-300 stroke-[2.2]`}
+                    />
+                    <span>Giới Thiệu</span>
+                  </button>
+
+                  <a
+                    href="https://nienthoi003.wordpress.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={btnBaseClass}
+                    title="WordPress"
+                  >
+                    <Cherry
+                      className={`w-3.5 h-3.5 ${themeStyles.cherryIcon} ${themeStyles.cherryIconHover} transition-colors duration-300 stroke-[2.2]`}
+                    />
+                    <span>WordPress</span>
+                  </a>
+
+                  <a
+                    href="https://www.wattpad.com/user/Qingxiya52"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={btnBaseClass}
+                    title="Wattpad"
+                  >
+                    <BookHeart
+                      className={`w-3.5 h-3.5 ${themeStyles.bookIcon} ${themeStyles.bookIconHover} transition-colors duration-300 stroke-[2.2]`}
+                    />
+                    <span>Wattpad</span>
+                  </a>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
+
+      {/* DÒNG BẢN QUYỀN TRANG WEB */}
+      <div className="w-full text-center pt-3 pb-1">
+        <p className={`text-xs sm:text-[13px] font-medium tracking-wide ${themeStyles.copyrightText}`}>
+          © 2026 Niên Thời - Jouriee65
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// =========================================================================
+// 5. COMPONENT FOOTER CHÍNH
+// =========================================================================
+export interface FooterProps {
   isNovelPlatform?: boolean;
   borderClass?: string;
   bgClass?: string;
@@ -14,7 +957,6 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({
-  isNovelPlatform = false,
   borderClass,
   bgClass,
   theme = 'amethyst-haze',
@@ -22,235 +964,39 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenIntro,
 }) => {
   const [views, setViews] = useState<number>(() => getGlobalViews());
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
     const unsub = subscribeGlobalViews((v) => setViews(v));
     return () => unsub();
   }, []);
 
-  const handleReload = async () => {
-    if (isRefreshing) return;
-    setIsRefreshing(true);
-    try {
-      const v = await fetchGlobalViews(true);
-      setViews(v);
-    } catch {}
-    finally {
-      setTimeout(() => setIsRefreshing(false), 500);
-    }
+  const handleIncrement = () => {
+    // Tăng lượt xem thực tế tức thì (Optimistic + Batching D1/Storage), không hiện toast
+    incrementGlobalView(1);
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (isNovelPlatform) {
-    return (
-      <footer className={`mt-auto w-full relative py-6 sm:py-8 border-t transition-colors z-10 ${borderClass || 'border-black/10 dark:border-white/10'} ${bgClass || 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-4">
-          {/* NÚT GIỚI THIỆU TRANG WEB MỚI: BẢNG TREO DÂY THỪNG GỖ PASTEL (CHỈ HIỂN THỊ Ở CHẾ ĐỘ SÁNG) */}
-          {!isDarkMode && onOpenIntro && (
-            <div className="w-full flex items-center justify-center pb-2">
-              <IntroAboutButton
-                onOpen={onOpenIntro}
-                theme={theme}
-                isDarkEffective={false}
-              />
-            </div>
-          )}
-
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
-            {/* Copyright bên trái */}
-            <div className="flex items-center text-center sm:text-left shrink-0">
-              <span className="opacity-60 text-xs sm:text-sm">
-                © {new Date().getFullYear()} Niên Thời - Jouriee65
-              </span>
-            </div>
-
-            {/* Ở CHẾ ĐỘ SÁNG TRÊN MÁY TÍNH: ICON CỦA WATTPAD VÀ WORDPRESS NẰM Ở GIỮA */}
-            {!isDarkMode && (
-              <div className="hidden sm:flex items-center justify-center gap-3">
-                <a
-                  href="https://nienthoi003.wordpress.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.04] dark:bg-white/[0.05] hover:bg-[#21759B]/15 hover:border-[#21759B]/50 text-stone-600 dark:text-stone-300 hover:text-[#21759B] dark:hover:text-[#42b0e8] transition-all cursor-pointer shadow-xs group"
-                  title="Niên Thời trên WordPress (https://nienthoi003.wordpress.com/)"
-                  aria-label="WordPress"
-                >
-                  <svg role="img" viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-current transition-transform duration-200 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-                    <title>WordPress</title>
-                    <path d="M21.469 6.825c.84 1.537 1.318 3.3 1.318 5.175 0 3.979-2.156 7.456-5.363 9.325l3.295-9.527c.615-1.54.82-2.771.82-3.864 0-.405-.026-.78-.07-1.11m-7.981.105c.647-.03 1.232-.105 1.232-.105.582-.075.514-.93-.067-.899 0 0-1.755.135-2.88.135-1.064 0-2.85-.15-2.85-.15-.585-.03-.661.855-.075.885 0 0 .54.061 1.125.09l1.68 4.605-2.37 7.08L5.354 6.9c.649-.03 1.234-.1 1.234-.1.585-.075.516-.93-.065-.896 0 0-1.746.138-2.874.138-.2 0-.438-.008-.69-.015C4.911 3.15 8.235 1.215 12 1.215c2.809 0 5.365 1.072 7.286 2.833-.046-.003-.091-.009-.141-.009-1.06 0-1.812.923-1.812 1.914 0 .89.513 1.643 1.06 2.531.411.72.89 1.643.89 2.977 0 .915-.354 1.994-.821 3.479l-1.075 3.585-3.9-11.61.001.014zM12 22.784c-1.059 0-2.081-.153-3.048-.437l3.237-9.406 3.315 9.087c.024.053.05.101.078.149-1.12.393-2.325.609-3.582.609M1.211 12c0-1.564.336-3.05.935-4.39L7.29 21.709C3.694 19.96 1.212 16.271 1.211 12M12 0C5.385 0 0 5.385 0 12s5.385 12 12 12 12-5.385 12-12S18.615 0 12 0"/>
-                  </svg>
-                </a>
-                <a
-                  href="https://www.wattpad.com/user/Qingxiya52"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.04] dark:bg-white/[0.05] hover:bg-[#FF6122]/15 hover:border-[#FF6122]/50 text-stone-600 dark:text-stone-300 hover:text-[#FF6122] dark:hover:text-[#ff7843] transition-all cursor-pointer shadow-xs group"
-                  title="Niên Thời trên Wattpad (https://www.wattpad.com/user/Qingxiya52)"
-                  aria-label="Wattpad"
-                >
-                  <svg role="img" viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-current transition-transform duration-200 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-                    <title>Wattpad</title>
-                    <path d="M13.034 3.09c-1.695.113-3.9 2.027-6.9 6.947.245-2.758.345-4.716-.857-5.743-.823-.702-2.764-.974-3.926.536C.18 6.349-.09 9.312.024 12.432c.238 6.518 2.544 8.487 4.59 8.487h.001c3.623 0 4.13-4.439 6.604-8.4-.09 1.416-.008 2.668.266 3.532 1.078 3.398 4.784 3.663 6.467.21 2.374-4.87 3.058-6.016 5.453-9.521 1.58-2.314-.252-3.812-2.374-2.735-1.09.554-2.86 1.935-5.065 4.867.387-2.23.28-5.996-2.932-5.782z"/>
-                  </svg>
-                </a>
-              </div>
-            )}
-
-            {/* Total Reads Counter with Reload button & Back to top bên phải */}
-            <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap justify-center sm:justify-end shrink-0">
-              {/* Khối hiển thị Tổng lượt xem Cloudflare D1 cộng dồn */}
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.04] dark:bg-white/[0.05] text-[11px] font-mono shadow-xs backdrop-blur-xs select-none">
-                <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 opacity-90 shrink-0" />
-                <span className="font-bold tracking-wider text-emerald-600 dark:text-emerald-400 font-mono">
-                  {views.toLocaleString('vi-VN')}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleReload}
-                  disabled={isRefreshing}
-                  className={`ml-0.5 p-1 rounded-full text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-black/5 dark:hover:bg-white/10 transition-all cursor-pointer ${
-                    isRefreshing ? 'opacity-50 pointer-events-none' : ''
-                  }`}
-                  title="Tải lại số lượt xem"
-                  aria-label="Tải lại số lượt xem"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-500' : ''}`} />
-                </button>
-              </div>
-
-              {/* Back to top button */}
-              <button
-                onClick={scrollToTop}
-                className="p-2.5 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer shadow-xs"
-                title="Cuộn lên đầu trang"
-              >
-                <ArrowUp className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* WordPress & Wattpad logos - Hiển thị ở hàng dưới ở chế độ tối hoặc trên mobile ở chế độ sáng */}
-          <div className={`${!isDarkMode ? 'sm:hidden' : ''} flex items-center justify-center gap-3 pt-2`}>
-            <a
-              href="https://nienthoi003.wordpress.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.04] dark:bg-white/[0.05] hover:bg-[#21759B]/15 hover:border-[#21759B]/50 text-stone-600 dark:text-stone-300 hover:text-[#21759B] dark:hover:text-[#42b0e8] transition-all cursor-pointer shadow-xs group"
-              title="Niên Thời trên WordPress (https://nienthoi003.wordpress.com/)"
-              aria-label="WordPress"
-            >
-              <svg role="img" viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-current transition-transform duration-200 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-                <title>WordPress</title>
-                <path d="M21.469 6.825c.84 1.537 1.318 3.3 1.318 5.175 0 3.979-2.156 7.456-5.363 9.325l3.295-9.527c.615-1.54.82-2.771.82-3.864 0-.405-.026-.78-.07-1.11m-7.981.105c.647-.03 1.232-.105 1.232-.105.582-.075.514-.93-.067-.899 0 0-1.755.135-2.88.135-1.064 0-2.85-.15-2.85-.15-.585-.03-.661.855-.075.885 0 0 .54.061 1.125.09l1.68 4.605-2.37 7.08L5.354 6.9c.649-.03 1.234-.1 1.234-.1.585-.075.516-.93-.065-.896 0 0-1.746.138-2.874.138-.2 0-.438-.008-.69-.015C4.911 3.15 8.235 1.215 12 1.215c2.809 0 5.365 1.072 7.286 2.833-.046-.003-.091-.009-.141-.009-1.06 0-1.812.923-1.812 1.914 0 .89.513 1.643 1.06 2.531.411.72.89 1.643.89 2.977 0 .915-.354 1.994-.821 3.479l-1.075 3.585-3.9-11.61.001.014zM12 22.784c-1.059 0-2.081-.153-3.048-.437l3.237-9.406 3.315 9.087c.024.053.05.101.078.149-1.12.393-2.325.609-3.582.609M1.211 12c0-1.564.336-3.05.935-4.39L7.29 21.709C3.694 19.96 1.212 16.271 1.211 12M12 0C5.385 0 0 5.385 0 12s5.385 12 12 12 12-5.385 12-12S18.615 0 12 0"/>
-              </svg>
-            </a>
-            <a
-              href="https://www.wattpad.com/user/Qingxiya52"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.04] dark:bg-white/[0.05] hover:bg-[#FF6122]/15 hover:border-[#FF6122]/50 text-stone-600 dark:text-stone-300 hover:text-[#FF6122] dark:hover:text-[#ff7843] transition-all cursor-pointer shadow-xs group"
-              title="Niên Thời trên Wattpad (https://www.wattpad.com/user/Qingxiya52)"
-              aria-label="Wattpad"
-            >
-              <svg role="img" viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-current transition-transform duration-200 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-                <title>Wattpad</title>
-                <path d="M13.034 3.09c-1.695.113-3.9 2.027-6.9 6.947.245-2.758.345-4.716-.857-5.743-.823-.702-2.764-.974-3.926.536C.18 6.349-.09 9.312.024 12.432c.238 6.518 2.544 8.487 4.59 8.487h.001c3.623 0 4.13-4.439 6.604-8.4-.09 1.416-.008 2.668.266 3.532 1.078 3.398 4.784 3.663 6.467.21 2.374-4.87 3.058-6.016 5.453-9.521 1.58-2.314-.252-3.812-2.374-2.735-1.09.554-2.86 1.935-5.065 4.867.387-2.23.28-5.996-2.932-5.782z"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-      </footer>
-    );
-  }
+  const themeStyles = useMemo(() => {
+    return getTicketTheme(theme, isDarkMode);
+  }, [theme, isDarkMode]);
 
   return (
-    <footer className="relative py-10 border-t border-indigo-950/80 z-10 bg-[#04050E]/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-5">
-        {/* NÚT GIỚI THIỆU TRANG WEB MỚI: BẢNG TREO DÂY THỪNG GỖ PASTEL (CHỈ HIỂN THỊ Ở CHẾ ĐỘ SÁNG) */}
-        {!isDarkMode && onOpenIntro && (
-          <div className="w-full flex items-center justify-center pb-2">
-            <IntroAboutButton
-              onOpen={onOpenIntro}
-              theme={theme}
-              isDarkEffective={false}
-            />
-          </div>
-        )}
-
-        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-6">
-          {/* Brand & Copy */}
-          <div className="flex items-center gap-3">
-            <span className="text-slate-400 text-xs sm:text-sm">
-              © 2026 Niên Thời - Jouriee65
-            </span>
-          </div>
-
-          {/* Visitor counter & Back to Top */}
-          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-end">
-            {/* Khối hiển thị Tổng lượt xem Cloudflare D1 cộng dồn */}
-            <div className="flex items-center gap-1.5 text-xs font-mono text-slate-300 px-3 py-1.5 rounded-full border border-indigo-900/50 bg-[#0E1026]/70 shadow-xs select-none">
-              <BookOpen className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span className="text-emerald-400 font-bold">
-                {views.toLocaleString('vi-VN')}
-              </span>
-              <button
-                type="button"
-                onClick={handleReload}
-                disabled={isRefreshing}
-                className={`ml-0.5 p-1 rounded-full text-slate-400 hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer ${
-                  isRefreshing ? 'opacity-50 pointer-events-none' : ''
-                }`}
-                title="Tải lại số lượt xem"
-                aria-label="Tải lại số lượt xem"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-400' : ''}`} />
-              </button>
-            </div>
-
-            <button
-              onClick={scrollToTop}
-              className="p-2.5 rounded-full bg-[#0E1026] hover:bg-purple-950/60 border border-indigo-800/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-md"
-              title="Scroll to Top"
-            >
-              <ArrowUp className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* WordPress & Wattpad logos - Dưới cùng nằm ở giữa */}
-        <div className="flex items-center justify-center gap-3 pt-2">
-          <a
-            href="https://nienthoi003.wordpress.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full border border-indigo-900/50 bg-[#0E1026]/70 hover:bg-[#21759B]/20 hover:border-[#21759B]/50 text-slate-400 hover:text-[#3895c4] transition-all cursor-pointer shadow-md group"
-            title="Niên Thời trên WordPress (https://nienthoi003.wordpress.com/)"
-            aria-label="WordPress"
-          >
-            <svg role="img" viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-current transition-transform duration-200 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-              <title>WordPress</title>
-              <path d="M21.469 6.825c.84 1.537 1.318 3.3 1.318 5.175 0 3.979-2.156 7.456-5.363 9.325l3.295-9.527c.615-1.54.82-2.771.82-3.864 0-.405-.026-.78-.07-1.11m-7.981.105c.647-.03 1.232-.105 1.232-.105.582-.075.514-.93-.067-.899 0 0-1.755.135-2.88.135-1.064 0-2.85-.15-2.85-.15-.585-.03-.661.855-.075.885 0 0 .54.061 1.125.09l1.68 4.605-2.37 7.08L5.354 6.9c.649-.03 1.234-.1 1.234-.1.585-.075.516-.93-.065-.896 0 0-1.746.138-2.874.138-.2 0-.438-.008-.69-.015C4.911 3.15 8.235 1.215 12 1.215c2.809 0 5.365 1.072 7.286 2.833-.046-.003-.091-.009-.141-.009-1.06 0-1.812.923-1.812 1.914 0 .89.513 1.643 1.06 2.531.411.72.89 1.643.89 2.977 0 .915-.354 1.994-.821 3.479l-1.075 3.585-3.9-11.61.001.014zM12 22.784c-1.059 0-2.081-.153-3.048-.437l3.237-9.406 3.315 9.087c.024.053.05.101.078.149-1.12.393-2.325.609-3.582.609M1.211 12c0-1.564.336-3.05.935-4.39L7.29 21.709C3.694 19.96 1.212 16.271 1.211 12M12 0C5.385 0 0 5.385 0 12s5.385 12 12 12 12-5.385 12-12S18.615 0 12 0"/>
-            </svg>
-          </a>
-          <a
-            href="https://www.wattpad.com/user/Qingxiya52"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full border border-indigo-900/50 bg-[#0E1026]/70 hover:bg-[#FF6122]/20 hover:border-[#FF6122]/50 text-slate-400 hover:text-[#ff7843] transition-all cursor-pointer shadow-md group"
-            title="Niên Thời trên Wattpad (https://www.wattpad.com/user/Qingxiya52)"
-            aria-label="Wattpad"
-          >
-            <svg role="img" viewBox="0 0 24 24" className="w-4.5 h-4.5 fill-current transition-transform duration-200 group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-              <title>Wattpad</title>
-              <path d="M13.034 3.09c-1.695.113-3.9 2.027-6.9 6.947.245-2.758.345-4.716-.857-5.743-.823-.702-2.764-.974-3.926.536C.18 6.349-.09 9.312.024 12.432c.238 6.518 2.544 8.487 4.59 8.487h.001c3.623 0 4.13-4.439 6.604-8.4-.09 1.416-.008 2.668.266 3.532 1.078 3.398 4.784 3.663 6.467.21 2.374-4.87 3.058-6.016 5.453-9.521 1.58-2.314-.252-3.812-2.374-2.735-1.09.554-2.86 1.935-5.065 4.867.387-2.23.28-5.996-2.932-5.782z"/>
-            </svg>
-          </a>
-        </div>
+    <footer
+      className={`mt-auto w-full relative py-6 sm:py-8 border-t transition-colors z-10 ${
+        borderClass || 'border-black/10 dark:border-white/10'
+      } ${bgClass || 'bg-transparent'}`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        <MovieTicketPlainFooter
+          views={views}
+          onIncrementViews={handleIncrement}
+          onOpenIntro={onOpenIntro}
+          themeStyles={themeStyles}
+          theme={theme}
+          isDarkMode={isDarkMode}
+        />
       </div>
     </footer>
   );
 };
+
+export default Footer;

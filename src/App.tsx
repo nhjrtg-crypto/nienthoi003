@@ -670,6 +670,19 @@ export default function App() {
     return () => unsub();
   }, []);
 
+  // Lắng nghe sự kiện mở trang giới thiệu từ footer hoặc các nút liên kết
+  useEffect(() => {
+    const handleOpenIntroEvent = () => {
+      setSelectedNovel(null);
+      setReadingChapterNumber(null);
+      setLightIntroOption('style1');
+      setViewMode('about-light');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    window.addEventListener('open-novel-intro', handleOpenIntroEvent);
+    return () => window.removeEventListener('open-novel-intro', handleOpenIntroEvent);
+  }, []);
+
   // ĐÃ NGẮT KẾT NỐI HOÀN TOÀN KHỎI FIREBASE:
   // Dữ liệu truyện và chương được lưu và nạp 100% từ mã nguồn web (INITIAL_NOVELS).
   const loadFirestoreTruyens = useCallback(async (_force = false) => {}, []);
@@ -1389,6 +1402,13 @@ export default function App() {
             currentUser={currentUser}
             onToggleStatus={handleToggleNovelStatus}
             onDeleteNovel={handleDeleteFirestoreNovel}
+            onOpenIntro={() => {
+              setSelectedNovel(null);
+              setReadingChapterNumber(null);
+              setLightIntroOption('style1');
+              setViewMode('about-light');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         </div>
       )}
