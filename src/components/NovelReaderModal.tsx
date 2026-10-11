@@ -1596,17 +1596,33 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           </div>
         ) : (
           <>
-            {/* Chapter Text Body */}
+            {/* Chapter Text Body - Chống copy nhưng vẫn cho phép bôi đen (chọn văn bản) */}
             <article
-          className={`${tStyles.readerText} ${fontClass} ${
-            isJustified ? 'text-justify [text-justify:inter-word]' : 'text-left'
-          }`}
-          style={{
-            fontSize: `${fontSize}px`,
-            lineHeight: lineHeight,
-            textAlign: isJustified ? 'justify' : 'left',
-          }}
-        >
+              onCopy={(e) => {
+                e.preventDefault();
+              }}
+              onCut={(e) => {
+                e.preventDefault();
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+              }}
+              onDragStart={(e) => {
+                e.preventDefault();
+              }}
+              className={`select-text ${tStyles.readerText} ${fontClass} ${
+                isJustified ? 'text-justify [text-justify:inter-word]' : 'text-left'
+              }`}
+              style={{
+                fontSize: `${fontSize}px`,
+                lineHeight: lineHeight,
+                textAlign: isJustified ? 'justify' : 'left',
+                userSelect: 'text',
+                WebkitUserSelect: 'text',
+                MozUserSelect: 'text',
+                msUserSelect: 'text',
+              }}
+            >
           {isLoadingChapterContent && !activeContent ? (
             <div className="py-12 space-y-4 animate-pulse">
               <div className="flex items-center justify-center gap-2 pb-4 text-xs font-sans text-stone-400">

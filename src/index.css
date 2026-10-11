@@ -3349,3 +3349,11 @@
 .notebook-light-novel-divider {
   border-top: 1px solid rgba(210, 210, 210, 0.6) !important;
 }
+
+/* Chặn in ấn và lưu file PDF/EPUB từ trình duyệt */
+@media print {
+  body {
+    display: none !important;
+  }
+}
+
