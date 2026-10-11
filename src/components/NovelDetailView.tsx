@@ -1437,13 +1437,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(206, 147, 253, 0.45) 0%, rgba(216, 168, 254, 0.36) 24%, rgba(226, 192, 255, 0.25) 48%, rgba(238, 218, 255, 0.15) 70%, rgba(248, 238, 255, 0.06) 86%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)',
+              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
             glowGradientTopRight: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(206, 147, 253, 0.45) 0%, rgba(216, 168, 254, 0.36) 24%, rgba(226, 192, 255, 0.25) 48%, rgba(238, 218, 255, 0.15) 70%, rgba(248, 238, 255, 0.06) 86%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)',
+              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
             glowGradientBottomLeft: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(206, 147, 253, 0.45) 0%, rgba(216, 168, 254, 0.36) 24%, rgba(226, 192, 255, 0.25) 48%, rgba(238, 218, 255, 0.15) 70%, rgba(248, 238, 255, 0.06) 86%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)',
+              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(192, 132, 252, 0.17)'
               : 'rgba(147, 51, 234, 0.22)',
