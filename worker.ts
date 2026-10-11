@@ -4,7 +4,6 @@
 
 export interface Env {
   DB?: any;
-  INTRO_DB?: any;
   ASSETS?: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -50,7 +49,7 @@ export default {
         const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '50', 10), 1), 100);
 
         const targetLikeId = (novelId.startsWith('intro_') || novelId === 'intro') ? 'intro_page' : novelId;
-        const likeDb = (targetLikeId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+        const likeDb = env.DB;
 
         if (!env.DB) {
           return new Response(
@@ -299,12 +298,12 @@ export default {
     }
 
     // ========================================================================
-    // 3. API: /api/likes (Thả tim truyện & trang giới thiệu - hỗ trợ INTRO_DB)
+    // 3. API: /api/likes (Thả tim truyện & trang giới thiệu)
     // ========================================================================
     if (url.pathname === '/api/likes' || url.pathname.startsWith('/api/likes/')) {
       const rawTarget = url.searchParams.get('targetId') || 'global';
       const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
-      const db = (targetId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+      const db = env.DB;
 
       if (request.method === 'GET') {
         if (!db) {
@@ -362,7 +361,7 @@ export default {
           const rawPostTarget = body.targetId || targetId;
           const postTarget = rawPostTarget.startsWith('intro_') || rawPostTarget === 'intro' ? 'intro_page' : rawPostTarget;
           const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
-          const postDb = (postTarget === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+          const postDb = env.DB;
 
           if (!postDb) {
             return new Response(
@@ -631,11 +630,11 @@ export default {
     }
 
     // ========================================================================
-    // 5. API: /api/notes (Lưu bút bạn đọc - hỗ trợ INTRO_DB)
+    // 5. API: /api/notes (Lưu bút bạn đọc)
     // ========================================================================
     if (url.pathname === '/api/notes' || url.pathname.startsWith('/api/notes/')) {
       const style = url.searchParams.get('style') || 'style1';
-      const db = env.INTRO_DB || env.DB;
+      const db = env.DB;
 
       if (request.method === 'GET') {
         if (!db) {

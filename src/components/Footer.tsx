@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Cherry, BookHeart, Cat } from 'lucide-react';
-import { getGlobalViews, subscribeGlobalViews, incrementGlobalView } from '../services/d1Service';
+import { Cherry, BookHeart, Cat, RotateCw } from 'lucide-react';
+import { getGlobalViews, subscribeGlobalViews, incrementGlobalView, fetchGlobalViews } from '../services/d1Service';
 
 // =========================================================================
 // 1. FORMAT SỐ HIỂN THỊ (Phân tách hàng nghìn bằng dấu chấm, ví dụ: 128.504)
@@ -486,21 +486,21 @@ export function getTicketTheme(theme: string = 'amethyst-haze', isDarkMode: bool
             barcodeBoxBorder: 'border-purple-200',
             barcodeBars: 'bg-[#581c87]',
             barcodeText: 'text-[#581c87]',
-            reelsBtnBg: 'bg-gradient-to-b from-[#faf5ff] via-[#f3e8ff] to-[#e9d5ff]',
-            reelsBtnBorder: 'border-purple-200',
-            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(168,85,247,0.32)]',
-            viewsBadgeBg: 'bg-[#f5edff]',
-            viewsBadgeBorder: 'border-[#c084fc]/50',
-            viewsBadgeText: 'text-[#7e22ce]',
-            reelsTrayBg: 'bg-[#faf5ff]',
-            reelsTrayBorder: 'border-purple-200',
+            reelsBtnBg: 'bg-gradient-to-b from-white via-[#faf6ff] to-[#f5ebff]',
+            reelsBtnBorder: 'border-purple-200/60',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_16px_rgba(168,85,247,0.18)]',
+            viewsBadgeBg: 'bg-[#faf6ff]',
+            viewsBadgeBorder: 'border-purple-200/50',
+            viewsBadgeText: 'text-[#9333ea]',
+            reelsTrayBg: 'bg-white/80',
+            reelsTrayBorder: 'border-purple-100',
             cardBg: 'bg-[#fdfaff]',
-            cardBorder: 'border-[#c084fc]/35',
-            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(168,85,247,0.12)]',
-            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#f3e8ff]',
-            cardBottomBg: 'bg-gradient-to-b from-[#e9d5ff] to-[#d8b4fe]',
-            cardBorderMid: 'border-[#c084fc]/20',
-            cardText: 'text-[#581c87]',
+            cardBorder: 'border-purple-200/40',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(168,85,247,0.08)]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#faf6ff]',
+            cardBottomBg: 'bg-gradient-to-b from-[#faf5ff] to-[#eeddfd]',
+            cardBorderMid: 'border-purple-200/25',
+            cardText: 'text-[#7e22ce]',
             separatorStarFill: 'fill-[#9333ea] text-[#9333ea]',
             sparkleColor: 'fill-[#a855f7] text-[#a855f7]',
             splitLine: 'bg-[#a855f7]/20',
@@ -651,12 +651,36 @@ export const SlotSplitFlapDigit: React.FC<SplitFlapDigitProps> = ({ char, themeS
 // =========================================================================
 interface LuckySlotReelsButtonProps {
   count: number;
-  onClick: () => void;
+  onClick?: () => void;
+  onRefreshViews?: () => Promise<void> | void;
   themeStyles: TicketThemeStyles;
 }
 
-export const LuckySlotReelsButton: React.FC<LuckySlotReelsButtonProps> = ({ count, onClick, themeStyles }) => {
+export const LuckySlotReelsButton: React.FC<LuckySlotReelsButtonProps> = ({
+  count,
+  onClick,
+  onRefreshViews,
+  themeStyles,
+}) => {
   const formattedCount = formatViewCount(count);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      if (onRefreshViews) {
+        await onRefreshViews();
+      } else {
+        await fetchGlobalViews(true);
+      }
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 700);
+    }
+  };
 
   return (
     <div className="relative inline-flex items-center">
@@ -746,11 +770,9 @@ export const LuckySlotReelsButton: React.FC<LuckySlotReelsButtonProps> = ({ coun
         </svg>
       </motion.div>
 
-      <button
-        type="button"
+      <div
         onClick={onClick}
-        className={`group flex items-center gap-2 p-1.5 sm:p-2 px-2.5 sm:px-3 rounded-2xl ${themeStyles.reelsBtnBg} border-2 ${themeStyles.reelsBtnBorder} shadow-sm ${themeStyles.reelsBtnHoverShadow} active:scale-95 cursor-pointer transition-all shrink-0 select-none relative z-10`}
-        title="Máy Quay Bảng Lật Views (Click để tăng lượt xem)"
+        className={`group flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 px-2.5 sm:px-3 rounded-2xl ${themeStyles.reelsBtnBg} border-2 ${themeStyles.reelsBtnBorder} shadow-sm ${themeStyles.reelsBtnHoverShadow} transition-all shrink-0 select-none relative z-10`}
       >
         {/* Nhãn Views */}
         <div className={`flex items-center justify-center px-2.5 py-1 sm:py-1.5 rounded-lg ${themeStyles.viewsBadgeBg} border ${themeStyles.viewsBadgeBorder} shadow-2xs shrink-0 select-none`}>
@@ -765,7 +787,19 @@ export const LuckySlotReelsButton: React.FC<LuckySlotReelsButtonProps> = ({ coun
             <SlotSplitFlapDigit key={idx} char={char} index={idx} themeStyles={themeStyles} />
           ))}
         </div>
-      </button>
+
+        {/* Nút Load kế bên số lượt xem, nằm bên trong nút */}
+        <button
+          type="button"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className={`flex items-center justify-center p-1 sm:p-1.5 rounded-lg ${themeStyles.viewsBadgeBg} border ${themeStyles.viewsBadgeBorder} ${themeStyles.viewsBadgeText} hover:opacity-80 active:scale-90 transition-all cursor-pointer shadow-2xs`}
+          title="Tải lại lượt xem"
+          aria-label="Tải lại lượt xem"
+        >
+          <RotateCw className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+        </button>
+      </div>
     </div>
   );
 };
@@ -776,15 +810,169 @@ export const LuckySlotReelsButton: React.FC<LuckySlotReelsButtonProps> = ({ coun
 interface MovieTicketPlainFooterProps {
   views: number;
   onIncrementViews: () => void;
+  onRefreshViews?: () => Promise<void> | void;
   onOpenIntro?: () => void;
   themeStyles: TicketThemeStyles;
   theme?: string;
   isDarkMode?: boolean;
 }
 
+const footerLightButtonStyles = `
+.footer-btn-light-frost {
+  border-radius: 12px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(234, 242, 253, 0.85) 0%, 
+      rgba(241, 246, 254, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(241, 246, 254, 0.80) 82%, 
+      rgba(234, 242, 253, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      #ffffff 0%, 
+      #ffffff 20%, 
+      rgba(182, 205, 226, 0.45) 55%, 
+      rgba(182, 205, 226, 0.88) 100%
+    ) border-box !important;
+  box-shadow: none !important;
+  color: #3e566d !important;
+  transition: all 0.25s ease !important;
+}
+.footer-btn-light-frost:hover {
+  box-shadow: none !important;
+  color: #1e3448 !important;
+  opacity: 0.95;
+}
+
+.footer-btn-light-amethyst {
+  border-radius: 12px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(247, 242, 253, 0.85) 0%, 
+      rgba(251, 247, 255, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(251, 247, 255, 0.80) 82%, 
+      rgba(247, 242, 253, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      #ffffff 0%, 
+      #ffffff 20%, 
+      rgba(196, 178, 216, 0.45) 55%, 
+      rgba(196, 178, 216, 0.88) 100%
+    ) border-box !important;
+  box-shadow: none !important;
+  color: #4d3c63 !important;
+  transition: all 0.25s ease !important;
+}
+.footer-btn-light-amethyst:hover {
+  box-shadow: none !important;
+  color: #332446 !important;
+  opacity: 0.95;
+}
+
+.footer-btn-light-sage {
+  border-radius: 12px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(244, 250, 245, 0.90) 0%, 
+      rgba(248, 253, 249, 0.88) 18%, 
+      rgba(255, 255, 255, 0.96) 32%, 
+      rgba(255, 255, 255, 0.96) 68%, 
+      rgba(248, 253, 249, 0.88) 82%, 
+      rgba(244, 250, 245, 0.90) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      #ffffff 0%, 
+      #ffffff 20%, 
+      rgba(195, 220, 200, 0.40) 55%, 
+      rgba(195, 220, 200, 0.68) 100%
+    ) border-box !important;
+  box-shadow: none !important;
+  color: #355233 !important;
+  transition: all 0.25s ease !important;
+}
+.footer-btn-light-sage:hover {
+  box-shadow: none !important;
+  color: #20381e !important;
+  opacity: 0.95;
+}
+
+.footer-btn-light-mocha {
+  border-radius: 12px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(252, 246, 238, 0.85) 0%, 
+      rgba(255, 250, 243, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(255, 250, 243, 0.80) 82%, 
+      rgba(252, 246, 238, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      #ffffff 0%, 
+      #ffffff 20%, 
+      rgba(210, 186, 162, 0.45) 55%, 
+      rgba(210, 186, 162, 0.88) 100%
+    ) border-box !important;
+  box-shadow: none !important;
+  color: #5e473b !important;
+  transition: all 0.25s ease !important;
+}
+.footer-btn-light-mocha:hover {
+  box-shadow: none !important;
+  color: #422e23 !important;
+  opacity: 0.95;
+}
+
+.footer-btn-light-notebook {
+  border-radius: 12px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(248, 248, 248, 0.85) 0%, 
+      rgba(252, 252, 252, 0.80) 18%, 
+      rgba(255, 255, 255, 0.92) 32%, 
+      rgba(255, 255, 255, 0.92) 68%, 
+      rgba(252, 252, 252, 0.80) 82%, 
+      rgba(248, 248, 248, 0.85) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      #ffffff 0%, 
+      #ffffff 20%, 
+      rgba(198, 198, 198, 0.45) 55%, 
+      rgba(198, 198, 198, 0.88) 100%
+    ) border-box !important;
+  box-shadow: none !important;
+  color: #27272a !important;
+  transition: all 0.25s ease !important;
+}
+.footer-btn-light-notebook:hover {
+  box-shadow: none !important;
+  color: #09090b !important;
+  opacity: 0.95;
+}
+`;
+
 export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
   views,
   onIncrementViews,
+  onRefreshViews,
   onOpenIntro,
   themeStyles,
   theme = 'amethyst-haze',
@@ -792,6 +980,7 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
 }) => {
   return (
     <div className="w-full max-w-2xl mx-auto relative select-none font-sans">
+      <style>{footerLightButtonStyles}</style>
       {/* BỎ KHUNG VIỀN & NỀN CỦA KHUNG CUỐNG VÉ: CÁC NÚT VÀ MÃ VẠCH VẪN GIỮ NGUYÊN NỀN BÊN TRONG */}
       <div className="relative overflow-hidden transition-all">
         {/* NỘI DUNG CUỐNG VÉ CHIA 3 PHẦN */}
@@ -824,6 +1013,7 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
             <LuckySlotReelsButton
               count={views}
               onClick={onIncrementViews}
+              onRefreshViews={onRefreshViews}
               themeStyles={themeStyles}
             />
           </div>
@@ -966,6 +1156,13 @@ export const Footer: React.FC<FooterProps> = ({
     // Không cộng lượt xem khi bấm nút theo yêu cầu
   };
 
+  const handleRefreshViews = async () => {
+    try {
+      const latest = await fetchGlobalViews(true);
+      setViews(latest);
+    } catch {}
+  };
+
   const themeStyles = useMemo(() => {
     return getTicketTheme(theme, isDarkMode);
   }, [theme, isDarkMode]);
@@ -980,6 +1177,7 @@ export const Footer: React.FC<FooterProps> = ({
         <MovieTicketPlainFooter
           views={views}
           onIncrementViews={handleIncrement}
+          onRefreshViews={handleRefreshViews}
           onOpenIntro={onOpenIntro}
           themeStyles={themeStyles}
           theme={theme}

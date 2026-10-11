@@ -1,30 +1,13 @@
 // Cloudflare Pages Function: /api/likes
 // Quản lý lượt thả tim truyện & trang giới thiệu qua Cloudflare D1
-// Hỗ trợ Database thứ 2 chuyên biệt (INTRO_DB) cho lượt thả tim và bình luận lưu bút
 
 interface Env {
   DB?: any;
-  INTRO_DB?: any;
 }
 
 interface EventContext {
   request: Request;
   env: Env;
-}
-
-// Helper tìm D1 database cho intro/likes (hỗ trợ mọi tên biến binding có thể)
-function getIntroDatabase(env: any): any {
-  return (
-    env.INTRO_DB ||
-    env.intro_db ||
-    env.nienthoi_intro_db ||
-    env['nienthoi-intro-db'] ||
-    env.NIENTHOI_INTRO_DB ||
-    env.INTRO_D1 ||
-    env.intro_d1 ||
-    env.DB ||
-    env.db
-  );
 }
 
 export const onRequestGet = async (context: EventContext): Promise<Response> => {
@@ -40,8 +23,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Access-Control-Allow-Origin': '*',
   };
 
-  // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/thả tim) nếu có, fallback về DB
-  const db = (targetId === 'intro_page') ? getIntroDatabase(env) : (getIntroDatabase(env) || env.DB);
+  const db = env.DB;
 
   if (!db) {
     return new Response(
@@ -122,8 +104,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
     const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
 
-    // Ưu tiên INTRO_DB (Database thứ 2) nếu có
-    const db = (targetId === 'intro_page') ? getIntroDatabase(env) : (getIntroDatabase(env) || env.DB);
+    const db = env.DB;
 
     if (!db) {
       return new Response(

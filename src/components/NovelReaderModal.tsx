@@ -59,7 +59,7 @@ interface NovelReaderModalProps {
   onUpdateNovel?: (novel: Novel) => void;
 }
 
-type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'lora';
+type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'lora' | 'alegreya';
 type LineHeightOption = 1.5 | 1.8 | 2.1;
 type PageMarginOption = 'narrow' | 'normal' | 'wide';
 
@@ -81,11 +81,11 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     return 18;
   });
 
-  // 2. Kiểu phông chữ: Open Sans (mặc định), Source Sans 3, Times New Roman, Roboto, Lora
+  // 2. Kiểu phông chữ: Open Sans (mặc định), Source Sans 3, Times New Roman, Roboto, Lora, Alegreya
   const [fontFamily, setFontFamily] = useState<ReaderFontFamily>(() => {
     try {
       const saved = safeStorage.getItem('cosmo_reader_font');
-      if (saved && ['times', 'roboto', 'lora', 'open-sans', 'source-sans'].includes(saved)) {
+      if (saved && ['times', 'roboto', 'lora', 'open-sans', 'source-sans', 'alegreya'].includes(saved)) {
         return saved as ReaderFontFamily;
       }
     } catch {}
@@ -1026,6 +1026,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       ? 'font-roboto font-normal'
       : fontFamily === 'lora'
       ? 'font-lora'
+      : fontFamily === 'alegreya'
+      ? 'font-alegreya'
       : fontFamily === 'source-sans'
       ? 'font-source-sans'
       : 'font-open-sans';
@@ -1443,7 +1445,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   </div>
                 </div>
 
-                {/* Kiểu Phông Chữ: Source Sans 3, Open Sans, Times New Roman, Roboto, Lora */}
+                {/* Kiểu Phông Chữ: Source Sans 3, Open Sans, Times New Roman, Roboto, Lora, Alegreya */}
                 <div className="space-y-1.5 px-1">
                   <span className="text-xs font-semibold block">Kiểu phông chữ</span>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -1453,16 +1455,14 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       { id: 'times', label: 'Times New Roman', font: 'font-times' },
                       { id: 'roboto', label: 'Roboto', font: 'font-roboto font-normal' },
                       { id: 'lora', label: 'Lora', font: 'font-lora' },
-                    ].map((f, idx) => {
+                      { id: 'alegreya', label: 'Alegreya', font: 'font-alegreya' },
+                    ].map((f) => {
                       const isSelected = fontFamily === f.id;
-                      const isLastOdd = idx === 4;
                       return (
                         <button
                           key={f.id}
                           onClick={() => handleSelectFontFamily(f.id as ReaderFontFamily)}
                           className={`px-2 py-1.5 rounded-lg text-xs font-medium cursor-pointer border text-center transition-all truncate ${f.font} ${
-                            isLastOdd ? 'col-span-2' : ''
-                          } ${
                             isSelected
                               ? isDarkEffective
                                 ? 'bg-zinc-800 text-white font-bold border-zinc-500 ring-1 ring-zinc-500'

@@ -16,9 +16,6 @@ CREATE TABLE IF NOT EXISTS site_stats (
 INSERT OR IGNORE INTO site_stats (id, total_views, today_views) 
 VALUES ('global', 3000, 0);
 
--- Cập nhật về 3000 nếu bảng đã từng được tạo trước đó
-UPDATE site_stats SET total_views = 3000 WHERE id = 'global';
-
 -- 2. BẢNG LƯỢT XEM TỪNG BỘ TRUYỆN & CHƯƠNG
 CREATE TABLE IF NOT EXISTS novel_views (
   novel_id TEXT NOT NULL,
@@ -34,10 +31,6 @@ CREATE TABLE IF NOT EXISTS likes (
   like_count INTEGER NOT NULL DEFAULT 0,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style1', 30);
-INSERT OR IGNORE INTO likes (target_id, like_count) VALUES ('intro_style2', 30);
-UPDATE likes SET like_count = 30 WHERE target_id IN ('intro_style1', 'intro_style2') AND like_count >= 500;
 
 -- 4. BẢNG BÌNH LUẬN (Bình luận truyện & Bình luận từng chương)
 CREATE TABLE IF NOT EXISTS comments (

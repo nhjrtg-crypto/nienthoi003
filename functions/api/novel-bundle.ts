@@ -3,7 +3,6 @@
 
 interface Env {
   DB?: any;
-  INTRO_DB?: any;
 }
 
 interface EventContext {
@@ -34,7 +33,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '50', 10), 1), 100);
 
   const targetLikeId = (novelId.startsWith('intro_') || novelId === 'intro') ? 'intro_page' : novelId;
-  const likeDb = (targetLikeId === 'intro_page' && env.INTRO_DB) ? env.INTRO_DB : (env.INTRO_DB || env.DB);
+  const likeDb = env.DB;
 
   if (!env.DB) {
     return new Response(

@@ -16,11 +16,6 @@
       "binding": "DB",
       "database_name": "nienthoi-db",
       "database_id": "da9a2b34-1755-4315-8e71-9dbbabf8c643"
-    },
-    {
-      "binding": "INTRO_DB",
-      "database_name": "nienthoi-intro-db",
-      "database_id": "da9a2b34-1755-4315-8e71-9dbbabf8c643"
     }
   ]
 }

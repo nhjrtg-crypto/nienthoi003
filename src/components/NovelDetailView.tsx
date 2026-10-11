@@ -11,7 +11,6 @@ import {
   Calendar,
   Layers,
   FileText,
-  MessageSquare,
   ThumbsUp,
   Send,
   PlusCircle,
@@ -1180,10 +1179,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(28, 25, 23, 0.85) 0%, rgba(20, 18, 16, 0.95) 100%)'
-              : 'linear-gradient(135deg, #ffffff 0%, #fafafa 40%, #f4f4f2 100%)',
+              : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(247, 244, 238, 0.09) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(228, 228, 231, 0.65) 0%, transparent 70%)',
+              : 'radial-gradient(circle at 50% 50%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
+            glowGradientTopRight: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(247, 244, 238, 0.09) 0%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
+            glowGradientBottomLeft: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(247, 244, 238, 0.09) 0%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(247, 244, 238, 0.14)'
               : 'rgba(113, 113, 122, 0.2)',
@@ -1259,10 +1264,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(30, 20, 14, 0.85) 0%, rgba(20, 13, 9, 0.95) 100%)'
-              : 'linear-gradient(135deg, #ffffff 0%, #f7f3ea 40%, #eee6d8 100%)',
+              : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(163, 119, 100, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(228, 217, 188, 0.65) 0%, transparent 70%)',
+              : 'radial-gradient(circle at 50% 50%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
+            glowGradientTopRight: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(163, 119, 100, 0.16) 0%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
+            glowGradientBottomLeft: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(163, 119, 100, 0.16) 0%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(228, 217, 188, 0.16)'
               : 'rgba(163, 119, 100, 0.22)',
@@ -1338,10 +1349,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(16, 25, 36, 0.85) 0%, rgba(11, 17, 24, 0.95) 100%)'
-              : 'linear-gradient(135deg, #ffffff 0%, #f4f8fd 40%, #e6eef7 100%)',
+              : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(216, 235, 255, 0.75) 0%, transparent 70%)',
+              : 'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+            glowGradientTopRight: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+            glowGradientBottomLeft: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(186, 208, 230, 0.16)'
               : 'rgba(56, 189, 248, 0.28)',
@@ -1417,10 +1434,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(26, 18, 46, 0.88) 0%, rgba(12, 8, 23, 0.96) 100%)'
-              : 'linear-gradient(135deg, #ffffff 0%, #f7f4fb 40%, #ebe4f4 100%)',
+              : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(233, 222, 248, 0.7) 0%, transparent 70%)',
+              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(206, 147, 253, 0.45) 0%, rgba(216, 168, 254, 0.36) 24%, rgba(226, 192, 255, 0.25) 48%, rgba(238, 218, 255, 0.15) 70%, rgba(248, 238, 255, 0.06) 86%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)',
+            glowGradientTopRight: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(206, 147, 253, 0.45) 0%, rgba(216, 168, 254, 0.36) 24%, rgba(226, 192, 255, 0.25) 48%, rgba(238, 218, 255, 0.15) 70%, rgba(248, 238, 255, 0.06) 86%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)',
+            glowGradientBottomLeft: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
+              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(206, 147, 253, 0.45) 0%, rgba(216, 168, 254, 0.36) 24%, rgba(226, 192, 255, 0.25) 48%, rgba(238, 218, 255, 0.15) 70%, rgba(248, 238, 255, 0.06) 86%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(192, 132, 252, 0.17)'
               : 'rgba(147, 51, 234, 0.22)',
@@ -1477,6 +1500,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           gridPattern: {
             baseGradient: 'linear-gradient(135deg, rgba(21, 18, 57, 0.88) 0%, rgba(10, 12, 36, 0.96) 100%)',
             glowGradient: 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.22) 0%, rgba(6, 182, 212, 0.1) 45%, transparent 70%)',
+            glowGradientTopRight: 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.22) 0%, rgba(6, 182, 212, 0.1) 45%, transparent 70%)',
+            glowGradientBottomLeft: 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(168, 85, 247, 0.22) 0%, rgba(6, 182, 212, 0.1) 45%, transparent 70%)',
             gridLineColor: 'rgba(192, 132, 252, 0.22)',
             gridSubtleColor: 'rgba(6, 182, 212, 0.09)',
           },
@@ -1549,10 +1574,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           gridPattern: {
             baseGradient: isDarkEffective
               ? 'linear-gradient(135deg, rgba(20, 35, 24, 0.85) 0%, rgba(12, 21, 16, 0.95) 100%)'
-              : 'linear-gradient(135deg, #ffffff 0%, #f4f8f2 40%, #e5efe4 100%)',
+              : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(52, 211, 153, 0.15) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(215, 235, 212, 0.65) 0%, transparent 70%)',
+              : 'radial-gradient(circle at 50% 50%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
+            glowGradientTopRight: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(52, 211, 153, 0.15) 0%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
+            glowGradientBottomLeft: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(52, 211, 153, 0.15) 0%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
             gridLineColor: isDarkEffective
               ? 'rgba(52, 211, 153, 0.16)'
               : 'rgba(70, 98, 68, 0.22)',
@@ -2561,42 +2592,63 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           /* Novel Detail Card (Kiểu chuẩn: Kết nối mục bìa truyện và 3 mục Giới thiệu, Mục lục, Bình luận thành chung một khối) */
           <div
             id="novel-main-unified-card"
-            className={`relative rounded-3xl sm:rounded-[36px] border shadow-2xl overflow-hidden transition-all duration-300 ${
-              isDarkEffective ? detailThemeExtras.cardBg : detailThemeExtras.posterCardBorder
+            style={!isDarkEffective ? ({ '--card-radius': '32px' } as React.CSSProperties) : undefined}
+            className={`relative rounded-3xl sm:rounded-[36px] overflow-hidden transition-all duration-300 ${
+              isDarkEffective
+                ? `${detailThemeExtras.cardBg} border border-white/20 shadow-2xl`
+                : `${detailThemeExtras.posterCardBorder}`
             } ${detailThemeExtras.posterTextColor}`}
           >
-            {/* Mục Bìa Truyện & Thông Tin */}
-            <div className="relative p-5 sm:p-8 lg:p-10 overflow-hidden">
-              {/* Nền thiết kế poster họa tiết lưới hình học (Grid Pattern) CHỈ CÓ ở góc trên bên phải */}
+            {/* Mục Bìa Truyện & Thông Tin: Nền trắng với 2 góc đối xứng loang màu hình tròn (trên-phải & dưới-trái) */}
+            <div className={`relative p-5 sm:p-8 lg:p-10 overflow-hidden ${!isDarkEffective ? 'bg-white' : ''}`}>
+              {/* Nền thiết kế poster họa tiết: Loang màu 2 góc đối xứng (góc trên bên phải & góc dưới bên trái), còn lại là màu trắng */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                {/* 1. Lớp màu nền chuyển sắc theo theme (phủ toàn khối) */}
+                {/* 1. Lớp màu nền: Chế độ sáng là màu trắng tinh khiết (#ffffff), chế độ tối là baseGradient chuyển sắc */}
                 <div
                   className="absolute inset-0 pointer-events-none transition-all duration-500"
                   style={{
-                    background: detailThemeExtras.gridPattern.baseGradient,
+                    background: !isDarkEffective ? '#ffffff' : detailThemeExtras.gridPattern.baseGradient,
                   }}
                 />
 
-                {/* 2. Vùng sáng tỏa nhẹ (Atmospheric Glow) tập trung tại góc trên bên phải */}
+                {/* 2a. Khối màu loang ở góc trên bên phải: không hẳn là hình tròn, tâm nhạt dịu, dần loang hòa trộn với nền trắng, không rõ viền */}
                 <div
-                  className="absolute top-0 right-0 w-64 sm:w-96 md:w-[480px] h-48 sm:h-72 md:h-[360px] pointer-events-none transition-all duration-500"
+                  className={`absolute -top-14 -right-14 sm:-top-24 sm:-right-24 md:-top-32 md:-right-32 lg:-top-40 lg:-right-40 w-80 h-72 sm:w-[34rem] sm:h-[30rem] md:w-[48rem] md:h-[42rem] lg:w-[56rem] lg:h-[48rem] pointer-events-none transition-all duration-500 ${
+                    !isDarkEffective
+                      ? 'rounded-[46%_54%_68%_32%/45%_55%_45%_55%] blur-2xl sm:blur-3xl md:blur-[55px]'
+                      : 'rounded-full'
+                  }`}
                   style={{
-                    background: detailThemeExtras.gridPattern.glowGradient,
+                    background: detailThemeExtras.gridPattern.glowGradientTopRight || detailThemeExtras.gridPattern.glowGradient,
                   }}
                 />
 
-                {/* 3. Hiệu ứng loang màu gradient hòa vào nền (Tự chọn màu theo từng theme, sáng: tiêu chuẩn, tối: dịu nhẹ) */}
-                <CoverBgPatternOverlay
-                  theme={theme}
-                  isDark={isDarkEffective}
+                {/* 2b. Khối màu loang ở góc dưới bên trái: không hẳn là hình tròn, tâm nhạt dịu, dần loang hòa trộn với nền trắng, không rõ viền */}
+                <div
+                  className={`absolute -bottom-14 -left-14 sm:-bottom-24 sm:-left-24 md:-bottom-32 md:-left-32 lg:-bottom-40 lg:-left-40 w-80 h-72 sm:w-[34rem] sm:h-[30rem] md:w-[48rem] md:h-[42rem] lg:w-[56rem] lg:h-[48rem] pointer-events-none transition-all duration-500 ${
+                    !isDarkEffective
+                      ? 'rounded-[54%_46%_32%_68%/55%_45%_55%_45%] blur-2xl sm:blur-3xl md:blur-[55px]'
+                      : 'rounded-full'
+                  }`}
+                  style={{
+                    background: detailThemeExtras.gridPattern.glowGradientBottomLeft || detailThemeExtras.gridPattern.glowGradient,
+                  }}
                 />
+
+                {/* 3. Hiệu ứng loang màu gradient hòa vào nền (chỉ ở chế độ tối) */}
+                {isDarkEffective && (
+                  <CoverBgPatternOverlay
+                    theme={theme}
+                    isDark={isDarkEffective}
+                  />
+                )}
 
                 {/* 4. Hạt nhiễu vi mô tạo cảm giác chất liệu giấy tự nhiên */}
                 {!isDarkEffective && (
                   <div
                     className="absolute inset-0 pointer-events-none mix-blend-overlay"
                     style={{
-                      opacity: 0.18,
+                      opacity: 0.12,
                       backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
                     }}
                   />
@@ -3961,7 +4013,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
                 {/* Lời nhắn của người đăng (Thay thế mục Cập nhật mới nhất đã bỏ) */}
                 {novel.uploaderNote && (
-                  <div className={`p-4 sm:p-5 rounded-2xl border flex items-start gap-3.5 sm:gap-4 transition-all ${
+                  <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
                     isJournalStyle
                       ? isDarkEffective
                         ? 'bg-zinc-850/90 border-zinc-700/80 text-zinc-100'
@@ -3988,12 +4040,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                         : 'bg-white border-stone-300 text-stone-900 shadow-2xs'
                       : `${detailThemeExtras.posterNoteBox} font-source-sans`
                   }`}>
-                    <div className={`p-2.5 rounded-xl shrink-0 mt-0.5 ${
-                      isDarkEffective ? 'bg-white/10 text-white' : 'bg-stone-100 text-stone-700'
-                    }`}>
-                      <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <div className="flex-1 min-w-0 font-source-sans">
+                    <div className="w-full min-w-0 font-source-sans">
                       <div className={`text-xs sm:text-sm font-bold uppercase tracking-wider mb-1 font-source-sans ${detailThemeExtras.posterNoteTitle}`}>
                         Lời nhắn của người đăng
                       </div>

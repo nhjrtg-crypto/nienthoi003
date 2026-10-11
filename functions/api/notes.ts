@@ -1,30 +1,13 @@
 // Cloudflare Pages Function: /api/notes
 // Quản lý lưu bút / tin nhắn bạn đọc trang giới thiệu qua Cloudflare D1
-// Hỗ trợ Database thứ 2 chuyên biệt (INTRO_DB) cho lượt thả tim và bình luận lưu bút
 
 interface Env {
   DB?: any;
-  INTRO_DB?: any;
 }
 
 interface EventContext {
   request: Request;
   env: Env;
-}
-
-// Helper tìm D1 database cho intro/notes (hỗ trợ mọi tên biến binding có thể)
-function getIntroDatabase(env: any): any {
-  return (
-    env.INTRO_DB ||
-    env.intro_db ||
-    env.nienthoi_intro_db ||
-    env['nienthoi-intro-db'] ||
-    env.NIENTHOI_INTRO_DB ||
-    env.INTRO_D1 ||
-    env.intro_d1 ||
-    env.DB ||
-    env.db
-  );
 }
 
 export const onRequestGet = async (context: EventContext): Promise<Response> => {
@@ -39,8 +22,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
   };
 
-  // Ưu tiên INTRO_DB (Database thứ 2 dành riêng cho giới thiệu/lưu bút) nếu có, fallback về DB
-  const db = getIntroDatabase(env);
+  const db = env.DB;
 
   if (!db) {
     return new Response(
@@ -93,7 +75,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
-  const db = getIntroDatabase(env);
+  const db = env.DB;
 
   if (!db) {
     return new Response(

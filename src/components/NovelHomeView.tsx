@@ -1466,7 +1466,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             dividerClass: 'border-[#ede5f7]',
             itemHoverClass: 'hover:bg-purple-50/60',
             itemTitleHoverClass: 'group-hover:text-purple-700',
-            itemDateClass: 'text-purple-600',
+            itemDateClass: 'text-purple-400',
           };
         case 'cosmic':
           return {
@@ -2039,6 +2039,150 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   };
 
+  // Helper styling cho Đinh ghim & Dây thừng bện tam giác treo bảng truyện (Màu sắc trùng khớp hoàn toàn với màu ngôi sao trong bảng truyện)
+  const getHangingCordTriangleStyles = (th: NovelThemeId, isDark: boolean) => {
+    if (isDark) {
+      switch (th) {
+        case 'notebook':
+          // Ngôi sao notebook dark: #d4d4d8 (text-zinc-300/90)
+          return {
+            pinBg: 'bg-gradient-to-b from-zinc-200 via-[#d4d4d8] to-zinc-500',
+            pinBorder: 'border-zinc-300/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#d4d4d8',
+            ropeAccent: '#a1a1aa',
+            ringStroke: '#d4d4d8',
+            ringFill: '#18181b',
+          };
+        case 'slate-haze':
+          // Ngôi sao slate-haze dark: #7a9bb8 (text-[#7a9bb8]/75)
+          return {
+            pinBg: 'bg-gradient-to-b from-[#a4bfd6] via-[#7a9bb8] to-[#557896]',
+            pinBorder: 'border-[#7a9bb8]/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#7a9bb8',
+            ropeAccent: '#5c7d9b',
+            ringStroke: '#7a9bb8',
+            ringFill: '#0f1926',
+          };
+        case 'mocha':
+          // Ngôi sao mocha dark: #d4a38c (text-[#d4a38c])
+          return {
+            pinBg: 'bg-gradient-to-b from-[#edd2c4] via-[#d4a38c] to-[#b37f66]',
+            pinBorder: 'border-[#d4a38c]/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#d4a38c',
+            ropeAccent: '#b5826b',
+            ringStroke: '#d4a38c',
+            ringFill: '#1c1713',
+          };
+        case 'sage':
+          // Ngôi sao sage dark: #8cb391 (text-[#8cb391])
+          return {
+            pinBg: 'bg-gradient-to-b from-[#bfe0c3] via-[#8cb391] to-[#608765]',
+            pinBorder: 'border-[#8cb391]/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#8cb391',
+            ropeAccent: '#658d6a',
+            ringStroke: '#8cb391',
+            ringFill: '#111c15',
+          };
+        case 'cosmic':
+          // Ngôi sao cosmic dark: #818cf8 (text-indigo-400/85)
+          return {
+            pinBg: 'bg-gradient-to-b from-[#c7d2fe] via-[#818cf8] to-[#4f46e5]',
+            pinBorder: 'border-indigo-400/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#818cf8',
+            ropeAccent: '#6366f1',
+            ringStroke: '#818cf8',
+            ringFill: '#101229',
+          };
+        case 'amethyst-haze':
+        default:
+          // Ngôi sao amethyst-haze dark: #a795be (text-[#a795be]/75)
+          return {
+            pinBg: 'bg-gradient-to-b from-[#d5c7e7] via-[#a795be] to-[#7f6c96]',
+            pinBorder: 'border-[#a795be]/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#a795be',
+            ropeAccent: '#83719b',
+            ringStroke: '#a795be',
+            ringFill: '#161322',
+          };
+      }
+    }
+    // Chế độ sáng (Màu sắc trùng khớp hoàn toàn với màu ngôi sao trong bảng truyện)
+    switch (th) {
+      case 'notebook':
+        // Ngôi sao notebook light: #a1a1aa (text-[#a1a1aa])
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#d4d4d8] to-[#a1a1aa]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#a1a1aa',
+          ropeAccent: '#c4c4cc',
+          ringStroke: '#a1a1aa',
+          ringFill: '#ffffff',
+        };
+      case 'slate-haze':
+        // Ngôi sao slate-haze light: #879bb0 (text-[#879bb0])
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#c8d6e3] to-[#879bb0]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#879bb0',
+          ropeAccent: '#b2c4d6',
+          ringStroke: '#879bb0',
+          ringFill: '#ffffff',
+        };
+      case 'mocha':
+        // Ngôi sao mocha light: #b09787 (text-[#b09787])
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#ded0c7] to-[#b09787]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#b09787',
+          ropeAccent: '#cfbeaf',
+          ringStroke: '#b09787',
+          ringFill: '#ffffff',
+        };
+      case 'sage':
+        // Ngôi sao sage light: #7e9e7b (text-[#7e9e7b])
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#c7dec5] to-[#7e9e7b]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#7e9e7b',
+          ropeAccent: '#a9c4a6',
+          ringStroke: '#7e9e7b',
+          ringFill: '#ffffff',
+        };
+      case 'cosmic':
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#c7d2fe] to-[#818cf8]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#818cf8',
+          ropeAccent: '#a5b4fc',
+          ringStroke: '#818cf8',
+          ringFill: '#ffffff',
+        };
+      case 'amethyst-haze':
+      default:
+        // Ngôi sao amethyst-haze light: #9d8bbd (text-[#9d8bbd])
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#d8caee] to-[#9d8bbd]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#9d8bbd',
+          ropeAccent: '#beafd9',
+          ringStroke: '#9d8bbd',
+          ringFill: '#ffffff',
+        };
+    }
+  };
+
   const featuredNovels = useMemo(() => {
     // Mục hero chỉ dành cho những bộ truyện có lượt xem cao nhất web (tối đa 5 truyện)
     const sorted = [...novels].sort((a, b) => {
@@ -2287,21 +2431,21 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     if (isCosmic) {
       return isDarkEffective
         ? {
-            gradientBorder: 'bg-[linear-gradient(90deg,#2e1065,#a855f7,#ec4899,#06b6d4,#2e1065)]',
-            glowShadow: 'shadow-[0_0_8px_rgba(168,85,247,0.35)]',
-            glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(236,72,153,0.45)]',
-            pulseHaloBg: 'bg-indigo-600/20',
-            btnInnerBg: 'bg-[#2e1065] hover:bg-[#3b1580]',
-            textColor: 'text-white font-bold',
-            dotColor: 'bg-cyan-200',
-            dotPing: 'bg-pink-400',
+            gradientBorder: 'bg-indigo-500/50',
+            glowShadow: 'shadow-sm shadow-black/30',
+            glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+            pulseHaloBg: 'opacity-0',
+            btnInnerBg: 'bg-gradient-to-r from-[#4d2d78] via-[#5e3793] to-[#7142b0] hover:from-[#573387] hover:to-[#7f4bc7]',
+            textColor: 'text-indigo-100 font-semibold',
+            dotColor: 'bg-indigo-300',
+            dotPing: 'bg-indigo-400/40',
             // Fallback compatibility properties
             btnBg: '',
-            btnGradient: 'bg-gradient-to-r from-[#818cf8] via-[#c084fc] to-[#e879f9]',
-            btnGlow: 'shadow-[0_4px_16px_rgba(168,85,247,0.45)]',
+            btnGradient: 'bg-gradient-to-r from-[#4d2d78] to-[#7142b0]',
+            btnGlow: 'shadow-none',
             borderShadow: 'shadow-none',
             innerShadow: 'shadow-xs',
-            haloCushion: 'bg-gradient-to-r from-[#818cf8]/40 via-[#c084fc]/30 to-[#e879f9]/40',
+            haloCushion: 'opacity-0',
           }
         : {
             gradientBorder: 'bg-transparent',
@@ -2326,20 +2470,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'sage':
         return isDarkEffective
           ? {
-              gradientBorder: 'bg-[linear-gradient(90deg,#064e3b,#10b981,#34d399,#6ee7b7,#064e3b)]',
-              glowShadow: 'shadow-[0_0_8px_rgba(52,211,153,0.35)]',
-              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(16,185,129,0.45)]',
-              pulseHaloBg: 'bg-emerald-600/20',
-              btnInnerBg: 'bg-[#064e3b] hover:bg-[#065f46]',
-              textColor: 'text-white font-bold',
-              dotColor: 'bg-emerald-200',
-              dotPing: 'bg-teal-400',
+              gradientBorder: 'bg-[#43634b]/60',
+              glowShadow: 'shadow-sm shadow-black/30',
+              glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-gradient-to-r from-[#2d4432] via-[#39563f] to-[#46694e] hover:from-[#344f3a] hover:to-[#507859]',
+              textColor: 'text-[#eaf2eb] font-semibold',
+              dotColor: 'bg-[#8cb391]',
+              dotPing: 'bg-[#8cb391]/40',
               btnBg: '',
-              btnGradient: 'bg-gradient-to-r from-[#34d399] to-[#2dd4bf]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(52,211,153,0.45)]',
+              btnGradient: 'bg-gradient-to-r from-[#2d4432] to-[#46694e]',
+              btnGlow: 'shadow-none',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#34d399]/40 to-[#2dd4bf]/40',
+              haloCushion: 'opacity-0',
             }
           : {
               gradientBorder: 'bg-transparent',
@@ -2361,20 +2505,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'notebook':
         return isDarkEffective
           ? {
-              gradientBorder: 'bg-[linear-gradient(90deg,#27272a,#71717a,#a1a1aa,#e4e4e7,#27272a)]',
-              glowShadow: 'shadow-[0_0_8px_rgba(161,161,170,0.3)]',
-              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(228,228,231,0.4)]',
-              pulseHaloBg: 'bg-zinc-600/20',
-              btnInnerBg: 'bg-[#27272a] hover:bg-[#3f3f46]',
-              textColor: 'text-white font-bold',
-              dotColor: 'bg-zinc-200',
-              dotPing: 'bg-zinc-400',
+              gradientBorder: 'bg-neutral-600/60',
+              glowShadow: 'shadow-sm shadow-black/30',
+              glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-gradient-to-r from-[#38383f] via-[#44444c] to-[#52525c] hover:from-[#404047] hover:to-[#5e5e69]',
+              textColor: 'text-neutral-200 font-semibold',
+              dotColor: 'bg-neutral-300',
+              dotPing: 'bg-neutral-400/40',
               btnBg: '',
-              btnGradient: 'bg-gradient-to-r from-[#94a3b8] to-[#cbd5e1]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(148,163,184,0.4)]',
+              btnGradient: 'bg-gradient-to-r from-[#38383f] to-[#52525c]',
+              btnGlow: 'shadow-none',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-zinc-400/40 via-zinc-300/30 to-zinc-400/40',
+              haloCushion: 'opacity-0',
             }
           : {
               gradientBorder: 'bg-transparent',
@@ -2396,20 +2540,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'mocha':
         return isDarkEffective
           ? {
-              gradientBorder: 'bg-[linear-gradient(90deg,#451a03,#d97706,#f59e0b,#fbbf24,#451a03)]',
-              glowShadow: 'shadow-[0_0_8px_rgba(245,158,11,0.35)]',
-              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(251,191,36,0.45)]',
-              pulseHaloBg: 'bg-amber-600/20',
-              btnInnerBg: 'bg-[#451a03] hover:bg-[#5b2204]',
-              textColor: 'text-white font-bold',
-              dotColor: 'bg-amber-200',
-              dotPing: 'bg-orange-400',
+              gradientBorder: 'bg-[#6a493a]/60',
+              glowShadow: 'shadow-sm shadow-black/30',
+              glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-gradient-to-r from-[#4d362b] via-[#5c4134] to-[#6d4d3d] hover:from-[#573d31] hover:to-[#7a5745]',
+              textColor: 'text-[#f5ece6] font-semibold',
+              dotColor: 'bg-[#d4a38c]',
+              dotPing: 'bg-[#d4a38c]/40',
               btnBg: '',
-              btnGradient: 'bg-gradient-to-r from-[#fb923c] to-[#f59e0b]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(251,146,60,0.45)]',
+              btnGradient: 'bg-gradient-to-r from-[#4d362b] to-[#6d4d3d]',
+              btnGlow: 'shadow-none',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#fb923c]/40 to-[#f59e0b]/40',
+              haloCushion: 'opacity-0',
             }
           : {
               gradientBorder: 'bg-transparent',
@@ -2431,20 +2575,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'slate-haze':
         return isDarkEffective
           ? {
-              gradientBorder: 'bg-[linear-gradient(90deg,#0c4a6e,#0284c7,#38bdf8,#7dd3fc,#0c4a6e)]',
-              glowShadow: 'shadow-[0_0_8px_rgba(56,189,248,0.35)]',
-              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(125,211,252,0.45)]',
-              pulseHaloBg: 'bg-sky-600/20',
-              btnInnerBg: 'bg-[#0c4a6e] hover:bg-[#075985]',
-              textColor: 'text-white font-bold',
-              dotColor: 'bg-sky-200',
-              dotPing: 'bg-blue-400',
+              gradientBorder: 'bg-[#395677]/60',
+              glowShadow: 'shadow-sm shadow-black/30',
+              glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-gradient-to-r from-[#2c435c] via-[#355170] to-[#406287] hover:from-[#324d69] hover:to-[#4a729c]',
+              textColor: 'text-[#edf4fa] font-semibold',
+              dotColor: 'bg-[#7bb0e0]',
+              dotPing: 'bg-[#7bb0e0]/40',
               btnBg: '',
-              btnGradient: 'bg-gradient-to-r from-[#38bdf8] to-[#60a5fa]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(56,189,248,0.45)]',
+              btnGradient: 'bg-gradient-to-r from-[#2c435c] to-[#406287]',
+              btnGlow: 'shadow-none',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#38bdf8]/40 to-[#60a5fa]/40',
+              haloCushion: 'opacity-0',
             }
           : {
               gradientBorder: 'bg-transparent',
@@ -2467,20 +2611,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       default:
         return isDarkEffective
           ? {
-              gradientBorder: 'bg-[linear-gradient(90deg,#2e1065,#a855f7,#ec4899,#06b6d4,#2e1065)]',
-              glowShadow: 'shadow-[0_0_8px_rgba(168,85,247,0.35)]',
-              glowShadowHover: 'group-hover:shadow-[0_0_12px_rgba(236,72,153,0.45)]',
-              pulseHaloBg: 'bg-indigo-600/20',
-              btnInnerBg: 'bg-[#2e1065] hover:bg-[#3b1580]',
-              textColor: 'text-white font-bold',
-              dotColor: 'bg-cyan-200',
-              dotPing: 'bg-pink-400',
+              gradientBorder: 'bg-[#6e4694]/50',
+              glowShadow: 'shadow-sm shadow-black/30',
+              glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-gradient-to-r from-[#452d5e] via-[#533671] to-[#634187] hover:from-[#4c3167] hover:to-[#704998]',
+              textColor: 'text-purple-100 font-semibold',
+              dotColor: 'bg-purple-300',
+              dotPing: 'bg-purple-400/40',
               btnBg: '',
-              btnGradient: 'bg-gradient-to-r from-[#c084fc] to-[#e879f9]',
-              btnGlow: 'shadow-[0_4px_16px_rgba(192,132,252,0.45)]',
+              btnGradient: 'bg-gradient-to-r from-[#452d5e] to-[#634187]',
+              btnGlow: 'shadow-none',
               borderShadow: 'shadow-none',
               innerShadow: 'shadow-xs',
-              haloCushion: 'bg-gradient-to-r from-[#c084fc]/40 to-[#e879f9]/40',
+              haloCushion: 'opacity-0',
             }
           : {
               gradientBorder: 'bg-transparent',
@@ -3427,7 +3571,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
                 {/* 2. Khung viền chuyển sắc & đổ bóng */}
                 <div
-                  className={`relative p-[1px] rounded-full overflow-hidden animate-gradient-flow transition-all duration-300 ${introButtonStyles.gradientBorder} ${introButtonStyles.glowShadow} ${introButtonStyles.glowShadowHover}`}
+                  className={`relative p-[1px] rounded-full overflow-hidden transition-all duration-300 ${introButtonStyles.gradientBorder} ${introButtonStyles.glowShadow} ${introButtonStyles.glowShadowHover}`}
                 >
                   {/* 3. Thẻ button chính */}
                   <button
@@ -3445,9 +3589,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     className={`relative z-10 flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer active:scale-95 overflow-hidden select-none ${introButtonStyles.btnInnerBg} ${introButtonStyles.textColor}`}
                     title="Khám phá giới thiệu về trang web - Dư Thủ Ký Visual Journal"
                   >
-                    {/* 4. Hiệu ứng vệt sáng lướt ngang (Soft Shimmer Sweep) */}
+                    {/* 4. Hiệu ứng vệt sáng lướt ngang nhẹ nhàng (Soft Shimmer Sweep) */}
                     <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
-                      <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
+                      <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
                     </span>
 
                     {/* 5. Chấm tròn phát tín hiệu (Live Ping Dot - 2 lớp) */}
@@ -4101,8 +4245,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           )}
 
           {/* ========================================================================= */}
-          {/* MỤC TRUYỆN VỪA MỚI ĐĂNG (IMG_20260916_011957 & IMG_20260916_014617) */}
-          {/* Họa tiết dấu chấm mờ, hiển thị 3 cột giống ảnh trên cả điện thoại và máy tính */}
+          {/* MỤC BẢNG TRUYỆN: TRÊN ĐIỆN THOẠI (MOBILE/TABLET < lg) GIỮ NGUYÊN VỊ TRÍ NÀY */}
           {/* ========================================================================= */}
           {novels && novels.length > 0 && (() => {
             const sorted = [...novels].sort((a, b) => {
@@ -4118,9 +4261,47 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             const novelCol3 = sorted[startIndex + 2] || sorted[2] || sorted[1] || sorted[0];
 
             return (
-              <section
-                id="showcase-polaroid-section"
-                className={`relative rounded-[28px] sm:rounded-[36px] p-4 sm:p-7 md:p-9 border overflow-hidden transition-all duration-300 mt-8 ${
+              <div className="block lg:hidden relative mt-10 sm:mt-14 pt-7 sm:pt-9">
+                {/* 2. ĐINH GHIM & DÂY THỪNG BỆN TAM GIÁC TREO BẢNG TRUYỆN */}
+                {(() => {
+                  const triangleCord = getHangingCordTriangleStyles(theme, isDarkEffective);
+                  return (
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 sm:w-80 md:w-96 h-7 sm:h-9 pointer-events-none z-20 flex items-center justify-center">
+                      {/* Đinh ghim tròn mạ ở đỉnh chóp */}
+                      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${triangleCord.pinBg} border ${triangleCord.pinBorder} shadow-sm z-30 flex items-center justify-center`}>
+                        <span className={`w-1 h-1 rounded-full ${triangleCord.pinInner}`} />
+                      </div>
+
+                      {/* SVG 2 cọng dây thừng đan chéo */}
+                      <svg className="w-full h-full" viewBox="0 0 240 28" fill="none" preserveAspectRatio="none">
+                        <path
+                          d="M120 2 L22 28"
+                          stroke={triangleCord.ropeBase}
+                          strokeWidth="2.0"
+                          strokeLinecap="round"
+                          strokeDasharray="3.5 1.8"
+                        />
+                        <path d="M120 2 L22 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
+
+                        <path
+                          d="M120 2 L218 28"
+                          stroke={triangleCord.ropeBase}
+                          strokeWidth="2.0"
+                          strokeLinecap="round"
+                          strokeDasharray="3.5 1.8"
+                        />
+                        <path d="M120 2 L218 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
+
+                        <circle cx="22" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
+                        <circle cx="218" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
+                      </svg>
+                    </div>
+                  );
+                })()}
+
+                <section
+                  id="showcase-polaroid-section-mobile"
+                  className={`relative rounded-[28px] sm:rounded-[36px] p-4 sm:p-7 md:p-9 border overflow-hidden transition-all duration-300 ${
                   getThemePastelPalette(theme, isDarkEffective).cardBg
                 } ${
                   isDarkEffective
@@ -4135,8 +4316,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
                 }}
               >
-                {/* 4 Ngôi sao ở 4 góc: 5 góc bo tròn lớn (strokeLinejoin='round'), 2 ngôi sao lớn & 2 ngôi sao nhỏ, nằm xiêu vẹo ngẫu nhiên */}
-                {/* 1. Top-Left: Ngôi sao LỚN, xiêu vẹo 18 độ */}
+                {/* 4 Ngôi sao ở 4 góc */}
                 <div
                   className={`absolute top-3 left-3 sm:top-4 sm:left-4 select-none pointer-events-none rotate-[18deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
                   aria-hidden="true"
@@ -4154,7 +4334,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   </svg>
                 </div>
 
-                {/* 2. Top-Right: Ngôi sao NHỎ, xiêu vẹo -26 độ */}
                 <div
                   className={`absolute top-3 right-3 sm:top-4 sm:right-4 select-none pointer-events-none -rotate-[26deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
                   aria-hidden="true"
@@ -4172,7 +4351,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   </svg>
                 </div>
 
-                {/* 3. Bottom-Left: Ngôi sao NHỎ, xiêu vẹo -16 độ */}
                 <div
                   className={`absolute bottom-3 left-3 sm:bottom-4 sm:left-4 select-none pointer-events-none -rotate-[16deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
                   aria-hidden="true"
@@ -4190,7 +4368,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   </svg>
                 </div>
 
-                {/* 4. Bottom-Right: Ngôi sao LỚN, xiêu vẹo 34 độ */}
                 <div
                   className={`absolute bottom-3 right-3 sm:bottom-4 sm:right-4 select-none pointer-events-none rotate-[34deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
                   aria-hidden="true"
@@ -4208,22 +4385,34 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   </svg>
                 </div>
 
-                {/* Tiêu đề mục: BẢNG TRUYỆN (Kích thước nhỏ lại, phông Lora in nghiêng thanh lịch) */}
-                <div className="text-center mb-5 sm:mb-8 relative z-10">
+                {/* Tiêu đề mục: BẢNG TRUYỆN kèm nút Đổi bìa icon nhỏ gọn nằm ngay kế bên */}
+                <div className="flex items-center justify-center gap-2 mb-5 sm:mb-8 relative z-10">
                   <h3 className={`font-lora italic !font-normal text-xs sm:text-[13px] md:text-sm tracking-[0.18em] uppercase ${tStyles.cardTitle}`}>
                     BẢNG TRUYỆN
                   </h3>
+                  <button
+                    type="button"
+                    onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
+                    className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:scale-90 ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
+                    title="Đổi bìa truyện"
+                    aria-label="Đổi bìa truyện"
+                  >
+                    <Shuffle className="w-3 h-3 sm:w-3.5 sm:h-3.5 opacity-80" />
+                  </button>
                 </div>
 
-                {/* 3 Khung ảnh hiển thị 3 cột ngang hàng trên cả điện thoại và máy tính như ảnh mẫu */}
+                {/* 3 Khung ảnh hiển thị 3 cột ngang hàng */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 relative z-10 items-end max-w-2xl sm:max-w-3xl mx-auto pt-2 pb-1">
                   
-                  {/* Khung 1 (Nghiêng trái nhẹ, có băng dính washi hồng pastel dán trên đầu) */}
+                  {/* Khung 1 */}
                   {novelCol1 && (
                     <div className="relative group/p1 -rotate-2 sm:-rotate-3 hover:rotate-0 hover:-translate-y-1.5 transition-all duration-300">
-                      {/* Miếng băng dính washi dán góc trên */}
                       <div
-                        className="absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-12 sm:w-20 h-4 sm:h-6 rounded-xs bg-[#f8b4cb]/90 border border-[#f09bb7]/50 shadow-2xs -rotate-2 select-none z-20 pointer-events-none"
+                        className={`absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-12 sm:w-20 h-4 sm:h-6 rounded-xs shadow-2xs -rotate-2 select-none z-20 pointer-events-none ${
+                          isDarkEffective
+                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
+                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
+                        }`}
                       />
                       <div
                         onClick={() => {
@@ -4239,7 +4428,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         }`}
                         title={novelCol1.title}
                       >
-                        {/* Khung ô chứa ảnh: Hiệu ứng lõm lòng thẻ (Inset shadow) */}
                         <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-2.5 bg-neutral-100 dark:bg-zinc-800">
                           <img
                             src={getDirectImageUrl(novelCol1.coverImage, novelCol1.id || novelCol1.title)}
@@ -4247,7 +4435,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             alt={novelCol1.title}
                             className="w-full h-full object-cover group-hover/p1:scale-105 transition-transform duration-300"
                           />
-                          {/* Inset Hốc ảnh cổ điển */}
                           <div
                             className="absolute inset-0 pointer-events-none rounded-xl sm:rounded-2xl border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.14)]"
                             aria-hidden="true"
@@ -4260,10 +4447,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     </div>
                   )}
 
-                  {/* Khung 2 (Ở giữa, vòm cong tròn, có đinh ghim tròn 3D thiên trắng nhỏ gọn chuẩn mẫu) */}
+                  {/* Khung 2 */}
                   {novelCol2 && (
                     <div className="relative group/p2 rotate-0 sm:-translate-y-2 hover:-translate-y-3.5 hover:scale-[1.02] transition-all duration-300">
-                      {/* Đinh ghim tròn 3D thiên trắng nhỏ gọn, bóng tối dưới chân ghim & đốm sáng trắng lồi ở đỉnh ghim */}
                       <div
                         className={`absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-4.5 h-4.5 sm:w-6 sm:h-6 rounded-full border border-white/95 select-none z-20 flex items-center justify-center pointer-events-none ${
                           isDarkEffective
@@ -4276,7 +4462,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             : 'radial-gradient(circle at 35% 30%, #ffffff 0%, #ffffff 42%, #f0f2f6 72%, #d6dbe4 100%)',
                         }}
                       >
-                        {/* Đốm sáng highlight phản quang ở đỉnh ghim góc 10h */}
                         <div className="absolute top-0.5 left-1 w-1.5 h-0.5 sm:w-2 sm:h-0.8 rounded-full bg-white/95 blur-[0.15px] -rotate-45 shadow-[0_0_2px_rgba(255,255,255,0.85)]" />
                       </div>
                       <div
@@ -4293,7 +4478,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         }`}
                         title={novelCol2.title}
                       >
-                        {/* Khung ô chứa ảnh vòm cong: Hiệu ứng lõm lòng thẻ (Inset shadow) */}
                         <div className="relative aspect-square w-full rounded-t-[26px] sm:rounded-t-[38px] rounded-b-xl sm:rounded-b-2xl overflow-hidden mb-1.5 sm:mb-2.5 bg-neutral-100 dark:bg-zinc-800">
                           <img
                             src={getDirectImageUrl(novelCol2.coverImage, novelCol2.id || novelCol2.title)}
@@ -4301,7 +4485,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             alt={novelCol2.title}
                             className="w-full h-full object-cover group-hover/p2:scale-105 transition-transform duration-300"
                           />
-                          {/* Inset Hốc ảnh cổ điển */}
                           <div
                             className="absolute inset-0 pointer-events-none rounded-t-[26px] sm:rounded-t-[38px] rounded-b-xl sm:rounded-b-2xl border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.14)]"
                             aria-hidden="true"
@@ -4314,12 +4497,15 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     </div>
                   )}
 
-                  {/* Khung 3 (Nghiêng phải nhẹ, có băng dính washi xanh pastel dán trên đầu) */}
+                  {/* Khung 3 */}
                   {novelCol3 && (
                     <div className="relative group/p3 rotate-2 sm:rotate-3 hover:rotate-0 hover:-translate-y-1.5 transition-all duration-300">
-                      {/* Miếng băng dính washi pastel dán góc trên */}
                       <div
-                        className="absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-12 sm:w-20 h-4 sm:h-6 rounded-xs bg-[#9be0f7]/90 border border-[#7ecbf3]/50 shadow-2xs rotate-2 select-none z-20 pointer-events-none"
+                        className={`absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-12 sm:w-20 h-4 sm:h-6 rounded-xs shadow-2xs rotate-2 select-none z-20 pointer-events-none ${
+                          isDarkEffective
+                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
+                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
+                        }`}
                       />
                       <div
                         onClick={() => {
@@ -4335,7 +4521,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         }`}
                         title={novelCol3.title}
                       >
-                        {/* Khung ô chứa ảnh: Hiệu ứng lõm lòng thẻ (Inset shadow) */}
                         <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-2.5 bg-neutral-100 dark:bg-zinc-800">
                           <img
                             src={getDirectImageUrl(novelCol3.coverImage, novelCol3.id || novelCol3.title)}
@@ -4343,7 +4528,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             alt={novelCol3.title}
                             className="w-full h-full object-cover group-hover/p3:scale-105 transition-transform duration-300"
                           />
-                          {/* Inset Hốc ảnh cổ điển */}
                           <div
                             className="absolute inset-0 pointer-events-none rounded-xl sm:rounded-2xl border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.14)]"
                             aria-hidden="true"
@@ -4357,48 +4541,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   )}
 
                 </div>
-
-                {/* 4. Nút Chuyển Trang (< >) & Nút "Đổi Bìa" — Phản Hồi Xúc Giác Khi Bấm */}
-                <div className="flex items-center justify-center gap-2.5 sm:gap-3.5 mt-4 sm:mt-6 relative z-20">
-                  {/* Nút lùi trang (<) */}
-                  <button
-                    type="button"
-                    onClick={() => setPolaroidPage((prev) => (prev > 0 ? prev - 1 : totalPages - 1))}
-                    className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:translate-y-[1px] ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
-                    title="Trang trước"
-                    aria-label="Trang trước"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </button>
-
-                  {/* Nút "Đổi Bìa" */}
-                  <button
-                    type="button"
-                    onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
-                    className={`px-3 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-medium tracking-wide flex items-center gap-1.5 transition-all cursor-pointer select-none active:translate-y-[1px] ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
-                    title="Đổi bộ bìa truyện khác"
-                  >
-                    <Shuffle className="w-3 h-3 sm:w-3.5 sm:h-3.5 opacity-80" />
-                    <span>Đổi bìa</span>
-                    {totalPages > 1 && (
-                      <span className="opacity-60 text-[10px]">
-                        ({safePage + 1}/{totalPages})
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Nút tiến trang (>) */}
-                  <button
-                    type="button"
-                    onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
-                    className={`w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:translate-y-[1px] ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
-                    title="Trang tiếp"
-                    aria-label="Trang tiếp"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </button>
-                </div>
               </section>
+              </div>
             );
           })()}
 
@@ -4406,9 +4550,309 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
         </div>
 
-        {/* Right Sidebar: Thanh bên chứa Chọn truyện ngẫu nhiên & Truyện vừa mới đăng (29%) */}
+        {/* Right Sidebar: Thanh bên chứa Bảng truyện (trên Desktop lg), Chọn truyện ngẫu nhiên & Truyện vừa mới đăng (29%) */}
         <div className="min-w-0 space-y-6">
-          
+
+          {/* ========================================================================= */}
+          {/* MỤC BẢNG TRUYỆN TRÊN THANH BÊN (HIỂN THỊ TRÊN MÁY TÍNH lg:block) */}
+          {/* ========================================================================= */}
+          {novels && novels.length > 0 && (() => {
+            const sorted = [...novels].sort((a, b) => {
+              const timeA = a.latestChapter?.updatedAt ? new Date(a.latestChapter.updatedAt).getTime() : 0;
+              const timeB = b.latestChapter?.updatedAt ? new Date(b.latestChapter.updatedAt).getTime() : 0;
+              return timeB - timeA;
+            });
+            const totalPages = Math.max(1, Math.ceil(sorted.length / 3));
+            const safePage = polaroidPage % totalPages;
+            const startIndex = safePage * 3;
+            const novelCol1 = sorted[startIndex] || sorted[0];
+            const novelCol2 = sorted[startIndex + 1] || sorted[1] || sorted[0];
+            const novelCol3 = sorted[startIndex + 2] || sorted[2] || sorted[1] || sorted[0];
+
+            return (
+              <div className="hidden lg:block relative pt-7">
+                {/* ĐINH GHIM & DÂY THỪNG BỆN TAM GIÁC TREO BẢNG TRUYỆN Ở THANH BÊN */}
+                {(() => {
+                  const triangleCord = getHangingCordTriangleStyles(theme, isDarkEffective);
+                  return (
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-7 pointer-events-none z-20 flex items-center justify-center">
+                      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full ${triangleCord.pinBg} border ${triangleCord.pinBorder} shadow-sm z-30 flex items-center justify-center`}>
+                        <span className={`w-1 h-1 rounded-full ${triangleCord.pinInner}`} />
+                      </div>
+
+                      <svg className="w-full h-full" viewBox="0 0 240 28" fill="none" preserveAspectRatio="none">
+                        <path
+                          d="M120 2 L22 28"
+                          stroke={triangleCord.ropeBase}
+                          strokeWidth="2.0"
+                          strokeLinecap="round"
+                          strokeDasharray="3.5 1.8"
+                        />
+                        <path d="M120 2 L22 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
+
+                        <path
+                          d="M120 2 L218 28"
+                          stroke={triangleCord.ropeBase}
+                          strokeWidth="2.0"
+                          strokeLinecap="round"
+                          strokeDasharray="3.5 1.8"
+                        />
+                        <path d="M120 2 L218 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
+
+                        <circle cx="22" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
+                        <circle cx="218" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
+                      </svg>
+                    </div>
+                  );
+                })()}
+
+                <section
+                  id="showcase-polaroid-section-sidebar"
+                  className={`relative rounded-[28px] p-4 border overflow-hidden transition-all duration-300 ${
+                  getThemePastelPalette(theme, isDarkEffective).cardBg
+                } ${
+                  isDarkEffective
+                    ? 'border-white/[0.07]'
+                    : 'border-black/[0.04]'
+                }`}
+                style={{
+                  backgroundImage: `radial-gradient(${getThemePastelPalette(theme, isDarkEffective).dotColor} 1.2px, transparent 1.2px)`,
+                  backgroundSize: '18px 18px',
+                  boxShadow: isDarkEffective
+                    ? '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)'
+                    : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
+                }}
+              >
+                {/* 4 Ngôi sao ở 4 góc */}
+                <div
+                  className={`absolute top-2.5 left-2.5 select-none pointer-events-none rotate-[18deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
+                  aria-hidden="true"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-5 h-5"
+                  >
+                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
+                  </svg>
+                </div>
+
+                <div
+                  className={`absolute top-2.5 right-2.5 select-none pointer-events-none -rotate-[26deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
+                  aria-hidden="true"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-3.5 h-3.5"
+                  >
+                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
+                  </svg>
+                </div>
+
+                <div
+                  className={`absolute bottom-2.5 left-2.5 select-none pointer-events-none -rotate-[16deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
+                  aria-hidden="true"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-3.5 h-3.5"
+                  >
+                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
+                  </svg>
+                </div>
+
+                <div
+                  className={`absolute bottom-2.5 right-2.5 select-none pointer-events-none rotate-[34deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
+                  aria-hidden="true"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-5 h-5"
+                  >
+                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
+                  </svg>
+                </div>
+
+                {/* Tiêu đề BẢNG TRUYỆN kèm nút Đổi bìa icon nhỏ gọn */}
+                <div className="flex items-center justify-center gap-2 mb-4 relative z-10">
+                  <h3 className={`font-lora italic !font-normal text-xs tracking-[0.18em] uppercase ${tStyles.cardTitle}`}>
+                    BẢNG TRUYỆN
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
+                    className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:scale-90 ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
+                    title="Đổi bìa truyện"
+                    aria-label="Đổi bìa truyện"
+                  >
+                    <Shuffle className="w-3 h-3 opacity-80" />
+                  </button>
+                </div>
+
+                {/* 3 Khung ảnh hiển thị 3 cột ngang hàng trong sidebar */}
+                <div className="grid grid-cols-3 gap-2 relative z-10 items-end pt-1 pb-1">
+                  
+                  {/* Khung 1 */}
+                  {novelCol1 && (
+                    <div className="relative group/p1 -rotate-2 hover:rotate-0 hover:-translate-y-1 transition-all duration-300">
+                      <div
+                        className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-3.5 rounded-xs shadow-2xs -rotate-2 select-none z-20 pointer-events-none ${
+                          isDarkEffective
+                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
+                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
+                        }`}
+                      />
+                      <div
+                        onClick={() => {
+                          onSelectNovel(novelCol1);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={`rounded-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
+                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
+                        } ${
+                          isDarkEffective
+                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.38),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p1:shadow-[0_8px_20px_rgba(0,0,0,0.52),inset_0_1px_1px_rgba(255,255,255,0.12)]'
+                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] group-hover/p1:shadow-[0_8px_20px_rgba(0,0,0,0.11),0_2px_6px_rgba(0,0,0,0.04)]'
+                        }`}
+                        title={novelCol1.title}
+                      >
+                        <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-1 bg-neutral-100 dark:bg-zinc-800">
+                          <img
+                            src={getDirectImageUrl(novelCol1.coverImage, novelCol1.id || novelCol1.title)}
+                            onError={(e) => handleCoverImageError(e, novelCol1.id || novelCol1.title)}
+                            alt={novelCol1.title}
+                            className="w-full h-full object-cover group-hover/p1:scale-105 transition-transform duration-300"
+                          />
+                          <div
+                            className="absolute inset-0 pointer-events-none rounded-xl border border-black/10 dark:border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22),inset_0_-1px_1.5px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_-1px_1px_rgba(255,255,255,0.14)]"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <h4 className={`font-lora italic !font-normal text-center text-[10px] line-clamp-2 leading-tight px-0.5 mt-1 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
+                          {novelCol1.title}
+                        </h4>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Khung 2 */}
+                  {novelCol2 && (
+                    <div className="relative group/p2 rotate-0 hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300">
+                      <div
+                        className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-4.5 h-4.5 rounded-full border border-white/95 select-none z-20 flex items-center justify-center pointer-events-none ${
+                          isDarkEffective
+                            ? 'shadow-[0_3px_8px_rgba(0,0,0,0.45),0_1px_3px_rgba(0,0,0,0.25)]'
+                            : 'shadow-[0_3px_6px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.10)]'
+                        }`}
+                        style={{
+                          background: isDarkEffective
+                            ? 'radial-gradient(circle at 35% 30%, #f6f5fa 0%, #e1deec 42%, #9e97af 75%, #665e7a 100%)'
+                            : 'radial-gradient(circle at 35% 30%, #ffffff 0%, #ffffff 42%, #f0f2f6 72%, #d6dbe4 100%)',
+                        }}
+                      >
+                        <div className="absolute top-0.5 left-1 w-1.5 h-0.5 rounded-full bg-white/95 blur-[0.15px] -rotate-45 shadow-[0_0_2px_rgba(255,255,255,0.85)]" />
+                      </div>
+                      <div
+                        onClick={() => {
+                          onSelectNovel(novelCol2);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={`rounded-t-[30px] rounded-b-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
+                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
+                        } ${
+                          isDarkEffective
+                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p2:shadow-[0_8px_20px_rgba(0,0,0,0.56),inset_0_1px_1px_rgba(255,255,255,0.12)]'
+                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] group-hover/p2:shadow-[0_8px_20px_rgba(0,0,0,0.12),0_2px_6px_rgba(0,0,0,0.04)]'
+                        }`}
+                        title={novelCol2.title}
+                      >
+                        <div className="relative aspect-square w-full rounded-t-[24px] rounded-b-xl overflow-hidden mb-1 bg-neutral-100 dark:bg-zinc-800">
+                          <img
+                            src={getDirectImageUrl(novelCol2.coverImage, novelCol2.id || novelCol2.title)}
+                            onError={(e) => handleCoverImageError(e, novelCol2.id || novelCol2.title)}
+                            alt={novelCol2.title}
+                            className="w-full h-full object-cover group-hover/p2:scale-105 transition-transform duration-300"
+                          />
+                          <div
+                            className="absolute inset-0 pointer-events-none rounded-t-[24px] rounded-b-xl border border-black/10 dark:border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22),inset_0_-1px_1.5px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_-1px_1px_rgba(255,255,255,0.14)]"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <h4 className={`font-lora italic !font-normal text-center text-[10px] line-clamp-2 leading-tight px-0.5 mt-1 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
+                          {novelCol2.title}
+                        </h4>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Khung 3 */}
+                  {novelCol3 && (
+                    <div className="relative group/p3 rotate-2 hover:rotate-0 hover:-translate-y-1 transition-all duration-300">
+                      <div
+                        className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-3.5 rounded-xs shadow-2xs rotate-2 select-none z-20 pointer-events-none ${
+                          isDarkEffective
+                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
+                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
+                        }`}
+                      />
+                      <div
+                        onClick={() => {
+                          onSelectNovel(novelCol3);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={`rounded-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
+                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
+                        } ${
+                          isDarkEffective
+                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.38),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p3:shadow-[0_8px_20px_rgba(0,0,0,0.52),inset_0_1px_1px_rgba(255,255,255,0.12)]'
+                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] group-hover/p3:shadow-[0_8px_20px_rgba(0,0,0,0.11),0_2px_6px_rgba(0,0,0,0.04)]'
+                        }`}
+                        title={novelCol3.title}
+                      >
+                        <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-1 bg-neutral-100 dark:bg-zinc-800">
+                          <img
+                            src={getDirectImageUrl(novelCol3.coverImage, novelCol3.id || novelCol3.title)}
+                            onError={(e) => handleCoverImageError(e, novelCol3.id || novelCol3.title)}
+                            alt={novelCol3.title}
+                            className="w-full h-full object-cover group-hover/p3:scale-105 transition-transform duration-300"
+                          />
+                          <div
+                            className="absolute inset-0 pointer-events-none rounded-xl border border-black/10 dark:border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22),inset_0_-1px_1.5px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_-1px_1px_rgba(255,255,255,0.14)]"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <h4 className={`font-lora italic !font-normal text-center text-[10px] line-clamp-2 leading-tight px-0.5 mt-1 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
+                          {novelCol3.title}
+                        </h4>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              </section>
+              </div>
+            );
+          })()}
+
           {/* Mục "Chọn Truyện Ngẫu Nhiên" / "Hôm Nay Đọc Gì" */}
           <RandomNovelPicker
             novels={novels}

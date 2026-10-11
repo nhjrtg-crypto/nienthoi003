@@ -127,7 +127,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       return {
         themeName: 'CỰC QUANG NGÂN HÀ PASTEL',
         outerCoverStyle: {
-          border: '1.5px solid transparent',
+          border: '1px solid transparent',
           background: `
             linear-gradient(135deg, 
               rgba(250, 246, 255, 0.85) 0%, 
@@ -138,12 +138,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
               rgba(250, 246, 255, 0.85) 100%
             ) padding-box,
             linear-gradient(to bottom, 
-              rgba(230, 215, 248, 0.70) 0%, 
-              rgba(215, 195, 240, 0.78) 40%, 
-              rgba(195, 170, 230, 0.88) 100%
+              rgba(186, 150, 235, 0.35) 0%, 
+              rgba(168, 125, 222, 0.38) 40%, 
+              rgba(147, 95, 210, 0.32) 100%
             ) border-box
           `,
-          boxShadow: '5px 5px 15px rgba(180, 150, 215, 0.18), -4px -4px 14px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+          boxShadow: '4px 4px 14px rgba(170, 135, 215, 0.12), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
         },
@@ -161,12 +161,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#caa7e8]',
         holesBg: 'bg-[#ecdcf7]',
         holesBorder: 'border-[#d8c4ee]',
-        spineBg: 'bg-gradient-to-b from-[#faf5ff] to-[#f3e8ff]',
-        spineDashedBorder: 'border-[#e9d5ff]',
-        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(192,132,252,0.12)]',
-        spineHoleBorder: 'border-[#d8c4ee]',
-        spineHoleBg: 'bg-white',
-        spineHoleCenterBg: 'bg-[#ecdcf7]',
+        spineBg: 'bg-gradient-to-b from-[#f5ebfc] via-[#eedcf9] to-[#e4ccf5]',
+        spineDashedBorder: 'border-[#d6b7f3]',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(147,51,234,0.10)]',
+        spineHoleBorder: 'border-[#caa2ee]',
+        spineHoleBg: 'bg-[#faf5ff]',
+        spineHoleCenterBg: 'bg-[#c89ef0]',
         paperBg: 'bg-[#ffffff]',
         paperBorder: 'border border-[#e9d5ff]/80',
         paperText: 'text-[#282548]',
@@ -253,18 +253,18 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerTitle: 'text-purple-100 drop-shadow-md',
       bannerDivider: 'bg-gradient-to-r from-indigo-500/80 via-purple-400/80 to-pink-500/80',
       coverBg: 'bg-[#090c20]/40 backdrop-blur-2xl',
-      coverBorder: 'border-white/10',
+      coverBorder: 'border-purple-400/20',
       coverShadow: 'shadow-[0_25px_60px_rgba(0,0,0,0.65)]',
       ringsGradient: 'bg-gradient-to-r from-indigo-400 via-purple-200 to-pink-400',
       ringsBorder: 'border-indigo-400/50',
       holesBg: 'bg-black/50 backdrop-blur-md',
       holesBorder: 'border-purple-900/60',
-      spineBg: 'bg-black/30 backdrop-blur-xl',
-      spineDashedBorder: 'border-white/[0.08]',
-      spineShadow: 'shadow-[inset_-2px_0_12px_rgba(99,102,241,0.15)]',
-      spineHoleBorder: 'border-white/20',
-      spineHoleBg: 'bg-black/40 backdrop-blur-md',
-      spineHoleCenterBg: 'bg-white/[0.12]',
+      spineBg: 'bg-[#10142e]/75 backdrop-blur-xl',
+      spineDashedBorder: 'border-purple-400/30',
+      spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.45)]',
+      spineHoleBorder: 'border-purple-400/25',
+      spineHoleBg: 'bg-black/70',
+      spineHoleCenterBg: 'bg-purple-400/35',
       paperBg: 'bg-[#060818]/45 backdrop-blur-2xl',
       paperBorder: 'border-white/[0.08]',
       paperText: 'text-purple-100',
@@ -354,18 +354,18 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         bannerTitle: 'text-zinc-100 drop-shadow-sm',
         bannerDivider: 'bg-gradient-to-r from-zinc-500 via-zinc-200 to-zinc-500',
         coverBg: 'bg-[#121215]/50 backdrop-blur-2xl',
-        coverBorder: 'border-zinc-700/50',
+        coverBorder: 'border-zinc-700/40',
         coverShadow: 'shadow-[0_25px_60px_rgba(0,0,0,0.65)]',
         ringsGradient: 'bg-gradient-to-r from-zinc-500/80 via-zinc-200/80 to-zinc-500/80',
         ringsBorder: 'border-zinc-400/50',
         holesBg: 'bg-black/60 backdrop-blur-sm',
         holesBorder: 'border-zinc-700/60',
-        spineBg: 'bg-black/40 backdrop-blur-lg',
-        spineDashedBorder: 'border-zinc-700/40',
-        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.3)]',
-        spineHoleBorder: 'border-white/15',
-        spineHoleBg: 'bg-black/60 backdrop-blur-sm',
-        spineHoleCenterBg: 'bg-white/[0.08]',
+        spineBg: 'bg-[#18181d]/75 backdrop-blur-lg',
+        spineDashedBorder: 'border-zinc-600/40',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.45)]',
+        spineHoleBorder: 'border-zinc-500/25',
+        spineHoleBg: 'bg-black/70',
+        spineHoleCenterBg: 'bg-white/[0.12]',
         paperBg: 'bg-[#0a0a0d]/55 backdrop-blur-2xl',
         paperBorder: 'border-zinc-700/40',
         paperText: 'text-zinc-100',
@@ -448,7 +448,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     return {
       themeName: 'TRẮNG TINH KHÔI',
       outerCoverStyle: {
-        border: '1.5px solid transparent',
+        border: '1px solid transparent',
         background: `
           linear-gradient(135deg, 
             rgba(248, 250, 252, 0.85) 0%, 
@@ -459,12 +459,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
             rgba(248, 250, 252, 0.85) 100%
           ) padding-box,
           linear-gradient(to bottom, 
-            rgba(226, 232, 240, 0.70) 0%, 
-            rgba(203, 213, 225, 0.78) 40%, 
-            rgba(180, 195, 215, 0.88) 100%
+            rgba(160, 174, 192, 0.40) 0%, 
+            rgba(135, 152, 172, 0.35) 40%, 
+            rgba(110, 128, 152, 0.30) 100%
           ) border-box
         `,
-        boxShadow: '5px 5px 15px rgba(160, 175, 195, 0.18), -4px -4px 14px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+        boxShadow: '4px 4px 14px rgba(140, 155, 175, 0.12), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
       },
@@ -482,12 +482,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       ringsBorder: 'border-slate-300/80',
       holesBg: 'bg-slate-200',
       holesBorder: 'border-slate-300',
-      spineBg: 'bg-gradient-to-b from-[#f8fafc] to-[#f1f5f9]',
-      spineDashedBorder: 'border-[#e2e8f0]',
-      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(160,175,195,0.12)]',
-      spineHoleBorder: 'border-[#e2e8f0]',
-      spineHoleBg: 'bg-white',
-      spineHoleCenterBg: 'bg-[#e2e8f0]',
+      spineBg: 'bg-gradient-to-b from-[#f1f5f9] via-[#e8eff5] to-[#dde5ed]',
+      spineDashedBorder: 'border-[#cbd5e1]',
+      spineShadow: 'shadow-[inset_-2px_0_10px_rgba(100,116,139,0.10)]',
+      spineHoleBorder: 'border-[#b0bec5]',
+      spineHoleBg: 'bg-[#f8fafc]',
+      spineHoleCenterBg: 'bg-[#94a3b8]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border border-[#e2e8f0]',
       paperText: 'text-[#0f172a]',
@@ -583,12 +583,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#4d6a85]/50',
         holesBg: 'bg-black/60 backdrop-blur-sm',
         holesBorder: 'border-[#4d6a85]/60',
-        spineBg: 'bg-black/40 backdrop-blur-lg',
-        spineDashedBorder: 'border-[#4d6a85]/30',
-        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(77,106,133,0.18)]',
-        spineHoleBorder: 'border-white/15',
-        spineHoleBg: 'bg-black/60 backdrop-blur-sm',
-        spineHoleCenterBg: 'bg-white/[0.08]',
+        spineBg: 'bg-[#0f1925]/75 backdrop-blur-lg',
+        spineDashedBorder: 'border-[#4d6a85]/40',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.45)]',
+        spineHoleBorder: 'border-[#4d6a85]/30',
+        spineHoleBg: 'bg-black/70',
+        spineHoleCenterBg: 'bg-[#4d6a85]/40',
         paperBg: 'bg-[#060c13]/55 backdrop-blur-2xl',
         paperBorder: 'border-[#4d6a85]/25',
         paperText: 'text-[#f0f5fa]',
@@ -678,7 +678,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       coverBorder: 'border-transparent',
       coverShadow: '',
       outerCoverStyle: {
-        border: '1.5px solid transparent',
+        border: '1px solid transparent',
         background: `
           linear-gradient(135deg, 
             rgba(248, 250, 254, 0.85) 0%, 
@@ -689,12 +689,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
             rgba(248, 250, 254, 0.85) 100%
           ) padding-box,
           linear-gradient(to bottom, 
-            rgba(220, 232, 245, 0.70) 0%, 
-            rgba(200, 220, 238, 0.78) 40%, 
-            rgba(182, 205, 226, 0.88) 100%
+            rgba(155, 180, 205, 0.40) 0%, 
+            rgba(130, 160, 188, 0.35) 40%, 
+            rgba(105, 138, 168, 0.30) 100%
           ) border-box
         `,
-        boxShadow: '5px 5px 15px rgba(165, 185, 210, 0.18), -4px -4px 14px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+        boxShadow: '4px 4px 14px rgba(145, 170, 195, 0.12), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
       },
@@ -705,12 +705,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       ringsBorder: 'border-[#98bbdb]',
       holesBg: 'bg-[#d7e6f5]',
       holesBorder: 'border-[#b6cde2]',
-      spineBg: 'bg-gradient-to-b from-[#f8fafc] to-[#edf4fa]',
-      spineDashedBorder: 'border-[#b6cde2]/80',
-      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(165,185,210,0.12)]',
-      spineHoleBorder: 'border-[#b6cde2]',
-      spineHoleBg: 'bg-white',
-      spineHoleCenterBg: 'bg-[#d7e6f5]',
+      spineBg: 'bg-gradient-to-b from-[#e8f1fa] via-[#dbe8f5] to-[#cee0ef]',
+      spineDashedBorder: 'border-[#96b8d9]',
+      spineShadow: 'shadow-[inset_-2px_0_10px_rgba(77,106,133,0.12)]',
+      spineHoleBorder: 'border-[#96b8d9]',
+      spineHoleBg: 'bg-[#f0f6fc]',
+      spineHoleCenterBg: 'bg-[#789dbb]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border border-[#d7e6f5]',
       paperText: 'text-[#1e293b]',
@@ -807,12 +807,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#4d6f53]/50',
         holesBg: 'bg-[#060c08]',
         holesBorder: 'border-[#4d6f53]/50',
-        spineBg: 'bg-[#111a13]',
-        spineDashedBorder: 'border-[#4d6f53]/30',
-        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(77,111,83,0.18)]',
-        spineHoleBorder: 'border-[#4d6f53]/50',
-        spineHoleBg: 'bg-[#0a120d]',
-        spineHoleCenterBg: 'bg-[#050806]',
+        spineBg: 'bg-[#101b13]/75',
+        spineDashedBorder: 'border-[#4d6f53]/40',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.45)]',
+        spineHoleBorder: 'border-[#4d6f53]/40',
+        spineHoleBg: 'bg-[#030604]/80',
+        spineHoleCenterBg: 'bg-[#4d6f53]/40',
         paperBg: 'bg-[#0a120d]',
         paperBorder: 'border-[#4d6f53]/25',
         paperText: 'text-[#eaf2eb]',
@@ -902,7 +902,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       coverBorder: 'border-transparent',
       coverShadow: '',
       outerCoverStyle: {
-        border: '1.5px solid transparent',
+        border: '1px solid transparent',
         background: `
           linear-gradient(135deg, 
             rgba(248, 252, 249, 0.85) 0%, 
@@ -913,12 +913,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
             rgba(248, 252, 249, 0.85) 100%
           ) padding-box,
           linear-gradient(to bottom, 
-            rgba(220, 235, 225, 0.70) 0%, 
-            rgba(195, 222, 202, 0.78) 40%, 
-            rgba(175, 208, 182, 0.88) 100%
+            rgba(150, 190, 160, 0.40) 0%, 
+            rgba(125, 170, 136, 0.35) 40%, 
+            rgba(98, 145, 112, 0.30) 100%
           ) border-box
         `,
-        boxShadow: '5px 5px 15px rgba(150, 185, 160, 0.18), -4px -4px 14px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+        boxShadow: '4px 4px 14px rgba(135, 170, 145, 0.12), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
       },
@@ -929,12 +929,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       ringsBorder: 'border-[#7ebe92]',
       holesBg: 'bg-[#dcf0e0]',
       holesBorder: 'border-[#9ecbae]',
-      spineBg: 'bg-gradient-to-b from-[#f8fcf9] to-[#edf7ef]',
-      spineDashedBorder: 'border-[#c8e6c9]',
-      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(150,185,160,0.12)]',
-      spineHoleBorder: 'border-[#9ecbae]',
-      spineHoleBg: 'bg-white',
-      spineHoleCenterBg: 'bg-[#dcf0e0]',
+      spineBg: 'bg-gradient-to-b from-[#eaf6ef] via-[#dcf0e4] to-[#cde7d6]',
+      spineDashedBorder: 'border-[#8ec59c]',
+      spineShadow: 'shadow-[inset_-2px_0_10px_rgba(77,111,83,0.12)]',
+      spineHoleBorder: 'border-[#8ec59c]',
+      spineHoleBg: 'bg-[#f2faf4]',
+      spineHoleCenterBg: 'bg-[#688865]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border border-[#c8e6c9]',
       paperText: 'text-[#1c2e1f]',
@@ -1031,12 +1031,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
         ringsBorder: 'border-[#8c6150]/50',
         holesBg: 'bg-[#0e0906]',
         holesBorder: 'border-[#8c6150]/50',
-        spineBg: 'bg-[#1c1511]',
-        spineDashedBorder: 'border-[#8c6150]/30',
-        spineShadow: 'shadow-[inset_-2px_0_8px_rgba(140,97,80,0.18)]',
-        spineHoleBorder: 'border-[#8c6150]/50',
-        spineHoleBg: 'bg-[#130d09]',
-        spineHoleCenterBg: 'bg-[#0c0805]',
+        spineBg: 'bg-[#1c130d]/75',
+        spineDashedBorder: 'border-[#8c6150]/40',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.45)]',
+        spineHoleBorder: 'border-[#8c6150]/40',
+        spineHoleBg: 'bg-[#070403]/80',
+        spineHoleCenterBg: 'bg-[#8c6150]/40',
         paperBg: 'bg-[#130d09]',
         paperBorder: 'border-[#8c6150]/25',
         paperText: 'text-[#f5ece6]',
@@ -1126,7 +1126,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       coverBorder: 'border-transparent',
       coverShadow: '',
       outerCoverStyle: {
-        border: '1.5px solid transparent',
+        border: '1px solid transparent',
         background: `
           linear-gradient(135deg, 
             rgba(253, 250, 246, 0.85) 0%, 
@@ -1137,12 +1137,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
             rgba(253, 250, 246, 0.85) 100%
           ) padding-box,
           linear-gradient(to bottom, 
-            rgba(238, 226, 214, 0.70) 0%, 
-            rgba(224, 208, 192, 0.78) 40%, 
-            rgba(210, 186, 162, 0.88) 100%
+            rgba(188, 155, 130, 0.40) 0%, 
+            rgba(165, 130, 105, 0.35) 40%, 
+            rgba(142, 108, 82, 0.30) 100%
           ) border-box
         `,
-        boxShadow: '5px 5px 15px rgba(185, 160, 135, 0.18), -4px -4px 14px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+        boxShadow: '4px 4px 14px rgba(165, 140, 115, 0.12), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
       },
@@ -1153,12 +1153,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       ringsBorder: 'border-[#b58c67]',
       holesBg: 'bg-[#ecd8c4]',
       holesBorder: 'border-[#caa27e]',
-      spineBg: 'bg-gradient-to-b from-[#faf7f2] to-[#f4ebe1]',
-      spineDashedBorder: 'border-[#ecd8c4]',
-      spineShadow: 'shadow-[inset_-2px_0_8px_rgba(185,160,135,0.12)]',
-      spineHoleBorder: 'border-[#caa27e]',
-      spineHoleBg: 'bg-white',
-      spineHoleCenterBg: 'bg-[#ecd8c4]',
+      spineBg: 'bg-gradient-to-b from-[#f2e7db] via-[#e8dbcc] to-[#dccebd]',
+      spineDashedBorder: 'border-[#be997c]',
+      spineShadow: 'shadow-[inset_-2px_0_10px_rgba(140,97,80,0.12)]',
+      spineHoleBorder: 'border-[#be997c]',
+      spineHoleBg: 'bg-[#faf5ee]',
+      spineHoleCenterBg: 'bg-[#967f73]',
       paperBg: 'bg-[#ffffff]',
       paperBorder: 'border border-[#ecd8c4]',
       paperText: 'text-[#2a1e17]',
@@ -1247,18 +1247,18 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
       bannerTitle: 'text-purple-100 drop-shadow-md',
       bannerDivider: 'bg-gradient-to-r from-purple-500/80 via-pink-400/80 to-indigo-400/80',
       coverBg: 'bg-[#130b24]/40 backdrop-blur-2xl',
-      coverBorder: 'border-white/10',
+      coverBorder: 'border-purple-400/20',
       coverShadow: 'shadow-[0_25px_60px_rgba(0,0,0,0.65)]',
       ringsGradient: 'bg-gradient-to-r from-purple-400/80 via-pink-300/80 to-purple-500/80',
       ringsBorder: 'border-purple-400/50',
       holesBg: 'bg-black/50 backdrop-blur-md',
       holesBorder: 'border-purple-400/40',
-      spineBg: 'bg-black/30 backdrop-blur-xl',
-      spineDashedBorder: 'border-white/[0.08]',
-      spineShadow: 'shadow-[inset_-2px_0_12px_rgba(168,85,247,0.15)]',
-      spineHoleBorder: 'border-white/20',
-      spineHoleBg: 'bg-black/40 backdrop-blur-md',
-      spineHoleCenterBg: 'bg-white/[0.12]',
+      spineBg: 'bg-[#150d28]/75 backdrop-blur-xl',
+      spineDashedBorder: 'border-purple-400/30',
+      spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.45)]',
+      spineHoleBorder: 'border-purple-400/25',
+      spineHoleBg: 'bg-black/70',
+      spineHoleCenterBg: 'bg-purple-400/35',
       paperBg: 'bg-[#0e071c]/45 backdrop-blur-2xl',
       paperBorder: 'border-white/[0.08]',
       paperText: 'text-purple-100',
@@ -1349,7 +1349,7 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     coverBorder: 'border-transparent',
     coverShadow: '',
     outerCoverStyle: {
-      border: '1.5px solid transparent',
+      border: '1px solid transparent',
       background: `
         linear-gradient(135deg, 
           rgba(250, 248, 253, 0.85) 0%, 
@@ -1360,12 +1360,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
           rgba(250, 248, 253, 0.85) 100%
         ) padding-box,
         linear-gradient(to bottom, 
-          rgba(232, 224, 242, 0.70) 0%, 
-          rgba(215, 200, 232, 0.78) 40%, 
-          rgba(196, 178, 216, 0.88) 100%
+          rgba(182, 160, 218, 0.40) 0%, 
+          rgba(162, 135, 204, 0.35) 40%, 
+          rgba(140, 110, 188, 0.30) 100%
         ) border-box
       `,
-      boxShadow: '5px 5px 15px rgba(175, 155, 198, 0.18), -4px -4px 14px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+      boxShadow: '4px 4px 14px rgba(160, 140, 185, 0.12), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
       backdropFilter: 'blur(24px)',
       WebkitBackdropFilter: 'blur(24px)',
     },
@@ -1376,12 +1376,12 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     ringsBorder: 'border-[#a78bfa]',
     holesBg: 'bg-[#ede8f5]',
     holesBorder: 'border-[#c4b5fd]',
-    spineBg: 'bg-gradient-to-b from-[#faf8fd] to-[#f2ecf8]',
-    spineDashedBorder: 'border-[#dfdae8]',
-    spineShadow: 'shadow-[inset_-2px_0_8px_rgba(175,155,198,0.12)]',
-    spineHoleBorder: 'border-[#c4b5fd]',
-    spineHoleBg: 'bg-white',
-    spineHoleCenterBg: 'bg-[#ede8f5]',
+    spineBg: 'bg-gradient-to-b from-[#f3ebf9] via-[#eadcf5] to-[#dfceef]',
+    spineDashedBorder: 'border-[#baa3de]',
+    spineShadow: 'shadow-[inset_-2px_0_10px_rgba(147,95,210,0.12)]',
+    spineHoleBorder: 'border-[#baa3de]',
+    spineHoleBg: 'bg-[#faf7fd]',
+    spineHoleCenterBg: 'bg-[#8b6eb5]',
     paperBg: 'bg-[#ffffff]',
     paperBorder: 'border border-[#dfdae8]',
     paperText: 'text-[#2e1065]',
@@ -1625,6 +1625,24 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
     [theme]
   );
 
+  // Đường kẻ nét liền 1px rất nhạt dưới mỗi hàng chữ mục Giới thiệu (Notebook Solid Lined Paper Pattern)
+  const synopsisLineBg = useMemo(() => {
+    const lineColor = isDarkEffective
+      ? (theme === 'cosmic' || theme === 'amethyst-haze'
+          ? 'rgba(192, 132, 252, 0.08)'
+          : 'rgba(255, 255, 255, 0.06)')
+      : (theme === 'amethyst-haze' || theme === 'cosmic'
+          ? 'rgba(147, 51, 234, 0.08)'
+          : theme === 'sage'
+          ? 'rgba(77, 111, 83, 0.08)'
+          : theme === 'mocha'
+          ? 'rgba(140, 97, 80, 0.08)'
+          : theme === 'slate-haze'
+          ? 'rgba(77, 106, 133, 0.08)'
+          : 'rgba(113, 113, 122, 0.08)');
+    return `url("data:image/svg+xml,%3Csvg width='100' height='34' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='33.5' x2='100' y2='33.5' stroke='${encodeURIComponent(lineColor)}' stroke-width='1'/%3E%3C/svg%3E")`;
+  }, [isDarkEffective, theme]);
+
   // Lọc và sắp xếp chương
   const filteredChapters = useMemo(() => {
     return effectiveChapters
@@ -1697,9 +1715,9 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
 
       {/* ================= TOÀN BỘ CUỐN SỔ CÒNG RỜI ================= */}
       <div className="w-full relative">
-        {/* BÌA CỨNG NGOÀI (SOFT HARDCOVER: CẢ 4 GÓC ĐỀU BO TRÒN NHIỀU) */}
+        {/* BÌA CỨNG NGOÀI (SOFT HARDCOVER): GÁY CÒNG BỌC HẾT CẢ CHIỀU DÀI & CHIỀU RỘNG MÉP */}
         <div
-          className={`w-full relative rounded-3xl sm:rounded-[36px] ${sTheme.coverBg} p-2 sm:p-5 md:p-7 ${sTheme.coverShadow} border ${sTheme.coverBorder} transition-all duration-300 overflow-hidden`}
+          className={`w-full relative rounded-3xl sm:rounded-[36px] ${sTheme.coverBg} ${sTheme.coverShadow} border ${sTheme.coverBorder} transition-all duration-300 overflow-hidden flex flex-row items-stretch`}
           style={!isDarkEffective && sTheme.outerCoverStyle ? sTheme.outerCoverStyle : undefined}
         >
           {/* Lớp phản chiếu ánh sáng kính trong chế độ tối (Glassmorphism Specular Sheen) */}
@@ -1710,34 +1728,29 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
             />
           )}
 
-          {/* TRANG GIẤY RUỘT TRONG CUỐN SỔ: BẢO GỒM GÁY CÒNG RỜI 6 LỖ + NỘI DUNG RUỘT SỔ */}
-          <div
-            className={`relative z-10 rounded-2xl sm:rounded-[26px] ${sTheme.paperBg} ${sTheme.paperText} border ${sTheme.paperBorder} shadow-inner flex flex-row overflow-hidden transition-colors duration-300`}
-            style={!isDarkEffective && sTheme.innerPaperStyle ? sTheme.innerPaperStyle : undefined}
+          {/* GÁY CÒNG BỌC HẾT CẢ CHIỀU DÀI & CHIỀU RỘNG MÉP TRÁI */}
+          <div 
+            className={`w-8 sm:w-13 md:w-16 shrink-0 relative flex flex-col justify-around items-center py-6 sm:py-12 md:py-16 ${sTheme.spineBg} border-r border-dashed ${sTheme.spineDashedBorder} transition-colors ${sTheme.spineShadow} select-none z-20`}
           >
+            {/* CÁC LỖ ĐỤC CÒNG RỜI (PUNCHED HOLES) - TĂNG SỐ LƯỢNG LINH HOẠT THEO MÀN HÌNH */}
+            {BINDER_HOLE_CONFIGS.map((hole) => (
+              <div
+                key={hole.id}
+                className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full border ${sTheme.spineHoleBorder} ${sTheme.spineHoleBg} shadow-[inset_0_2px_5px_rgba(0,0,0,0.14)] items-center justify-center relative group ${hole.responsive}`}
+                title="Lỗ còng rời sổ tay"
+              >
+                {/* Vòng tròn tạo hiệu ứng độ sâu khoét lõm 3D ở tâm lỗ */}
+                <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${sTheme.spineHoleCenterBg} shadow-inner`} />
+              </div>
+            ))}
+          </div>
 
-            {/* ========================================================================= */}
-            {/* KHUNG GÁY SỔ CÒNG RỜI LINH HOẠT THEO MÀN HÌNH                              */}
-            {/* Thu nhỏ chiều rộng gáy trên mobile (w-7), tăng số lượng lỗ còng linh hoạt */}
-            {/* ========================================================================= */}
-            <div 
-              className={`w-7 sm:w-12 md:w-16 shrink-0 relative flex flex-col justify-around items-center py-6 sm:py-12 md:py-16 ${sTheme.spineBg} border-r border-dashed ${sTheme.spineDashedBorder} transition-colors ${sTheme.spineShadow} select-none`}
+          {/* KHUNG BỌC TRANG GIẤY RUỘT TRONG CUỐN SỔ */}
+          <div className="flex-1 min-w-0 p-2 sm:p-5 md:p-7 pl-1.5 sm:pl-3 md:pl-4 flex flex-col justify-between relative z-10">
+            <div
+              className={`w-full flex-1 rounded-2xl sm:rounded-[26px] ${sTheme.paperBg} ${sTheme.paperText} border ${sTheme.paperBorder} shadow-inner p-3.5 sm:p-7 md:p-9 flex flex-col justify-between overflow-hidden transition-colors duration-300`}
+              style={!isDarkEffective && sTheme.innerPaperStyle ? sTheme.innerPaperStyle : undefined}
             >
-              {/* CÁC LỖ ĐỤC CÒNG RỜI (PUNCHED HOLES) - TĂNG SỐ LƯỢNG LINH HOẠT THEO MÀN HÌNH */}
-              {BINDER_HOLE_CONFIGS.map((hole) => (
-                <div
-                  key={hole.id}
-                  className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 rounded-full border ${sTheme.spineHoleBorder} ${sTheme.spineHoleBg} shadow-[inset_0_2px_5px_rgba(0,0,0,0.14)] items-center justify-center relative group ${hole.responsive}`}
-                  title="Lỗ còng rời sổ tay"
-                >
-                  {/* Vòng tròn tạo hiệu ứng độ sâu khoét lõm 3D ở tâm lỗ */}
-                  <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${sTheme.spineHoleCenterBg} shadow-inner`} />
-                </div>
-              ))}
-            </div>
-
-            {/* NỘI DUNG RUỘT TRANG SỔ (HOÀN TOÀN GIỮ NGUYÊN 100% THEO CHỈ THỊ NGƯỜI DÙNG) */}
-            <div className="flex-1 min-w-0 p-3.5 sm:p-7 md:p-9 flex flex-col justify-between">
               <div className="space-y-6">
               
               {/* HEADER SỔ: Nhãn Planner */}
@@ -1848,7 +1861,7 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
               <div className="pt-2 space-y-8">
                 {/* 1. GIỚI THIỆU & THIẾT LẬP NHÂN VẬT */}
                 <div className="space-y-4">
-                  <div className={`flex items-center justify-between border-b border-dashed ${sTheme.dashedBorder} pb-2`}>
+                  <div className={`flex items-center justify-between border-b border-solid ${sTheme.dashedBorder} pb-2 opacity-80`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-black uppercase tracking-widest ${sTheme.synopsisHeaderText} flex items-center gap-1.5`}>
                       <FileText className={`w-4 h-4 ${sTheme.synopsisHeaderIcon}`} />
                       <span>GIỚI THIỆU</span>
@@ -1856,15 +1869,24 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                     <span className="text-[10px] sm:text-[11px] font-mono opacity-60">{effectiveChapters.length} chương</span>
                   </div>
 
-                  <div className="space-y-3.5 text-[16px] sm:text-[18px] leading-[1.7]">
+                  <div className="space-y-4 text-[16px] sm:text-[18px]">
                     {(novel.synopsis || '').split('\n\n').map((para, idx) => (
-                      <p key={idx}>
+                      <p
+                        key={idx}
+                        className="tracking-normal whitespace-pre-line"
+                        style={{
+                          lineHeight: '34px',
+                          backgroundImage: synopsisLineBg,
+                          backgroundRepeat: 'repeat',
+                          backgroundPosition: '0 0',
+                        }}
+                      >
                         {para.trim()}
                       </p>
                     ))}
                   </div>
 
-                  {/* Thiết lập nhân vật: họa tiết đường kẻ sổ trong nền với khoảng cách 5px (chế độ tối bỏ hẳn họa tiết này) */}
+                  {/* Thiết lập nhân vật: Nền sạch đẹp không có họa tiết đường kẻ theo chỉ thị người dùng */}
                   {(effectiveWorldLore || novel.worldLore) && (
                     <div className="relative">
                       {/* Ngôi sao 5 cánh trang trí trên khung viền của mục (nằm bên phải, màu hợp theme) */}
@@ -1882,12 +1904,6 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
 
                       <div 
                         className={`p-4 sm:p-5 rounded-xl ${sTheme.loreBoxBg} border ${sTheme.loreBoxBorder} space-y-2 transition-colors duration-300 relative overflow-hidden`}
-                        style={{
-                          backgroundImage: isDarkEffective
-                            ? 'none'
-                            : `repeating-linear-gradient(to bottom, transparent 0px, transparent 5px, ${sTheme.synopsisLineColor} 5px, ${sTheme.synopsisLineColor} 6px)`,
-                          backgroundAttachment: 'local',
-                        }}
                       >
                         <span className={`text-xs sm:text-[13px] font-bold ${sTheme.loreTitleText} block relative z-10`}>
                           <span>Thiết lập nhân vật:</span>

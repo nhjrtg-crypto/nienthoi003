@@ -219,6 +219,178 @@ export const getBannerThemePalette = (
   }
 };
 
+export interface HangingCordStyles {
+  anchorBg: string;
+  anchorBorder: string;
+  cordGradient: string;
+  cordStroke: string;
+  ringBg: string;
+  ringBorder: string;
+  ringHole: string;
+  knotBg: string;
+  glowColor: string;
+}
+
+export const getHangingCordStyles = (
+  themeId: NovelThemeId,
+  isDark: boolean
+): HangingCordStyles => {
+  if (isDark) {
+    switch (themeId) {
+      case 'cosmic':
+        return {
+          anchorBg: '#38bdf8',
+          anchorBorder: '#0284c7',
+          cordGradient: 'linear-gradient(180deg, #38bdf8 0%, #c084fc 60%, #e879f9 100%)',
+          cordStroke: '#c084fc',
+          ringBg: '#1e1035',
+          ringBorder: '#38bdf8',
+          ringHole: '#38bdf8',
+          knotBg: '#c084fc',
+          glowColor: 'rgba(56, 189, 248, 0.45)',
+        };
+      case 'amethyst-haze':
+        return {
+          anchorBg: '#c084fc',
+          anchorBorder: '#9333ea',
+          cordGradient: 'linear-gradient(180deg, #e879f9 0%, #c084fc 50%, #d59aa7 100%)',
+          cordStroke: '#c084fc',
+          ringBg: '#231238',
+          ringBorder: '#c084fc',
+          ringHole: '#e879f9',
+          knotBg: '#d59aa7',
+          glowColor: 'rgba(192, 132, 252, 0.45)',
+        };
+      case 'slate-haze':
+        return {
+          anchorBg: '#38bdf8',
+          anchorBorder: '#0284c7',
+          cordGradient: 'linear-gradient(180deg, #7dd3fc 0%, #38bdf8 60%, #0ea5e9 100%)',
+          cordStroke: '#38bdf8',
+          ringBg: '#0f172a',
+          ringBorder: '#38bdf8',
+          ringHole: '#7dd3fc',
+          knotBg: '#0284c7',
+          glowColor: 'rgba(56, 189, 248, 0.45)',
+        };
+      case 'sage':
+        return {
+          anchorBg: '#34d399',
+          anchorBorder: '#059669',
+          cordGradient: 'linear-gradient(180deg, #6ee7b7 0%, #34d399 60%, #10b981 100%)',
+          cordStroke: '#34d399',
+          ringBg: '#062817',
+          ringBorder: '#34d399',
+          ringHole: '#6ee7b7',
+          knotBg: '#059669',
+          glowColor: 'rgba(52, 211, 153, 0.45)',
+        };
+      case 'mocha':
+        return {
+          anchorBg: '#fbbf24',
+          anchorBorder: '#b45309',
+          cordGradient: 'linear-gradient(180deg, #fde68a 0%, #f59e0b 60%, #d97706 100%)',
+          cordStroke: '#f59e0b',
+          ringBg: '#27170e',
+          ringBorder: '#fbbf24',
+          ringHole: '#fde68a',
+          knotBg: '#b45309',
+          glowColor: 'rgba(245, 158, 11, 0.45)',
+        };
+      case 'notebook':
+      default:
+        return {
+          anchorBg: '#cbd5e1',
+          anchorBorder: '#64748b',
+          cordGradient: 'linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 50%, #94a3b8 100%)',
+          cordStroke: '#cbd5e1',
+          ringBg: '#1e293b',
+          ringBorder: '#cbd5e1',
+          ringHole: '#f1f5f9',
+          knotBg: '#94a3b8',
+          glowColor: 'rgba(203, 213, 225, 0.35)',
+        };
+    }
+  } else {
+    // Chế độ sáng (Light mode) - Đồng bộ tinh tế theo màu theme
+    switch (themeId) {
+      case 'cosmic':
+        return {
+          anchorBg: '#9333ea',
+          anchorBorder: '#7e22ce',
+          cordGradient: 'linear-gradient(180deg, #a855f7 0%, #9333ea 60%, #7e22ce 100%)',
+          cordStroke: '#9333ea',
+          ringBg: '#ffffff',
+          ringBorder: '#a855f7',
+          ringHole: '#9333ea',
+          knotBg: '#7e22ce',
+          glowColor: 'rgba(147, 51, 234, 0.25)',
+        };
+      case 'amethyst-haze':
+        return {
+          anchorBg: '#8b5cf6',
+          anchorBorder: '#7c3aed',
+          cordGradient: 'linear-gradient(180deg, #b3a8cb 0%, #9d8bb8 50%, #7e58a6 100%)',
+          cordStroke: '#7e58a6',
+          ringBg: '#ffffff',
+          ringBorder: '#9d8bb8',
+          ringHole: '#7e58a6',
+          knotBg: '#7e58a6',
+          glowColor: 'rgba(126, 88, 166, 0.25)',
+        };
+      case 'slate-haze':
+        return {
+          anchorBg: '#0284c7',
+          anchorBorder: '#0369a1',
+          cordGradient: 'linear-gradient(180deg, #38bdf8 0%, #0284c7 60%, #0369a1 100%)',
+          cordStroke: '#0284c7',
+          ringBg: '#ffffff',
+          ringBorder: '#38bdf8',
+          ringHole: '#0284c7',
+          knotBg: '#0369a1',
+          glowColor: 'rgba(2, 132, 199, 0.25)',
+        };
+      case 'sage':
+        return {
+          anchorBg: '#059669',
+          anchorBorder: '#047857',
+          cordGradient: 'linear-gradient(180deg, #34d399 0%, #059669 60%, #047857 100%)',
+          cordStroke: '#059669',
+          ringBg: '#ffffff',
+          ringBorder: '#34d399',
+          ringHole: '#059669',
+          knotBg: '#047857',
+          glowColor: 'rgba(5, 150, 105, 0.25)',
+        };
+      case 'mocha':
+        return {
+          anchorBg: '#b45309',
+          anchorBorder: '#92400e',
+          cordGradient: 'linear-gradient(180deg, #d97706 0%, #b45309 60%, #92400e 100%)',
+          cordStroke: '#b45309',
+          ringBg: '#ffffff',
+          ringBorder: '#d97706',
+          ringHole: '#b45309',
+          knotBg: '#92400e',
+          glowColor: 'rgba(180, 83, 9, 0.25)',
+        };
+      case 'notebook':
+      default:
+        return {
+          anchorBg: '#6366f1',
+          anchorBorder: '#4f46e5',
+          cordGradient: 'linear-gradient(180deg, #818cf8 0%, #6366f1 60%, #4338ca 100%)',
+          cordStroke: '#6366f1',
+          ringBg: '#ffffff',
+          ringBorder: '#818cf8',
+          ringHole: '#6366f1',
+          knotBg: '#4338ca',
+          glowColor: 'rgba(99, 102, 241, 0.25)',
+        };
+    }
+  }
+};
+
 interface ThemePickerStyles {
   primaryBtn: string;
   rerollIcon: string;
@@ -1087,6 +1259,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   const activeVisual = getThemeVisualOption(theme);
   const bannerPalette = getBannerThemePalette(theme, isDarkEffective);
   const themePickerStyles = getThemePickerStyles(theme, isDarkEffective);
+  const cordStyles = getHangingCordStyles(theme, isDarkEffective);
 
   // Hiệu ứng dâng chất lỏng mượt mà trong lúc chờ chọn (~4.2s)
   useEffect(() => {
