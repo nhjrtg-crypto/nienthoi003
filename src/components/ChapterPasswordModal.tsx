@@ -143,25 +143,20 @@ export const setChapterPasswordUnlocked = (novel?: Novel | null): void => {
 };
 
 /**
- * Chuẩn hóa chuỗi mật khẩu để so sánh thông minh:
- * - Hỗ trợ nhập chính xác nhiều dòng (cho xuống dòng thoải mái)
- * - Tự động thay thế dấu gạch ngang giữa các từ nếu người dùng copy nguyên bản
+ * Chuẩn hóa chuỗi mật khẩu để so sánh chính xác:
+ * - Giữ nguyên dấu gạch ngang (không tự động thay thế bằng dấu cách) để bắt buộc người dùng nhập đúng mật khẩu có dấu cách
  * - Bỏ khoảng trắng dư thừa ở đầu/cuối mỗi dòng và chuẩn hóa dấu cách
- * - Hỗ trợ cả định dạng 3 dòng có xuống dòng lẫn định dạng gộp 1 dòng
  * - Chuẩn hóa unicode tiếng Việt (NFC)
  */
-const normalizeMultilinePassword = (str: string): { multiline: string; compact: string } => {
-  if (!str) return { multiline: '', compact: '' };
-  const nfc = str.normalize('NFC').replace(/-/g, ' ');
+const normalizeMultilinePassword = (str: string): string => {
+  if (!str) return '';
+  const nfc = str.normalize('NFC');
   const lines = nfc
     .split(/\r?\n/)
     .map((l) => l.trim().replace(/\s+/g, ' '))
     .filter((l) => l.length > 0);
 
-  const multiline = lines.join('\n').toLowerCase();
-  const compact = nfc.replace(/\s+/g, '').toLowerCase();
-
-  return { multiline, compact };
+  return lines.join('\n').toLowerCase();
 };
 
 const normalizeSinglePass = (str: string): string => {
@@ -223,9 +218,7 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
       const userNorm = normalizeMultilinePassword(passwordInput);
       const targetNorm = normalizeMultilinePassword(config.cleanPassword);
 
-      const isMatch =
-        (userNorm.multiline && userNorm.multiline === targetNorm.multiline) ||
-        (userNorm.compact && userNorm.compact === targetNorm.compact);
+      const isMatch = userNorm === targetNorm;
 
       if (isMatch) {
         setErrorMsg('');
@@ -235,7 +228,7 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
           onSuccess();
         }, 350);
       } else {
-        setErrorMsg('Mật khẩu chưa chính xác. Vui lòng kiểm tra lại 3 dòng chữ!');
+        setErrorMsg('Mật khẩu chưa chính xác.');
         textareaRef.current?.focus();
       }
     } else {

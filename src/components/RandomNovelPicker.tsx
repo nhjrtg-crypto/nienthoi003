@@ -403,8 +403,9 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
   switch (themeId) {
     case 'cosmic':
       return {
-        primaryBtn:
-          'bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-sm hover:shadow-md border border-purple-400/40 active:scale-95 transition-all',
+        primaryBtn: isDark
+          ? 'border border-indigo-500/50 bg-gradient-to-r from-[#4d2d78] via-[#5e3793] to-[#7142b0] hover:from-[#573387] hover:to-[#7f4bc7] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
+          : 'bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-sm hover:shadow-md border border-purple-400/40 active:scale-95 transition-all',
         rerollIcon: 'text-fuchsia-400',
         loadingDots: ['bg-purple-500', 'bg-fuchsia-400', 'bg-pink-300'],
         metaIcon: 'text-fuchsia-300',
@@ -413,7 +414,7 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
     case 'amethyst-haze':
       return {
         primaryBtn: isDark
-          ? 'bg-gradient-to-r from-[#7e739f] via-[#9d8bb8] to-[#d59aa7] hover:brightness-110 text-white shadow-sm hover:shadow-md border border-purple-400/40 active:scale-95 transition-all'
+          ? 'border border-[#6e4694]/50 bg-gradient-to-r from-[#452d5e] via-[#533671] to-[#634187] hover:from-[#4c3167] hover:to-[#704998] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
           : 'amethyst-light-btn font-bold !text-[#6b5887] hover:!text-[#7e58a6] active:scale-95 transition-all cursor-pointer',
         rerollIcon: isDark ? 'text-purple-300' : 'text-[#7e58a6]',
         loadingDots: ['bg-[#7e739f]', 'bg-[#b3a8cb]', 'bg-[#d59aa7]'],
@@ -423,7 +424,7 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
     case 'slate-haze':
       return {
         primaryBtn: isDark
-          ? 'bg-gradient-to-r from-slate-600 via-sky-600 to-blue-600 hover:brightness-110 text-white shadow-sm hover:shadow-md border border-sky-400/40 active:scale-95 transition-all'
+          ? 'border border-[#395677]/60 bg-gradient-to-r from-[#2c435c] via-[#355170] to-[#406287] hover:from-[#324d69] hover:to-[#4a729c] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
           : 'frost-light-btn font-bold !text-[#526982] hover:!text-[#0284c7] active:scale-95 transition-all cursor-pointer',
         rerollIcon: isDark ? 'text-sky-300' : 'text-[#0284c7]',
         loadingDots: ['bg-sky-500', 'bg-cyan-400', 'bg-blue-300'],
@@ -433,7 +434,7 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
     case 'sage':
       return {
         primaryBtn: isDark
-          ? 'bg-gradient-to-r from-[#466244] via-[#5c825a] to-[#7fa67b] hover:brightness-110 text-white shadow-sm hover:shadow-md border border-emerald-400/40 active:scale-95 transition-all'
+          ? 'border border-[#43634b]/60 bg-gradient-to-r from-[#2d4432] via-[#39563f] to-[#46694e] hover:from-[#344f3a] hover:to-[#507859] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
           : 'sage-light-btn font-bold !text-[#466244] hover:!text-[#274225] active:scale-95 transition-all cursor-pointer',
         rerollIcon: isDark ? 'text-emerald-300' : 'text-[#274225]',
         loadingDots: ['bg-emerald-500', 'bg-teal-400', 'bg-lime-300'],
@@ -443,7 +444,7 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
     case 'mocha':
       return {
         primaryBtn: isDark
-          ? 'bg-gradient-to-r from-[#A37764] via-[#b68875] to-[#cba38e] hover:brightness-110 text-white shadow-sm hover:shadow-md border border-amber-400/40 active:scale-95 transition-all'
+          ? 'border border-[#6a493a]/60 bg-gradient-to-r from-[#4d362b] via-[#5c4134] to-[#6d4d3d] hover:from-[#573d31] hover:to-[#7a5745] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
           : 'mocha-light-btn font-bold !text-[#7a6256] hover:!text-[#a37764] active:scale-95 transition-all cursor-pointer',
         rerollIcon: isDark ? 'text-amber-300' : 'text-[#a37764]',
         loadingDots: ['bg-amber-500', 'bg-yellow-400', 'bg-orange-300'],
@@ -454,7 +455,7 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
     default:
       return {
         primaryBtn: isDark
-          ? 'bg-white hover:bg-neutral-100 text-neutral-950 shadow-sm hover:shadow-md font-extrabold border border-white/40 active:scale-95 transition-all'
+          ? 'border border-neutral-600/60 bg-gradient-to-r from-[#38383f] via-[#44444c] to-[#52525c] hover:from-[#404047] hover:to-[#5e5e69] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
           : 'notebook-light-btn font-bold !text-[#525252] hover:!text-[#171717] active:scale-95 transition-all cursor-pointer',
         rerollIcon: isDark ? 'text-neutral-300' : 'text-neutral-900',
         loadingDots: isDark

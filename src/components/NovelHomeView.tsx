@@ -2668,7 +2668,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             barcode: 'bg-[#46694e]',
             coverBorder: 'border border-[#2d4734]/50 bg-[#0d1710]',
             borderHeroLine: 'border-[#3e6147]/50',
-            fullBadge: 'border border-emerald-500/30 bg-emerald-500/25 text-emerald-200 font-black',
+            fullBadge: 'bg-emerald-600 text-white font-black shadow-xs',
           };
         case 'mocha':
           return {
@@ -2689,7 +2689,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             barcode: 'bg-[#825c48]',
             coverBorder: 'border border-[#4f362a]/50 bg-[#17100b]',
             borderHeroLine: 'border-[#6a493a]/50',
-            fullBadge: 'border border-amber-500/30 bg-amber-500/25 text-amber-200 font-black',
+            fullBadge: 'bg-amber-700 text-white font-black shadow-xs',
           };
         case 'slate-haze':
           return {
@@ -2710,7 +2710,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             barcode: 'bg-[#406287]',
             coverBorder: 'border border-[#263c55]/50 bg-[#0d1624]',
             borderHeroLine: 'border-[#395677]/50',
-            fullBadge: 'border border-sky-500/30 bg-sky-500/25 text-sky-200 font-black',
+            fullBadge: 'bg-sky-600 text-white font-black shadow-xs',
           };
         case 'notebook':
           return {
@@ -2731,7 +2731,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             barcode: 'bg-[#52525c]',
             coverBorder: 'border border-neutral-700/50 bg-[#161619]',
             borderHeroLine: 'border-neutral-700/60',
-            fullBadge: 'border border-zinc-600/40 bg-zinc-600/40 text-zinc-200 font-black',
+            fullBadge: 'bg-zinc-700 text-white font-black shadow-xs',
           };
         case 'cosmic':
           return {
@@ -2752,7 +2752,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             barcode: 'bg-[#7142b0]',
             coverBorder: 'border border-indigo-700/40 bg-[#120d30]',
             borderHeroLine: 'border-indigo-500/40',
-            fullBadge: 'border border-indigo-500/30 bg-indigo-500/25 text-indigo-200 font-black',
+            fullBadge: 'bg-indigo-600 text-white font-black shadow-xs',
           };
         case 'amethyst-haze':
         default:
@@ -2774,7 +2774,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             barcode: 'bg-[#634187]',
             coverBorder: 'border border-[#4c3167]/40 bg-[#140b22]',
             borderHeroLine: 'border-[#6e4694]/45',
-            fullBadge: 'border border-purple-500/30 bg-purple-500/25 text-purple-200 font-black',
+            fullBadge: 'bg-purple-600 text-white font-black shadow-xs',
           };
       }
     }
