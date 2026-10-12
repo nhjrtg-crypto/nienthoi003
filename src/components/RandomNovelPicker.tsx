@@ -79,70 +79,70 @@ export const getBannerThemePalette = (
     switch (themeId) {
       case 'cosmic':
         return {
-          bgGradient: 'from-[#2e1358] via-[#160830] to-[#000000]',
-          ambientCenter: 'bg-purple-600/25',
-          ambientTopRight: 'bg-cyan-400/25',
-          rayColor: 'text-cyan-200/60',
-          starPrimary: 'text-amber-200/90',
-          starSecondary: 'text-cyan-300/85',
-          starGlow: 'bg-amber-300/90 shadow-[0_0_6px_#fde047]',
-          iconBadgeBg: 'bg-purple-950/60 border-purple-500/40 text-amber-300 shadow-purple-950/60',
+          bgGradient: 'from-[#6366f1]/45 via-[#4f46e5]/40 to-[#312e81]/60',
+          ambientCenter: 'bg-indigo-300/25',
+          ambientTopRight: 'bg-purple-300/25',
+          rayColor: 'text-indigo-200/50',
+          starPrimary: 'text-[#e0e7ff]',
+          starSecondary: 'text-[#c7d2fe]',
+          starGlow: 'bg-[#e0e7ff] shadow-[0_0_8px_#818cf8]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-amber-200 shadow-md',
         };
       case 'amethyst-haze':
         return {
-          bgGradient: 'from-[#3c1756] via-[#1e092e] to-[#000000]',
-          ambientCenter: 'bg-fuchsia-600/25',
-          ambientTopRight: 'bg-pink-400/20',
-          rayColor: 'text-fuchsia-200/60',
-          starPrimary: 'text-pink-200/90',
-          starSecondary: 'text-purple-300/85',
-          starGlow: 'bg-pink-300/90 shadow-[0_0_6px_#f472b6]',
-          iconBadgeBg: 'bg-fuchsia-950/60 border-fuchsia-500/40 text-pink-200 shadow-fuchsia-950/60',
+          bgGradient: 'from-[#8b5cf6]/45 via-[#7c3aed]/40 to-[#4c1d95]/60',
+          ambientCenter: 'bg-fuchsia-300/25',
+          ambientTopRight: 'bg-purple-300/25',
+          rayColor: 'text-purple-200/50',
+          starPrimary: 'text-[#fae8ff]',
+          starSecondary: 'text-[#e9d5ff]',
+          starGlow: 'bg-[#fae8ff] shadow-[0_0_8px_#c084fc]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-fuchsia-200 shadow-md',
         };
       case 'slate-haze':
         return {
-          bgGradient: 'from-[#1a3656] via-[#0d1d32] to-[#000000]',
-          ambientCenter: 'bg-sky-600/25',
-          ambientTopRight: 'bg-teal-400/20',
-          rayColor: 'text-sky-200/60',
-          starPrimary: 'text-sky-200/90',
-          starSecondary: 'text-teal-300/85',
-          starGlow: 'bg-sky-300/90 shadow-[0_0_6px_#7dd3fc]',
-          iconBadgeBg: 'bg-slate-900/70 border-sky-500/40 text-sky-200 shadow-sky-950/60',
+          bgGradient: 'from-[#0ea5e9]/40 via-[#0284c7]/38 to-[#0c4a6e]/60',
+          ambientCenter: 'bg-sky-300/25',
+          ambientTopRight: 'bg-cyan-300/25',
+          rayColor: 'text-sky-200/50',
+          starPrimary: 'text-[#e0f2fe]',
+          starSecondary: 'text-[#bae6fd]',
+          starGlow: 'bg-[#e0f2fe] shadow-[0_0_8px_#38bdf8]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-sky-200 shadow-md',
         };
       case 'sage':
         return {
-          bgGradient: 'from-[#193a23] via-[#0d2013] to-[#000000]',
-          ambientCenter: 'bg-emerald-600/25',
-          ambientTopRight: 'bg-lime-400/20',
-          rayColor: 'text-emerald-200/60',
-          starPrimary: 'text-emerald-200/90',
-          starSecondary: 'text-lime-300/85',
-          starGlow: 'bg-emerald-300/90 shadow-[0_0_6px_#6ee7b7]',
-          iconBadgeBg: 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200 shadow-emerald-950/60',
+          bgGradient: 'from-[#10b981]/40 via-[#059669]/38 to-[#064e3b]/60',
+          ambientCenter: 'bg-emerald-300/25',
+          ambientTopRight: 'bg-teal-300/25',
+          rayColor: 'text-emerald-200/50',
+          starPrimary: 'text-[#dcfce7]',
+          starSecondary: 'text-[#a7f3d0]',
+          starGlow: 'bg-[#dcfce7] shadow-[0_0_8px_#34d399]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-emerald-200 shadow-md',
         };
       case 'mocha':
         return {
-          bgGradient: 'from-[#3b2518] via-[#1f130b] to-[#000000]',
-          ambientCenter: 'bg-amber-600/25',
-          ambientTopRight: 'bg-yellow-500/20',
-          rayColor: 'text-amber-200/60',
-          starPrimary: 'text-amber-200/90',
-          starSecondary: 'text-yellow-300/85',
-          starGlow: 'bg-amber-300/90 shadow-[0_0_6px_#fcd34d]',
-          iconBadgeBg: 'bg-amber-950/60 border-amber-500/40 text-amber-200 shadow-amber-950/60',
+          bgGradient: 'from-[#b08968]/35 via-[#9c6644]/32 to-[#4a3528]/55',
+          ambientCenter: 'bg-[#d4b996]/20',
+          ambientTopRight: 'bg-[#e6ccb2]/20',
+          rayColor: 'text-stone-200/50',
+          starPrimary: 'text-[#ede0d4]',
+          starSecondary: 'text-[#ddb892]',
+          starGlow: 'bg-[#ede0d4] shadow-[0_0_8px_#b08968]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-[#ddb892] shadow-md',
         };
       case 'notebook':
       default:
         return {
-          bgGradient: 'from-[#2e313c] via-[#161820] to-[#000000]',
-          ambientCenter: 'bg-indigo-600/20',
-          ambientTopRight: 'bg-slate-300/20',
-          rayColor: 'text-slate-200/60',
-          starPrimary: 'text-slate-100/90',
-          starSecondary: 'text-indigo-200/85',
-          starGlow: 'bg-white/90 shadow-[0_0_6px_#ffffff]',
-          iconBadgeBg: 'bg-neutral-800/70 border-neutral-600/40 text-neutral-200 shadow-neutral-950/60',
+          bgGradient: 'from-[#64748b]/40 via-[#475569]/38 to-[#1e293b]/60',
+          ambientCenter: 'bg-slate-300/25',
+          ambientTopRight: 'bg-zinc-300/25',
+          rayColor: 'text-slate-200/50',
+          starPrimary: 'text-[#f1f5f9]',
+          starSecondary: 'text-[#e2e8f0]',
+          starGlow: 'bg-[#f1f5f9] shadow-[0_0_8px_#94a3b8]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-white shadow-md',
         };
     }
   } else {
@@ -1927,7 +1927,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
         >
           {/* Lớp bóng Inset Hốc ảnh Neumorphic tương tự hốc ảnh Polaroid */}
           <div
-            className="absolute inset-0 pointer-events-none rounded-[22px] sm:rounded-[24px] border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_7px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.12)] z-20"
+            className="absolute inset-0 pointer-events-none rounded-[22px] sm:rounded-[24px] border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.25),inset_0_1px_2px_rgba(255,255,255,0.25)] z-20"
             aria-hidden="true"
           />
 
@@ -1939,6 +1939,18 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           <div
             className={`absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl pointer-events-none ${bannerPalette.ambientTopRight}`}
           />
+
+          {/* HIỆU ỨNG GRAIN: Lớp hạt nhiễu vi mô tự nhiên (Film grain texture) tạo cảm giác trong veo, có chất liệu nghệ thuật */}
+          {isDarkEffective && (
+            <div
+              className="absolute inset-0 pointer-events-none mix-blend-overlay z-10"
+              style={{
+                opacity: 0.18,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+              }}
+              aria-hidden="true"
+            />
+          )}
 
           {/* 2. SUBTLE DIAGONAL LIGHT RAYS: Chỉ hiển thị ở chế độ sáng; tất cả theme tối đã bỏ đường sọc chéo theo yêu cầu */}
           {!isDarkEffective && (

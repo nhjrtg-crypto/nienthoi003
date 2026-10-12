@@ -52,6 +52,38 @@ export const ModernLoadingScreen: React.FC<ModernLoadingScreenProps> = ({
     }
   }, [isReady, onClosePreview]);
 
+  // Khóa cuộn trang khi đang ở màn hình loading toàn màn hình (chống trượt xuống thấy nội dung bên dưới)
+  useEffect(() => {
+    if (!isFullScreen) return;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyTouchAction = document.body.style.touchAction;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalHtmlTouchAction = document.documentElement.style.touchAction;
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.touchAction = 'none';
+
+    // Ngăn chặn thao tác vuốt cuộn màn hình trên thiết bị cảm ứng / chuột
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.touchAction = originalBodyTouchAction;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.documentElement.style.touchAction = originalHtmlTouchAction;
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+    };
+  }, [isFullScreen]);
+
   // Nút chuyển trạng thái xem thử giữa Đang tải và Hoàn tất
   const toggleReadyState = () => {
     setIsReady((prev) => {
@@ -100,8 +132,12 @@ export const ModernLoadingScreen: React.FC<ModernLoadingScreenProps> = ({
           --dur: 4.8s;
           --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          position: relative;
-          width: 100%;
+          position: fixed;
+          inset: 0;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
           min-height: 100vh;
           display: grid;
           place-items: center;
@@ -113,12 +149,34 @@ export const ModernLoadingScreen: React.FC<ModernLoadingScreenProps> = ({
           font-family: var(--sans);
           -webkit-font-smoothing: antialiased;
           user-select: none;
+          z-index: 999999;
+          overflow: hidden;
+        }
+
+        .la-01[data-fullscreen="true"] {
+          position: fixed !important;
+          inset: 0 !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          max-width: 100vw !important;
+          max-height: 100vh !important;
+          z-index: 999999 !important;
+          overflow: hidden !important;
+          touch-action: none !important;
         }
 
         .la-01[data-fullscreen="false"] {
-          min-height: auto;
-          padding: 1.25rem 1rem;
-          background: transparent;
+          position: relative !important;
+          width: 100% !important;
+          height: auto !important;
+          min-height: auto !important;
+          padding: 1.25rem 1rem !important;
+          background: transparent !important;
+          z-index: auto !important;
         }
 
         .la-01,
