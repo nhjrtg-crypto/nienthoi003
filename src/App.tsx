@@ -989,7 +989,7 @@ export default function App() {
     setSelectedNovel(freshNovel);
     setReadingChapterNumber(null);
     setViewMode('novel-detail');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const handleOpenNovelToReadingPosition = (novel: Novel, chapterNumber: number) => {
@@ -1257,7 +1257,7 @@ export default function App() {
         setSelectedNovel(novelObj);
         setReadingChapterNumber(null);
         setViewMode('novel-detail');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'instant' });
       }
     } catch (e) {
       console.error('Error navigating to new novel:', e);

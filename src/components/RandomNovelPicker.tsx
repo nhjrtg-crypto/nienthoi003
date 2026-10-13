@@ -23,7 +23,7 @@ interface RandomNovelPickerProps {
 
 // 3 Khung cảnh theo yêu cầu:
 // 1: 'idle' - Chưa bấm (Khung ảnh 1: Gradient with light rays and sparkles theo theme, Subtitle: "Nếu hôm nay bạn chưa biết đọc gì.", Nút "BẮT ĐẦU" không icon)
-// 2: 'waiting' - Chờ chọn (Khung ảnh 2: Layout giống ảnh mẫu, bỏ 2 nút góc phải, 1 theme 1 icon: Cổng thời không, Đồng hồ cát, Lá bài vận mệnh lật flip, Thiên cầu tinh tọa, Bông tuyết xoay mượt, Đồng hồ cát trái tim pixel; Tiêu đề: "Đang tìm truyện cho bạn", loading icon chuyển động, "Sắp xong...")
+// 2: 'waiting' - Chờ chọn (Khung ảnh 2: Layout giống ảnh mẫu, bỏ 2 nút góc phải, 1 theme 1 icon; Tiêu đề: "Đang tìm truyện cho bạn", loading icon chuyển động, "Sắp xong...")
 // 3: 'picked' - Đã chọn xong (Bỏ "Duyên phận đã chọn", bỏ "Truyện Dịch •", "Chọn truyện khác", "Quay lại")
 export type PickerScene = 'idle' | 'waiting' | 'picked';
 
@@ -1288,8 +1288,13 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
     };
   }, []);
 
+  const [isExitingPicked, setIsExitingPicked] = useState(false);
+  const [isEnteringFromPicked, setIsEnteringFromPicked] = useState(false);
+
   // Bắt đầu quá trình chọn ngẫu nhiên (Chuyển sang Khung cảnh 2: Chờ chọn ~4.2 giây)
   const handleStartPicking = () => {
+    setIsExitingPicked(false);
+    setIsEnteringFromPicked(false);
     setScene('waiting');
 
     const WAIT_DURATION = 4200; // Đợi ~4.2s theo yêu cầu
@@ -1319,9 +1324,22 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
     handleStartPicking();
   };
 
+  // Chuyển mượt mà từ Khung cảnh 3 về Khung cảnh 1 bằng hiệu ứng Lật thẻ bài 3D (3D Tarot Flip)
   const handleResetToIdle = () => {
     if (autoFinishTimerRef.current) clearTimeout(autoFinishTimerRef.current);
-    setScene('idle');
+    if (scene === 'picked') {
+      setIsExitingPicked(true);
+      setTimeout(() => {
+        setScene('idle');
+        setIsExitingPicked(false);
+        setIsEnteringFromPicked(true);
+        setTimeout(() => {
+          setIsEnteringFromPicked(false);
+        }, 500);
+      }, 320);
+    } else {
+      setScene('idle');
+    }
   };
 
   // -------------------------------------------------------------
@@ -1676,7 +1694,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   // -------------------------------------------------------------
   if (scene === 'picked' && selectedNovel) {
     return (
-      <div className="w-full">
+      <div className={`w-full ${isExitingPicked ? 'anim-picker-flip-out' : 'animate-picker-fade-in'}`}>
         {/* Full-Bleed Card - Áp dụng Neumorphism sang trọng */}
         <div
           className={`relative w-full rounded-[28px] sm:rounded-[32px] overflow-hidden border transition-all duration-300 min-h-[460px] sm:min-h-[500px] flex flex-col justify-between ${
@@ -1896,7 +1914,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   // - Nút "BẮT ĐẦU" (không có icon phía trước)
   // -------------------------------------------------------------
   return (
-    <div className="w-full">
+    <div className={`w-full ${isEnteringFromPicked ? 'anim-picker-flip-in' : 'animate-picker-fade-in'}`}>
       {/* Khung cảnh 1 - Áp dụng Neumorphism tương tự mục Truyện Vừa Mới Đăng */}
       <div
         className={`relative w-full rounded-[28px] sm:rounded-[32px] overflow-hidden border p-4 sm:p-5 transition-all duration-300 ${

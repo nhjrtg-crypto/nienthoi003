@@ -3357,3 +3357,203 @@
   }
 }
 
+/* ==========================================================================
+   BỘ 5 HIỆU ỨNG TRANSITION CHUYỂN CẢNH: CHỌN TRUYỆN NGẪU NHIÊN
+   Option 1: Lật thẻ bài 3D (3D Tarot Flip)
+   Option 2: Thu nhỏ & Mờ gương pha lê (Cinematic Optical Dissolve)
+   Option 3: Lướt trang sách ngang (Horizontal Book Swish)
+   Option 4: Co giãn biến hình đàn hồi (Elastic Morph & Spring)
+   Option 5: Tinh cầu thu tâm & Bung nở ánh sao (Cosmic Iris & Star Bloom)
+   ========================================================================== */
+
+/* 1. Lật thẻ bài 3D (Flip 3D) */
+@keyframes picker-flip-in {
+  0% {
+    opacity: 0;
+    transform: perspective(1200px) rotateY(-90deg) scale(0.92);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: perspective(1200px) rotateY(6deg) scale(1.02);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1200px) rotateY(0deg) scale(1);
+    filter: blur(0px);
+  }
+}
+@keyframes picker-flip-out {
+  0% {
+    opacity: 1;
+    transform: perspective(1200px) rotateY(0deg) scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: perspective(1200px) rotateY(90deg) scale(0.92);
+    filter: blur(4px);
+  }
+}
+
+/* 2. Thu nhỏ & Mờ gương pha lê (Cinematic Optical Dissolve) */
+@keyframes picker-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.03);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+@keyframes picker-fade-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(8px);
+  }
+}
+
+/* 3. Lướt trang sách ngang (Horizontal Book Swish) */
+@keyframes picker-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(36px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+@keyframes picker-slide-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-36px) scale(0.98);
+  }
+}
+
+/* 4. Co giãn biến hình đàn hồi (Elastic Morph & Spring) */
+@keyframes picker-morph-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+    filter: blur(6px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.02);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+@keyframes picker-morph-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(6px);
+  }
+}
+
+/* 5. Tinh cầu thu tâm & Bung nở ánh sao (Cosmic Iris & Star Bloom) */
+@keyframes picker-iris-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+    filter: brightness(1.3) blur(10px);
+  }
+  60% {
+    opacity: 0.95;
+    transform: scale(1.02);
+    filter: brightness(1.08) blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) blur(0px);
+  }
+}
+@keyframes picker-iris-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) blur(0px);
+  }
+  50% {
+    filter: brightness(1.2) blur(2px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.92);
+    filter: brightness(1.4) blur(10px);
+  }
+}
+
+.anim-picker-flip-in {
+  animation: picker-flip-in 0.42s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+.anim-picker-flip-out {
+  animation: picker-flip-out 0.32s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+
+.anim-picker-fade-in {
+  animation: picker-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+.anim-picker-fade-out {
+  animation: picker-fade-out 0.28s ease-in forwards;
+  will-change: transform, opacity, filter;
+}
+
+.anim-picker-slide-in {
+  animation: picker-slide-in 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+.anim-picker-slide-out {
+  animation: picker-slide-out 0.28s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  will-change: transform, opacity;
+}
+
+.anim-picker-morph-in {
+  animation: picker-morph-in 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+.anim-picker-morph-out {
+  animation: picker-morph-out 0.28s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  will-change: transform, opacity, filter;
+}
+
+.anim-picker-iris-in {
+  animation: picker-iris-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+.anim-picker-iris-out {
+  animation: picker-iris-out 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  will-change: transform, opacity, filter;
+}
+

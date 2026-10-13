@@ -3235,7 +3235,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         onClick={() => {
                           setIsSearchFocused(false);
                           onSelectNovel(item);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
                           searchDropdownStyles.itemHover
@@ -3490,7 +3490,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       onClick={() => {
                         setIsSearchFocused(false);
                         onSelectNovel(item);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        window.scrollTo({ top: 0, behavior: 'instant' });
                       }}
                       className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
                         searchDropdownStyles.itemHover
@@ -4124,7 +4124,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     key={novel.id}
                     onClick={() => {
                       onSelectNovel(novel);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.scrollTo({ top: 0, behavior: 'instant' });
                     }}
                     className={`group relative rounded-xl sm:rounded-2xl border p-2.5 sm:p-4 transition-[background-color,border-color,box-shadow] duration-200 flex flex-col justify-between cursor-pointer ${tStyles.card}`}
                   >
@@ -4417,7 +4417,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         onClick={() => {
                           onSelectNovel(novelCol1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`rounded-2xl sm:rounded-3xl p-1.5 sm:p-3 pb-2.5 sm:pb-4 border transition-all duration-300 cursor-pointer ${
                           getThemePastelPalette(theme, isDarkEffective).polaroidBg
@@ -4467,7 +4467,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         onClick={() => {
                           onSelectNovel(novelCol2);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`rounded-t-[32px] sm:rounded-t-[46px] rounded-b-2xl sm:rounded-b-3xl p-1.5 sm:p-3 pb-2.5 sm:pb-4 border transition-all duration-300 cursor-pointer ${
                           getThemePastelPalette(theme, isDarkEffective).polaroidBg
@@ -4510,7 +4510,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         onClick={() => {
                           onSelectNovel(novelCol3);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`rounded-2xl sm:rounded-3xl p-1.5 sm:p-3 pb-2.5 sm:pb-4 border transition-all duration-300 cursor-pointer ${
                           getThemePastelPalette(theme, isDarkEffective).polaroidBg
@@ -4724,7 +4724,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         onClick={() => {
                           onSelectNovel(novelCol1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`rounded-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
                           getThemePastelPalette(theme, isDarkEffective).polaroidBg
@@ -4774,7 +4774,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         onClick={() => {
                           onSelectNovel(novelCol2);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`rounded-t-[30px] rounded-b-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
                           getThemePastelPalette(theme, isDarkEffective).polaroidBg
@@ -4817,7 +4817,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         onClick={() => {
                           onSelectNovel(novelCol3);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: 'instant' });
                         }}
                         className={`rounded-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
                           getThemePastelPalette(theme, isDarkEffective).polaroidBg
@@ -4930,7 +4930,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             key={n.id}
                             onClick={() => {
                               onSelectNovel(n);
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                              window.scrollTo({ top: 0, behavior: 'instant' });
                             }}
                             className={`p-2 sm:p-2.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 sm:gap-3 group transition-all duration-200 cursor-pointer ${recentStyles.itemHoverClass}`}
                           >
@@ -5034,7 +5034,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             key={n.id}
                             onClick={() => {
                               onSelectNovel(n);
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                              window.scrollTo({ top: 0, behavior: 'instant' });
                             }}
                             className={`p-2 rounded-xl flex items-center gap-2.5 sm:gap-3 group transition-all duration-200 cursor-pointer ${recentStyles.itemHoverClass}`}
                           >
