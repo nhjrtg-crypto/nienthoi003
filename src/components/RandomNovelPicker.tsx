@@ -38,7 +38,9 @@ export type CenterVisualOption =
   | 'pixel-hourglass'
   | 'vinyl-player'
   | 'cassette'
-  | 'liquid-heart';
+  | 'liquid-heart'
+  | 'snowflake-kaleidoscope'
+  | 'lululemon-zen';
 
 // 1 theme sử dụng 1 icon theo yêu cầu
 export const getThemeVisualOption = (themeId: NovelThemeId): CenterVisualOption => {
@@ -53,6 +55,8 @@ export const getThemeVisualOption = (themeId: NovelThemeId): CenterVisualOption 
       return 'pixel-hourglass'; // Theme White: Đồng Hồ Cát Trái Tim Pixel (Pixel Heart Hourglass)
     case 'sage':
       return 'liquid-heart'; // Theme Sage: Bình thủy tinh hình trái tim chất lỏng xanh sage tươi mát
+    case 'lululemon':
+      return 'snowflake-kaleidoscope'; // Theme Berry: Kính vạn hoa hoa tuyết hai chiều (Snowflake Kaleidoscope)
     case 'slate-haze':
     default:
       return 'snowflake'; // Theme Frost: Bông tuyết ❄️ xoay chuyển động mượt mà liên tục
@@ -132,6 +136,17 @@ export const getBannerThemePalette = (
           starGlow: 'bg-[#ede0d4] shadow-[0_0_8px_#b08968]',
           iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-[#ddb892] shadow-md',
         };
+      case 'lululemon':
+        return {
+          bgGradient: 'from-[#84334b]/45 via-[#a64462]/40 to-[#24151a]/60',
+          ambientCenter: 'bg-[#ead4d7]/25',
+          ambientTopRight: 'bg-[#ba3859]/25',
+          rayColor: 'text-[#ead4d7]/40',
+          starPrimary: 'text-[#f4ebee]',
+          starSecondary: 'text-[#ead4d7]',
+          starGlow: 'bg-[#ead4d7] shadow-[0_0_8px_#84334b]',
+          iconBadgeBg: 'bg-white/15 backdrop-blur-md border-white/25 text-white shadow-md',
+        };
       case 'notebook':
       default:
         return {
@@ -202,6 +217,17 @@ export const getBannerThemePalette = (
           starSecondary: 'text-orange-600/75',
           starGlow: 'bg-amber-600/80 shadow-[0_0_4px_#f59e0b]',
           iconBadgeBg: 'bg-white/85 border-amber-200 text-amber-800 shadow-amber-100',
+        };
+      case 'lululemon':
+        return {
+          bgGradient: 'from-[#cc7b8f] via-[#de9fb0] to-[#eed3dc]',
+          ambientCenter: 'bg-[#cc7b8f]/30',
+          ambientTopRight: 'bg-[#eed3dc]/40',
+          rayColor: 'text-[#cc7b8f]/40',
+          starPrimary: 'text-white/95',
+          starSecondary: 'text-white/85',
+          starGlow: 'bg-white shadow-[0_0_6px_#eed3dc]',
+          iconBadgeBg: 'bg-white/90 border-[#f0d8e0] text-[#ad4862] shadow-xs',
         };
       case 'notebook':
       default:
@@ -297,6 +323,18 @@ export const getHangingCordStyles = (
           knotBg: '#b45309',
           glowColor: 'rgba(245, 158, 11, 0.45)',
         };
+      case 'lululemon':
+        return {
+          anchorBg: '#ead4d7',
+          anchorBorder: '#84334b',
+          cordGradient: 'linear-gradient(180deg, #ba3859 0%, #a64462 50%, #84334b 100%)',
+          cordStroke: '#ead4d7',
+          ringBg: '#1c1115',
+          ringBorder: '#ead4d7',
+          ringHole: '#ba3859',
+          knotBg: '#84334b',
+          glowColor: 'rgba(132, 51, 75, 0.45)',
+        };
       case 'notebook':
       default:
         return {
@@ -373,6 +411,18 @@ export const getHangingCordStyles = (
           ringHole: '#b45309',
           knotBg: '#92400e',
           glowColor: 'rgba(180, 83, 9, 0.25)',
+        };
+      case 'lululemon':
+        return {
+          anchorBg: '#cc7b8f',
+          anchorBorder: '#b86277',
+          cordGradient: 'linear-gradient(180deg, #eed3dc 0%, #de9fb0 50%, #cc7b8f 100%)',
+          cordStroke: '#cc7b8f',
+          ringBg: '#ffffff',
+          ringBorder: '#eed3dc',
+          ringHole: '#cc7b8f',
+          knotBg: '#b86277',
+          glowColor: 'rgba(204, 123, 143, 0.20)',
         };
       case 'notebook':
       default:
@@ -451,6 +501,18 @@ const getThemePickerStyles = (themeId: NovelThemeId, isDark: boolean): ThemePick
         metaIcon: isDark ? 'text-amber-300' : 'text-amber-400',
         titleHover: 'hover:text-amber-300',
       };
+    case 'lululemon':
+      return {
+        primaryBtn: isDark
+          ? 'border border-[#84334b]/50 bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:to-[#c74164] shadow-lg shadow-black/40 text-white font-bold active:scale-95 transition-all'
+          : 'lulu-light-btn font-bold !text-[#ad4862] hover:!text-[#9c3e55] active:scale-95 transition-all cursor-pointer',
+        rerollIcon: isDark ? 'text-[#d4a3af]' : 'text-[#ad4862]',
+        loadingDots: isDark
+          ? ['bg-[#a64462]', 'bg-[#ead4d7]', 'bg-[#ba3859]']
+          : ['bg-[#cc7b8f]', 'bg-[#de9fb0]', 'bg-[#eed3dc]'],
+        metaIcon: isDark ? 'text-[#d4a3af]' : 'text-[#ad4862]',
+        titleHover: 'hover:text-[#ad4862]',
+      };
     case 'notebook':
     default:
       return {
@@ -481,6 +543,8 @@ export const getRandomPickerCardBg = (themeId: NovelThemeId, isDark: boolean): s
         return 'bg-[#131d14]/95 text-emerald-100';
       case 'mocha':
         return 'bg-[#1c1815]/95 text-amber-100';
+      case 'lululemon':
+        return 'bg-[#1c1115]/95 text-[#f4ebee]';
       case 'notebook':
       default:
         return 'bg-[#18181b]/95 text-zinc-100';
@@ -495,6 +559,8 @@ export const getRandomPickerCardBg = (themeId: NovelThemeId, isDark: boolean): s
         return 'bg-[#F5F8F4] text-[#223522]';
       case 'mocha':
         return 'bg-[#FAF7F2] text-[#332b26]';
+      case 'lululemon':
+        return 'bg-[#f2ebef] text-[#382329]';
       case 'notebook':
       default:
         return 'bg-[#fcfbf9] text-neutral-900';
@@ -512,6 +578,8 @@ export const getPickerDotColor = (themeId: NovelThemeId, isDark: boolean): strin
         return 'rgba(167, 243, 208, 0.08)';
       case 'mocha':
         return 'rgba(254, 215, 170, 0.08)';
+      case 'lululemon':
+        return 'rgba(234, 212, 215, 0.12)';
       case 'notebook':
         return 'rgba(212, 212, 216, 0.08)';
       default:
@@ -525,6 +593,8 @@ export const getPickerDotColor = (themeId: NovelThemeId, isDark: boolean): strin
         return 'rgba(21, 128, 61, 0.06)';
       case 'mocha':
         return 'rgba(180, 83, 9, 0.06)';
+      case 'lululemon':
+        return 'rgba(132, 51, 75, 0.08)';
       case 'notebook':
         return 'rgba(113, 113, 122, 0.06)';
       default:
@@ -546,6 +616,8 @@ export const getTactileBtnStyles = (themeId: NovelThemeId, isDark: boolean): str
         return 'bg-[#182619] text-emerald-200 border-white/[0.08] shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
       case 'mocha':
         return 'bg-[#251e1b] text-amber-200 border-white/[0.08] shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+      case 'lululemon':
+        return 'bg-[#25161c] text-[#f4ebee] border-[#84334b]/20 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(132,51,75,0.30)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
       case 'notebook':
       default:
         return 'bg-[#222228] text-zinc-200 border-white/[0.08] shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
@@ -561,6 +633,8 @@ export const getTactileBtnStyles = (themeId: NovelThemeId, isDark: boolean): str
         return 'bg-[#f2f7f1] text-[#2c4b2a] border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
       case 'mocha':
         return 'bg-[#f9f5f0] text-[#523e32] border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
+      case 'lululemon':
+        return 'lulu-light-btn hover:!text-[#84334b]';
       case 'notebook':
       default:
         return 'bg-[#f7f7f9] text-[#333338] border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
@@ -1242,6 +1316,112 @@ export const SageLiquidHeart: React.FC<PinkLiquidHeartProps> = ({
   );
 };
 
+// THEME BERRY: Biểu tượng Kính Vạn Hoa Hoa Tuyết (Snowflake Kaleidoscope) với 2 tầng cánh xoay đảo chiều
+export interface SnowflakeKaleidoscopeProps {
+  isDarkEffective?: boolean;
+}
+
+export const SnowflakeKaleidoscopeLoading: React.FC<SnowflakeKaleidoscopeProps> = ({
+  isDarkEffective = false,
+}) => {
+  // Sắc thái màu Theme Berry thích ứng chế độ Sáng / Tối
+  const sf1Color = isDarkEffective ? '#ba3859' : '#cc7b8f';
+  const sf2Color = isDarkEffective ? '#ead4d7' : '#de9fb0';
+  const circleBg = isDarkEffective ? '#26101c' : '#fff5f9';
+  const circleStroke = isDarkEffective ? '#ba3859' : '#cc7b8f';
+  const dashStroke = isDarkEffective ? '#84334b' : '#f4d8df';
+  const coreFill = isDarkEffective ? '#ba3859' : '#cc7b8f';
+
+  return (
+    <div className="relative w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center select-none">
+      {/* Vầng hào quang berry xung quanh */}
+      <div
+        className={`absolute inset-0 rounded-full blur-xl pointer-events-none transition-all duration-500 ${
+          isDarkEffective ? 'bg-[#ba3859]/25' : 'bg-[#ead4d7]/40'
+        }`}
+      />
+      <svg
+        viewBox="0 0 100 100"
+        className="w-full h-full drop-shadow-xs overflow-visible relative z-10"
+      >
+        <defs>
+          {/* ❄️ CÁNH BÔNG TUYẾT 1 (Bông lớn bên ngoài): Trục dài vươn tới y=14, có hình thoi & chấm ngọc ở đỉnh */}
+          <g id="miniSf1">
+            {/* Trục thân cánh tuyết */}
+            <line x1="50" y1="50" x2="50" y2="14" stroke={sf1Color} strokeWidth="2.2" strokeLinecap="round" />
+            {/* Nhánh chữ V xòe ở thân */}
+            <path d="M42 26 L50 33 L58 26" fill="none" stroke={sf1Color} strokeWidth="1.8" strokeLinecap="round" />
+            {/* Mũi thoi kim cương ở đầu ngọn */}
+            <polygon points="50,10 46,15 50,20 54,15" fill={sf1Color} />
+            {/* Hạt ngọc trắng phát sáng trên đỉnh chóp */}
+            <circle cx="50" cy="9" r="1.3" fill="#ffffff" />
+          </g>
+
+          {/* ❄️ CÁNH BÔNG TUYẾT 2 (Bông nhỏ lồng bên trong): Trục ngắn hơn tới y=24 */}
+          <g id="miniSf2">
+            {/* Trục thân cánh tuyết trong */}
+            <line x1="50" y1="50" x2="50" y2="24" stroke={sf2Color} strokeWidth="1.8" strokeLinecap="round" />
+            {/* Nhánh chữ V xòe ở tầng trong */}
+            <path d="M44 32 L50 38 L56 32" fill="none" stroke={sf2Color} strokeWidth="1.6" strokeLinecap="round" />
+            {/* Hạt ngọc trắng ở đầu ngọn */}
+            <circle cx="50" cy="23" r="1.2" fill="#ffffff" />
+          </g>
+        </defs>
+
+        {/* Vòng nền tròn thích ứng chế độ Sáng / Tối */}
+        <circle
+          cx="50"
+          cy="50"
+          r="44"
+          fill={circleBg}
+          stroke={circleStroke}
+          strokeWidth="2.2"
+        />
+        {/* Vòng nét đứt trang trí bên trong */}
+        <circle
+          cx="50"
+          cy="50"
+          r="39"
+          fill="none"
+          stroke={dashStroke}
+          strokeWidth="0.8"
+          strokeDasharray="3 3"
+        />
+
+        {/* 1. BÔNG TUYẾT 1 (Xoay xuôi chiều kim đồng hồ 12s) */}
+        <g className="animate-[pink-spool-spin_12s_linear_infinite] origin-[50px_50px]">
+          <use href="#miniSf1" />
+          <use href="#miniSf1" transform="rotate(60 50 50)" />
+          <use href="#miniSf1" transform="rotate(120 50 50)" />
+          <use href="#miniSf1" transform="rotate(180 50 50)" />
+          <use href="#miniSf1" transform="rotate(240 50 50)" />
+          <use href="#miniSf1" transform="rotate(300 50 50)" />
+        </g>
+
+        {/* 2. BÔNG TUYẾT 2 (Xoay ngược chiều kim đồng hồ 8s) */}
+        <g className="animate-[pink-spool-spin-reverse_8s_linear_infinite] origin-[50px_50px]">
+          <use href="#miniSf2" />
+          <use href="#miniSf2" transform="rotate(60 50 50)" />
+          <use href="#miniSf2" transform="rotate(120 50 50)" />
+          <use href="#miniSf2" transform="rotate(180 50 50)" />
+          <use href="#miniSf2" transform="rotate(240 50 50)" />
+          <use href="#miniSf2" transform="rotate(300 50 50)" />
+        </g>
+
+        {/* 3. NHỤY TRUNG TÂM CỐ ĐỊNH (Điểm tựa thị giác) */}
+        <circle
+          cx="50"
+          cy="50"
+          r="2.8"
+          fill={coreFill}
+          stroke="#ffffff"
+          strokeWidth="1"
+        />
+      </svg>
+    </div>
+  );
+};
+
 export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   novels,
   onSelectNovel,
@@ -1353,6 +1533,11 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   // -------------------------------------------------------------
   const renderThemeIcon = () => {
     switch (activeVisual) {
+      case 'snowflake-kaleidoscope':
+      case 'lululemon-zen':
+        // THEME BERRY: Kính vạn hoa hoa tuyết hai chiều (Snowflake Kaleidoscope)
+        return <SnowflakeKaleidoscopeLoading isDarkEffective={isDarkEffective} />;
+
       case 'vinyl-player':
         // THEME LINEN (mocha): Bàn máy phát đĩa than Vinyl quay 360 độ, tone màu mộc/linen ấm áp
         return <LinenVinylPlayer isDark={isDarkEffective} />;
@@ -1860,6 +2045,25 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
                     }`}
                   />
                 </div>
+              ) : theme === 'lululemon' ? (
+                <div className="flex items-center justify-center gap-2 py-0.5">
+                  <div className="relative w-5 h-5 flex items-center justify-center">
+                    <div className="w-4 h-4 rounded-full border-2 border-t-[#84334b] border-r-[#ba3859] border-b-[#ead4d7] border-l-transparent animate-spin" />
+                    <div className="absolute w-1.5 h-1.5 rounded-full bg-[#ba3859] animate-pulse" />
+                  </div>
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${isDarkEffective ? 'bg-[#ba3859]' : 'bg-[#84334b]'} animate-[bounce_1.4s_infinite_ease-in-out_both]`}
+                    style={{ animationDelay: '0ms' }}
+                  />
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${isDarkEffective ? 'bg-[#ead4d7]' : 'bg-[#ba3859]'} animate-[bounce_1.4s_infinite_ease-in-out_both]`}
+                    style={{ animationDelay: '180ms' }}
+                  />
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${isDarkEffective ? 'bg-[#d4a3af]' : 'bg-[#ead4d7]'} animate-[bounce_1.4s_infinite_ease-in-out_both]`}
+                    style={{ animationDelay: '360ms' }}
+                  />
+                </div>
               ) : (
                 <>
                   <span
@@ -1970,8 +2174,8 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
             />
           )}
 
-          {/* 2. SUBTLE DIAGONAL LIGHT RAYS: Chỉ hiển thị ở chế độ sáng; tất cả theme tối đã bỏ đường sọc chéo theo yêu cầu */}
-          {!isDarkEffective && (
+          {/* 2. SUBTLE DIAGONAL LIGHT RAYS: Chỉ hiển thị ở chế độ sáng; theme berry & theme tối đã bỏ đường sọc chéo theo yêu cầu */}
+          {!isDarkEffective && theme !== 'lululemon' && (
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
               <svg
                 viewBox="0 0 400 220"
@@ -2085,6 +2289,8 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
               className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center border transition-all duration-300 hover:scale-105 select-none ${
                 isDarkEffective
                   ? 'bg-[#221b2f]/90 border-white/15 text-amber-300 shadow-[0_4px_14px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.25),inset_0_-1px_1px_rgba(0,0,0,0.35)]'
+                  : theme === 'lululemon'
+                  ? 'bg-[#ebd4dc] border-[#d8b5c1] text-[#ad4862] shadow-[0_4px_14px_rgba(204,123,143,0.14),inset_0_1px_1.5px_rgba(255,255,255,0.7),inset_0_-1px_1.5px_rgba(204,123,143,0.10)]'
                   : 'bg-white/95 border-white/95 text-neutral-800 shadow-[0_4px_14px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.04)]'
               }`}
             >
@@ -2127,7 +2333,11 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
               onClick={handleStartPicking}
               className={`w-full py-3 px-5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all flex items-center justify-center cursor-pointer select-none active:translate-y-[1px] ${
                 themePickerStyles.primaryBtn
-              } shadow-[0_4px_14px_rgba(0,0,0,0.22),inset_0_1px_1.5px_rgba(255,255,255,0.45),inset_0_-1px_1.5px_rgba(0,0,0,0.2)] active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.5),inset_0_-1px_1px_rgba(255,255,255,0.15)]`}
+              } ${
+                !isDarkEffective && theme === 'lululemon'
+                  ? 'shadow-xs hover:shadow-sm'
+                  : 'shadow-[0_4px_14px_rgba(0,0,0,0.22),inset_0_1px_1.5px_rgba(255,255,255,0.45),inset_0_-1px_1.5px_rgba(0,0,0,0.2)] active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.5),inset_0_-1px_1px_rgba(255,255,255,0.15)]'
+              }`}
             >
               BẮT ĐẦU
             </button>

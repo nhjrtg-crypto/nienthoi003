@@ -236,11 +236,20 @@ export function clearAdminSession(): void {
 }
 
 // Sign in with Google Popup
-export async function signInWithGoogle(): Promise<User> {
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  const result = await signInWithPopup(auth, provider);
-  return result.user;
+export async function signInWithGoogle(): Promise<User | null> {
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    const result = await signInWithPopup(auth, provider);
+    return result.user;
+  } catch (error: any) {
+    if (error?.code === 'auth/popup-closed-by-user' || error?.code === 'auth/cancelled-popup-request') {
+      console.log('[Firebase] User closed Google sign-in popup.');
+      return null;
+    }
+    console.error('[Firebase] Google sign in error:', error);
+    throw error;
+  }
 }
 
 // --- Firestore CRUD operations for Truyen ---

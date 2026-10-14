@@ -59,8 +59,8 @@
   font-family: 'Source Serif 4', 'Playfair Display', Georgia, serif;
 }
 
-.font-lora {
-  font-family: 'Lora', Georgia, serif;
+.font-gelasio {
+  font-family: 'Gelasio', Georgia, serif;
 }
 
 .font-alegreya {
@@ -2857,6 +2857,27 @@
   outline-offset: 2px;
 }
 
+/* Theme Berry (Hồng Mận Sương / Berry) */
+.cl-10__switch.theme-lululemon {
+  background: #fdf2f4; /* Nền hồng mận sương pastel tươi sáng, sáng hơn và đồng bộ kiểu dáng kẹo dẻo với các theme khác */
+  box-shadow: inset 0 5px 10px -3px rgba(204, 123, 143, 0.22), inset 0 -3px 6px -4px rgba(255, 255, 255, 0.95);
+}
+.cl-10__switch.theme-lululemon .cl-10__knob {
+  box-shadow: 0 4px 8px -2px rgba(204, 123, 143, 0.25), inset 0 -2px 4px -2px rgba(204, 123, 143, 0.18), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:checked + .cl-10__switch.theme-lululemon {
+  background: linear-gradient(135deg, #de9fb0 0%, #cc7b8f 50%, #b86277 100%);
+  border-color: transparent;
+  box-shadow: inset 0 2px 5px -2px rgba(184, 98, 119, 0.45), inset 0 -2px 5px -2px rgba(255, 255, 255, 0.4), 0 3px 10px -2px rgba(204, 123, 143, 0.45);
+}
+.cl-10__in:checked + .cl-10__switch.theme-lululemon .cl-10__knob {
+  box-shadow: 0 4px 10px -2px rgba(184, 98, 119, 0.45), inset 0 -2px 4px -2px rgba(204, 123, 143, 0.3), inset 0 3px 4px -1px #ffffff;
+}
+.cl-10__in:focus-visible + .cl-10__switch.theme-lululemon {
+  outline: 2px solid #cc7b8f;
+  outline-offset: 2px;
+}
+
 /* ========================================================================= */
 /* THEME FROST - CHẾ ĐỘ SÁNG (LIGHT MODE): THẺ TRUYỆN MỤC TIỂU THUYẾT ĐÃ HOÀN */
 /* ========================================================================= */
@@ -3350,6 +3371,108 @@
   border-top: 1px solid rgba(210, 210, 210, 0.6) !important;
 }
 
+/* ========================================================================= */
+/* THEME LULULEMON - CHẾ ĐỘ SÁNG (LIGHT MODE): MÀU NỀN XÁM HỒNG NHẠT DỰA TRÊN ẢNH */
+/* ========================================================================= */
+
+/* 1. Khung thẻ chính (Thẻ truyện) */
+.lulu-light-novel-card {
+  border-radius: var(--card-radius, 16px) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(242, 235, 239, 0.90) 0%, 
+      rgba(247, 240, 243, 0.85) 18%, 
+      rgba(255, 255, 255, 0.94) 32%, 
+      rgba(255, 255, 255, 0.94) 68%, 
+      rgba(247, 240, 243, 0.85) 82%, 
+      rgba(242, 235, 239, 0.90) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      rgba(238, 211, 220, 0.65) 0%,   /* Đường viền trên: #eed3dc nhạt nhẹ thanh lịch */
+      rgba(222, 159, 176, 0.40) 40%,  /* Đoạn giữa: #de9fb0 mờ ảo */
+      rgba(204, 123, 143, 0.42) 100%  /* Đường viền dưới: tone hồng mận sương #cc7b8f nhạt hơn nhưng đảm bảo đậm hơn viền trên */
+    ) border-box !important;
+  box-shadow: 
+    5px 5px 15px rgba(204, 123, 143, 0.08),
+    -4px -4px 14px rgba(255, 255, 255, 0.92),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.3s ease !important;
+}
+
+.lulu-light-novel-card:hover {
+  box-shadow: 
+    7px 7px 20px rgba(204, 123, 143, 0.14),
+    -6px -6px 18px rgba(255, 255, 255, 1.00),
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+}
+
+/* 2. Tag thể loại */
+.lulu-light-novel-tag {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(242, 235, 239, 0.88) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(238, 211, 220, 0.6) 45%, rgba(204, 123, 143, 0.48) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(204, 123, 143, 0.08), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #cc7b8f !important;
+}
+
+/* Nút bấm Theme Lululemon Chế độ sáng */
+.lulu-light-btn {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(242, 235, 239, 0.88) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(238, 211, 220, 0.6) 45%, rgba(204, 123, 143, 0.48) 100%) border-box !important;
+  box-shadow: 
+    0 2px 5px rgba(204, 123, 143, 0.08), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #ad4862 !important;
+  transition: all 0.25s ease !important;
+}
+
+.lulu-light-btn:hover {
+  box-shadow: 
+    0 4px 10px rgba(204, 123, 143, 0.15), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  color: #9c3e55 !important;
+}
+
+.lulu-light-btn:active,
+.lulu-light-btn-active {
+  border: 1px solid transparent !important;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(238, 211, 220, 0.90) 100%) padding-box,
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(222, 159, 176, 0.70) 45%, rgba(204, 123, 143, 0.60) 100%) border-box !important;
+  box-shadow: 
+    0 3px 8px rgba(204, 123, 143, 0.14), 
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
+    inset 0 -1px 2px rgba(204, 123, 143, 0.12) !important;
+  color: #b86277 !important;
+}
+
+/* Thanh phân loại */
+.lulu-light-tabs-container {
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, rgba(242, 235, 239, 0.85) 0%, rgba(247, 240, 243, 0.80) 50%, rgba(255, 255, 255, 0.90) 100%) padding-box,
+    linear-gradient(to bottom, rgba(238, 211, 220, 0.70) 0%, rgba(222, 159, 176, 0.60) 50%, rgba(204, 123, 143, 0.48) 100%) border-box !important;
+  box-shadow: 
+    3px 3px 10px rgba(204, 123, 143, 0.08),
+    -3px -3px 10px rgba(255, 255, 255, 0.90),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Gạch chân thẻ */
+.lulu-light-novel-divider {
+  border-top: 1px solid rgba(222, 159, 176, 0.50) !important;
+}
+
 /* Chặn in ấn và lưu file PDF/EPUB từ trình duyệt */
 @media print {
   body {
@@ -3358,15 +3481,10 @@
 }
 
 /* ==========================================================================
-   BỘ 5 HIỆU ỨNG TRANSITION CHUYỂN CẢNH: CHỌN TRUYỆN NGẪU NHIÊN
-   Option 1: Lật thẻ bài 3D (3D Tarot Flip)
-   Option 2: Thu nhỏ & Mờ gương pha lê (Cinematic Optical Dissolve)
-   Option 3: Lướt trang sách ngang (Horizontal Book Swish)
-   Option 4: Co giãn biến hình đàn hồi (Elastic Morph & Spring)
-   Option 5: Tinh cầu thu tâm & Bung nở ánh sao (Cosmic Iris & Star Bloom)
+   HIỆU ỨNG TRANSITION CHUYỂN CẢNH: LẬT THẺ BÀI 3D (3D CARD FLIP)
+   Khung cảnh 3 chuyển về Khung cảnh 1
    ========================================================================== */
 
-/* 1. Lật thẻ bài 3D (Flip 3D) */
 @keyframes picker-flip-in {
   0% {
     opacity: 0;
@@ -3384,6 +3502,7 @@
     filter: blur(0px);
   }
 }
+
 @keyframes picker-flip-out {
   0% {
     opacity: 1;
@@ -3397,116 +3516,16 @@
   }
 }
 
-/* 2. Thu nhỏ & Mờ gương pha lê (Cinematic Optical Dissolve) */
 @keyframes picker-fade-in {
   0% {
     opacity: 0;
-    transform: scale(1.03);
-    filter: blur(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0px);
-  }
-}
-@keyframes picker-fade-out {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.96);
-    filter: blur(8px);
-  }
-}
-
-/* 3. Lướt trang sách ngang (Horizontal Book Swish) */
-@keyframes picker-slide-in {
-  0% {
-    opacity: 0;
-    transform: translateX(36px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-@keyframes picker-slide-out {
-  0% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-36px) scale(0.98);
-  }
-}
-
-/* 4. Co giãn biến hình đàn hồi (Elastic Morph & Spring) */
-@keyframes picker-morph-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.88);
-    filter: blur(6px);
-  }
-  65% {
-    opacity: 1;
     transform: scale(1.02);
-    filter: blur(0px);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
     transform: scale(1);
     filter: blur(0px);
-  }
-}
-@keyframes picker-morph-out {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.06);
-    filter: blur(6px);
-  }
-}
-
-/* 5. Tinh cầu thu tâm & Bung nở ánh sao (Cosmic Iris & Star Bloom) */
-@keyframes picker-iris-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.92);
-    filter: brightness(1.3) blur(10px);
-  }
-  60% {
-    opacity: 0.95;
-    transform: scale(1.02);
-    filter: brightness(1.08) blur(1px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: brightness(1) blur(0px);
-  }
-}
-@keyframes picker-iris-out {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    filter: brightness(1) blur(0px);
-  }
-  50% {
-    filter: brightness(1.2) blur(2px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.92);
-    filter: brightness(1.4) blur(10px);
   }
 }
 
@@ -3515,45 +3534,163 @@
   transform-style: preserve-3d;
   will-change: transform, opacity, filter;
 }
+
 .anim-picker-flip-out {
   animation: picker-flip-out 0.32s cubic-bezier(0.7, 0, 0.84, 0) forwards;
   transform-style: preserve-3d;
   will-change: transform, opacity, filter;
 }
 
-.anim-picker-fade-in {
-  animation: picker-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-.anim-picker-fade-out {
-  animation: picker-fade-out 0.28s ease-in forwards;
-  will-change: transform, opacity, filter;
+.animate-picker-fade-in {
+  animation: picker-fade-in 0.32s ease-out forwards;
 }
 
-.anim-picker-slide-in {
-  animation: picker-slide-in 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity;
-}
-.anim-picker-slide-out {
-  animation: picker-slide-out 0.28s cubic-bezier(0.7, 0, 0.84, 0) forwards;
-  will-change: transform, opacity;
-}
-
-.anim-picker-morph-in {
-  animation: picker-morph-in 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-.anim-picker-morph-out {
-  animation: picker-morph-out 0.28s cubic-bezier(0.7, 0, 0.84, 0) forwards;
-  will-change: transform, opacity, filter;
+/* =========================================================================
+   CODEFRONTS FALLING SNOW / WEATHER BACKGROUND ANIMATION (Scoped .bga-25)
+   ========================================================================= */
+.bga-25 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bga-25-bg, #060818);
+  pointer-events: none;
 }
 
-.anim-picker-iris-in {
-  animation: picker-iris-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-.anim-picker-iris-out {
-  animation: picker-iris-out 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
-  will-change: transform, opacity, filter;
+.bga-25__sky {
+  position: absolute;
+  inset: 0;
+  background: var(--bga-25-sky, linear-gradient(180deg, #060818 0%, #100b26 54%, #180f38 100%));
 }
 
+.bga-25__hills {
+  position: absolute;
+  inset-inline: -6%;
+  inset-block-end: -4%;
+  height: 32%;
+  background: var(--bga-25-hills, radial-gradient(70% 130% at 18% 100%, #1a1038 0 52%, transparent 54%), radial-gradient(64% 118% at 56% 100%, #140b2e 0 52%, transparent 54%), radial-gradient(80% 140% at 92% 100%, #1f1244 0 52%, transparent 54%));
+}
+
+.bga-25__fog {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 44%;
+  pointer-events: none;
+  background: var(--bga-25-fog, linear-gradient(transparent, rgba(168, 85, 247, 0.08) 62%, rgba(147, 51, 234, 0.18)));
+  animation: bga-25-fog 22s ease-in-out infinite alternate;
+}
+
+@keyframes bga-25-fog {
+  to {
+    translate: -3% 0;
+    opacity: 0.72;
+  }
+}
+
+.bga-25__layer {
+  position: absolute;
+  inset: -8%;
+  opacity: var(--bga-25-op, 1);
+  background-repeat: repeat;
+  animation: bga-25-fall 14s linear infinite;
+  animation-duration: calc(14s / var(--bga-25-spd, 1));
+}
+
+.bga-25__layer--far {
+  opacity: calc(var(--bga-25-op, 1) * 0.45);
+  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 1px, transparent 1.4px);
+  background-size: 97px 97px;
+  animation-duration: calc(22s / var(--bga-25-spd, 1));
+  --bga-25-wind: 18px;
+}
+
+.bga-25__layer--mid {
+  opacity: calc(var(--bga-25-op, 1) * 0.7);
+  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 1.4px, transparent 1.8px);
+  background-size: 131px 131px;
+  animation-duration: calc(16s / var(--bga-25-spd, 1));
+  --bga-25-wind: 36px;
+}
+
+.bga-25__layer--near {
+  filter: blur(0.6px);
+  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 2px, transparent 2.5px);
+  background-size: 173px 173px;
+  animation-duration: calc(11s / var(--bga-25-spd, 1));
+  --bga-25-wind: 64px;
+}
+
+@keyframes bga-25-fall {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: var(--bga-25-wind, 40px) 173px;
+  }
+}
+
+.bga-25__hero {
+  position: absolute;
+  inset: 0;
+  opacity: var(--bga-25-op, 1);
+}
+
+.bga-25__hero span {
+  position: absolute;
+  left: var(--bga-25-x);
+  top: -8%;
+  width: var(--bga-25-s);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bga-25-hero-bg, radial-gradient(circle at 34% 30%, #ffffff 0 40%, rgba(245, 238, 255, 0.75) 70%, rgba(192, 132, 252, 0.2)));
+  box-shadow: var(--bga-25-hero-shadow, 0 0 10px -1px rgba(255, 255, 255, 0.6));
+  animation: bga-25-drop var(--bga-25-t) linear infinite, bga-25-tumble calc(var(--bga-25-t) * 0.27) ease-in-out infinite alternate;
+  animation-delay: var(--bga-25-d, 0s), 0s;
+}
+
+@keyframes bga-25-drop {
+  to {
+    translate: 7vw 120vh;
+  }
+}
+
+@keyframes bga-25-tumble {
+  from {
+    rotate: -40deg;
+    scale: 0.85;
+  }
+  to {
+    rotate: 40deg;
+    scale: 1.12;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bga-25__layer,
+  .bga-25__hero span,
+  .bga-25__fog {
+    animation: none;
+  }
+}
+
+/* Snowflake Kaleidoscope Rotation Animations */
+@keyframes pink-spool-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pink-spool-spin-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

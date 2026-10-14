@@ -201,7 +201,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         safeStorage.setItem('cosmo_darkmode', 'false');
         return 'amethyst-haze';
       }
-      if (saved && ['slate-haze', 'sage', 'notebook', 'mocha', 'amethyst-haze'].includes(saved)) {
+      if (saved === 'lululemon') {
+        safeStorage.setItem('cosmo_novel_theme', 'lululemon');
+        return 'lululemon';
+      }
+      if (saved && ['slate-haze', 'sage', 'notebook', 'mocha', 'amethyst-haze', 'lululemon'].includes(saved)) {
         return saved as NovelThemeId;
       }
     } catch {}
@@ -536,6 +540,30 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             coverBorder: 'border-indigo-500/30',
             coverBg: 'bg-indigo-950/50',
           };
+        case 'lululemon':
+          return {
+            cardBg: 'bg-[#1c1115]/95',
+            cardBorder: 'border-[#84334b]/35',
+            cardShadow: 'shadow-[0_16px_40px_rgba(0,0,0,0.5)]',
+            stackedMiddle: 'bg-[#150d10]/95 border-[#84334b]/25 shadow-xs',
+            stackedBottom: 'bg-[#0e0a16]/90 border-[#84334b]/20 shadow-xs',
+            letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(0, 0, 0, 0.25) 23px, rgba(0, 0, 0, 0.25) 24px, rgba(132, 51, 75, 0.08) 24px, rgba(132, 51, 75, 0.08) 25px)',
+            titleText: 'text-[#faf2f4]',
+            novelTitle: 'text-[#faf2f4]',
+            chevronColor: 'text-[#d4a3af] group-hover:text-[#fff0f3]',
+            badge: 'bg-[#84334b]/25 text-[#f4ebee] border border-[#84334b]/40',
+            navBtn: 'bg-[#84334b]/20 hover:bg-[#84334b]/35 text-[#f4ebee] border-[#84334b]/40 shadow-xs',
+            timeSubtext: 'text-[#c296a2]',
+            timeIcon: 'text-[#d4a3af]',
+            progressTrack: 'bg-[#150d10] border border-[#84334b]/30',
+            progressBar: 'bg-gradient-to-r from-[#84334b] to-[#ba3859] shadow-[0_0_8px_rgba(132,51,75,0.4)]',
+            progressThumb: 'bg-[#ead4d7] border-[#150d10] ring-2 ring-[#84334b]/50',
+            pctText: 'text-[#f4ebee]',
+            continueBtn: 'text-[#d4a3af] hover:text-[#fff0f3]',
+            divider: 'border-[#84334b]/25',
+            coverBorder: 'border-[#84334b]/35',
+            coverBg: 'bg-[#24151a]/50',
+          };
         case 'amethyst-haze':
         default:
           return {
@@ -566,6 +594,30 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
     // Light Mode: Màu sắc trung tính dịu nhẹ, thanh lịch và êm mắt phù hợp với từng theme
     switch (th) {
+      case 'lululemon': // Lululemon Theme (Nền xám hồng đậm đà #f2ebef, Burgundy #84334b)
+        return {
+          cardBg: 'bg-[#f2ebef]',
+          cardBorder: 'border-[#ded0d4]',
+          cardShadow: 'shadow-[0_10px_30px_rgba(132,51,75,0.08)]',
+          stackedMiddle: 'bg-[#ebdce0] border-[#ded0d4]/90 shadow-xs',
+          stackedBottom: 'bg-[#e4d0d5] border-[#ded0d4]/80 shadow-xs',
+          letterpressLines: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 23px, rgba(132, 51, 75, 0.06) 24px, rgba(255, 255, 255, 0.9) 25px)',
+          titleText: 'text-[#382329]',
+          novelTitle: 'text-[#382329]',
+          chevronColor: 'text-[#8c5a67] group-hover:text-[#84334b]',
+          badge: 'bg-[#f2eef0] text-[#573740] border-[#e4d7db]',
+          navBtn: 'lulu-light-btn !w-7 !h-7 sm:!w-8 sm:!h-8 !rounded-full !p-0 flex items-center justify-center hover:!text-[#84334b]',
+          timeSubtext: 'text-[#8c5a67]',
+          timeIcon: 'text-[#8c5a67]',
+          progressTrack: 'bg-[#ebdce0]',
+          progressBar: 'bg-[#84334b]',
+          progressThumb: 'bg-[#84334b] border-white ring-2 ring-[#e4d7db]/80',
+          pctText: 'text-[#382329] font-semibold',
+          continueBtn: 'lulu-light-btn !text-[#84334b] hover:!text-[#632437] px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-xs active:scale-95',
+          divider: 'border-[#e4d7db]',
+          coverBorder: 'border-[#e4d7db]',
+          coverBg: 'bg-[#f2eef0]',
+        };
       case 'notebook': // White Theme
         return {
           cardBg: 'bg-[#ffffff]',
@@ -738,6 +790,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return isDark
           ? 'bg-gradient-to-r from-[#624b7a] via-[#785f94] to-[#967fae] shadow-[0_0_6px_rgba(115,90,143,0.25)]'
           : 'bg-gradient-to-r from-[#8a5b9e] to-[#ba89cf]';
+      case 'lululemon':
+        return isDark
+          ? 'bg-gradient-to-r from-[#84334b] via-[#a64462] to-[#ba3859] shadow-[0_0_8px_rgba(132,51,75,0.4)]'
+          : 'bg-gradient-to-r from-[#84334b] to-[#a64462]';
       default:
         return 'bg-gradient-to-r from-[#64748b] to-[#90a1b9]';
     }
@@ -763,6 +819,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           return 'bg-[#A37764]';
         case 'amethyst-haze':
           return 'bg-[#7e739f]';
+        case 'lululemon':
+          return 'bg-[#84334b]';
         case 'slate-haze':
         default:
           return 'bg-[#90a1b9]';
@@ -779,6 +837,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return 'bg-gradient-to-r from-[#775243] via-[#8c6150] to-[#9f7260] shadow-[0_0_12px_rgba(140,97,80,0.5)]';
       case 'amethyst-haze':
         return 'bg-gradient-to-r from-[#735a8f] via-[#856b9e] to-[#9c84b5] shadow-[0_0_8px_rgba(133,107,158,0.4)]';
+      case 'lululemon':
+        return 'bg-gradient-to-r from-[#84334b] via-[#a64462] to-[#ba3859] shadow-[0_0_10px_rgba(132,51,75,0.5)]';
       case 'slate-haze':
       default:
         return 'bg-gradient-to-r from-[#4d6a85] via-[#5d7e9d] to-[#7b9cb8] shadow-[0_0_8px_rgba(93,126,157,0.4)]';
@@ -799,6 +859,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return 'bg-[#E4D9BC]';
       case 'amethyst-haze':
         return 'bg-[#e7d8f0]';
+      case 'lululemon':
+        return 'bg-[#e4d7db]';
       case 'slate-haze':
       default:
         return 'bg-[#D6D3D1]/80';
@@ -836,6 +898,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-[#856b9e]/70 active:border-[#6f5487] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(115,90,143,0.22),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
           : `${basePhysics} bg-[#fbf9fc] hover:bg-white active:bg-[#f4edf9] border-[#d8d3e2] hover:border-[#7e739f] active:border-[#5f547d] hover:shadow-md active:shadow-xs`;
 
+      case 'lululemon':
+        return isDark
+          ? `${basePhysics} bg-white/[0.05] hover:bg-white/[0.12] active:bg-white/[0.08] border-white/15 hover:border-[#ba3859]/70 active:border-[#84334b] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_4px_16px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_25px_rgba(132,51,75,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] active:shadow-xs`
+          : `${basePhysics} bg-[#f2ebef] hover:bg-white active:bg-[#ebdce0] border-[#ded0d4] hover:border-[#84334b]/70 active:border-[#84334b] hover:shadow-md active:shadow-xs`;
+
       case 'slate-haze':
       default:
         return isDark
@@ -867,6 +934,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return isDark
           ? 'bg-[#624b7a] text-white border border-[#856b9e]/70 shadow-xs font-bold'
           : 'bg-stone-900/80 text-stone-100 border-stone-400/30 shadow-sm';
+      case 'lululemon':
+        return isDark
+          ? 'bg-[#84334b] text-white border border-[#ba3859]/70 shadow-xs font-bold'
+          : 'bg-[#84334b] text-white border-[#84334b]/40 shadow-sm';
       case 'cosmic':
       default:
         return isDark
@@ -919,6 +990,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           : (isDark
               ? 'bg-[#1a1226] text-[#bdaed3] border border-[#523d66]/40 shadow-xs'
               : 'bg-[#f0ecf7] text-[#4d3d63] border border-[#d5cce3] shadow-xs');
+      case 'lululemon':
+        return isOngoing
+          ? (isDark
+              ? 'bg-[#26161c] text-[#f4ebee] border border-[#84334b]/45 shadow-xs'
+              : 'bg-[#84334b] text-white border border-[#632437] shadow-xs')
+          : (isDark
+              ? 'bg-[#150d10] text-[#d4a3af] border border-[#84334b]/40 shadow-xs'
+              : 'bg-[#f2eef0] text-[#573740] border border-[#e4d7db] shadow-xs');
       case 'cosmic':
       default:
         return isOngoing
@@ -975,6 +1054,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           : (isDark
               ? 'bg-[#1a1226] text-[#ded6e8] border border-[#523d66]/40 shadow-xs'
               : 'bg-stone-50 text-stone-600 border-stone-200 shadow-2xs');
+      case 'lululemon':
+        return isOngoing
+          ? (isDark
+              ? 'bg-[#26161c] text-[#f4ebee] border border-[#84334b]/45 shadow-xs'
+              : 'bg-[#f2eef0] text-[#573740] border-[#e4d7db] shadow-2xs font-semibold')
+          : (isDark
+              ? 'bg-[#150d10] text-[#f4ebee] border border-[#84334b]/40 shadow-xs'
+              : 'bg-[#f2ebef] text-[#8c5a67] border-[#ded0d4] shadow-2xs');
       case 'cosmic':
       default:
         return isOngoing
@@ -1050,6 +1137,21 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           ? 'bg-gradient-to-tr from-[#3b2d4c] to-[#524168] text-white shadow-sm'
           : 'bg-gradient-to-tr from-[#ddd7e7] to-[#b3a8c7] text-stone-800 shadow-xs font-bold ring-1 ring-stone-300/30';
 
+      case 'lululemon':
+        if (idx === 0) {
+          return isDark
+            ? 'bg-gradient-to-tr from-[#84334b] to-[#ba3859] text-white shadow-[0_0_8px_rgba(132,51,75,0.4)]'
+            : 'bg-gradient-to-tr from-[#84334b] to-[#a64462] text-white shadow-sm ring-1 ring-[#e4d7db]';
+        }
+        if (idx === 1) {
+          return isDark
+            ? 'bg-gradient-to-tr from-[#a64462] to-[#ead4d7] text-[#1c1115] shadow-sm'
+            : 'bg-gradient-to-tr from-[#a64462] to-[#84334b] text-white shadow-sm ring-1 ring-[#e4d7db]';
+        }
+        return isDark
+          ? 'bg-gradient-to-tr from-[#421b27] to-[#84334b] text-white shadow-sm'
+          : 'bg-gradient-to-tr from-[#f2eef0] to-[#e4d7db] text-[#573740] shadow-xs font-bold ring-1 ring-[#e4d7db]';
+
       case 'cosmic':
       default:
         if (idx === 0) return 'bg-gradient-to-tr from-pink-500 to-purple-500 text-white shadow-[0_0_10px_rgba(236,72,153,0.5)]';
@@ -1069,6 +1171,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return 'mocha-light-btn';
       case 'notebook':
         return 'notebook-light-btn';
+      case 'lululemon':
+        return 'lulu-light-btn';
       case 'amethyst-haze':
       case 'cosmic':
       default:
@@ -1087,6 +1191,15 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     if (!isDark) {
       // Theme sáng: Nền sáng cho thanh container với đổ bóng chìm (shadow-inner), màu nút active là màu chủ đạo của theme (GIỮ NGUYÊN)
       switch (th) {
+        case 'lululemon':
+          return {
+            container: 'bg-[#f7f2f4] border border-[#e4d7db] shadow-inner',
+            activePill: 'bg-[#84334b] border border-[#6f253b] shadow-xs',
+            activeText: 'text-white',
+            inactiveText: 'text-[#8c5a67] hover:text-[#382329]',
+            getActivePill: () => ({ gradient: '', glow: '' }),
+            getInactiveText: () => 'text-[#8c5a67] hover:text-[#382329]',
+          };
         case 'slate-haze':
           return {
             container: 'bg-[#eaf2f9] border border-[#cde0f3] shadow-inner',
@@ -1162,6 +1275,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         break;
       case 'notebook':
         containerBase = 'bg-[#161619]/90 border-0';
+        break;
+      case 'lululemon':
+        containerBase = 'bg-[#1c1115]/90 border-0';
         break;
       case 'amethyst-haze':
       case 'cosmic':
@@ -1337,7 +1453,40 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         }
       }
 
-      // 6. THEME AMETHYST-HAZE / PURPLE (Chuẩn công thức: Tím tử đinh hương #c084fc sang hồng tím hoa cà #e879f9)
+      // 6. THEME LULULEMON (Rượu mận Burgundy #84334b sang mận sương #ba3859 và hồng sương #ead4d7)
+      if (th === 'lululemon') {
+        const luluGlow = 'shadow-[0_4px_16px_rgba(132,51,75,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
+        switch (catId) {
+          case 'h-van':
+            return {
+              gradient: 'bg-gradient-to-r from-[#84334b] to-[#ba3859]',
+              glow: luluGlow,
+            };
+          case 'h-van-np':
+            return {
+              gradient: 'bg-gradient-to-r from-[#943853] to-[#c74164]',
+              glow: luluGlow,
+            };
+          case 'h-van-ngan':
+            return {
+              gradient: 'bg-gradient-to-r from-[#702b3f] to-[#aa4463]',
+              glow: luluGlow,
+            };
+          case 'dam-my':
+            return {
+              gradient: 'bg-gradient-to-r from-[#84334b] via-[#a64462] to-[#c74164]',
+              glow: luluGlow,
+            };
+          case 'all':
+          default:
+            return {
+              gradient: 'bg-gradient-to-r from-[#84334b] to-[#ba3859]',
+              glow: luluGlow,
+            };
+        }
+      }
+
+      // 7. THEME AMETHYST-HAZE / PURPLE (Chuẩn công thức: Tím tử đinh hương #c084fc sang hồng tím hoa cà #e879f9)
       const purpleGlow = 'shadow-[0_4px_16px_rgba(192,132,252,0.45),inset_0_1px_1.5px_rgba(255,255,255,0.5),inset_0_-1.5px_2px_rgba(0,0,0,0.2)]';
       switch (catId) {
         case 'h-van':
@@ -1520,6 +1669,32 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             itemTitleHoverClass: 'group-hover:text-[#171717]',
             itemDateClass: 'text-[#737373]',
           };
+        case 'lululemon':
+          return {
+            outerStyle: {
+              border: '1.5px solid transparent',
+              background: 'linear-gradient(145deg, rgba(249, 246, 247, 0.95) 0%, rgba(255, 255, 255, 0.88) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.4) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(132, 51, 75, 0.75) 0%, rgba(228, 201, 205, 0.55) 7%, rgba(234, 212, 215, 0.22) 15%, transparent 24%) border-box',
+              boxShadow: '0 12px 32px rgba(132, 51, 75, 0.12), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            },
+            innerStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 249, 250, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(234, 212, 215, 0.7) 0%, rgba(228, 201, 205, 0.5) 45%, rgba(132, 51, 75, 0.6) 100%) border-box',
+              boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.98), inset 0 -1px 2px rgba(228, 201, 205, 0.2)',
+            },
+            iconBtnStyle: {
+              border: '1px solid transparent',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(249,246,247,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(234,212,215,0.6) 45%, rgba(132,51,75,0.7) 100%) border-box',
+              boxShadow: '0 2px 5px rgba(132, 51, 75, 0.12), inset 0 1px 1px rgba(255,255,255,0.95)',
+            },
+            iconColor: 'text-[#84334b]',
+            titleColor: 'text-[#382329]',
+            subtitleColor: 'text-[#8c5a67]',
+            chevronColor: 'text-[#84334b]',
+            dividerClass: 'border-[#e4d7db]',
+            itemHoverClass: 'hover:bg-rose-50/60',
+            itemTitleHoverClass: 'group-hover:text-[#84334b]',
+            itemDateClass: 'text-[#84334b]',
+          };
         case 'slate-haze':
         default:
           return {
@@ -1573,7 +1748,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             boxShadow: 'none',
           },
           iconColor: 'text-[#8cb391]',
-          titleColor: 'text-[#e5f0e7]',
+          titleColor: 'text-[#eaf2eb]',
           subtitleColor: 'text-[#8cb391]',
           chevronColor: 'text-[#8cb391]',
           dividerClass: 'border-white/[0.08]',
@@ -1696,6 +1871,35 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
           itemTitleHoverClass: 'group-hover:text-zinc-100',
           itemDateClass: 'text-zinc-400',
+        };
+      case 'lululemon':
+        return {
+          outerStyle: {
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(36, 21, 26, 0.55) 45%, rgba(21, 13, 16, 0.75) 100%)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          },
+          innerStyle: {
+            border: 'none',
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+          },
+          iconBtnStyle: {
+            border: 'none',
+            background: 'rgba(255, 255, 255, 0.08)',
+            boxShadow: 'none',
+          },
+          iconColor: 'text-[#d4a3af]',
+          titleColor: 'text-[#faf2f4]',
+          subtitleColor: 'text-[#c296a2]',
+          chevronColor: 'text-[#d4a3af]',
+          dividerClass: 'border-white/[0.08]',
+          itemHoverClass: 'bg-white/[0.04] hover:bg-[#84334b]/20 transition-colors',
+          itemTitleHoverClass: 'group-hover:text-[#faf2f4]',
+          itemDateClass: 'text-[#d4a3af]',
         };
       case 'slate-haze':
       default:
@@ -1869,6 +2073,33 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             badgeBg: 'bg-white/10 text-indigo-200 border-white/10',
             heartColor: 'text-indigo-400',
           };
+        case 'lululemon':
+          return {
+            dotColor: 'rgba(234, 212, 215, 0.08)',
+            gridColor: 'rgba(132, 51, 75, 0.08)',
+            heroRimBg: 'bg-[#150d10]',
+            outerBg: 'bg-[#150d10]/95',
+            outerBorder: 'border-[#84334b]/40',
+            heroOuterBorder: 'border border-[#84334b]/40',
+            heroInnerDashed: 'border border-dashed border-[#a64462]/35',
+            heroGenreColor: 'text-[#d4a3af]',
+            heroTitleColor: 'text-white',
+            heroMetaColor: 'text-[#d4a3af]',
+            heroOrnamentColor: 'text-[#ead4d7]',
+            cardBg: 'bg-[#150d10]/95',
+            cardBorder: 'border-[#84334b]/35',
+            polaroidBg: 'bg-[#24151a] border-[#84334b]/40 text-[#f4ebee]',
+            starColor: 'text-[#ead4d7]/85',
+            ornamentText: 'text-[#d4a3af]/70',
+            bowColor: 'text-[#d4a3af]/70',
+            tapeColor: 'bg-[#2c1920]/80 border-[#84334b]/40 text-[#d4a3af]',
+            pushpin: 'bg-zinc-800 border-[#a64462]',
+            dotActive: 'bg-[#ba3859]',
+            dotInactive: 'bg-[#2b161f]',
+            arrowBtn: 'bg-[#24151a] text-[#f4ebee] border-[#84334b]/40 hover:bg-[#341b25]',
+            badgeBg: 'bg-white/10 text-[#f4ebee] border-white/10',
+            heartColor: 'text-[#ead4d7]',
+          };
         case 'amethyst-haze':
         default:
           return {
@@ -2008,6 +2239,33 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           badgeBg: 'bg-white text-[#3A2A2A] border-[#E4D9BC]',
           heartColor: 'text-[#A37764]',
         };
+      case 'lululemon':
+        return {
+          dotColor: 'rgba(132, 51, 75, 0.14)',
+          gridColor: 'rgba(204, 123, 143, 0.05)',
+          heroRimBg: 'bg-[#f2ebef]',
+          outerBg: 'bg-[#f2ebef]',
+          outerBorder: 'border-[#ded0d4]',
+          heroOuterBorder: 'border border-[#ded0d4]',
+          heroInnerDashed: 'border border-dashed border-[#d8c5ca]',
+          heroGenreColor: 'text-[#cc7b8f]',
+          heroTitleColor: 'text-[#382329]',
+          heroMetaColor: 'text-[#8c5a67]',
+          heroOrnamentColor: 'text-[#cc7b8f]',
+          cardBg: 'bg-white',
+          cardBorder: 'border-[#e4d7db]',
+          polaroidBg: 'bg-white border-[#e4d7db] text-[#382329]',
+          starColor: 'text-[#cc7b8f]',
+          ornamentText: 'text-[#8c5a67]',
+          bowColor: 'text-[#8c5a67]',
+          tapeColor: 'bg-[#f2eef0] border-[#e4d7db] text-[#cc7b8f]',
+          pushpin: 'bg-white border-[#cc7b8f]',
+          dotActive: 'bg-[#cc7b8f]',
+          dotInactive: 'bg-[#e4d7db]',
+          arrowBtn: 'bg-white text-[#382329] border-[#e4d7db] hover:bg-rose-50/50 shadow-sm',
+          badgeBg: 'bg-white text-[#382329] border-[#e4d7db]',
+          heartColor: 'text-[#cc7b8f]',
+        };
       case 'sage':
       default:
         return {
@@ -2098,6 +2356,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             ringStroke: '#818cf8',
             ringFill: '#101229',
           };
+        case 'lululemon':
+          // Lululemon dark: Rượu mận & sương hồng
+          return {
+            pinBg: 'bg-gradient-to-b from-[#f2e2e5] via-[#d4a3af] to-[#84334b]',
+            pinBorder: 'border-[#d4a3af]/80',
+            pinInner: 'bg-white/80',
+            ropeBase: '#d4a3af',
+            ropeAccent: '#ead4d7',
+            ringStroke: '#d4a3af',
+            ringFill: '#150d10',
+          };
         case 'amethyst-haze':
         default:
           // Ngôi sao amethyst-haze dark: #a795be (text-[#a795be]/75)
@@ -2166,6 +2435,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           ropeBase: '#818cf8',
           ropeAccent: '#a5b4fc',
           ringStroke: '#818cf8',
+          ringFill: '#ffffff',
+        };
+      case 'lululemon':
+        // Lululemon light: Rượu mận & sương hồng
+        return {
+          pinBg: 'bg-gradient-to-b from-white via-[#de9fb0] to-[#cc7b8f]',
+          pinBorder: 'border-white shadow-xs',
+          pinInner: 'bg-white/85',
+          ropeBase: '#cc7b8f',
+          ropeAccent: '#eed3dc',
+          ringStroke: '#cc7b8f',
           ringFill: '#ffffff',
         };
       case 'amethyst-haze':
@@ -2411,6 +2691,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           viewAllBtn: 'border-[#e4edf5] hover:bg-[#edf4f8] text-[#2c5373]',
           noticeHighlight: 'text-[#2c5373]',
         };
+      case 'lululemon':
+        return {
+          container: 'bg-[#f2ebef]/98 border-[#ded0d4] text-[#382329] shadow-[0_12px_36px_rgba(204,123,143,0.08)]',
+          header: 'border-[#ded0d4] text-[#8c5a67]',
+          itemHover: 'hover:bg-[#ebdce0]',
+          titleText: 'text-[#382329]',
+          subText: 'text-[#8c5a67]',
+          badge: 'text-[#cc7b8f]',
+          viewAllBtn: 'border-[#e4d7db] hover:bg-[#f2eef0] text-[#cc7b8f]',
+          noticeHighlight: 'text-[#cc7b8f]',
+        };
       case 'notebook':
       default:
         return {
@@ -2607,6 +2898,41 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               haloCushion: 'bg-[#cde0ec]/30',
             };
 
+      case 'lululemon':
+        return isDarkEffective
+          ? {
+              gradientBorder: 'bg-[#84334b]/60',
+              glowShadow: 'shadow-sm shadow-black/30',
+              glowShadowHover: 'group-hover:shadow-md group-hover:shadow-black/40',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'bg-gradient-to-r from-[#5a2233] via-[#732c41] to-[#84334b] hover:from-[#6a283c] hover:to-[#9e3d5a]',
+              textColor: 'text-[#f4ebee] font-semibold',
+              dotColor: 'bg-[#ead4d7]',
+              dotPing: 'bg-[#ead4d7]/40',
+              btnBg: '',
+              btnGradient: 'bg-gradient-to-r from-[#5a2233] to-[#84334b]',
+              btnGlow: 'shadow-none',
+              borderShadow: 'shadow-none',
+              innerShadow: 'shadow-xs',
+              haloCushion: 'opacity-0',
+            }
+          : {
+              gradientBorder: 'bg-transparent',
+              glowShadow: 'shadow-xs',
+              glowShadowHover: 'group-hover:shadow-sm',
+              pulseHaloBg: 'opacity-0',
+              btnInnerBg: 'lulu-light-btn-active !text-[#632437] shadow-xs',
+              textColor: 'text-[#632437] font-bold',
+              dotColor: 'bg-[#84334b]',
+              dotPing: 'bg-[#84334b]/60',
+              btnBg: '#f2ebef',
+              btnGradient: '',
+              btnGlow: '',
+              borderShadow: 'shadow-xs group-hover:shadow-sm hover:shadow-sm transition-shadow duration-200',
+              innerShadow: 'shadow-xs group-hover:shadow-sm transition-shadow duration-200',
+              haloCushion: 'bg-[#ead4d7]/30',
+            };
+
       case 'amethyst-haze':
       default:
         return isDarkEffective
@@ -2754,6 +3080,27 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             borderHeroLine: 'border-indigo-500/40',
             fullBadge: 'bg-indigo-600 text-white font-black shadow-xs',
           };
+        case 'lululemon':
+          return {
+            outer: 'border-[#84334b]/40 bg-gradient-to-br from-[#24151a] via-[#1c1115] to-[#150d10] shadow-[0_20px_50px_rgba(0,0,0,0.6)]',
+            inner: 'border-[#84334b]/30 bg-white/[0.02] shadow-inner',
+            divider: 'border-[#84334b]/30',
+            dashedDivider: 'border-[#a64462]/50',
+            cutout: 'bg-[#1c1115] border border-[#a64462]/60 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]',
+            kicker: 'text-[#d4a3af]',
+            title: 'text-[#faf2f4] hover:text-white',
+            meta: 'text-[#c296a2]',
+            author: 'text-[#faf2f4]',
+            synopsis: 'text-[#d8b4bc]',
+            btnPrimary: 'border border-[#ba3859]/50 bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:to-[#c74164] shadow-lg shadow-black/40 text-white font-bold',
+            btnSecondary: 'border border-[#84334b]/40 bg-white/[0.08] hover:bg-white/[0.16] text-[#ead4d7] shadow-xs',
+            dotActive: 'bg-[#ba3859] shadow-xs',
+            dotInactive: 'bg-white/15',
+            barcode: 'bg-[#84334b]',
+            coverBorder: 'border border-[#84334b]/40 bg-[#1c1115]',
+            borderHeroLine: 'border-[#84334b]/45',
+            fullBadge: 'bg-[#84334b] text-white font-black shadow-xs',
+          };
         case 'amethyst-haze':
         default:
           return {
@@ -2865,6 +3212,27 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           borderHeroLine: 'border-stone-200/80',
           fullBadge: 'notebook-light-novel-tag font-bold',
         };
+      case 'lululemon':
+        return {
+          outer: 'border-[#ded0d4] bg-[#f2ebef]/95 shadow-lg',
+          inner: 'bg-white border-[#ded0d4] shadow-md',
+          divider: 'border-[#ded0d4]',
+          dashedDivider: 'border-[#d8c5ca]',
+          cutout: 'bg-[#ebdce0] border border-[#d8c5ca] shadow-[inset_0_2px_4px_rgba(204,123,143,0.08)]',
+          kicker: 'text-[#8c5a67]',
+          title: 'text-[#382329] hover:text-[#ad4862]',
+          meta: 'text-[#8c5a67]',
+          author: 'text-[#382329]',
+          synopsis: 'text-[#573740]',
+          btnPrimary: 'lulu-light-btn font-bold !text-[#ad4862] hover:!text-[#9c3e55]',
+          btnSecondary: 'lulu-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
+          dotActive: 'bg-[#cc7b8f] ring-1 ring-[#cc7b8f]/30 shadow-xs',
+          dotInactive: 'bg-[#e4d7db]',
+          barcode: 'bg-[#cc7b8f]',
+          coverBorder: 'border-[#e4d7db] bg-white',
+          borderHeroLine: 'border-[#e4d7db]',
+          fullBadge: 'lulu-light-novel-tag font-bold',
+        };
       case 'amethyst-haze':
       default:
         return {
@@ -2904,12 +3272,16 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           return 'bg-[#28282e] text-zinc-100 border border-zinc-500/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#34343d] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
         case 'cosmic':
           return 'bg-[#251b42] text-indigo-100 border border-indigo-500/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#322459] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
+        case 'lululemon':
+          return 'bg-[#24151a] text-[#f4ebee] border border-[#84334b]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#341b25] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
         case 'amethyst-haze':
         default:
           return 'bg-[#2a1e3b] text-[#ded6e8] border border-[#6e5585]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#37274e] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
       }
     }
     switch (th) {
+      case 'lululemon':
+        return 'lulu-light-btn hover:!text-[#ad4862]';
       case 'slate-haze':
         return 'frost-light-btn hover:!text-[#0284c7]';
       case 'sage':
@@ -2927,6 +3299,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   // Kiểu nút Neumorphism + Glassmorphism cho chế độ sáng theo phong cách theme Frost áp dụng cho tất cả các theme
   const getLightModeNeumorphicBtnStyles = (th: NovelThemeId) => {
     switch (th) {
+      case 'lululemon':
+        return {
+          btn: 'lulu-light-btn',
+          text: 'text-[#cc7b8f] hover:text-[#b86277]',
+          expand: 'lulu-light-btn !text-[#cc7b8f] hover:!text-[#b86277]',
+        };
       case 'slate-haze':
         return {
           btn: 'frost-light-btn',
@@ -2965,6 +3343,16 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   // Cấu hình đổ màu khối mềm mại không viền (Filled Block) cho chế độ tối
   const getDarkModeFilledBlockStyles = (th: NovelThemeId) => {
     switch (th) {
+      case 'lululemon':
+        return {
+          cardBg: 'bg-gradient-to-br from-[#24151a] via-[#1c1115] to-[#150d10] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
+          itemBg: 'bg-white/[0.04] hover:bg-white/[0.08]',
+          iconBg: 'bg-[#84334b]/30 text-[#d4a3af]',
+          badgeBg: 'bg-[#84334b]/30 text-[#d4a3af]',
+          title: 'text-[#faf2f4] group-hover:text-[#d4a3af]',
+          subtitle: 'text-[#c296a2]',
+          chevron: 'text-[#d4a3af] bg-white/[0.05] hover:bg-white/[0.1]',
+        };
       case 'sage':
         return {
           cardBg: 'bg-gradient-to-br from-[#142318] via-[#0f1b13] to-[#0a130d] shadow-[0_20px_50px_rgba(0,0,0,0.55)]',
@@ -3042,6 +3430,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
     if (isDarkEffective) {
       switch (theme) {
+        case 'lululemon':
+          return {
+            btnBg: '#84334b',
+            btnBorder: 'border-0 border-transparent',
+            textColor: 'text-white',
+            shadowColor: '#421b27',
+          };
         case 'sage':
           return {
             btnBg: '#3b5c43',
@@ -3082,6 +3477,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     } else {
       // Light mode: trung tính, dịu nhẹ, thanh lịch hài hòa với theme
       switch (theme) {
+        case 'lululemon':
+          return {
+            btnBg: '#f2ebef',
+            btnBorder: 'border-[#ded0d4] hover:border-[#84334b]',
+            textColor: 'text-[#382329]',
+            shadowColor: '#ded0d4',
+          };
         case 'sage':
           return {
             btnBg: '#f6f9f5',
@@ -3340,8 +3742,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     })}
                   </div>
 
-                  {/* Tắt/bật Hiệu ứng nền của chế độ tối theme Purple (Thay nút toggle bằng Bật/Tắt) */}
-                  {(theme === 'amethyst-haze' || theme === 'cosmic') && isDarkEffective && (
+                  {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme (Mặc định tắt khi lần đầu vào trang) */}
+                  {isDarkEffective && (
                     <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
                       <button
                         type="button"
@@ -3354,7 +3756,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             ? 'hover:bg-zinc-800/60 text-zinc-200'
                             : 'hover:bg-zinc-100 text-zinc-800'
                         }`}
-                        title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
+                        title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
                       >
                         <div className="flex items-center">
                           <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
@@ -3763,7 +4165,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     <button
                       type="button"
                       onClick={() => onSelectNovel(currentHeroNovel)}
-                      className={`px-5 py-2.5 rounded-lg font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 select-none active:scale-95 ${ticketTheme.btnPrimary}`}
+                      className={`px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 select-none active:scale-95 ${ticketTheme.btnPrimary}`}
                     >
                       <BookOpen className="w-4 h-4 shrink-0" />
                       <span>Đọc Truyện Ngay</span>
@@ -3993,7 +4395,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           <div id="completed-novels-section" className="space-y-3 scroll-mt-24">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <h2 className={`text-xl sm:text-2xl ${themeFontHeading} font-bold ${tStyles.sectionTitle}`}>
+                <h2 className={`text-xl sm:text-2xl ${themeFontHeading} font-bold ${isDarkEffective ? '!text-white drop-shadow-sm' : tStyles.sectionTitle}`}>
                   <span>Tiểu Thuyết Đã Hoàn</span>
                 </h2>
               </div>

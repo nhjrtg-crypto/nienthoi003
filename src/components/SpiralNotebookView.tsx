@@ -14,11 +14,25 @@ import {
   CheckCircle2,
   Trash2,
   Star,
+  Sparkles,
+  Monitor,
+  Disc,
+  Gamepad2,
+  Folder,
+  Terminal,
+  Cpu,
+  HardDrive,
+  Play,
+  Volume2,
+  Save,
 } from 'lucide-react';
 import { Novel, NovelChapter, NovelComment } from '../types';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
 import { NovelThemeId, getChapterDisplayParts, getCommentChapterBadgeStyle } from '../utils/themeStyles';
 import { normalizeCommentDate } from '../utils/dateUtils';
+import { safeStorage } from '../utils/safeStorage';
+
+export type SpiralNotebookOption = 'classic' | 'y2k' | 'computer' | 'pixel';
 
 interface SpiralThemeStyles {
   themeName: string;
@@ -1238,6 +1252,229 @@ function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralTheme
     };
   }
 
+  // BERRY THEME (Burgundy #84334b, Sương hồng #ead4d7, Nền xám hồng đậm đà #f2ebef)
+  if (theme === 'lululemon') {
+    if (!isDark) {
+      return {
+        themeName: 'BERRY',
+        outerCoverStyle: {
+          border: '1px solid transparent',
+          background: `
+            linear-gradient(135deg, 
+              rgba(242, 235, 239, 0.92) 0%, 
+              rgba(247, 240, 243, 0.88) 18%, 
+              rgba(255, 255, 255, 0.94) 32%, 
+              rgba(255, 255, 255, 0.94) 68%, 
+              rgba(247, 240, 243, 0.88) 82%, 
+              rgba(242, 235, 239, 0.92) 100%
+            ) padding-box,
+            linear-gradient(to bottom, 
+              rgba(238, 211, 220, 0.65) 0%, 
+              rgba(222, 159, 176, 0.40) 40%, 
+              rgba(204, 123, 143, 0.42) 100%
+            ) border-box
+          `,
+          boxShadow: '4px 4px 14px rgba(204, 123, 143, 0.08), -3px -3px 12px rgba(255, 255, 255, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+        },
+        innerPaperStyle: {
+          boxShadow: '0 4px 16px rgba(204, 123, 143, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+        },
+        bannerBadge: 'lulu-light-novel-tag font-semibold',
+        bannerBadgeIcon: 'text-[#cc7b8f] fill-[#cc7b8f]/20',
+        bannerTitle: 'text-[#382329]',
+        bannerDivider: 'bg-gradient-to-r from-transparent via-[#cc7b8f]/60 to-transparent',
+        coverBg: 'bg-[#f2ebef]/90 backdrop-blur-2xl',
+        coverBorder: 'border-transparent',
+        coverShadow: '',
+        ringsGradient: 'bg-gradient-to-r from-[#eed3dc] via-[#ffffff] to-[#eed3dc]',
+        ringsBorder: 'border-[#d8c5ca]',
+        holesBg: 'bg-[#eddde2]',
+        holesBorder: 'border-[#ded0d4]',
+        spineBg: 'bg-gradient-to-b from-[#faedf0] via-[#f6e1e6] to-[#ebd0d7]',
+        spineDashedBorder: 'border-[#d8c5ca]',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(204,123,143,0.10)]',
+        spineHoleBorder: 'border-[#d8c5ca]',
+        spineHoleBg: 'bg-[#f7eff2]',
+        spineHoleCenterBg: 'bg-[#cc7b8f]',
+        paperBg: 'bg-white',
+        paperBorder: 'border border-[#ded0d4]',
+        paperText: 'text-[#382329]',
+        dashedBorder: 'border-[#ded0d4]',
+        plannerBadgeBg: 'bg-[#faedf0]',
+        plannerBadgeText: 'text-[#cc7b8f]',
+        plannerBadgeBorder: 'border border-[#ded0d4]',
+        dateText: 'text-[#cc7b8f]',
+        rulerText: 'text-[#cc7b8f]',
+        rulerBg: 'bg-[#f7eff2]',
+        rulerBorder: 'border-[#ded0d4]',
+        overviewBg: 'bg-white/95',
+        overviewBorder: 'border border-[#ded0d4]',
+        binderClip: 'bg-gradient-to-r from-[#cc7b8f] to-[#de9fb0] border-[#b86277] shadow-md',
+        statusBadge: 'bg-gradient-to-r from-[#cc7b8f] via-[#de9fb0] to-[#eed3dc] text-[#382329] border border-[#ded0d4] shadow-xs font-bold',
+        cardInnerBg: 'bg-white/95',
+        cardInnerBorder: 'border border-[#ded0d4]',
+        authorEditorBoxBg: 'bg-[#f7edf0]',
+        iconAccent: 'text-[#cc7b8f]',
+        subIconAccent: 'text-[#de9fb0]',
+        tagPill: 'lulu-light-novel-tag font-medium',
+        primaryBtn: 'lulu-light-btn-active font-bold shadow-xs',
+        bookmarkBtn: 'lulu-light-btn',
+        likeBtn: 'lulu-light-btn',
+        synopsisHeaderIcon: 'text-[#cc7b8f]',
+        synopsisHeaderText: 'text-[#382329] font-bold',
+        synopsisBorderLeft: 'border-[#cc7b8f]',
+        loreBoxBg: 'bg-[#f7eff2]/90',
+        loreBoxBorder: 'border border-[#ded0d4]',
+        loreTitleText: 'text-[#382329] font-semibold',
+        loreIconText: 'text-[#cc7b8f]',
+        loreBodyText: 'text-[#573740]',
+        chaptersHeaderIcon: 'text-[#cc7b8f]',
+        chaptersHeaderText: 'text-[#382329] font-bold',
+        chaptersBadge: 'bg-[#faedf0] text-[#cc7b8f] border border-[#ded0d4] font-semibold',
+        inputBg: 'bg-white',
+        inputBorder: 'border-[#ded0d4]',
+        inputFocus: 'focus:border-[#cc7b8f] focus:ring-2 focus:ring-[#cc7b8f]/20',
+        inputText: 'text-[#382329] placeholder-[#8c5a67]',
+        chapterCardBg: 'bg-[#f7eff2]/90',
+        chapterCardBorder: 'border border-[#ded0d4]',
+        chapterCardHoverBorder: 'hover:border-[#cc7b8f] hover:shadow-md hover:shadow-[#cc7b8f]/10',
+        chapterCardHoverText: 'group-hover:text-[#cc7b8f]',
+        chapterReadArrow: 'text-[#cc7b8f]',
+        extraChapterBadge: 'bg-[#faedf0] text-[#cc7b8f] border border-[#ded0d4]',
+        commentsHeaderIcon: 'text-[#cc7b8f]',
+        commentsHeaderText: 'text-[#382329] font-bold',
+        commentsBadge: 'text-[#cc7b8f]',
+        commentFormBg: 'bg-[#f7eff2]/90',
+        commentFormBorder: 'border border-[#ded0d4]',
+        commentInputBg: 'bg-[#ebdce0]',
+        commentInputBorder: 'border-[#ded0d4]',
+        commentBtn: 'lulu-light-btn-active font-bold shadow-xs',
+        commentItemBg: 'bg-[#f7eff2]/90',
+        commentItemBorder: 'border border-[#ded0d4]',
+        commentAvatarBg: 'bg-gradient-to-br from-[#cc7b8f] to-[#de9fb0] text-[#382329] font-bold shadow-sm',
+        editorNoteBg: 'bg-[#f7eff2]/90',
+        editorNoteBorder: 'border border-[#ded0d4]',
+        editorNoteTitle: 'text-[#382329] font-semibold',
+        editorNoteIcon: 'text-[#cc7b8f]',
+        relatedHeaderIcon: 'text-[#cc7b8f]',
+        relatedHeaderText: 'text-[#382329] font-bold',
+        relatedCardBg: 'bg-[#f7eff2]/90',
+        relatedCardBorder: 'border border-[#ded0d4]',
+        relatedCardHoverBorder: 'hover:border-[#cc7b8f] hover:shadow-md',
+        relatedCardHoverTitle: 'group-hover:text-[#cc7b8f]',
+        relatedLinkText: 'text-[#cc7b8f]',
+        footerBorder: 'border-[#ded0d4]',
+        footerText: 'text-[#8c5a67]',
+        washiTape: 'bg-[#faedf0]/80 border border-[#ded0d4] shadow-xs',
+        washiBgPattern: 'repeating-linear-gradient(45deg, #faedf0 0px, #faedf0 6px, #ffffff 6px, #ffffff 12px)',
+        washiBorder: '1px solid rgba(222, 208, 212, 0.8)',
+        synopsisLineColor: 'rgba(204, 123, 143, 0.05)',
+        heartIcon: 'text-[#cc7b8f] fill-[#eed3dc]/40',
+        chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#f7eff2] [&::-webkit-scrollbar-thumb]:bg-[#ded0d4]/70 hover:[&::-webkit-scrollbar-thumb]:bg-[#cc7b8f]/80 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(222,208,212,0.7)_transparent] [scrollbar-width:thin]',
+        paperClipClass: 'text-[#cc7b8f]',
+      };
+    } else {
+      return {
+        themeName: 'BERRY (TỐI)',
+        bannerBadge: 'text-[#f4ebee] bg-[#24131b]/90 backdrop-blur-xl border border-[#84334b]/40 shadow-xs',
+        bannerBadgeIcon: 'text-[#ba3859] fill-[#84334b]/40',
+        bannerTitle: 'text-[#f4ebee] drop-shadow-md',
+        bannerDivider: 'bg-gradient-to-r from-[#84334b] via-[#ba3859] to-[#ead4d7]',
+        coverBg: 'bg-[#150d10]/95 backdrop-blur-2xl',
+        coverBorder: 'border-[#84334b]/30',
+        coverShadow: 'shadow-[0_25px_60px_rgba(132,51,75,0.25)]',
+        ringsGradient: 'bg-gradient-to-r from-[#84334b] via-[#ba3859] to-[#ead4d7]',
+        ringsBorder: 'border-[#ba3859]/40',
+        holesBg: 'bg-[#0c0608]',
+        holesBorder: 'border-[#84334b]/40',
+        spineBg: 'bg-[#1c1115]/95 backdrop-blur-xl',
+        spineDashedBorder: 'border-[#84334b]/40',
+        spineShadow: 'shadow-[inset_-2px_0_10px_rgba(0,0,0,0.55)]',
+        spineHoleBorder: 'border-[#84334b]/35',
+        spineHoleBg: 'bg-[#090406]',
+        spineHoleCenterBg: 'bg-[#ba3859]/50',
+        paperBg: 'bg-[#120a0d]/95 backdrop-blur-2xl',
+        paperBorder: 'border-[#84334b]/25',
+        paperText: 'text-[#f4ebee]',
+        dashedBorder: 'border-[#84334b]/25',
+        plannerBadgeBg: 'bg-[#24131b]/85 backdrop-blur-md',
+        plannerBadgeText: 'text-[#f4ebee]',
+        plannerBadgeBorder: 'border-[#84334b]/35',
+        dateText: 'text-[#ead4d7]',
+        rulerText: 'text-[#ead4d7]',
+        rulerBg: 'bg-[#1e1017]/60',
+        rulerBorder: 'border-[#84334b]/20',
+        overviewBg: 'bg-[#180d12]/90',
+        overviewBorder: 'border-[#84334b]/20',
+        binderClip: 'bg-gradient-to-r from-[#84334b] via-[#a64462] to-[#ba3859] border-[#ba3859]/50 shadow-md shadow-[#84334b]/40',
+        statusBadge: 'bg-[#25131c]/90 text-[#f4ebee] border border-[#84334b]/40 shadow-xs font-semibold',
+        cardInnerBg: 'bg-[#180d12]/90',
+        cardInnerBorder: 'border-[#84334b]/20',
+        authorEditorBoxBg: 'bg-[#211119]/80',
+        iconAccent: 'text-[#ba3859]',
+        subIconAccent: 'text-[#ead4d7]',
+        tagPill: 'bg-[#24131b]/80 text-[#f4ebee] border border-[#84334b]/30 hover:border-[#ba3859]/60 hover:bg-[#2c1722] transition-colors',
+        primaryBtn: 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164] text-white shadow-md shadow-[#150d10]/60 font-bold border border-white/10',
+        bookmarkBtn: 'bg-[#201118] text-[#ead4d7] border border-[#84334b]/30 hover:border-[#ba3859]/60 hover:bg-[#28151f]',
+        likeBtn: 'bg-[#201118] text-[#ead4d7] border border-[#84334b]/30 hover:border-[#ba3859]/60 hover:bg-[#28151f]',
+        synopsisHeaderIcon: 'text-[#ba3859]',
+        synopsisHeaderText: 'text-[#f4ebee] font-bold',
+        synopsisBorderLeft: 'border-[#ba3859]',
+        loreBoxBg: 'bg-[#1e1017]/60',
+        loreBoxBorder: 'border border-[#84334b]/20 border-l-2 border-l-[#ba3859]',
+        loreTitleText: 'text-[#f4ebee] font-semibold',
+        loreIconText: 'text-[#ba3859]',
+        loreBodyText: 'text-[#e2c4cb]',
+        chaptersHeaderIcon: 'text-[#ba3859]',
+        chaptersHeaderText: 'text-[#f4ebee] font-bold',
+        chaptersBadge: 'bg-[#24131b]/80 text-[#ead4d7] border border-[#84334b]/30',
+        inputBg: 'bg-[#1a0f15]/90 backdrop-blur-xl',
+        inputBorder: 'border-[#84334b]/35',
+        inputFocus: 'focus:border-[#ba3859] focus:bg-[#25131e]',
+        inputText: 'text-[#f4ebee] placeholder-[#c296a2]/60',
+        chapterCardBg: 'bg-[#190e13]/80',
+        chapterCardBorder: 'border-[#84334b]/20',
+        chapterCardHoverBorder: 'hover:border-[#ba3859]/60 hover:bg-[#22131b] hover:shadow-md hover:shadow-[#84334b]/20',
+        chapterCardHoverText: 'group-hover:text-[#ead4d7]',
+        chapterReadArrow: 'text-[#ba3859]',
+        extraChapterBadge: 'bg-[#2d1722]/80 text-[#ead4d7] border border-[#84334b]/40',
+        commentsHeaderIcon: 'text-[#ba3859]',
+        commentsHeaderText: 'text-[#f4ebee] font-bold',
+        commentsBadge: 'text-[#ead4d7]',
+        commentFormBg: 'bg-[#190e13]/90',
+        commentFormBorder: 'border-[#84334b]/25',
+        commentInputBg: 'bg-[#201118]',
+        commentInputBorder: 'border-[#84334b]/35',
+        commentBtn: 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:to-[#c74164] text-white font-bold shadow-sm shadow-[#150d10]/40',
+        commentItemBg: 'bg-[#190e13]/80',
+        commentItemBorder: 'border-[#84334b]/20',
+        commentAvatarBg: 'bg-gradient-to-br from-[#84334b] to-[#ba3859] text-white font-bold shadow-sm shadow-[#84334b]/30',
+        editorNoteBg: 'bg-[#1e1017]/60',
+        editorNoteBorder: 'border-[#84334b]/20',
+        editorNoteTitle: 'text-[#f4ebee] font-semibold',
+        editorNoteIcon: 'text-[#ba3859]',
+        relatedHeaderIcon: 'text-[#ba3859]',
+        relatedHeaderText: 'text-[#f4ebee] font-bold',
+        relatedCardBg: 'bg-[#190e13]',
+        relatedCardBorder: 'border-[#84334b]/20',
+        relatedCardHoverBorder: 'hover:border-[#ba3859]/60 hover:bg-[#22131b]',
+        relatedCardHoverTitle: 'group-hover:text-[#ead4d7]',
+        relatedLinkText: 'text-[#ba3859]',
+        footerBorder: 'border-[#84334b]/20',
+        footerText: 'text-[#c296a2]',
+        washiTape: 'bg-[#2d1722]/80 backdrop-blur-md border border-[#84334b]/40 shadow-xs',
+        washiBgPattern: 'repeating-linear-gradient(45deg, rgba(132,51,75,0.4) 0px, rgba(132,51,75,0.4) 6px, rgba(32,17,25,0.6) 6px, rgba(32,17,25,0.6) 12px)',
+        washiBorder: '1px solid rgba(186, 56, 89, 0.4)',
+        synopsisLineColor: 'rgba(186, 56, 89, 0.08)',
+        heartIcon: 'text-[#ba3859] fill-[#84334b]/50',
+        chapterScrollbar: '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#180d12] [&::-webkit-scrollbar-thumb]:bg-[#84334b]/60 hover:[&::-webkit-scrollbar-thumb]:bg-[#ba3859]/90 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgba(132,51,75,0.6)_transparent] [scrollbar-width:thin]',
+        paperClipClass: 'text-[#ba3859]',
+      };
+    }
+  }
+
   // 6. DEFAULT / AMETHYST-HAZE (Purple)
   if (isDark) {
     return {
@@ -1530,6 +1767,17 @@ export function getSpiralPlannerCaroGridStyle(theme: NovelThemeId): React.CSSPro
         `,
         backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
       };
+    case 'lululemon': // Lululemon: Hồng mận sương #cc7b8f trên nền xám hồng đậm đà #f2ebef
+      return {
+        backgroundColor: '#f2ebef',
+        backgroundImage: `
+          linear-gradient(90deg, rgba(204, 123, 143, 0.12) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(204, 123, 143, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(238, 211, 220, 0.25) 16px, transparent 16px),
+          linear-gradient(0deg, rgba(238, 211, 220, 0.25) 16px, transparent 16px)
+        `,
+        backgroundSize: '32px 32px, 32px 32px, 64px 64px, 64px 64px',
+      };
     case 'amethyst-haze': // Purple: Tím Oải Hương / Amethyst Pastel Dịu Ngọt (Đồng bộ chuẩn theme)
     default:
       return {
@@ -1613,6 +1861,9 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
   const [userName, setUserName] = useState('');
   const [newCommentText, setNewCommentText] = useState('');
 
+  // Chủ đề sổ còng: Cố định Cổ điển (Classic) theo chỉ thị người dùng (giữ cổ điển, bỏ các chủ đề khác)
+  const spiralOption = 'classic';
+
   // Styles thích ứng theo Màu Giao Diện và Chế độ tối
   const sTheme = useMemo(
     () => getSpiralThemeStyles(theme, isDarkEffective),
@@ -1630,9 +1881,13 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
     const lineColor = isDarkEffective
       ? (theme === 'cosmic' || theme === 'amethyst-haze'
           ? 'rgba(192, 132, 252, 0.08)'
+          : theme === 'lululemon'
+          ? 'rgba(186, 56, 89, 0.12)'
           : 'rgba(255, 255, 255, 0.06)')
       : (theme === 'amethyst-haze' || theme === 'cosmic'
           ? 'rgba(147, 51, 234, 0.08)'
+          : theme === 'lululemon'
+          ? 'rgba(204, 123, 143, 0.08)'
           : theme === 'sage'
           ? 'rgba(77, 111, 83, 0.08)'
           : theme === 'mocha'
@@ -1717,9 +1972,12 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
       <div className="w-full relative">
         {/* BÌA CỨNG NGOÀI (SOFT HARDCOVER): GÁY CÒNG BỌC HẾT CẢ CHIỀU DÀI & CHIỀU RỘNG MÉP */}
         <div
-          className={`w-full relative rounded-3xl sm:rounded-[36px] ${sTheme.coverBg} ${sTheme.coverShadow} border ${sTheme.coverBorder} transition-all duration-300 overflow-hidden flex flex-row items-stretch`}
+          className={`w-full relative rounded-3xl sm:rounded-[36px] ${sTheme.coverBg} ${sTheme.coverShadow} border ${sTheme.coverBorder} transition-all duration-300 overflow-hidden flex flex-col`}
           style={!isDarkEffective && sTheme.outerCoverStyle ? sTheme.outerCoverStyle : undefined}
         >
+
+          {/* Khối thân sổ (Gáy còng bên trái + Trang ruột bên phải) */}
+          <div className="w-full relative flex flex-row items-stretch flex-1">
           {/* Lớp phản chiếu ánh sáng kính trong chế độ tối (Glassmorphism Specular Sheen) */}
           {isDarkEffective && (
             <div
@@ -1753,13 +2011,16 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
             >
               <div className="space-y-6">
               
-              {/* HEADER SỔ: Nhãn Planner */}
+              {/* HEADER SỔ: Nhãn Planner thích ứng theo Option (Cổ Điển | Y2K | Máy Tính | Pixel) */}
               <div className={`flex items-center justify-between gap-3 border-b border-dashed ${sTheme.dashedBorder} pb-4 transition-colors duration-300`}>
                 <div className="flex items-center gap-3">
                   <div className={`px-3 py-1 rounded-full ${sTheme.plannerBadgeBg} ${sTheme.plannerBadgeText} font-source-sans text-xs sm:text-[13px] font-black tracking-wider uppercase border ${sTheme.plannerBadgeBorder} flex items-center gap-1.5 transition-colors`}>
                     <Heart className={`w-3.5 h-3.5 ${sTheme.heartIcon}`} />
                     <span>PLANNER #{novel.id.slice(0, 6).toUpperCase()}</span>
                   </div>
+                </div>
+                <div className="text-[11px] font-mono opacity-60 hidden sm:flex items-center gap-2">
+                  <span>NOVEL ARCHIVE</span>
                 </div>
               </div>
 
@@ -1800,6 +2061,25 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                     </div>
 
                     <div className="aspect-[3/4.2] w-full rounded-xl overflow-hidden bg-stone-100 dark:bg-black/30 backdrop-blur-xs relative group">
+                      {/* Sticker Y2K */}
+                      {spiralOption === 'y2k' && (
+                        <div className="absolute -bottom-1.5 -left-1.5 z-20 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider border shadow-sm bg-gradient-to-r from-pink-400/40 via-purple-400/40 to-cyan-400/40 backdrop-blur-md select-none">
+                          ★ Y2K ARCHIVE ★
+                        </div>
+                      )}
+                      {/* Tiêu đề cửa sổ máy tính */}
+                      {spiralOption === 'computer' && (
+                        <div className="absolute top-1 inset-x-1 z-20 px-1.5 py-0.5 rounded-xs text-[9px] font-mono flex items-center justify-between bg-black/60 text-white backdrop-blur-xs select-none">
+                          <span>preview.bmp</span>
+                          <span>[- □ ✕]</span>
+                        </div>
+                      )}
+                      {/* Nhãn Pixel Art */}
+                      {spiralOption === 'pixel' && (
+                        <div className="absolute -bottom-1.5 -left-1.5 z-20 px-2 py-0.5 text-[9px] font-mono font-bold uppercase border-2 border-dashed bg-black/75 text-white backdrop-blur-xs select-none">
+                          👾 [HERO_ART]
+                        </div>
+                      )}
                       <img
                         src={getDirectImageUrl(novel.coverImage, novel.id || novel.title)}
                         alt={novel.title}
@@ -1820,13 +2100,69 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                     {/* Tác giả & Editor */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-[13px] sm:text-[15px] font-source-sans">
                       <div className={`flex items-start gap-1.5 p-2.5 rounded-xl ${sTheme.authorEditorBoxBg} shadow-2xs transition-colors`}>
-                        <span className="opacity-70 shrink-0">Tác giả:</span>
-                        <strong className="break-words leading-snug">{novel.author.name}</strong>
+                        {spiralOption === 'computer' ? (
+                          <>
+                            <Terminal className="w-4 h-4 opacity-70 shrink-0 mt-0.5" />
+                            <div className="font-mono text-xs">
+                              <span className="opacity-70 block text-[10px]">SYS_AUTHOR:</span>
+                              <strong className="break-words leading-snug">{novel.author.name}</strong>
+                            </div>
+                          </>
+                        ) : spiralOption === 'y2k' ? (
+                          <>
+                            <Sparkles className="w-4 h-4 text-pink-500 shrink-0 mt-0.5 animate-pulse" />
+                            <div className="font-mono text-xs">
+                              <span className="opacity-70 block text-[10px]">🎧 ARTIST / TÁC GIẢ:</span>
+                              <strong className="break-words leading-snug">{novel.author.name}</strong>
+                            </div>
+                          </>
+                        ) : spiralOption === 'pixel' ? (
+                          <>
+                            <span className="text-amber-500 font-mono text-xs shrink-0 select-none">⚔️</span>
+                            <div className="font-mono text-xs">
+                              <span className="opacity-70 block text-[10px]">[QUEST GIVER]:</span>
+                              <strong className="break-words leading-snug">{novel.author.name}</strong>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <span className="opacity-70 shrink-0">Tác giả:</span>
+                            <strong className="break-words leading-snug">{novel.author.name}</strong>
+                          </>
+                        )}
                       </div>
 
                       <div className={`flex items-start gap-1.5 p-2.5 rounded-xl ${sTheme.authorEditorBoxBg} shadow-2xs transition-colors`}>
-                        <span className="opacity-70 shrink-0">Editor:</span>
-                        <strong className="break-words leading-snug">{editorName}</strong>
+                        {spiralOption === 'computer' ? (
+                          <>
+                            <Cpu className="w-4 h-4 opacity-70 shrink-0 mt-0.5" />
+                            <div className="font-mono text-xs">
+                              <span className="opacity-70 block text-[10px]">SYS_EDITOR:</span>
+                              <strong className="break-words leading-snug">{editorName}</strong>
+                            </div>
+                          </>
+                        ) : spiralOption === 'y2k' ? (
+                          <>
+                            <Disc className="w-4 h-4 text-purple-400 shrink-0 mt-0.5 animate-spin" style={{ animationDuration: '6s' }} />
+                            <div className="font-mono text-xs">
+                              <span className="opacity-70 block text-[10px]">💿 PRODUCER / EDITOR:</span>
+                              <strong className="break-words leading-snug">{editorName}</strong>
+                            </div>
+                          </>
+                        ) : spiralOption === 'pixel' ? (
+                          <>
+                            <span className="text-rose-500 font-mono text-xs shrink-0 select-none">🛡️</span>
+                            <div className="font-mono text-xs">
+                              <span className="opacity-70 block text-[10px]">[GUILD MASTER]:</span>
+                              <strong className="break-words leading-snug">{editorName}</strong>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <span className="opacity-70 shrink-0">Editor:</span>
+                            <strong className="break-words leading-snug">{editorName}</strong>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -1835,9 +2171,23 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                       {novel.genres.map((g) => (
                         <span
                           key={g}
-                          className={`px-3 py-1 rounded-full text-xs sm:text-[13px] font-semibold border shadow-2xs transition-colors ${sTheme.tagPill}`}
+                          className={`px-3 py-1 text-xs sm:text-[13px] font-semibold border shadow-2xs transition-colors ${
+                            spiralOption === 'computer'
+                              ? `rounded-md font-mono text-[11px] ${sTheme.tagPill}`
+                              : spiralOption === 'pixel'
+                              ? `rounded-none font-mono text-[11px] border-2 border-dashed ${sTheme.tagPill}`
+                              : spiralOption === 'y2k'
+                              ? `rounded-full font-mono text-[11px] tracking-wider ${sTheme.tagPill}`
+                              : `rounded-full ${sTheme.tagPill}`
+                          }`}
                         >
-                          #{g}
+                          {spiralOption === 'computer'
+                            ? `*.${g}.DAT`
+                            : spiralOption === 'pixel'
+                            ? `[ITEM: #${g}]`
+                            : spiralOption === 'y2k'
+                            ? `★ #${g} ★`
+                            : `#${g}`}
                         </span>
                       ))}
                     </div>
@@ -1848,10 +2198,37 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                     <button
                       type="button"
                       onClick={() => onReadChapter(1)}
-                      className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black ${sTheme.primaryBtn} hover:opacity-95 cursor-pointer shadow-md flex items-center gap-2 active:scale-95 transition-all`}
+                      className={`px-5 py-2.5 text-xs sm:text-sm font-black ${sTheme.primaryBtn} hover:opacity-95 cursor-pointer shadow-md flex items-center gap-2 active:scale-95 transition-all ${
+                        spiralOption === 'computer'
+                          ? 'rounded-md font-mono border-t-2 border-l-2 border-white/60 border-b-2 border-r-2 border-black/30'
+                          : spiralOption === 'pixel'
+                          ? 'rounded-none font-mono tracking-wider border-2 border-dashed'
+                          : spiralOption === 'y2k'
+                          ? 'rounded-full font-mono tracking-wider shadow-lg'
+                          : 'rounded-2xl'
+                      }`}
                     >
-                      <BookOpen className="w-4 h-4" />
-                      <span>Đọc Chương 1</span>
+                      {spiralOption === 'computer' ? (
+                        <>
+                          <Terminal className="w-4 h-4" />
+                          <span>EXECUTE READER.EXE [CHƯƠNG 1]</span>
+                        </>
+                      ) : spiralOption === 'y2k' ? (
+                        <>
+                          <Play className="w-4 h-4 fill-current" />
+                          <span>PLAY TRACK 01.MP3 [CHƯƠNG 1]</span>
+                        </>
+                      ) : spiralOption === 'pixel' ? (
+                        <>
+                          <Gamepad2 className="w-4 h-4" />
+                          <span>▶ PRESS START [STAGE 1]</span>
+                        </>
+                      ) : (
+                        <>
+                          <BookOpen className="w-4 h-4" />
+                          <span>Đọc Chương 1</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -1863,10 +2240,37 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                 <div className="space-y-4">
                   <div className={`flex items-center justify-between border-b border-solid ${sTheme.dashedBorder} pb-2 opacity-80`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-black uppercase tracking-widest ${sTheme.synopsisHeaderText} flex items-center gap-1.5`}>
-                      <FileText className={`w-4 h-4 ${sTheme.synopsisHeaderIcon}`} />
-                      <span>GIỚI THIỆU</span>
+                      {spiralOption === 'computer' ? (
+                        <>
+                          <FileText className={`w-4 h-4 ${sTheme.synopsisHeaderIcon}`} />
+                          <span>README.TXT // GIỚI THIỆU TÁC PHẨM</span>
+                        </>
+                      ) : spiralOption === 'y2k' ? (
+                        <>
+                          <Sparkles className="w-4 h-4 text-pink-500 animate-pulse" />
+                          <span>✦ CYBER TRACK INFO // GIỚI THIỆU ✦</span>
+                        </>
+                      ) : spiralOption === 'pixel' ? (
+                        <>
+                          <Gamepad2 className="w-4 h-4 text-amber-500" />
+                          <span>📜 [MAIN QUEST BRIEFING]</span>
+                        </>
+                      ) : (
+                        <>
+                          <FileText className={`w-4 h-4 ${sTheme.synopsisHeaderIcon}`} />
+                          <span>GIỚI THIỆU</span>
+                        </>
+                      )}
                     </span>
-                    <span className="text-[10px] sm:text-[11px] font-mono opacity-60">{effectiveChapters.length} chương</span>
+                    <span className="text-[10px] sm:text-[11px] font-mono opacity-60">
+                      {spiralOption === 'computer'
+                        ? `${effectiveChapters.length} FILES LOADED`
+                        : spiralOption === 'y2k'
+                        ? `${effectiveChapters.length} TRACKS`
+                        : spiralOption === 'pixel'
+                        ? `${effectiveChapters.length} STAGES`
+                        : `${effectiveChapters.length} chương`}
+                    </span>
                   </div>
 
                   <div className="space-y-4 text-[16px] sm:text-[18px]">
@@ -1906,7 +2310,15 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                         className={`p-4 sm:p-5 rounded-xl ${sTheme.loreBoxBg} border ${sTheme.loreBoxBorder} space-y-2 transition-colors duration-300 relative overflow-hidden`}
                       >
                         <span className={`text-xs sm:text-[13px] font-bold ${sTheme.loreTitleText} block relative z-10`}>
-                          <span>Thiết lập nhân vật:</span>
+                          {spiralOption === 'computer' ? (
+                            <span className="font-mono">⚙️ REGISTRY_CONFIG // CHARACTER_SPECS.INI</span>
+                          ) : spiralOption === 'y2k' ? (
+                            <span className="font-mono">✦ CYBER AVATAR & CHARACTER LORE ✦</span>
+                          ) : spiralOption === 'pixel' ? (
+                            <span className="font-mono">👾 [PARTY MEMBERS & BOSS PROFILES]</span>
+                          ) : (
+                            <span>Thiết lập nhân vật:</span>
+                          )}
                         </span>
                         <p className={`text-[15px] sm:text-[16px] ${sTheme.loreBodyText} leading-relaxed whitespace-pre-line relative z-10`}>
                           {effectiveWorldLore || novel.worldLore}
@@ -1920,8 +2332,27 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                 <div className={`space-y-4 pt-4 border-t border-dashed ${sTheme.dashedBorder}`}>
                   <div className={`flex items-center justify-between border-b border-dashed ${sTheme.dashedBorder} pb-2`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-black uppercase tracking-widest ${sTheme.chaptersHeaderText} flex items-center gap-1.5`}>
-                      <ListOrdered className={`w-4 h-4 ${sTheme.chaptersHeaderIcon}`} />
-                      <span>MỤC LỤC</span>
+                      {spiralOption === 'computer' ? (
+                        <>
+                          <Folder className={`w-4 h-4 ${sTheme.chaptersHeaderIcon}`} />
+                          <span>C:\DANMEI_OS\CHAPTERS\*.TXT</span>
+                        </>
+                      ) : spiralOption === 'y2k' ? (
+                        <>
+                          <Disc className="w-4 h-4 text-purple-400 animate-spin" style={{ animationDuration: '6s' }} />
+                          <span>CD-ROM TRACKLIST // MỤC LỤC</span>
+                        </>
+                      ) : spiralOption === 'pixel' ? (
+                        <>
+                          <Gamepad2 className={`w-4 h-4 ${sTheme.chaptersHeaderIcon}`} />
+                          <span>WORLD MAP // STAGE SELECT</span>
+                        </>
+                      ) : (
+                        <>
+                          <ListOrdered className={`w-4 h-4 ${sTheme.chaptersHeaderIcon}`} />
+                          <span>MỤC LỤC</span>
+                        </>
+                      )}
                     </span>
                   </div>
 
@@ -1933,14 +2364,34 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                         type="text"
                         value={chapterSearch}
                         onChange={(e) => setChapterSearch(e.target.value)}
-                        placeholder="Tra cứu chương trong sổ..."
-                        className={`w-full pl-9 pr-3 py-2 text-[13px] sm:text-sm ${sTheme.inputBg} border ${sTheme.inputBorder} ${sTheme.inputText} rounded-xl focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
+                        placeholder={
+                          spiralOption === 'computer'
+                            ? 'Tra cứu tệp *.txt...'
+                            : spiralOption === 'y2k'
+                            ? 'Tìm track trong playlist...'
+                            : spiralOption === 'pixel'
+                            ? 'Tìm kiếm stage / nhiệm vụ...'
+                            : 'Tra cứu chương trong sổ...'
+                        }
+                        className={`w-full pl-9 pr-3 py-2 text-[13px] sm:text-sm ${sTheme.inputBg} border ${sTheme.inputBorder} ${sTheme.inputText} ${
+                          spiralOption === 'computer'
+                            ? 'rounded-md font-mono'
+                            : spiralOption === 'pixel'
+                            ? 'rounded-none font-mono border-2 border-dashed'
+                            : 'rounded-xl'
+                        } focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
                       />
                     </div>
                     <button
                       type="button"
                       onClick={() => setChapterSortAsc(!chapterSortAsc)}
-                      className={`py-1 px-2.5 rounded-lg ${sTheme.cardInnerBg} border ${sTheme.cardInnerBorder} cursor-pointer hover:opacity-80 transition-colors flex items-center gap-1 text-[11px] font-mono`}
+                      className={`py-1 px-2.5 ${
+                        spiralOption === 'computer'
+                          ? 'rounded-md font-mono border-t border-l border-white/60 border-b border-r border-black/30'
+                          : spiralOption === 'pixel'
+                          ? 'rounded-none font-mono border-2 border-dashed'
+                          : 'rounded-lg font-mono'
+                      } ${sTheme.cardInnerBg} border ${sTheme.cardInnerBorder} cursor-pointer hover:opacity-80 transition-colors flex items-center gap-1 text-[11px]`}
                       title="Đảo chiều sắp xếp"
                     >
                       <ArrowUpDown className="w-3.5 h-3.5" />
@@ -1956,12 +2407,26 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                         <div
                           key={chap.id}
                           onClick={() => onReadChapter(chap.chapterNumber)}
-                          className={`p-3 rounded-xl ${sTheme.chapterCardBg} border ${sTheme.chapterCardBorder} ${sTheme.chapterCardHoverBorder} cursor-pointer flex items-center justify-between group transition-all shadow-2xs hover:shadow-xs`}
+                          className={`p-3 border ${sTheme.chapterCardBg} ${sTheme.chapterCardBorder} ${sTheme.chapterCardHoverBorder} cursor-pointer flex items-center justify-between group transition-all shadow-2xs hover:shadow-xs ${
+                            spiralOption === 'computer'
+                              ? 'rounded-md font-mono'
+                              : spiralOption === 'pixel'
+                              ? 'rounded-none font-mono border-2 border-dashed'
+                              : spiralOption === 'y2k'
+                              ? 'rounded-xl font-mono'
+                              : 'rounded-xl'
+                          }`}
                         >
                           <div className="space-y-0.5 min-w-0 pr-2">
                             <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className={`text-[15px] sm:text-[17px] font-bold ${sTheme.chapterCardHoverText} truncate block transition-colors`}>
-                                {displayParts.chapterLabel} {displayParts.restTitle ? `• ${displayParts.restTitle}` : ''}
+                              <span className={`text-[14px] sm:text-[16px] font-bold ${sTheme.chapterCardHoverText} truncate block transition-colors`}>
+                                {spiralOption === 'computer'
+                                  ? `📄 Chap_${chap.chapterNumber.toString().padStart(2, '0')}.txt`
+                                  : spiralOption === 'y2k'
+                                  ? `TRACK ${chap.chapterNumber.toString().padStart(2, '0')} ⏵ ${displayParts.chapterLabel}`
+                                  : spiralOption === 'pixel'
+                                  ? `[STAGE ${chap.chapterNumber.toString().padStart(2, '0')}] ⚔️ ${displayParts.chapterLabel}`
+                                  : `${displayParts.chapterLabel} ${displayParts.restTitle ? `• ${displayParts.restTitle}` : ''}`}
                               </span>
                               {displayParts.isExtra && (
                                 <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold border ${sTheme.extraChapterBadge}`}>
@@ -1970,11 +2435,14 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                               )}
                             </div>
                             <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-mono opacity-60">
-                              <span>{chap.publishedAt || 'Đầy đủ'}</span>
+                              {spiralOption === 'computer' && <span>SIZE: 14.2 KB • READY</span>}
+                              {spiralOption === 'y2k' && <span>320 KBPS • STEREO ✦</span>}
+                              {spiralOption === 'pixel' && <span>EXP +500 • CLEARED ★</span>}
+                              {spiralOption === 'classic' && <span>{chap.publishedAt || 'Đầy đủ'}</span>}
                             </div>
                           </div>
                           <span className={`text-xs sm:text-[13px] font-bold ${sTheme.chapterReadArrow} group-hover:translate-x-1 transition-transform shrink-0`}>
-                            Đọc →
+                            {spiralOption === 'computer' ? 'RUN ▶' : spiralOption === 'y2k' ? 'PLAY ▶' : spiralOption === 'pixel' ? 'SELECT ▶' : 'Đọc →'}
                           </span>
                         </div>
                       );
@@ -1986,40 +2454,134 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
                 <div className={`space-y-4 pt-4 border-t border-dashed ${sTheme.dashedBorder}`}>
                   <div className={`flex items-center justify-between border-b border-dashed ${sTheme.dashedBorder} pb-2`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-black uppercase tracking-widest ${sTheme.commentsHeaderText} flex items-center gap-1.5`}>
-                      <MessageSquare className={`w-4 h-4 ${sTheme.commentsHeaderIcon}`} />
-                      <span>BÌNH LUẬN</span>
+                      {spiralOption === 'computer' ? (
+                        <>
+                          <Terminal className={`w-4 h-4 ${sTheme.commentsHeaderIcon}`} />
+                          <span>EVENT_LOG // USER_COMMENTS.LOG</span>
+                        </>
+                      ) : spiralOption === 'y2k' ? (
+                        <>
+                          <Sparkles className="w-4 h-4 text-pink-500 animate-pulse" />
+                          <span>✦ 2000s GUESTBOOK // CYBER SIGNATURES ✦</span>
+                        </>
+                      ) : spiralOption === 'pixel' ? (
+                        <>
+                          <MessageSquare className={`w-4 h-4 ${sTheme.commentsHeaderIcon}`} />
+                          <span>📜 [TAVERN BULLETIN BOARD]</span>
+                        </>
+                      ) : (
+                        <>
+                          <MessageSquare className={`w-4 h-4 ${sTheme.commentsHeaderIcon}`} />
+                          <span>BÌNH LUẬN</span>
+                        </>
+                      )}
                     </span>
-                    <span className={`text-[10px] font-mono ${sTheme.commentsBadge}`}>GHI CHÚ DÁN TRONG SỔ</span>
+                    <span className={`text-[10px] font-mono ${sTheme.commentsBadge}`}>
+                      {spiralOption === 'computer'
+                        ? 'LOG_STREAM // OK'
+                        : spiralOption === 'y2k'
+                        ? '★ GUESTBOOK ONLINE ★'
+                        : spiralOption === 'pixel'
+                        ? '[NPC GUILD: OPEN]'
+                        : 'GHI CHÚ DÁN TRONG SỔ'}
+                    </span>
                   </div>
 
                   {/* Form viết bình luận */}
-                  <form id="spiral-comment-form" onSubmit={handleSubmitComment} className={`p-4 sm:p-5 rounded-2xl ${sTheme.commentFormBg} border ${sTheme.commentFormBorder} space-y-3 shadow-2xs transition-colors`}>
+                  <form id="spiral-comment-form" onSubmit={handleSubmitComment} className={`p-4 sm:p-5 ${
+                    spiralOption === 'computer'
+                      ? 'rounded-md font-mono border-t border-l border-white/60 border-b border-r border-black/30'
+                      : spiralOption === 'pixel'
+                      ? 'rounded-none font-mono border-2 border-dashed'
+                      : 'rounded-2xl'
+                  } ${sTheme.commentFormBg} border ${sTheme.commentFormBorder} space-y-3 shadow-2xs transition-colors`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-black tracking-wider uppercase ${sTheme.commentsHeaderText} block`}>
-                      ĐỂ LẠI GHI CHÚ BÌNH LUẬN TRONG SỔ:
+                      {spiralOption === 'computer'
+                        ? 'GHI DỮ LIỆU VÀO LOG TẬP TIN:'
+                        : spiralOption === 'y2k'
+                        ? 'ĐỂ LẠI LỜI NHẮN TRÊN GUESTBOOK 2000s:'
+                        : spiralOption === 'pixel'
+                        ? 'VIẾT LỜI NHẮN LÊN BẢNG TIN QUÁN RƯỢU:'
+                        : 'ĐỂ LẠI GHI CHÚ BÌNH LUẬN TRONG SỔ:'}
                     </span>
                     <input
                       type="text"
                       required
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Tên của bạn (Bắt buộc)..."
-                      className={`w-full sm:w-64 px-3 py-1.5 text-xs sm:text-sm ${sTheme.commentInputBg} border ${sTheme.commentInputBorder} ${sTheme.inputText} rounded-lg focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
+                      placeholder={
+                        spiralOption === 'computer'
+                          ? 'USER_ID / Tên của bạn...'
+                          : spiralOption === 'y2k'
+                          ? 'Nickname / Tên cyber của bạn...'
+                          : spiralOption === 'pixel'
+                          ? 'Tên lữ khách / Hiệp sĩ...'
+                          : 'Tên của bạn (Bắt buộc)...'
+                      }
+                      className={`w-full sm:w-64 px-3 py-1.5 text-xs sm:text-sm ${sTheme.commentInputBg} border ${sTheme.commentInputBorder} ${sTheme.inputText} ${
+                        spiralOption === 'computer'
+                          ? 'rounded-md font-mono'
+                          : spiralOption === 'pixel'
+                          ? 'rounded-none font-mono border-2 border-dashed'
+                          : 'rounded-lg'
+                      } focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
                     />
                     <textarea
                       rows={2}
                       required
                       value={newCommentText}
                       onChange={(e) => setNewCommentText(e.target.value)}
-                      placeholder="Cảm xúc, nhận xét về truyện..."
-                      className={`w-full px-3 py-2 text-[13px] sm:text-sm ${sTheme.commentInputBg} border ${sTheme.commentInputBorder} ${sTheme.inputText} rounded-lg resize-none focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
+                      placeholder={
+                        spiralOption === 'computer'
+                          ? 'Nhập nội dung thông điệp log...'
+                          : spiralOption === 'y2k'
+                          ? 'Cảm xúc, lời nhắn cyber gửi editor...'
+                          : spiralOption === 'pixel'
+                          ? 'Để lại lời nhắn cho hội quán hiệp sĩ...'
+                          : 'Cảm xúc, nhận xét về truyện...'
+                      }
+                      className={`w-full px-3 py-2 text-[13px] sm:text-sm ${sTheme.commentInputBg} border ${sTheme.commentInputBorder} ${sTheme.inputText} ${
+                        spiralOption === 'computer'
+                          ? 'rounded-md font-mono'
+                          : spiralOption === 'pixel'
+                          ? 'rounded-none font-mono border-2 border-dashed'
+                          : 'rounded-lg'
+                      } resize-none focus:outline-hidden ${sTheme.inputFocus} transition-colors`}
                     />
                     <div className="flex justify-end">
                       <button
                         type="submit"
-                        className={`px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold ${sTheme.commentBtn} cursor-pointer flex items-center gap-1.5 shadow-sm transition-colors`}
+                        className={`px-4 py-1.5 text-xs sm:text-sm font-bold ${sTheme.commentBtn} cursor-pointer flex items-center gap-1.5 shadow-sm transition-colors ${
+                          spiralOption === 'computer'
+                            ? 'rounded-md font-mono border-t border-l border-white/60 border-b border-r border-black/30'
+                            : spiralOption === 'pixel'
+                            ? 'rounded-none font-mono border-2 border-dashed'
+                            : spiralOption === 'y2k'
+                            ? 'rounded-full font-mono'
+                            : 'rounded-lg'
+                        }`}
                       >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Lưu Bình Luận</span>
+                        {spiralOption === 'computer' ? (
+                          <>
+                            <Save className="w-3.5 h-3.5" />
+                            <span>GHI LOG (SAVE.EXE)</span>
+                          </>
+                        ) : spiralOption === 'y2k' ? (
+                          <>
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>SIGN GUESTBOOK ★</span>
+                          </>
+                        ) : spiralOption === 'pixel' ? (
+                          <>
+                            <Send className="w-3.5 h-3.5" />
+                            <span>POST QUEST NOTE</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-3.5 h-3.5" />
+                            <span>Lưu Bình Luận</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </form>
@@ -2096,11 +2658,25 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
 
                 {/* 4. HỒ SƠ EDITOR - LƯU Ý */}
                 <div className={`pt-4 border-t border-dashed ${sTheme.dashedBorder}`}>
-                  <div className={`p-5 rounded-2xl ${sTheme.editorNoteBg} border ${sTheme.editorNoteBorder} space-y-2 transition-colors duration-300`}>
+                  <div className={`p-5 ${
+                    spiralOption === 'computer'
+                      ? 'rounded-md font-mono border-t border-l border-white/60 border-b border-r border-black/30'
+                      : spiralOption === 'pixel'
+                      ? 'rounded-none font-mono border-2 border-dashed'
+                      : 'rounded-2xl'
+                  } ${sTheme.editorNoteBg} border ${sTheme.editorNoteBorder} space-y-2 transition-colors duration-300`}>
                     <span className={`text-xs sm:text-[13px] font-mono font-bold ${sTheme.editorNoteTitle} block uppercase`}>
-                      <span>LƯU Ý</span>
+                      {spiralOption === 'computer' ? (
+                        <span>⚠️ SYSTEM_NOTICE // DISCLAIMER.TXT</span>
+                      ) : spiralOption === 'y2k' ? (
+                        <span>★ Y2K LOVE ADVISORY // LƯU Ý BẢO LƯU ★</span>
+                      ) : spiralOption === 'pixel' ? (
+                        <span>💬 [SAVE POINT GUARDIAN'S ADVICE]</span>
+                      ) : (
+                        <span>LƯU Ý</span>
+                      )}
                     </span>
-                    <p className="text-[15px] sm:text-[16px] opacity-90 leading-relaxed">
+                    <p className={`text-[15px] sm:text-[16px] opacity-90 leading-relaxed ${spiralOption === 'computer' || spiralOption === 'pixel' ? 'font-mono text-[14px]' : ''}`}>
                       {novel.uploaderNote ||
                         'Truyện được edit phi thương mại phục vụ sở thích đọc sách, xin đừng mang đi nơi khác. Chúc bạn có một hành trình đọc sách thật an yên!'}
                     </p>
@@ -2142,12 +2718,44 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
             </div>
 
             {/* CHÂN TRANG SỔ TAY */}
-            <div className={`pt-6 mt-8 border-t ${sTheme.footerBorder} flex items-center justify-between text-[11px] font-mono ${sTheme.footerText}`}>
-              <span>SỔ TAY ĐIỆN TỬ</span>
-              <span>TRANG 01 / 01</span>
+            <div className={`pt-6 mt-8 border-t ${sTheme.footerBorder} flex items-center justify-between text-[11px] font-mono ${sTheme.footerText} select-none`}>
+              {spiralOption === 'classic' && (
+                <>
+                  <span>SỔ TAY ĐIỆN TỬ</span>
+                  <span>TRANG 01 / 01</span>
+                </>
+              )}
+              {spiralOption === 'y2k' && (
+                <>
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-pink-500" />
+                    <span>Y2K MEMORY ROM // 64MB LOADED</span>
+                  </span>
+                  <span>LOVE ARCHIVE · 2000s FOREVER ✦</span>
+                </>
+              )}
+              {spiralOption === 'computer' && (
+                <>
+                  <span className="flex items-center gap-1.5">
+                    <HardDrive className="w-3 h-3" />
+                    <span>DANMEI_OS // SYSTEM 98 [SẴN SÀNG]</span>
+                  </span>
+                  <span>📄 {effectiveChapters.length} CHƯƠNG · BUFFER 100%</span>
+                </>
+              )}
+              {spiralOption === 'pixel' && (
+                <>
+                  <span className="flex items-center gap-1.5">
+                    <Gamepad2 className="w-3 h-3 text-amber-500" />
+                    <span>[SAVE POINT: REACHED] [EXP: MAX]</span>
+                  </span>
+                  <span>ALL {effectiveChapters.length} CHAPTERS UNLOCKED 👾</span>
+                </>
+              )}
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>

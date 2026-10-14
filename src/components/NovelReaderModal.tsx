@@ -35,7 +35,10 @@ import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
 import {
   isBotComment,
+  auth,
+  signInWithGoogle,
 } from '../services/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
   recordChapterView,
   subscribeComments as subscribeD1Comments,
@@ -59,7 +62,7 @@ interface NovelReaderModalProps {
   onUpdateNovel?: (novel: Novel) => void;
 }
 
-type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'lora' | 'alegreya';
+type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'gelasio' | 'alegreya';
 type LineHeightOption = 1.5 | 1.8 | 2.1;
 type PageMarginOption = 'narrow' | 'normal' | 'wide';
 
@@ -85,7 +88,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const [fontFamily, setFontFamily] = useState<ReaderFontFamily>(() => {
     try {
       const saved = safeStorage.getItem('cosmo_reader_font');
-      if (saved && ['times', 'roboto', 'lora', 'open-sans', 'source-sans', 'alegreya'].includes(saved)) {
+      if (saved && ['times', 'roboto', 'gelasio', 'open-sans', 'source-sans', 'alegreya'].includes(saved)) {
         return saved as ReaderFontFamily;
       }
     } catch {}
@@ -192,7 +195,11 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const [readerTheme, setReaderTheme] = useState<NovelThemeId>(() => {
     try {
       const saved = safeStorage.getItem('cosmo_novel_theme');
-      if (saved && ['slate-haze', 'sage', 'notebook', 'mocha', 'amethyst-haze', 'cosmic'].includes(saved)) {
+      if (saved === 'cake' || saved === 'lululemon') {
+        safeStorage.setItem('cosmo_novel_theme', 'lululemon');
+        return 'lululemon';
+      }
+      if (saved && ['slate-haze', 'sage', 'notebook', 'mocha', 'amethyst-haze', 'cosmic', 'lululemon'].includes(saved)) {
         return saved as NovelThemeId;
       }
     } catch {}
@@ -479,6 +486,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           return 'bg-[#38281f] text-[#f4ece5]';
         case 'notebook':
           return 'bg-[#303034] text-[#f4f4f5]';
+        case 'lululemon':
+          return 'bg-[#3b1c26] text-[#f4ebee]';
         case 'amethyst-haze':
         case 'cosmic':
         default:
@@ -494,6 +503,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           return 'bg-[#6b4e3e] text-white';
         case 'notebook':
           return 'bg-[#3f3f46] text-white';
+        case 'lululemon':
+          return 'bg-[#84334b] text-white';
         case 'amethyst-haze':
         case 'cosmic':
         default:
@@ -618,6 +629,16 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       return '';
     }
   });
+  const [googleUser, setGoogleUser] = useState<any>(auth.currentUser);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setGoogleUser(user);
+      if (user && user.displayName) {
+        setAuthorNameInput(user.displayName);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
   const [rememberName, setRememberName] = useState(() => {
     try {
       return safeStorage.getItem('cosmo_remember_author_name') !== 'false';
@@ -703,19 +724,30 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
   const handlePostChapterComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authorNameInput.trim()) {
-      alert('Vui lòng nhập tên của bạn trước khi gửi bình luận.');
-      return;
+    let currentGoogleUser = googleUser;
+    if (!currentGoogleUser) {
+      try {
+        currentGoogleUser = await signInWithGoogle();
+        if (!currentGoogleUser) return;
+        setGoogleUser(currentGoogleUser);
+        if (currentGoogleUser?.displayName) {
+          setAuthorNameInput(currentGoogleUser.displayName);
+        }
+      } catch (err) {
+        alert('Vui lòng đăng nhập Google để bình luận.');
+        return;
+      }
     }
     if (!newCommentContent.trim() || !novel || chapterNumber === null) return;
 
     setIsSubmittingComment(true);
-    const finalAuthor = authorNameInput.trim();
+    const finalAuthor = currentGoogleUser?.displayName || authorNameInput.trim() || 'Độc Giả';
+    const finalAvatar = currentGoogleUser?.photoURL || '';
     const formattedDate = formatCommentDate();
 
-    if (rememberName && authorNameInput.trim()) {
+    if (rememberName && finalAuthor) {
       try {
-        safeStorage.setItem('cosmo_comment_author_name', authorNameInput.trim());
+        safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
       } catch {}
     }
 
@@ -723,7 +755,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       id: `cm-${Date.now()}`,
       truyenId: novel.id,
       author: finalAuthor,
-      avatar: '',
+      avatar: finalAvatar,
       content: newCommentContent.trim(),
       createdAt: formattedDate,
       ngayTao: new Date().toISOString(),
@@ -746,6 +778,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
         id: tempComment.id,
         truyenId: novel.id,
         author: finalAuthor,
+        avatar: finalAvatar,
         content: tempComment.content,
         badge: 'Độc Giả',
         chapterNumber: chapterNumber,
@@ -1019,13 +1052,68 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     }
   };
 
+  const renderGoogleAuthWidget = () => (
+    <>
+      {!googleUser ? (
+        <div className={`p-3.5 rounded-2xl border text-center space-y-2 ${isDarkEffective ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-200'}`}>
+          <p className="text-xs font-medium opacity-85">
+            Bạn cần đăng nhập bằng tài khoản Google để bình luận.
+          </p>
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                const user = await signInWithGoogle();
+                if (user) {
+                  setGoogleUser(user);
+                  if (user.displayName) setAuthorNameInput(user.displayName);
+                }
+              } catch (err) {
+                console.error('Google sign in error:', err);
+              }
+            }}
+            className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md inline-flex items-center gap-2 cursor-pointer transition-all"
+          >
+            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.24 10.285V13.5h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.584s3.344-7.584 7.439-7.584c2.333 0 3.894.99 4.789 1.843l2.585-2.505C17.95 1.572 15.342 0 12.24 0 5.485 0 0 5.485 0 12.24s5.485 12.24 12.24 12.24c7.058 0 11.742-4.962 11.742-11.968 0-.828-.088-1.46-.196-2.087H12.24z"/></svg>
+            <span>Đăng Nhập Google</span>
+          </button>
+        </div>
+      ) : (
+        <div className={`flex items-center justify-between p-2.5 rounded-xl border ${isDarkEffective ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-200'}`}>
+          <div className="flex items-center gap-2">
+            {googleUser.photoURL ? (
+              <img src={googleUser.photoURL} alt="" className="w-6 h-6 rounded-full object-cover border border-white/20" />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-purple-600 text-white font-bold text-[11px] flex items-center justify-center">
+                {(googleUser.displayName || 'U').charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span className="text-xs font-medium truncate">
+              Đăng nhập: <strong>{googleUser.displayName || googleUser.email}</strong>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              await signOut(auth);
+              setGoogleUser(null);
+            }}
+            className="text-[11px] text-rose-400 hover:text-rose-300 underline cursor-pointer"
+          >
+            Đăng xuất
+          </button>
+        </div>
+      )}
+    </>
+  );
+
   const fontClass =
     fontFamily === 'times'
       ? 'font-times'
       : fontFamily === 'roboto'
       ? 'font-roboto font-normal'
-      : fontFamily === 'lora'
-      ? 'font-lora'
+      : fontFamily === 'gelasio'
+      ? 'font-gelasio'
       : fontFamily === 'alegreya'
       ? 'font-alegreya'
       : fontFamily === 'source-sans'
@@ -1454,7 +1542,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       { id: 'open-sans', label: 'Open Sans', font: 'font-open-sans' },
                       { id: 'times', label: 'Times New Roman', font: 'font-times' },
                       { id: 'roboto', label: 'Roboto', font: 'font-roboto font-normal' },
-                      { id: 'lora', label: 'Lora', font: 'font-lora' },
+                      { id: 'gelasio', label: 'Gelasio', font: 'font-gelasio' },
                       { id: 'alegreya', label: 'Alegreya', font: 'font-alegreya' },
                     ].map((f) => {
                       const isSelected = fontFamily === f.id;
@@ -1707,12 +1795,13 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             onSubmit={handlePostChapterComment}
             className={`p-4 sm:p-5 rounded-2xl border space-y-3 transition-colors ${chapterCommentBoxClass}`}
           >
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            {renderGoogleAuthWidget()}
+
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center hidden">
               <div className="w-full sm:w-1/3">
                 <input
                   type="text"
-                  required
-                  placeholder="Tên của bạn (Bắt buộc)"
+                  placeholder="Tên của bạn"
                   value={authorNameInput}
                   onChange={(e) => handleAuthorNameChange(e.target.value)}
                   maxLength={40}
@@ -1944,12 +2033,13 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   onSubmit={handlePostChapterComment}
                   className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.commentForm || tStyles.card}`}
                 >
-                  <div className="flex flex-col sm:flex-row gap-2.5 items-start sm:items-center">
+                  {renderGoogleAuthWidget()}
+
+                  <div className="flex flex-col sm:flex-row gap-2.5 items-start sm:items-center hidden">
                     <div className="w-full sm:w-1/2">
                       <input
                         type="text"
-                        required
-                        placeholder="Tên của bạn (Bắt buộc)"
+                        placeholder="Tên của bạn"
                         value={authorNameInput}
                         onChange={(e) => handleAuthorNameChange(e.target.value)}
                         maxLength={40}

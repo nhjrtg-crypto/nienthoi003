@@ -97,7 +97,10 @@ import {
   FirestoreChuongMeta,
   AdminUserLike,
   isBotComment,
+  auth,
+  signInWithGoogle,
 } from '../services/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
   fetchComments as fetchD1Comments,
   subscribeComments as subscribeD1Comments,
@@ -346,6 +349,34 @@ export const getThemeLoangConfig = (theme: NovelThemeId, isDark: boolean): Gradi
               'radial-gradient(ellipse at 30% 70%, rgba(56, 189, 248, 0.26) 0%, rgba(14, 165, 233, 0.12) 40%, transparent 82%)',
             flowCenter:
               'radial-gradient(ellipse at center, rgba(125, 211, 252, 0.18) 0%, rgba(224, 242, 254, 0.08) 45%, transparent 78%)',
+          };
+    case 'lululemon':
+      return isDark
+        ? {
+            name: 'Theme Berry (Tối)',
+            description: 'Burgundy rượu vang, sương mận & hồng nhạt sang trọng quý phái',
+            preview: 'linear-gradient(135deg, #84334b, #ba3859)',
+            meshGradient:
+              'radial-gradient(ellipse 95% 75% at 95% 10%, rgba(132, 51, 75, 0.28) 0%, rgba(186, 56, 89, 0.16) 42%, transparent 85%), radial-gradient(ellipse 85% 65% at 5% 90%, rgba(166, 68, 98, 0.22) 0%, rgba(132, 51, 75, 0.12) 45%, transparent 80%), radial-gradient(ellipse 65% 50% at 50% 45%, rgba(132, 51, 75, 0.10) 0%, transparent 72%)',
+            flowTop:
+              'radial-gradient(ellipse at 70% 30%, rgba(132, 51, 75, 0.35) 0%, rgba(186, 56, 89, 0.18) 40%, transparent 82%)',
+            flowBottom:
+              'radial-gradient(ellipse at 30% 70%, rgba(166, 68, 98, 0.30) 0%, rgba(132, 51, 75, 0.14) 40%, transparent 82%)',
+            flowCenter:
+              'radial-gradient(ellipse at center, rgba(186, 56, 89, 0.20) 0%, transparent 78%)',
+          }
+        : {
+            name: 'Theme Berry (Sáng)',
+            description: 'Burgundy rượu mận & sương hồng pastel trên nền xám hồng nhạt #f9f6f7',
+            preview: 'linear-gradient(135deg, #84334b, #ead4d7)',
+            meshGradient:
+              'radial-gradient(ellipse 95% 75% at 95% 10%, rgba(132, 51, 75, 0.16) 0%, rgba(234, 212, 215, 0.18) 42%, transparent 85%), radial-gradient(ellipse 85% 65% at 5% 90%, rgba(186, 56, 89, 0.12) 0%, rgba(132, 51, 75, 0.08) 45%, transparent 80%), radial-gradient(ellipse 65% 50% at 50% 45%, rgba(228, 201, 205, 0.12) 0%, transparent 72%)',
+            flowTop:
+              'radial-gradient(ellipse at 70% 30%, rgba(132, 51, 75, 0.20) 0%, rgba(234, 212, 215, 0.15) 40%, transparent 82%)',
+            flowBottom:
+              'radial-gradient(ellipse at 30% 70%, rgba(186, 56, 89, 0.18) 0%, rgba(132, 51, 75, 0.10) 40%, transparent 82%)',
+            flowCenter:
+              'radial-gradient(ellipse at center, rgba(234, 212, 215, 0.22) 0%, rgba(249, 246, 247, 0.10) 45%, transparent 78%)',
           };
     case 'notebook':
       return {
@@ -855,6 +886,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       return '';
     }
   });
+  const [googleUser, setGoogleUser] = useState<any>(auth.currentUser);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setGoogleUser(user);
+      if (user && user.displayName) {
+        setUserName(user.displayName);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Synchronize and subscribe to comments in real-time from Cloudflare D1 & safeStorage
   useEffect(() => {
@@ -996,7 +1037,11 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const [theme, setTheme] = useState<NovelThemeId>(() => {
     try {
       const saved = safeStorage.getItem('cosmo_novel_theme');
-      if (saved && ['slate-haze', 'sage', 'notebook', 'mocha', 'amethyst-haze', 'cosmic'].includes(saved)) {
+      if (saved === 'lululemon') {
+        safeStorage.setItem('cosmo_novel_theme', 'lululemon');
+        return 'lululemon';
+      }
+      if (saved && ['slate-haze', 'sage', 'notebook', 'mocha', 'amethyst-haze', 'cosmic', 'lululemon'].includes(saved)) {
         return saved as NovelThemeId;
       }
     } catch {}
@@ -1112,6 +1157,92 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   // Theme-adaptive styles matching the screenshot across all 6 themes & light/dark
   const detailThemeExtras = useMemo(() => {
     switch (theme) {
+      case 'lululemon':
+        return {
+          cardBg: isDarkEffective
+            ? 'bg-gradient-to-br from-white/[0.08] via-[#24151a]/50 to-[#150d10]/65 backdrop-blur-2xl border border-white/20 text-[#f4ebee] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]'
+            : 'lulu-light-novel-card text-[#382329]',
+          cardBgSolid: isDarkEffective ? 'bg-[#150d10]' : 'bg-[#f2ebef]',
+          tabHeaderBg: isDarkEffective ? 'bg-black/35 backdrop-blur-md border-b border-white/15' : 'lulu-light-tabs-container',
+          innerBox: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-xl border border-white/12 text-[#f4ebee] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]' : 'bg-gradient-to-br from-white via-[#fcf6f8] to-[#f7ecf0] border border-[#d8c5ca] text-[#382329] shadow-xs',
+          activeTabBorderClass: isDarkEffective ? 'border-[#ba3859]' : 'border-[#ad4862] text-[#ad4862]',
+          statusBadge: isDarkEffective ? 'bg-gradient-to-r from-[#84334b] to-[#ba3859] text-white shadow-md shadow-[#150d10]/30' : 'bg-gradient-to-r from-[#cc7b8f] via-[#de9fb0] to-[#eed3dc] text-[#382329] font-bold shadow-xs',
+          statBox: isDarkEffective ? 'bg-white/[0.05] backdrop-blur-md border border-white/15 text-[#f4ebee] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]' : 'lulu-light-tabs-container text-[#382329]',
+          tagPill: isDarkEffective ? 'bg-[#84334b]/20 backdrop-blur-md text-[#f4ebee] border border-[#84334b]/35 hover:bg-[#84334b]/30' : 'lulu-light-novel-tag',
+          authorBadge: isDarkEffective ? 'bg-[#84334b]/20 backdrop-blur-md text-[#f4ebee] border border-[#84334b]/35' : 'lulu-light-novel-tag text-[#382329]',
+          noteBox: isDarkEffective ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#e2c4cb] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]' : 'bg-gradient-to-r from-[#cc7b8f]/22 via-[#de9fb0]/26 to-[#eed3dc]/32 border border-[#cc7b8f]/42 text-[#4a2e37] shadow-xs',
+          noteIcon: isDarkEffective ? 'text-[#d4a3af]' : 'text-[#ad4862]',
+          primaryBtn: isDarkEffective ? 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164] text-white font-semibold shadow-lg shadow-[#150d10]/40' : 'lulu-light-btn font-bold !text-[#ad4862] hover:!text-[#9c3e55] cursor-pointer',
+          secondaryBtn: isDarkEffective ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.15] text-[#ead4d7] border border-white/20' : 'lulu-light-btn font-medium cursor-pointer',
+          outlineBtn: isDarkEffective ? 'bg-white/[0.04] backdrop-blur-md hover:bg-white/[0.1] text-[#d4a3af] border border-white/15' : 'lulu-light-btn font-medium cursor-pointer',
+          tabDividerClass: isDarkEffective ? 'border-white/10' : 'lulu-light-novel-divider',
+          coverGradient: isDarkEffective
+            ? 'bg-gradient-to-br from-[#24151a] via-[#1c1115] to-[#150d10]'
+            : 'bg-gradient-to-br from-[#ebdce0] via-[#f2ebef] to-[#ead4d7]/40',
+          circleTopLeft: isDarkEffective
+            ? 'bg-gradient-to-br from-[#1c1115] to-[#2c1920] border border-[#84334b]/30'
+            : 'bg-gradient-to-br from-[#cc7b8f]/15 to-[#de9fb0]/25 border border-[#ded0d4]',
+          circleBehindCover: isDarkEffective
+            ? 'bg-gradient-to-tr from-[#84334b]/25 via-[#ba3859]/15 to-transparent border border-[#84334b]/30 shadow-inner'
+            : 'bg-gradient-to-tr from-[#ead4d7]/35 via-[#ba3859]/10 to-white/40 border border-[#ded0d4] shadow-inner',
+          circleBottomRight: isDarkEffective
+            ? 'bg-gradient-to-tl from-[#84334b]/40 via-[#a64462]/20 to-transparent'
+            : 'bg-gradient-to-tl from-[#ead4d7]/45 via-[#ba3859]/15 to-transparent',
+          coverOverlay: isDarkEffective
+            ? 'bg-gradient-to-t from-[#150d10]/80 via-[#150d10]/25 to-transparent'
+            : 'bg-gradient-to-t from-white/40 via-transparent to-transparent',
+          posterCardBorder: isDarkEffective ? 'border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' : 'lulu-light-novel-card',
+          posterGradient: isDarkEffective
+            ? 'linear-gradient(135deg, rgba(36, 21, 26, 0.9) 0%, rgba(21, 13, 16, 0.95) 100%)'
+            : 'linear-gradient(135deg, #ffffff 0%, #f7f1f4 35%, #f2ebef 70%, #ebdce0 100%)',
+          posterDiscLeftSeparate: isDarkEffective
+            ? 'radial-gradient(circle at 50% 50%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.1) 60%, transparent 85%)'
+            : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+          posterDiscTopRight: isDarkEffective
+            ? 'radial-gradient(circle at 50% 50%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.1) 60%, transparent 85%)'
+            : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+          posterArcBottomRight: isDarkEffective
+            ? 'radial-gradient(circle at center, rgba(186, 56, 89, 0.2) 0%, rgba(132, 51, 75, 0.1) 50%, transparent 75%)'
+            : 'radial-gradient(circle at center, rgba(204, 123, 143, 0.35) 0%, rgba(222, 159, 176, 0.22) 50%, transparent 75%)',
+          posterStatusBadgeBg: isDarkEffective ? 'bg-gradient-to-r from-[#84334b] to-[#ba3859] text-white border border-[#ba3859]/30 shadow-xs' : 'bg-gradient-to-r from-[#cc7b8f] via-[#de9fb0] to-[#eed3dc] text-[#382329] font-bold shadow-xs',
+          posterPrimaryBtn: isDarkEffective
+            ? 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164] text-white shadow-lg shadow-[#150d10]/40 font-semibold'
+            : 'lulu-light-btn font-bold !text-[#ad4862] hover:!text-[#9c3e55] cursor-pointer',
+          posterTextColor: isDarkEffective ? 'text-[#faf2f4]' : 'text-[#382329]',
+          posterSubTextColor: isDarkEffective ? 'text-[#d4a3af]' : 'text-[#573740]',
+          posterMutedText: isDarkEffective ? 'text-[#c296a2]' : 'text-[#8c5a67]',
+          posterTagClass: isDarkEffective
+            ? 'bg-[#84334b]/20 backdrop-blur-md border border-[#84334b]/35 text-[#f4ebee] hover:border-[#ba3859]/60'
+            : 'lulu-light-novel-tag',
+          posterNoteBox: isDarkEffective
+            ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#f4ebee] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+            : 'bg-gradient-to-r from-[#cc7b8f]/22 via-[#de9fb0]/26 to-[#eed3dc]/32 border border-[#cc7b8f]/42 text-[#4a2e37] shadow-xs',
+          posterNoteTitle: isDarkEffective ? 'text-white' : 'text-[#ad4862]',
+          posterNoteContent: isDarkEffective ? 'text-[#e2c4cb]' : 'text-[#573740]',
+          posterReadNextBtn: isDarkEffective
+            ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] border border-white/20 text-[#ead4d7] shadow-md'
+            : 'lulu-light-btn font-bold !text-[#ad4862] hover:!text-[#9c3e55] cursor-pointer',
+          gridPattern: {
+            baseGradient: isDarkEffective
+              ? 'linear-gradient(135deg, rgba(36, 21, 26, 0.88) 0%, rgba(21, 13, 16, 0.96) 100%)'
+              : '#ffffff',
+            glowGradient: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.12) 45%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+            glowGradientTopRight: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.12) 45%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+            glowGradientBottomLeft: isDarkEffective
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.12) 45%, transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+            gridLineColor: isDarkEffective
+              ? 'rgba(186, 56, 89, 0.18)'
+              : 'rgba(204, 123, 143, 0.14)',
+            gridSubtleColor: isDarkEffective
+              ? 'rgba(132, 51, 75, 0.08)'
+              : 'rgba(204, 123, 143, 0.05)',
+          },
+        };
       case 'notebook':
         return {
           cardBg: isDarkEffective ? 'bg-gradient-to-br from-white/[0.08] via-[#24201c]/50 to-[#12100e]/65 backdrop-blur-2xl border border-white/20 text-[#F7F4EE] shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_0_20px_rgba(247,244,238,0.08)]' : 'notebook-light-novel-card text-[#171717]',
@@ -1170,7 +1301,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             : 'notebook-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#D9D4C9] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'notebook-light-novel-card text-[#525252]',
+            : 'bg-gradient-to-r from-[#f7f7f8] via-[#efeff1] to-[#e4e4e7] border border-[#d4d4d8] text-[#3f3f46] shadow-xs',
           posterNoteTitle: isDarkEffective ? 'text-[#F7F4EE]' : 'text-[#171717]',
           posterNoteContent: isDarkEffective ? 'text-[#D9D4C9]' : 'text-[#525252]',
           posterReadNextBtn: isDarkEffective
@@ -1255,7 +1386,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             : 'mocha-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-[#3d271c]/50 bg-[#170f0b]/80 text-[#a89588]'
-            : 'mocha-light-novel-card text-[#7a6256]',
+            : 'bg-gradient-to-r from-[#faf6f0] via-[#f3ebe0] to-[#e9ded0] border border-[#decbb7] text-[#6d4c38] shadow-xs',
           posterNoteTitle: isDarkEffective ? 'text-[#cbbbaf]' : 'text-[#3A2A2A]',
           posterNoteContent: isDarkEffective ? 'text-[#a89588]' : 'text-[#8C7A6E]',
           posterReadNextBtn: isDarkEffective
@@ -1340,7 +1471,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             : 'frost-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-[#314659]/50 bg-[#0e1722]/80 text-[#a6c2d8]'
-            : 'frost-light-novel-card text-[#526982]',
+            : 'bg-gradient-to-r from-[#f2f7fc] via-[#e6f0f8] to-[#d8e6f3] border border-[#c2d7e9] text-[#3e566d] shadow-xs',
           posterNoteTitle: isDarkEffective ? 'text-[#dce7f0]' : 'text-[#101723]',
           posterNoteContent: isDarkEffective ? 'text-[#a6c2d8]' : 'text-[#475569]',
           posterReadNextBtn: isDarkEffective
@@ -1425,7 +1556,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             : 'amethyst-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#bfb2d4] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'amethyst-light-novel-card text-[#6b5887]',
+            : 'bg-gradient-to-r from-[#f7f2fc] via-[#efe5f9] to-[#e6d8f5] border border-[#dac8ee] text-[#544a6b] shadow-xs',
           posterNoteTitle: isDarkEffective ? 'text-[#f0edf7]' : 'text-[#211c2f]',
           posterNoteContent: isDarkEffective ? 'text-[#bfb2d4]' : 'text-[#423956]',
           posterReadNextBtn: isDarkEffective
@@ -1565,7 +1696,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             : 'sage-light-novel-tag',
           posterNoteBox: isDarkEffective
             ? 'border border-[#233827]/50 bg-[#0f1911]/80 text-[#8ea38a]'
-            : 'sage-light-novel-card text-[#466244]',
+            : 'bg-gradient-to-r from-[#f2f7f3] via-[#e5efe7] to-[#d8e7dc] border border-[#c6dccb] text-[#394a3b] shadow-xs',
           posterNoteTitle: isDarkEffective ? 'text-[#b8cbb5]' : 'text-[#1c2b1e]',
           posterNoteContent: isDarkEffective ? 'text-[#8ea38a]' : 'text-[#394a3b]',
           posterReadNextBtn: isDarkEffective
@@ -1598,6 +1729,18 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   // Màu sắc Thanh Đọc Nổi (Sticky Floating Bar) đồng bộ chuẩn xác theo từng theme & sáng/tối
   const floatingBarTheme = useMemo(() => {
     switch (theme) {
+      case 'lululemon': // Lululemon theme (Burgundy #84334b, sương hồng #ead4d7, nền #f2ebef)
+        return {
+          container: isDarkEffective
+            ? 'bg-[#150d10]/95 border-[#84334b]/50 text-[#f4ebee] shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl'
+            : 'bg-[#f2ebef]/95 border-[#ded0d4] text-[#382329] shadow-[0_12px_36px_rgba(132,51,75,0.18)] backdrop-blur-xl',
+          avatarBorder: isDarkEffective ? 'border-[#84334b]' : 'border-[#ba3859]/60',
+          title: isDarkEffective ? 'text-[#faf2f4]' : 'text-[#382329]',
+          subtitle: isDarkEffective ? 'text-[#d4a3af]' : 'text-[#84334b]',
+          btn: isDarkEffective
+            ? 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164] text-white font-bold shadow-md shadow-[#150d10]/50 active:scale-95 transition-all cursor-pointer'
+            : 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#722a3f] hover:via-[#8a334c] hover:to-[#a7314e] text-white font-bold shadow-md shadow-[#84334b]/30 active:scale-95 transition-all cursor-pointer',
+        };
       case 'notebook': // White theme
         return {
           container: isDarkEffective
@@ -1710,15 +1853,26 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userName.trim()) {
-      alert('Vui lòng nhập tên của bạn trước khi gửi bình luận.');
-      return;
+    let currentGoogleUser = googleUser;
+    if (!currentGoogleUser) {
+      try {
+        currentGoogleUser = await signInWithGoogle();
+        if (!currentGoogleUser) return;
+        setGoogleUser(currentGoogleUser);
+        if (currentGoogleUser?.displayName) {
+          setUserName(currentGoogleUser.displayName);
+        }
+      } catch (err) {
+        alert('Vui lòng đăng nhập Google để bình luận.');
+        return;
+      }
     }
     if (!newCommentText.trim()) return;
 
-    const finalAuthor = userName.trim();
+    const finalAuthor = currentGoogleUser?.displayName || userName.trim() || 'Độc Giả';
+    const finalAvatar = currentGoogleUser?.photoURL || '';
     try {
-      safeStorage.setItem('cosmo_comment_author_name', userName.trim());
+      safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
     } catch {}
     const formattedDate = formatCommentDate();
 
@@ -1726,7 +1880,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       id: `cm-${Date.now()}`,
       truyenId: novel.id,
       author: finalAuthor,
-      avatar: '',
+      avatar: finalAvatar,
       content: newCommentText.trim(),
       createdAt: formattedDate,
       ngayTao: new Date().toISOString(),
@@ -1748,6 +1902,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         id: tempComment.id,
         truyenId: novel.id,
         author: finalAuthor,
+        avatar: finalAvatar,
         content: tempComment.content,
         rating: userRating,
         badge: 'Độc Giả',
@@ -2172,6 +2327,12 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             inactive: 'bg-zinc-900/60 text-zinc-300 border border-zinc-800 hover:bg-zinc-800/80',
             arrow: 'bg-zinc-900/60 text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-white',
           };
+        case 'lululemon':
+          return {
+            active: 'bg-[#84334b] text-white border border-[#ba3859]/70 shadow-xs',
+            inactive: 'bg-[#24151a]/60 text-[#d4a3af] border border-[#84334b]/40 hover:bg-[#341b25]/60',
+            arrow: 'bg-[#24151a]/60 text-[#d4a3af] border border-[#84334b]/40 hover:bg-[#341b25]/60 hover:text-white',
+          };
         case 'cosmic':
         default:
           return {
@@ -2183,6 +2344,12 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     } else {
       // Light mode: "theme sáng cần có màu trung tính, dịu nhẹ"
       switch (theme) {
+        case 'lululemon':
+          return {
+            active: 'bg-[#84334b] text-white border border-[#84334b] shadow-xs',
+            inactive: 'bg-[#f2eef0] text-[#573740] border border-[#e4d7db] hover:bg-[#ebdce0]',
+            arrow: 'bg-[#f2eef0] text-[#8c5a67] border border-[#e4d7db] hover:bg-[#ebdce0] hover:text-[#382329]',
+          };
         case 'amethyst-haze':
           return {
             // Muted dusty mauve / rose as in reference screenshot
@@ -2399,8 +2566,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   })}
                 </div>
 
-                {/* Tắt/bật Hiệu ứng nền của chế độ tối theme Purple (Thay nút toggle bằng Bật/Tắt) */}
-                {(theme === 'amethyst-haze' || theme === 'cosmic') && isDarkEffective && (
+                {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme (Mặc định tắt khi lần đầu vào trang) */}
+                {isDarkEffective && (
                   <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
                     <button
                       id="btn-detail-toggle-purple-bg"
@@ -2414,7 +2581,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                           ? 'hover:bg-zinc-800/60 text-zinc-200'
                           : 'hover:bg-zinc-100 text-zinc-800'
                       }`}
-                      title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
+                      title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
                     >
                       <div className="flex items-center">
                         <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
@@ -4013,7 +4180,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
                 {/* Lời nhắn của người đăng (Thay thế mục Cập nhật mới nhất đã bỏ) */}
                 {novel.uploaderNote && (
-                  <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
+                  <div className={`p-4 sm:p-5 rounded-lg border transition-all ${
                     isJournalStyle
                       ? isDarkEffective
                         ? 'bg-zinc-850/90 border-zinc-700/80 text-zinc-100'
@@ -4552,13 +4719,63 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {!googleUser ? (
+                    <div className={`p-4 rounded-2xl border text-center space-y-2.5 ${isDarkEffective ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-200'}`}>
+                      <p className={`text-xs sm:text-sm font-medium ${tStyles.cardAuthor}`}>
+                        Bạn cần đăng nhập bằng tài khoản Google để tham gia bình luận.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const user = await signInWithGoogle();
+                            if (user) {
+                              setGoogleUser(user);
+                              if (user.displayName) setUserName(user.displayName);
+                            }
+                          } catch (err) {
+                            console.error('Google sign in error:', err);
+                          }
+                        }}
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-md inline-flex items-center gap-2 cursor-pointer transition-all"
+                      >
+                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.24 10.285V13.5h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.584s3.344-7.584 7.439-7.584c2.333 0 3.894.99 4.789 1.843l2.585-2.505C17.95 1.572 15.342 0 12.24 0 5.485 0 0 5.485 0 12.24s5.485 12.24 12.24 12.24c7.058 0 11.742-4.962 11.742-11.968 0-.828-.088-1.46-.196-2.087H12.24z"/></svg>
+                        <span>Đăng Nhập Google Để Bình Luận</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={`flex items-center justify-between p-3 rounded-xl border ${isDarkEffective ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-200'}`}>
+                      <div className="flex items-center gap-2.5">
+                        {googleUser.photoURL ? (
+                          <img src={googleUser.photoURL} alt="" className="w-7 h-7 rounded-full object-cover border border-white/20" />
+                        ) : (
+                          <div className="w-7 h-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center">
+                            {(googleUser.displayName || 'U').charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <span className={`text-xs sm:text-sm font-medium ${tStyles.cardTitle}`}>
+                          Đang đăng nhập: <strong>{googleUser.displayName || googleUser.email}</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await signOut(auth);
+                          setGoogleUser(null);
+                        }}
+                        className="text-[11px] font-medium text-rose-400 hover:text-rose-300 underline cursor-pointer"
+                      >
+                        Đăng xuất
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
                     <input
                       type="text"
-                      required
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Tên của bạn (Bắt buộc)"
+                      placeholder="Tên của bạn"
                       className={`px-4 py-2.5 rounded-xl text-[14px] sm:text-[16px] font-sans focus:outline-hidden ${tStyles.input}`}
                     />
                   </div>

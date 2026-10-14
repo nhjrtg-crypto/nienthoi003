@@ -354,6 +354,19 @@ export const WebLogo: React.FC<WebLogoProps> = ({
           cloudMid: '#2c435c',
           star: '#e2edf7',
         };
+      case 'lululemon':
+        return {
+          ringStroke: '#84334b',
+          ringInner: '#5e2335',
+          ringGlow: 'drop-shadow(0 0 2px rgba(132, 51, 75, 0.25))',
+          skyGradStart: '#24151a',
+          skyGradEnd: '#10080b',
+          celestial: '#f4ebee',
+          celestialGlow: '#84334b',
+          cloudFront: '#84334b',
+          cloudMid: '#5e2335',
+          star: '#ead4d7',
+        };
       case 'cosmic':
       default:
         return {

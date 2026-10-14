@@ -426,6 +426,95 @@ export function getTicketTheme(theme: string = 'amethyst-haze', isDarkMode: bool
             copyrightText: 'text-[#334155]/70',
           };
 
+    case 'lululemon':
+      return isDarkMode
+        ? {
+            containerBg: 'bg-gradient-to-r from-[#1c1115]/85 via-[#160d10]/85 to-[#1a0f13]/85',
+            containerBorder: 'border-white/10',
+            containerRing: 'ring-[#84334b]/60',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(0,0,0,0.7),inset_0_-3px_10px_rgba(132,51,75,0.22)]',
+            frostedOverlay: 'bg-[#140b0e]/55',
+            reflectGradient: 'from-white/10 to-transparent',
+            dashedBorder: 'border-[#84334b]/60',
+            tearLine: 'border-[#84334b]/60',
+            barcodeBoxBg: 'bg-[#201217]',
+            barcodeBoxBorder: 'border-[#84334b]/60',
+            barcodeBars: 'bg-[#ead4d7]',
+            barcodeText: 'text-[#ead4d7]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#2b171e] via-[#1f1116] to-[#160b0f]',
+            reelsBtnBorder: 'border-[#84334b]/70',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_18px_rgba(166,68,98,0.28)]',
+            viewsBadgeBg: 'bg-[#241318]',
+            viewsBadgeBorder: 'border-[#ba3859]/50',
+            viewsBadgeText: 'text-[#ead4d7]',
+            reelsTrayBg: 'bg-[#170c10]',
+            reelsTrayBorder: 'border-[#5e2233]',
+            cardBg: 'bg-[#201217]',
+            cardBorder: 'border-[#84334b]/50',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.45)]',
+            cardTopBg: 'bg-gradient-to-b from-[#2e1820] to-[#211117]',
+            cardBottomBg: 'bg-gradient-to-b from-[#1a0d12] to-[#12080c]',
+            cardBorderMid: 'border-white/10',
+            cardText: 'text-[#f4ebee]',
+            separatorStarFill: 'fill-[#ba3859] text-[#ba3859]',
+            sparkleColor: 'fill-[#ba3859] text-[#ba3859]',
+            splitLine: 'bg-white/15',
+            btnBg: 'bg-[#201217]',
+            btnHoverBg: 'hover:bg-[#2e1820]',
+            btnBorder: 'border-[#84334b]/60',
+            btnText: 'text-[#f4ebee]',
+            catIcon: 'text-[#ba3859]',
+            catIconHover: 'group-hover:text-[#ead4d7]',
+            cherryIcon: 'text-[#ba3859]',
+            cherryIconHover: 'group-hover:text-[#ead4d7]',
+            bookIcon: 'text-[#ba3859]',
+            bookIconHover: 'group-hover:text-[#ead4d7]',
+            copyrightText: 'text-[#ead4d7]/60',
+          }
+        : {
+            containerBg: 'bg-gradient-to-r from-[#faeef1]/85 via-white/90 to-[#faedf0]/85',
+            containerBorder: 'border-[#e4d7db]/80',
+            containerRing: 'ring-[#e4d7db]/70',
+            containerShadow: 'shadow-[inset_0_4px_16px_rgba(204,123,143,0.12),inset_0_-4px_12px_rgba(204,123,143,0.08)]',
+            frostedOverlay: 'bg-white/40',
+            reflectGradient: 'from-white/40 to-transparent',
+            dashedBorder: 'border-[#d8c5ca]',
+            tearLine: 'border-[#d8c5ca]',
+            barcodeBoxBg: 'bg-white/95',
+            barcodeBoxBorder: 'border-[#e4d7db]',
+            barcodeBars: 'bg-[#cc7b8f]',
+            barcodeText: 'text-[#cc7b8f]',
+            reelsBtnBg: 'bg-gradient-to-b from-[#ffffff] via-[#fdf7f9] to-[#f9edf1]',
+            reelsBtnBorder: 'border-[#ecd4db]',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_16px_rgba(204,123,143,0.14)]',
+            viewsBadgeBg: 'bg-[#ffffff]',
+            viewsBadgeBorder: 'border-[#ecd4db]',
+            viewsBadgeText: 'text-[#cc7b8f]',
+            reelsTrayBg: 'bg-[#ffffff]',
+            reelsTrayBorder: 'border-[#f2dbe2]',
+            cardBg: 'bg-[#fef9fa]',
+            cardBorder: 'border-[#e4c9d2]/60',
+            cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(204,123,143,0.08)]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#fdf4f7]',
+            cardBottomBg: 'bg-gradient-to-b from-[#faedf1] to-[#f4e0e7]',
+            cardBorderMid: 'border-[#e4c9d2]/40',
+            cardText: 'text-[#382329]',
+            separatorStarFill: 'fill-[#cc7b8f] text-[#cc7b8f]',
+            sparkleColor: 'fill-[#cc7b8f] text-[#cc7b8f]',
+            splitLine: 'bg-[#cc7b8f]/20',
+            btnBg: 'bg-white/95',
+            btnHoverBg: 'hover:bg-[#faf2f4]',
+            btnBorder: 'border-[#e4d7db]',
+            btnText: 'text-[#cc7b8f]',
+            catIcon: 'text-[#cc7b8f]',
+            catIconHover: 'group-hover:text-[#b86277]',
+            cherryIcon: 'text-[#cc7b8f]',
+            cherryIconHover: 'group-hover:text-[#b86277]',
+            bookIcon: 'text-[#cc7b8f]',
+            bookIconHover: 'group-hover:text-[#b86277]',
+            copyrightText: 'text-[#cc7b8f]/85',
+          };
+
     case 'amethyst-haze':
     case 'cosmic':
     default:
@@ -486,21 +575,21 @@ export function getTicketTheme(theme: string = 'amethyst-haze', isDarkMode: bool
             barcodeBoxBorder: 'border-purple-200',
             barcodeBars: 'bg-[#581c87]',
             barcodeText: 'text-[#581c87]',
-            reelsBtnBg: 'bg-gradient-to-b from-white via-[#faf6ff] to-[#f5ebff]',
-            reelsBtnBorder: 'border-purple-200/60',
-            reelsBtnHoverShadow: 'hover:shadow-[0_4px_16px_rgba(168,85,247,0.18)]',
-            viewsBadgeBg: 'bg-[#faf6ff]',
-            viewsBadgeBorder: 'border-purple-200/50',
-            viewsBadgeText: 'text-[#9333ea]',
-            reelsTrayBg: 'bg-white/80',
+            reelsBtnBg: 'bg-gradient-to-b from-[#ffffff] via-[#faf6ff] to-[#f3e8fc]',
+            reelsBtnBorder: 'border-purple-200/70',
+            reelsBtnHoverShadow: 'hover:shadow-[0_4px_16px_rgba(168,85,247,0.16)]',
+            viewsBadgeBg: 'bg-[#ffffff]',
+            viewsBadgeBorder: 'border-purple-100',
+            viewsBadgeText: 'text-[#7e22ce]',
+            reelsTrayBg: 'bg-[#ffffff]',
             reelsTrayBorder: 'border-purple-100',
             cardBg: 'bg-[#fdfaff]',
-            cardBorder: 'border-purple-200/40',
+            cardBorder: 'border-purple-200/50',
             cardShadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(168,85,247,0.08)]',
-            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#faf6ff]',
-            cardBottomBg: 'bg-gradient-to-b from-[#faf5ff] to-[#eeddfd]',
-            cardBorderMid: 'border-purple-200/25',
-            cardText: 'text-[#7e22ce]',
+            cardTopBg: 'bg-gradient-to-b from-[#ffffff] to-[#faf5ff]',
+            cardBottomBg: 'bg-gradient-to-b from-[#f6eeff] to-[#eddcfc]',
+            cardBorderMid: 'border-purple-200/35',
+            cardText: 'text-[#6b21a8]',
             separatorStarFill: 'fill-[#9333ea] text-[#9333ea]',
             sparkleColor: 'fill-[#a855f7] text-[#a855f7]',
             splitLine: 'bg-[#a855f7]/20',
@@ -967,6 +1056,36 @@ const footerLightButtonStyles = `
   color: #09090b !important;
   opacity: 0.95;
 }
+
+.footer-btn-light-lululemon {
+  border-radius: 12px !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid transparent !important;
+  background: 
+    linear-gradient(135deg, 
+      rgba(249, 246, 247, 0.88) 0%, 
+      rgba(252, 249, 250, 0.82) 18%, 
+      rgba(255, 255, 255, 0.94) 32%, 
+      rgba(255, 255, 255, 0.94) 68%, 
+      rgba(252, 249, 250, 0.82) 82%, 
+      rgba(249, 246, 247, 0.88) 100%
+    ) padding-box,
+    linear-gradient(to bottom, 
+      #ffffff 0%, 
+      #ffffff 20%, 
+      rgba(238, 211, 220, 0.45) 55%, 
+      rgba(204, 123, 143, 0.50) 100%
+    ) border-box !important;
+  box-shadow: none !important;
+  color: #cc7b8f !important;
+  transition: all 0.25s ease !important;
+}
+.footer-btn-light-lululemon:hover {
+  box-shadow: none !important;
+  color: #b86277 !important;
+  opacity: 0.95;
+}
 `;
 
 export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
@@ -1026,6 +1145,8 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
               // Ở chế độ sáng: Áp dụng nền mục truyện, bỏ đổ bóng ngoài, 1/2 viền trên trắng, viền dưới giữ nguyên
               const getLightBtnThemeClass = () => {
                 switch (theme) {
+                  case 'lululemon':
+                    return 'footer-btn-light-lululemon !px-3 !py-2 !text-xs !font-bold';
                   case 'notebook':
                     return 'footer-btn-light-notebook !px-3 !py-2 !text-xs !font-bold';
                   case 'sage':
@@ -1044,6 +1165,8 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
               // Ở chế độ tối: Đổ màu nền nút, bỏ đường viền (border-0 border-transparent)
               const getDarkBtnThemeClass = () => {
                 switch (theme) {
+                  case 'lululemon':
+                    return 'bg-[#24151a] hover:bg-[#331c24] text-[#f4ebee] border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
                   case 'notebook':
                     return 'bg-[#2b2722] hover:bg-[#38332c] text-zinc-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
                   case 'sage':
