@@ -62,7 +62,7 @@ interface NovelReaderModalProps {
   onUpdateNovel?: (novel: Novel) => void;
 }
 
-type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'gelasio' | 'alegreya';
+type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'lora' | 'alegreya';
 type LineHeightOption = 1.5 | 1.8 | 2.1;
 type PageMarginOption = 'narrow' | 'normal' | 'wide';
 
@@ -88,7 +88,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const [fontFamily, setFontFamily] = useState<ReaderFontFamily>(() => {
     try {
       const saved = safeStorage.getItem('cosmo_reader_font');
-      if (saved && ['times', 'roboto', 'gelasio', 'open-sans', 'source-sans', 'alegreya'].includes(saved)) {
+      if (saved && ['times', 'roboto', 'lora', 'open-sans', 'source-sans', 'alegreya'].includes(saved)) {
         return saved as ReaderFontFamily;
       }
     } catch {}
@@ -1036,8 +1036,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       ? 'font-times'
       : fontFamily === 'roboto'
       ? 'font-roboto font-normal'
-      : fontFamily === 'gelasio'
-      ? 'font-gelasio'
+      : fontFamily === 'lora'
+      ? 'font-lora'
       : fontFamily === 'alegreya'
       ? 'font-alegreya'
       : fontFamily === 'source-sans'
@@ -1466,7 +1466,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       { id: 'open-sans', label: 'Open Sans', font: 'font-open-sans' },
                       { id: 'times', label: 'Times New Roman', font: 'font-times' },
                       { id: 'roboto', label: 'Roboto', font: 'font-roboto font-normal' },
-                      { id: 'gelasio', label: 'Gelasio', font: 'font-gelasio' },
+                      { id: 'lora', label: 'Lora', font: 'font-lora' },
                       { id: 'alegreya', label: 'Alegreya', font: 'font-alegreya' },
                     ].map((f) => {
                       const isSelected = fontFamily === f.id;
