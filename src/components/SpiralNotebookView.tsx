@@ -133,7 +133,7 @@ interface SpiralThemeStyles {
   paperClipClass?: string;
 }
 
-function getSpiralThemeStyles(theme: NovelThemeId, isDark: boolean): SpiralThemeStyles {
+function getSpiralThemeStyles(theme: string, isDark: boolean): SpiralThemeStyles {
   // 1. COSMIC THEME
   if (theme === 'cosmic') {
     if (!isDark) {
@@ -1862,7 +1862,7 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
   const [newCommentText, setNewCommentText] = useState('');
 
   // Chủ đề sổ còng: Cố định Cổ điển (Classic) theo chỉ thị người dùng (giữ cổ điển, bỏ các chủ đề khác)
-  const spiralOption = 'classic';
+  const spiralOption: string = 'classic';
 
   // Styles thích ứng theo Màu Giao Diện và Chế độ tối
   const sTheme = useMemo(
@@ -1881,13 +1881,9 @@ export const SpiralNotebookView: React.FC<SpiralNotebookViewProps> = ({
     const lineColor = isDarkEffective
       ? (theme === 'cosmic' || theme === 'amethyst-haze'
           ? 'rgba(192, 132, 252, 0.08)'
-          : theme === 'lululemon'
-          ? 'rgba(186, 56, 89, 0.12)'
           : 'rgba(255, 255, 255, 0.06)')
       : (theme === 'amethyst-haze' || theme === 'cosmic'
           ? 'rgba(147, 51, 234, 0.08)'
-          : theme === 'lululemon'
-          ? 'rgba(204, 123, 143, 0.08)'
           : theme === 'sage'
           ? 'rgba(77, 111, 83, 0.08)'
           : theme === 'mocha'

@@ -1853,24 +1853,10 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    let currentGoogleUser = googleUser;
-    if (!currentGoogleUser) {
-      try {
-        currentGoogleUser = await signInWithGoogle();
-        if (!currentGoogleUser) return;
-        setGoogleUser(currentGoogleUser);
-        if (currentGoogleUser?.displayName) {
-          setUserName(currentGoogleUser.displayName);
-        }
-      } catch (err) {
-        alert('Vui lòng đăng nhập Google để bình luận.');
-        return;
-      }
-    }
     if (!newCommentText.trim()) return;
 
-    const finalAuthor = currentGoogleUser?.displayName || userName.trim() || 'Độc Giả';
-    const finalAvatar = currentGoogleUser?.photoURL || '';
+    const finalAuthor = userName.trim() || 'Độc Giả';
+    const finalAvatar = '';
     try {
       safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
     } catch {}
@@ -4719,63 +4705,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                     </span>
                   </div>
 
-                  {!googleUser ? (
-                    <div className={`p-4 rounded-2xl border text-center space-y-2.5 ${isDarkEffective ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-200'}`}>
-                      <p className={`text-xs sm:text-sm font-medium ${tStyles.cardAuthor}`}>
-                        Bạn cần đăng nhập bằng tài khoản Google để tham gia bình luận.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          try {
-                            const user = await signInWithGoogle();
-                            if (user) {
-                              setGoogleUser(user);
-                              if (user.displayName) setUserName(user.displayName);
-                            }
-                          } catch (err) {
-                            console.error('Google sign in error:', err);
-                          }
-                        }}
-                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-md inline-flex items-center gap-2 cursor-pointer transition-all"
-                      >
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.24 10.285V13.5h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.584s3.344-7.584 7.439-7.584c2.333 0 3.894.99 4.789 1.843l2.585-2.505C17.95 1.572 15.342 0 12.24 0 5.485 0 0 5.485 0 12.24s5.485 12.24 12.24 12.24c7.058 0 11.742-4.962 11.742-11.968 0-.828-.088-1.46-.196-2.087H12.24z"/></svg>
-                        <span>Đăng Nhập Google Để Bình Luận</span>
-                      </button>
-                    </div>
-                  ) : (
-                    <div className={`flex items-center justify-between p-3 rounded-xl border ${isDarkEffective ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-200'}`}>
-                      <div className="flex items-center gap-2.5">
-                        {googleUser.photoURL ? (
-                          <img src={googleUser.photoURL} alt="" className="w-7 h-7 rounded-full object-cover border border-white/20" />
-                        ) : (
-                          <div className="w-7 h-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center">
-                            {(googleUser.displayName || 'U').charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <span className={`text-xs sm:text-sm font-medium ${tStyles.cardTitle}`}>
-                          Đang đăng nhập: <strong>{googleUser.displayName || googleUser.email}</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          await signOut(auth);
-                          setGoogleUser(null);
-                        }}
-                        className="text-[11px] font-medium text-rose-400 hover:text-rose-300 underline cursor-pointer"
-                      >
-                        Đăng xuất
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
+                      required
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Tên của bạn"
+                      placeholder="Tên của bạn (bắt buộc)"
                       className={`px-4 py-2.5 rounded-xl text-[14px] sm:text-[16px] font-sans focus:outline-hidden ${tStyles.input}`}
                     />
                   </div>

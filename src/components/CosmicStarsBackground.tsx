@@ -22,16 +22,7 @@ interface SnowThemePalette {
 
 function getSnowThemePalette(theme: NovelThemeId): SnowThemePalette {
   switch (theme) {
-    case 'lululemon': // Berry / Plum
-      return {
-        bg: '#150d10',
-        sky: 'linear-gradient(180deg, #130b0e 0%, #1e1016 54%, #2b141f 100%)',
-        hills: 'radial-gradient(70% 130% at 18% 100%, #2e1622 0 52%, transparent 54%), radial-gradient(64% 118% at 56% 100%, #24111a 0 52%, transparent 54%), radial-gradient(80% 140% at 92% 100%, #351827 0 52%, transparent 54%)',
-        fog: 'linear-gradient(transparent, rgba(132, 51, 75, 0.08) 62%, rgba(186, 56, 89, 0.16))',
-        flake: '#fdf2f4',
-        heroBg: 'radial-gradient(circle at 34% 30%, #ffffff 0 40%, rgba(253, 242, 244, 0.75) 70%, rgba(234, 212, 215, 0.2))',
-        heroShadow: '0 0 10px -1px rgba(255, 255, 255, 0.65)',
-      };
+
 
     case 'slate-haze': // Frost / Arctic Slate
       return {

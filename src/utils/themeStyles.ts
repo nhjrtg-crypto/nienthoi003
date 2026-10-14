@@ -1,4 +1,4 @@
-export type NovelThemeId = 'sage' | 'notebook' | 'mocha' | 'slate-haze' | 'amethyst-haze' | 'cosmic';
+export type NovelThemeId = string;
 
 export interface ThemeOption {
   id: NovelThemeId;
@@ -212,172 +212,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
     };
   }
 
-  // LULULEMON THEME (Dựa trên bảng màu trong ảnh: Burgundy / Plum / Berry #84334b, Sương hồng #ead4d7, Nền xám hồng nhạt #f9f6f7)
-  if (theme === 'lululemon') {
-    if (isDarkMode) {
-      return {
-        pageBg: 'bg-[#150d10] text-[#f4ebee]',
-        headerBg: 'bg-[#1c1115]/50 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.22)]',
-        headerBorder: 'border-white/15',
-        footerBg: 'bg-[#150d10]/85 backdrop-blur-xl border-t border-white/10',
-        logoBg: 'bg-gradient-to-tr from-[#84334b] to-[#a64462] text-white shadow-md shadow-[#10080b]/40',
-        logoBadge: 'bg-[#84334b]/20 text-[#f4ebee] border-[#84334b]/35 backdrop-blur-md',
-        logoTextHover: 'text-[#f8e4e8] group-hover:text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]',
-        searchContainer: '',
-        searchIcon: 'text-[#d4a3af] hover:text-[#fff0f3]',
-        input: 'bg-black/35 backdrop-blur-md border border-white/20 text-white placeholder-[#b88593]/60 focus:border-[#a64462]/70 focus:ring-1 focus:ring-[#84334b]/30 shadow-inner',
-        buttonNeutral: 'bg-white/[0.07] backdrop-blur-md text-[#f4ebee] border border-white/20 hover:bg-white/[0.14] hover:border-white/30 shadow-xs',
-        buttonPrimary: 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] text-white shadow-[0_0_12px_rgba(132,51,75,0.35)] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164]',
-        buttonDarkMode: 'bg-white/[0.07] backdrop-blur-md text-[#f5d76e] border border-white/20 hover:bg-white/[0.14]',
-        themeSelectorBtn: 'bg-white/[0.07] backdrop-blur-md text-[#f4ebee] border border-white/20 hover:bg-white/[0.14] hover:border-white/30 shadow-xs',
-        heroOuter: 'bg-gradient-to-br from-white/[0.09] via-[#24151a]/50 to-[#150d10]/65 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]',
-        heroInner: 'bg-gradient-to-b from-white/[0.07] via-[#2c1920]/40 to-[#0e080a]/55 backdrop-blur-xl border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]',
-        heroGridColor: '#a64462',
-        heroGlowBg: 'bg-[#84334b]/20',
-        heroCoverBorder: 'border border-white/25 shadow-[0_12px_36px_rgba(0,0,0,0.7)] group-hover:shadow-[0_16px_45px_rgba(132,51,75,0.35)]',
-        heroBadge1: 'bg-gradient-to-r from-[#84334b] to-[#a64462] text-white border border-[#ba3859]/30 shadow-md shadow-[#10080b]/30',
-        heroBadge2: 'bg-white/[0.08] backdrop-blur-md border border-white/15 text-[#ead4d7]',
-        heroBadge3: 'bg-white/[0.08] backdrop-blur-md border border-white/15 text-[#ead4d7]',
-        heroTitle: 'text-white',
-        heroTitleHover: 'hover:text-[#f4ebee]',
-        heroAuthorMuted: 'text-[#c296a2]',
-        heroAuthorValue: 'text-[#f4ebee]',
-        heroSynopsis: 'text-[#e2c4cb]',
-        heroTag: 'bg-[#84334b]/20 backdrop-blur-md border border-[#84334b]/35 text-[#f4ebee] shadow-xs hover:border-[#a64462]/60',
-        heroBtnRead: 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164] text-white shadow-lg shadow-[#10080b]/40 font-semibold',
-        heroBtnBookmark: 'bg-white/[0.07] backdrop-blur-md border border-white/20 text-[#ead4d7] hover:text-white hover:bg-white/[0.14]',
-        heroBookmarkActive: 'fill-[#f5d76e] text-[#f5d76e]',
-        carouselDotActive: 'w-7 sm:w-8 h-2 rounded-full bg-gradient-to-r from-[#a64462] to-[#ead4d7] shadow-[0_0_8px_rgba(166,68,98,0.35)]',
-        carouselDotInactive: 'w-2 h-2 rounded-full bg-white/20 hover:bg-white/40',
-        carouselNavBtn: 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] border border-white/20 text-[#ead4d7] hover:text-white shadow-md',
-        categoryTabActive: 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] text-white shadow-[0_0_10px_rgba(132,51,75,0.3)]',
-        categoryTabInactive: 'bg-white/[0.05] backdrop-blur-md hover:bg-white/[0.1] border border-white/12 text-[#d4a3af] hover:text-[#fff0f3]',
-        sectionHeaderBorder: 'border-white/10',
-        sectionTitle: 'text-white font-bold',
-        sectionIcon: 'text-[#d4a3af]',
-        sectionSub: 'text-[#c296a2]',
-        statusFilterWrap: 'bg-black/30 backdrop-blur-md border border-white/15',
-        statusFilterActive: 'bg-gradient-to-r from-[#84334b] to-[#a64462] text-white shadow-xs',
-        statusFilterInactive: 'text-[#c296a2] hover:text-white',
-        emptyCard: 'bg-white/[0.04] backdrop-blur-md border border-white/10',
-        emptyIcon: 'text-[#d4a3af]/60',
-        card: 'bg-gradient-to-br from-white/[0.08] via-[#24151a]/50 to-[#150d10]/65 backdrop-blur-md border border-white/15 hover:border-[#a64462]/40 shadow-[0_16px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.22)] hover:shadow-[0_20px_48px_rgba(132,51,75,0.3),inset_0_1px_0_rgba(255,255,255,0.35)]',
-        commentCard: 'bg-[#1c1115]/60 backdrop-blur-md border border-white/10 text-[#faf2f4] shadow-2xs',
-        commentForm: 'bg-[#1c1115]/80 backdrop-blur-md border border-white/12 text-[#faf2f4] shadow-xs',
-        cardCoverBorder: 'border border-white/15',
-        cardTag: 'bg-[#84334b]/20 backdrop-blur-md text-[#f4ebee] border border-[#84334b]/35',
-        cardTitle: 'text-[#faf2f4]',
-        cardTitleHover: 'group-hover:text-[#f4ebee]',
-        cardSynopsis: 'text-[#d8b4bc]',
-        cardFooterBorder: 'border-white/10',
-        cardAuthor: 'text-[#c296a2]',
-        cardChapterBtn: 'text-[#d4a3af]',
-        recruitmentBanner: 'bg-gradient-to-r from-[#180f12]/50 via-[#26161c]/50 to-[#301a23]/45 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.25)]',
-        recruitmentSubtitle: 'text-[#f5d76e]',
-        recruitmentTitle: 'text-[#faf2f4]',
-        recruitmentDesc: 'text-[#d8b4bc]',
-        recruitmentBtn: 'bg-gradient-to-r from-[#84334b] via-[#9e3d5a] to-[#ba3859] hover:from-[#943853] hover:via-[#aa4463] hover:to-[#c74164] text-white shadow-md shadow-[#10080b]/35 font-semibold',
-        sideCard: 'bg-gradient-to-br from-white/[0.08] via-[#24151a]/50 to-[#150d10]/65 backdrop-blur-md border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.22)]',
-        sideCardTitle: 'text-[#faf2f4]',
-        sideCardTabWrap: 'bg-black/30 backdrop-blur-md border border-white/15',
-        sideCardTabActive: 'bg-gradient-to-r from-[#84334b] to-[#a64462] text-white',
-        sideCardTabInactive: 'text-[#c296a2] hover:text-white',
-        sideCardItem: 'bg-white/[0.04] backdrop-blur-md hover:bg-[#84334b]/15 border border-white/10 hover:border-[#a64462]/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-all',
-        sideCardRankBadge: (idx) => idx < 3 ? '' : 'bg-white/[0.08] text-[#e3c7cc] border border-white/15',
-        sideCardItemTitleHover: 'group-hover:text-[#f4ebee]',
-        sideCardItemAuthor: 'text-[#c296a2]',
-        sideCardItemMetric: 'text-[#d4a3af]',
-        sideCardUpdateTitle: 'text-[#faf2f4]',
-        sideCardUpdateItem: 'bg-white/[0.03] backdrop-blur-md hover:bg-white/[0.08] border border-white/10',
-        sideCardUpdateTime: 'text-[#d4a3af]',
-        badgeText: 'text-[#d4a3af]',
-        leaderboardItem: 'bg-white/[0.04] backdrop-blur-md hover:bg-[#84334b]/15 border border-white/10 hover:border-[#a64462]/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]',
-        leaderboardRankBadge: 'bg-white/[0.08] text-[#e3c7cc] border border-white/15',
-        readerText: 'text-[#f4ebee]',
-      };
-    }
-    // Lululemon Light (Nền xám hồng sương đậm đà #f2ebef, Viền #ded0d4, Chủ đạo hồng mận sương from-[#cc7b8f] via-[#de9fb0] to-[#eed3dc])
-    return {
-      pageBg: 'bg-[#f2ebef] text-[#382329]',
-      headerBg: 'bg-[#f2ebef]/90 backdrop-blur-xl shadow-[0_4px_24px_rgba(204,123,143,0.06)]',
-      headerBorder: 'border-[#ded0d4]/80',
-      footerBg: 'bg-[#f2ebef] border-t border-[#ded0d4]/80',
-      logoBg: 'bg-gradient-to-r from-[#cc7b8f] via-[#de9fb0] to-[#eed3dc] text-[#382329] shadow-xs font-bold',
-      logoBadge: 'bg-[#ffffff] text-[#382329] border-[#e4d7db]',
-      logoTextHover: 'text-[#ad4862] group-hover:text-[#9c3e55]',
-      searchContainer: '',
-      searchIcon: 'text-[#8c5a67]',
-      input: 'bg-[#ebdce0] border-[#d8c5ca] text-[#382329] placeholder-[#9e707d] focus:border-[#cc7b8f] focus:bg-[#e4d0d5]',
-      buttonNeutral: 'lulu-light-btn !py-1.5 !px-3 font-medium',
-      buttonPrimary: 'lulu-light-btn-active !py-1.5 !px-3 font-bold',
-      buttonDarkMode: 'lulu-light-btn !p-2',
-      themeSelectorBtn: 'lulu-light-btn !p-2 sm:!px-3 sm:!py-1.5 font-bold',
-      heroOuter: 'bg-[#ffffff] border border-[#e4d7db]',
-      heroInner: 'bg-gradient-to-b from-[#ffffff] via-[#f7f0f3] to-[#f2ebef] border-[#ded0d4]',
-      heroGridColor: '#e4d7db',
-      heroGlowBg: 'bg-[#e4d7db]/40',
-      heroCoverBorder: 'border-2 border-white shadow-[0_16px_38px_rgba(204,123,143,0.14),0_4px_12px_rgba(204,123,143,0.06)] group-hover:shadow-[0_22px_45px_rgba(204,123,143,0.20)]',
-      heroBadge1: 'lulu-light-novel-tag font-bold',
-      heroBadge2: 'lulu-light-novel-tag',
-      heroBadge3: 'lulu-light-novel-tag',
-      heroTitle: 'text-[#382329]',
-      heroTitleHover: 'hover:text-[#ad4862]',
-      heroAuthorMuted: 'text-[#8c5a67]',
-      heroAuthorValue: 'text-[#382329]',
-      heroSynopsis: 'text-[#573740]',
-      heroTag: 'lulu-light-novel-tag',
-      heroBtnRead: 'lulu-light-btn font-bold !text-[#ad4862] hover:!text-[#9c3e55] !px-6 !py-2.5 rounded-full shadow-sm',
-      heroBtnBookmark: 'lulu-light-btn !px-4 !py-2.5',
-      heroBookmarkActive: 'fill-[#cc7b8f] text-[#cc7b8f]',
-      carouselDotActive: 'w-7 sm:w-8 h-2 rounded-full bg-gradient-to-r from-[#cc7b8f] to-[#de9fb0] shadow-xs',
-      carouselDotInactive: 'w-2 h-2 rounded-full bg-transparent border border-[#e4d7db] hover:bg-[#e4d7db]',
-      carouselNavBtn: 'lulu-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
-      categoryTabActive: 'lulu-light-btn-active font-bold',
-      categoryTabInactive: 'lulu-light-btn font-medium',
-      sectionHeaderBorder: 'border-[#e4d7db]',
-      sectionTitle: 'text-[#382329]',
-      sectionIcon: 'text-[#cc7b8f]',
-      sectionSub: 'text-[#8c5a67]',
-      statusFilterWrap: 'lulu-light-tabs-container p-1 rounded-full',
-      statusFilterActive: 'lulu-light-btn-active font-bold',
-      statusFilterInactive: 'lulu-light-btn font-medium',
-      emptyCard: 'bg-white border-[#e4d7db]',
-      emptyIcon: 'text-[#8c5a67]',
-      card: 'lulu-light-novel-card',
-      commentCard: 'bg-[#fcf8f9]/90 border border-[#eddfe2] text-[#382329] shadow-2xs',
-      commentForm: 'bg-[#f7f2f4]/90 border border-[#e8d5d9] text-[#382329] shadow-2xs',
-      cardCoverBorder: 'border-[#d8c5ca]/70 shadow-xs',
-      cardTag: 'lulu-light-novel-tag',
-      cardTitle: 'text-[#382329]',
-      cardTitleHover: 'group-hover:text-[#cc7b8f]',
-      cardSynopsis: 'text-[#573740]',
-      cardFooterBorder: 'lulu-light-novel-divider border-[#d8c5ca]/70',
-      cardAuthor: 'text-[#573740]',
-      cardChapterBtn: 'text-[#cc7b8f]',
-      recruitmentBanner: 'bg-[#ffffff] border border-[#e4d7db]',
-      recruitmentSubtitle: 'text-[#cc7b8f]',
-      recruitmentTitle: 'text-[#382329]',
-      recruitmentDesc: 'text-[#573740]',
-      recruitmentBtn: 'lulu-light-btn font-bold hover:!text-[#cc7b8f] cursor-pointer',
-      sideCard: 'bg-white border-[1.5px] border-[#e4d7db] shadow-xs',
-      sideCardTitle: 'text-[#382329]',
-      sideCardTabWrap: 'lulu-light-tabs-container p-1 rounded-full',
-      sideCardTabActive: 'lulu-light-btn-active font-bold',
-      sideCardTabInactive: 'lulu-light-btn font-medium',
-      sideCardItem: 'bg-[#f2ebef] hover:bg-white border border-[#ded0d4] hover:border-[#cc7b8f]/50 transition-all',
-      sideCardRankBadge: (idx) => idx < 3 ? '' : 'bg-[#ded0d4] text-[#382329]',
-      sideCardItemTitleHover: 'group-hover:text-[#cc7b8f]',
-      sideCardItemAuthor: 'text-[#8c5a67]',
-      sideCardItemMetric: 'text-[#cc7b8f]',
-      sideCardUpdateTitle: 'text-[#382329]',
-      sideCardUpdateItem: 'bg-[#f2ebef] hover:bg-white border border-[#ded0d4] transition-all',
-      sideCardUpdateTime: 'text-[#cc7b8f]',
-      badgeText: 'text-[#cc7b8f]',
-      leaderboardItem: 'bg-[#f2ebef] hover:bg-white border border-[#ded0d4] hover:border-[#cc7b8f]/50 transition-all',
-      leaderboardRankBadge: 'bg-[#e4d7db] text-[#382329]',
-      readerText: 'text-[#382329]',
-    };
-  }
+
 
   // 2. SLATE HAZE THEME (From 0013.png)
   if (theme === 'slate-haze') {
@@ -1253,10 +1088,7 @@ export function getExtraChapterBadgeStyle(theme: NovelThemeId, isDarkMode: boole
       return isDarkEffective
         ? 'bg-[#241710] text-[#bda99b] border border-[#3d271c]/50'
         : 'bg-[#f4ebe1] text-[#6d4c38] border-[#dfcfbe] shadow-2xs';
-    case 'lululemon':
-      return isDarkEffective
-        ? 'bg-[#3b1c26]/70 text-[#e2b8c2] border-[#703042]/50'
-        : 'bg-[#f0dce0] text-[#703042] border-[#d8b4bc] shadow-2xs';
+
     default:
       return isDarkEffective
         ? 'bg-purple-900/40 text-purple-300 border-purple-500/30'
@@ -1343,8 +1175,7 @@ export function getCommentChapterBadgeStyle(theme: NovelThemeId, isDarkMode: boo
         return 'bg-sky-500/20 text-sky-200 border border-sky-400/35';
       case 'notebook':
         return 'bg-zinc-700/40 text-zinc-200 border border-zinc-600/50';
-      case 'lululemon':
-        return 'bg-[#551d2e]/40 text-[#e2b8c2] border border-[#84334b]/45';
+
       case 'amethyst-haze':
       case 'cosmic':
       default:
@@ -1360,8 +1191,7 @@ export function getCommentChapterBadgeStyle(theme: NovelThemeId, isDarkMode: boo
         return 'bg-[#dbeafe] text-[#1e40af] border border-[#bfdbfe]';
       case 'notebook':
         return 'bg-zinc-200/90 text-zinc-800 border border-zinc-300';
-      case 'lululemon':
-        return 'bg-[#f5e1e5] text-[#703042] border border-[#d8b4bc]';
+
       case 'amethyst-haze':
       case 'cosmic':
       default:
