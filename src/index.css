@@ -63,6 +63,80 @@
   font-family: 'Lora', Georgia, serif;
 }
 
+mark.book-marker-streak,
+.book-marker-streak {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* Underline Highlight Styles (box-decoration-break: clone for multi-line support) */
+.highlight-underline-base {
+  background-color: transparent !important;
+  background-image: none !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1.8px;
+  text-underline-offset: 3.5px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: inherit;
+}
+/* Underline Highlight Styles: Chế độ sáng nhạt hơn (opacity ~0.25), Chế độ tối (~0.65) */
+.highlight-underline-yellow-light { text-decoration-color: rgba(253, 224, 71, 0.28); }
+.highlight-underline-yellow-dark  { text-decoration-color: rgba(253, 224, 71, 0.65); }
+.highlight-underline-pink-light   { text-decoration-color: rgba(244, 114, 182, 0.25); }
+.highlight-underline-pink-dark     { text-decoration-color: rgba(244, 114, 182, 0.65); }
+.highlight-underline-mint-light   { text-decoration-color: rgba(110, 231, 183, 0.25); }
+.highlight-underline-mint-dark     { text-decoration-color: rgba(110, 231, 183, 0.65); }
+.highlight-underline-purple-light { text-decoration-color: rgba(192, 132, 252, 0.25); }
+.highlight-underline-purple-dark  { text-decoration-color: rgba(192, 132, 252, 0.65); }
+.highlight-underline-sky-light    { text-decoration-color: rgba(56, 189, 248, 0.25); }
+.highlight-underline-sky-dark      { text-decoration-color: rgba(56, 189, 248, 0.65); }
+
+/* Sketch / Wavy SVG Data-URI Highlight Styles: Chế độ sáng nét nhạt hơn (stroke-opacity 0.25, stroke 1.5px) */
+.highlight-sketch-base {
+  background-color: transparent !important;
+  background-repeat: repeat-x;
+  background-position: bottom left;
+  background-size: 16px 6px;
+  padding-bottom: 3px;
+  color: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.highlight-sketch-yellow-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%23fde047' stroke-opacity='0.25' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-yellow-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%23fde047' stroke-opacity='0.65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-pink-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%23f472b6' stroke-opacity='0.25' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-pink-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%23f472b6' stroke-opacity='0.65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-mint-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%236ee7b7' stroke-opacity='0.25' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-mint-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%236ee7b7' stroke-opacity='0.65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-purple-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%23c084fc' stroke-opacity='0.25' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-purple-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%23c084fc' stroke-opacity='0.65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-sky-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%2338bdf8' stroke-opacity='0.25' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.highlight-sketch-sky-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9' fill='none'%3E%3Cpath d='M0,5 C4,1.5 8,7.5 12,4.5 C16,1.5 20,7.5 24,5' stroke='%2338bdf8' stroke-opacity='0.65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
 .font-gelasio {
   font-family: 'Gelasio', Georgia, serif;
 }

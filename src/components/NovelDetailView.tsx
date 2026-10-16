@@ -93,6 +93,7 @@ import { safeStorage } from '../utils/safeStorage';
 import { TxtImportModal } from './TxtImportModal';
 import { TxtChapterSplitterModal } from './TxtChapterSplitterModal';
 import { cosmicAudio } from '../utils/audioSynth';
+import { parseCommentContent } from '../utils/chapterHighlights';
 import {
   FirestoreChuongMeta,
   AdminUserLike,
@@ -472,8 +473,8 @@ const CoverBgPatternOverlay: React.FC<{
   isDark: boolean;
 }> = ({ theme, isDark }) => {
   // Chế độ theme sáng: áp dụng mức độ loang màu dịu nhẹ thanh tao (0.20)
-  // Chế độ theme tối: áp dụng mức độ loang màu dịu nhẹ huyền ảo (0.16)
-  const opacity = isDark ? 0.16 : 0.20;
+  // Chế độ theme tối: áp dụng mức độ loang màu hơi đậm hơn, êm ái huyền ảo (0.22)
+  const opacity = isDark ? 0.22 : 0.20;
   const config = getThemeLoangConfig(theme, isDark);
 
   return (
@@ -1215,8 +1216,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-[#84334b]/20 backdrop-blur-md border border-[#84334b]/35 text-[#f4ebee] hover:border-[#ba3859]/60'
             : 'lulu-light-novel-tag',
           posterNoteBox: isDarkEffective
-            ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#f4ebee] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'bg-gradient-to-r from-[#cc7b8f]/22 via-[#de9fb0]/26 to-[#eed3dc]/32 border border-[#cc7b8f]/42 text-[#4a2e37] shadow-xs',
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-[#f4ebee] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'lulu-light-novel-tag shadow-2xs text-[#4a2e37]',
           posterNoteTitle: isDarkEffective ? 'text-white' : 'text-[#ad4862]',
           posterNoteContent: isDarkEffective ? 'text-[#e2c4cb]' : 'text-[#573740]',
           posterReadNextBtn: isDarkEffective
@@ -1227,14 +1228,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ? 'linear-gradient(135deg, rgba(36, 21, 26, 0.88) 0%, rgba(21, 13, 16, 0.96) 100%)'
               : '#ffffff',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.12) 45%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(165, 45, 78, 0.35) 0%, rgba(125, 30, 56, 0.18) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
             glowGradientTopRight: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.12) 45%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(165, 45, 78, 0.35) 0%, rgba(125, 30, 56, 0.18) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
             glowGradientBottomLeft: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(132, 51, 75, 0.25) 0%, rgba(186, 56, 89, 0.12) 45%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(165, 45, 78, 0.35) 0%, rgba(125, 30, 56, 0.18) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(204, 123, 143, 0.40) 0%, rgba(222, 159, 176, 0.28) 40%, rgba(238, 211, 220, 0.18) 70%, transparent 88%)',
             gridLineColor: isDarkEffective
               ? 'rgba(186, 56, 89, 0.18)'
               : 'rgba(204, 123, 143, 0.14)',
@@ -1300,8 +1301,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] text-[#F7F4EE] border border-white/20'
             : 'notebook-light-novel-tag',
           posterNoteBox: isDarkEffective
-            ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#D9D4C9] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'bg-gradient-to-r from-[#f7f7f8] via-[#efeff1] to-[#e4e4e7] border border-[#d4d4d8] text-[#3f3f46] shadow-xs',
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-[#F7F4EE] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'notebook-light-novel-tag shadow-2xs text-[#3f3f46]',
           posterNoteTitle: isDarkEffective ? 'text-[#F7F4EE]' : 'text-[#171717]',
           posterNoteContent: isDarkEffective ? 'text-[#D9D4C9]' : 'text-[#525252]',
           posterReadNextBtn: isDarkEffective
@@ -1312,14 +1313,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ? 'linear-gradient(135deg, rgba(28, 25, 23, 0.85) 0%, rgba(20, 18, 16, 0.95) 100%)'
               : '#ffffff',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(247, 244, 238, 0.09) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(160, 160, 175, 0.28) 0%, rgba(85, 85, 95, 0.14) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
             glowGradientTopRight: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(247, 244, 238, 0.09) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(160, 160, 175, 0.28) 0%, rgba(85, 85, 95, 0.14) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
             glowGradientBottomLeft: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(247, 244, 238, 0.09) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(160, 160, 175, 0.28) 0%, rgba(85, 85, 95, 0.14) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(180, 185, 195, 0.50) 0%, rgba(200, 205, 215, 0.36) 18%, rgba(218, 222, 230, 0.25) 36%, rgba(232, 235, 240, 0.16) 54%, rgba(244, 246, 249, 0.08) 72%, rgba(250, 251, 253, 0.03) 86%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(247, 244, 238, 0.14)'
               : 'rgba(113, 113, 122, 0.2)',
@@ -1385,8 +1386,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-[#2b1c14]/60 backdrop-blur-md border border-[#4a3224]/40 text-[#bda99b] hover:border-[#694834]/50'
             : 'mocha-light-novel-tag',
           posterNoteBox: isDarkEffective
-            ? 'border border-[#3d271c]/50 bg-[#170f0b]/80 text-[#a89588]'
-            : 'bg-gradient-to-r from-[#faf6f0] via-[#f3ebe0] to-[#e9ded0] border border-[#decbb7] text-[#6d4c38] shadow-xs',
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-[#e4dbd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'mocha-light-novel-tag shadow-2xs text-[#6d4c38]',
           posterNoteTitle: isDarkEffective ? 'text-[#cbbbaf]' : 'text-[#3A2A2A]',
           posterNoteContent: isDarkEffective ? 'text-[#a89588]' : 'text-[#8C7A6E]',
           posterReadNextBtn: isDarkEffective
@@ -1397,14 +1398,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ? 'linear-gradient(135deg, rgba(30, 20, 14, 0.85) 0%, rgba(20, 13, 9, 0.95) 100%)'
               : '#ffffff',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(163, 119, 100, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(185, 120, 85, 0.32) 0%, rgba(125, 75, 48, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
             glowGradientTopRight: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(163, 119, 100, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(185, 120, 85, 0.32) 0%, rgba(125, 75, 48, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
             glowGradientBottomLeft: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(163, 119, 100, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(185, 120, 85, 0.32) 0%, rgba(125, 75, 48, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(195, 155, 130, 0.55) 0%, rgba(210, 175, 150, 0.40) 18%, rgba(224, 195, 175, 0.28) 36%, rgba(238, 215, 200, 0.18) 54%, rgba(248, 232, 222, 0.09) 72%, rgba(254, 246, 240, 0.04) 86%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(228, 217, 188, 0.16)'
               : 'rgba(163, 119, 100, 0.22)',
@@ -1470,8 +1471,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-[#182535]/60 backdrop-blur-md border border-[#314659]/40 text-[#cbdde9] hover:border-[#4d6a85]/50'
             : 'frost-light-novel-tag',
           posterNoteBox: isDarkEffective
-            ? 'border border-[#314659]/50 bg-[#0e1722]/80 text-[#a6c2d8]'
-            : 'bg-gradient-to-r from-[#f2f7fc] via-[#e6f0f8] to-[#d8e6f3] border border-[#c2d7e9] text-[#3e566d] shadow-xs',
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-[#dce7f0] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'frost-light-novel-tag shadow-2xs text-[#3e566d]',
           posterNoteTitle: isDarkEffective ? 'text-[#dce7f0]' : 'text-[#101723]',
           posterNoteContent: isDarkEffective ? 'text-[#a6c2d8]' : 'text-[#475569]',
           posterReadNextBtn: isDarkEffective
@@ -1482,14 +1483,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ? 'linear-gradient(135deg, rgba(16, 25, 36, 0.85) 0%, rgba(11, 17, 24, 0.95) 100%)'
               : '#ffffff',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(85, 125, 160, 0.32) 0%, rgba(50, 75, 105, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
             glowGradientTopRight: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(85, 125, 160, 0.32) 0%, rgba(50, 75, 105, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
             glowGradientBottomLeft: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(77, 106, 133, 0.16) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(85, 125, 160, 0.32) 0%, rgba(50, 75, 105, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(186, 208, 230, 0.16)'
               : 'rgba(56, 189, 248, 0.28)',
@@ -1555,8 +1556,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-purple-500/15 backdrop-blur-md border border-purple-400/30 text-purple-200 hover:border-purple-400/50'
             : 'amethyst-light-novel-tag',
           posterNoteBox: isDarkEffective
-            ? 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-[#bfb2d4] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-            : 'bg-gradient-to-r from-[#f7f2fc] via-[#efe5f9] to-[#e6d8f5] border border-[#dac8ee] text-[#544a6b] shadow-xs',
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'amethyst-light-novel-tag shadow-2xs text-[#544a6b]',
           posterNoteTitle: isDarkEffective ? 'text-[#f0edf7]' : 'text-[#211c2f]',
           posterNoteContent: isDarkEffective ? 'text-[#bfb2d4]' : 'text-[#423956]',
           posterReadNextBtn: isDarkEffective
@@ -1567,14 +1568,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ? 'linear-gradient(135deg, rgba(26, 18, 46, 0.88) 0%, rgba(12, 8, 23, 0.96) 100%)'
               : '#ffffff',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(155, 85, 225, 0.32) 0%, rgba(100, 45, 155, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
             glowGradientTopRight: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(155, 85, 225, 0.32) 0%, rgba(100, 45, 155, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
             glowGradientBottomLeft: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(168, 85, 247, 0.18) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(155, 85, 225, 0.32) 0%, rgba(100, 45, 155, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(209, 154, 253, 0.38) 0%, rgba(218, 172, 254, 0.30) 24%, rgba(228, 196, 255, 0.20) 48%, rgba(240, 220, 255, 0.11) 70%, rgba(249, 240, 255, 0.04) 86%, rgba(255, 255, 255, 0.96) 96%, #ffffff 100%)',
             gridLineColor: isDarkEffective
               ? 'rgba(192, 132, 252, 0.17)'
               : 'rgba(147, 51, 234, 0.22)',
@@ -1623,16 +1624,18 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           posterMutedText: 'text-purple-300/70',
           posterTagClass:
             'bg-purple-500/15 backdrop-blur-md border border-purple-400/30 text-purple-200 hover:border-pink-400/50',
-          posterNoteBox: 'border border-white/15 bg-white/[0.05] backdrop-blur-md text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]',
+          posterNoteBox: isDarkEffective
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-purple-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'amethyst-light-novel-tag shadow-2xs text-[#544a6b]',
           posterNoteTitle: 'text-white',
           posterNoteContent: 'text-purple-200/80',
           posterReadNextBtn:
             'bg-white/[0.08] backdrop-blur-md hover:bg-white/[0.16] border border-white/20 text-slate-200 shadow-md',
           gridPattern: {
             baseGradient: 'linear-gradient(135deg, rgba(21, 18, 57, 0.88) 0%, rgba(10, 12, 36, 0.96) 100%)',
-            glowGradient: 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.22) 0%, rgba(6, 182, 212, 0.1) 45%, transparent 70%)',
-            glowGradientTopRight: 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(168, 85, 247, 0.22) 0%, rgba(6, 182, 212, 0.1) 45%, transparent 70%)',
-            glowGradientBottomLeft: 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(168, 85, 247, 0.22) 0%, rgba(6, 182, 212, 0.1) 45%, transparent 70%)',
+            glowGradient: 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(155, 75, 215, 0.34) 0%, rgba(170, 50, 125, 0.18) 45%, transparent 75%)',
+            glowGradientTopRight: 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(155, 75, 215, 0.34) 0%, rgba(170, 50, 125, 0.18) 45%, transparent 75%)',
+            glowGradientBottomLeft: 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(155, 75, 215, 0.34) 0%, rgba(170, 50, 125, 0.18) 45%, transparent 75%)',
             gridLineColor: 'rgba(192, 132, 252, 0.22)',
             gridSubtleColor: 'rgba(6, 182, 212, 0.09)',
           },
@@ -1695,8 +1698,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             ? 'bg-[#1a2b1d]/60 backdrop-blur-md border border-[#2c4731]/40 text-[#a1b89e] hover:border-[#3e6345]/50'
             : 'sage-light-novel-tag',
           posterNoteBox: isDarkEffective
-            ? 'border border-[#233827]/50 bg-[#0f1911]/80 text-[#8ea38a]'
-            : 'bg-gradient-to-r from-[#f2f7f3] via-[#e5efe7] to-[#d8e7dc] border border-[#c6dccb] text-[#394a3b] shadow-xs',
+            ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-[#d5e5d8] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+            : 'sage-light-novel-tag shadow-2xs text-[#394a3b]',
           posterNoteTitle: isDarkEffective ? 'text-[#b8cbb5]' : 'text-[#1c2b1e]',
           posterNoteContent: isDarkEffective ? 'text-[#8ea38a]' : 'text-[#394a3b]',
           posterReadNextBtn: isDarkEffective
@@ -1707,14 +1710,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ? 'linear-gradient(135deg, rgba(20, 35, 24, 0.85) 0%, rgba(12, 21, 16, 0.95) 100%)'
               : '#ffffff',
             glowGradient: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(52, 211, 153, 0.15) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(52, 175, 115, 0.30) 0%, rgba(30, 105, 65, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
             glowGradientTopRight: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(52, 211, 153, 0.15) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
+              ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(52, 175, 115, 0.30) 0%, rgba(30, 105, 65, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
             glowGradientBottomLeft: isDarkEffective
-              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(52, 211, 153, 0.15) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
+              ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(52, 175, 115, 0.30) 0%, rgba(30, 105, 65, 0.16) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(140, 195, 155, 0.42) 0%, rgba(180, 220, 192, 0.22) 35%, rgba(225, 245, 230, 0.10) 65%, transparent 85%)',
             gridLineColor: isDarkEffective
               ? 'rgba(52, 211, 153, 0.16)'
               : 'rgba(70, 98, 68, 0.22)',
@@ -1855,7 +1858,11 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     e.preventDefault();
     if (!newCommentText.trim()) return;
 
-    const finalAuthor = userName.trim() || 'Độc Giả';
+    const finalAuthor = userName.trim();
+    if (!finalAuthor || finalAuthor.length <= 1) {
+      window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
+      return;
+    }
     const finalAvatar = '';
     try {
       safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
@@ -1882,6 +1889,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     } catch {}
     onUpdateNovel?.({ ...novel, comments: updated });
     setNewCommentText('');
+    setToastMessage({ title: 'Thành công', desc: 'Bình luận của bạn đã được đăng thành công!' });
+    setTimeout(() => setToastMessage(null), 3500);
 
     try {
       await addD1Comment({
@@ -2680,8 +2689,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         </div>
       </header>
 
-      {/* Main Content Frame */}
-      <main className={`flex-1 w-full ${detailLayoutOption === 'spiral' ? 'max-w-6xl lg:max-w-7xl' : 'max-w-6xl'} mx-auto ${detailLayoutOption === 'spiral' ? 'px-1 sm:px-6' : 'px-3 sm:px-6'} pt-6 sm:pt-8 pb-16 relative z-10`}>
+      {/* Main Content Frame - Kiểu chuẩn trên máy tính thu gọn độ rộng vừa vặn hơn (max-w-5xl) */}
+      <main className={`flex-1 w-full ${detailLayoutOption === 'spiral' ? 'max-w-6xl lg:max-w-7xl' : 'max-w-5xl'} mx-auto ${detailLayoutOption === 'spiral' ? 'px-1 sm:px-6' : 'px-3 sm:px-6'} pt-6 sm:pt-8 pb-16 relative z-10`}>
         {/* LỰA CHỌN HIỂN THỊ THÔNG TIN CHI TIẾT TRUYỆN: KIỂU SỔ CÒNG HOẶC KIỂU CHUẨN */}
         {detailLayoutOption === 'spiral' ? (
           <SpiralNotebookView
@@ -2764,25 +2773,17 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   }}
                 />
 
-                {/* 2a. Khối màu loang ở góc trên bên phải: không hẳn là hình tròn, tâm nhạt dịu, dần loang hòa trộn với nền trắng, không rõ viền */}
+                {/* 2a. Khối màu loang ở góc trên bên phải: tâm êm ái, loang hòa trộn với nền, hơi đậm hơn và không chói */}
                 <div
-                  className={`absolute -top-14 -right-14 sm:-top-24 sm:-right-24 md:-top-32 md:-right-32 lg:-top-40 lg:-right-40 w-80 h-72 sm:w-[34rem] sm:h-[30rem] md:w-[48rem] md:h-[42rem] lg:w-[56rem] lg:h-[48rem] pointer-events-none transition-all duration-500 ${
-                    !isDarkEffective
-                      ? 'rounded-[46%_54%_68%_32%/45%_55%_45%_55%] blur-2xl sm:blur-3xl md:blur-[55px]'
-                      : 'rounded-full'
-                  }`}
+                  className="absolute -top-14 -right-14 sm:-top-24 sm:-right-24 md:-top-32 md:-right-32 lg:-top-40 lg:-right-40 w-80 h-72 sm:w-[34rem] sm:h-[30rem] md:w-[48rem] md:h-[42rem] lg:w-[56rem] lg:h-[48rem] pointer-events-none transition-all duration-500 rounded-[46%_54%_68%_32%/45%_55%_45%_55%] blur-2xl sm:blur-3xl md:blur-[55px]"
                   style={{
                     background: detailThemeExtras.gridPattern.glowGradientTopRight || detailThemeExtras.gridPattern.glowGradient,
                   }}
                 />
 
-                {/* 2b. Khối màu loang ở góc dưới bên trái: không hẳn là hình tròn, tâm nhạt dịu, dần loang hòa trộn với nền trắng, không rõ viền */}
+                {/* 2b. Khối màu loang ở góc dưới bên trái: tâm êm ái, loang hòa trộn với nền, hơi đậm hơn và không chói */}
                 <div
-                  className={`absolute -bottom-14 -left-14 sm:-bottom-24 sm:-left-24 md:-bottom-32 md:-left-32 lg:-bottom-40 lg:-left-40 w-80 h-72 sm:w-[34rem] sm:h-[30rem] md:w-[48rem] md:h-[42rem] lg:w-[56rem] lg:h-[48rem] pointer-events-none transition-all duration-500 ${
-                    !isDarkEffective
-                      ? 'rounded-[54%_46%_32%_68%/55%_45%_55%_45%] blur-2xl sm:blur-3xl md:blur-[55px]'
-                      : 'rounded-full'
-                  }`}
+                  className="absolute -bottom-14 -left-14 sm:-bottom-24 sm:-left-24 md:-bottom-32 md:-left-32 lg:-bottom-40 lg:-left-40 w-80 h-72 sm:w-[34rem] sm:h-[30rem] md:w-[48rem] md:h-[42rem] lg:w-[56rem] lg:h-[48rem] pointer-events-none transition-all duration-500 rounded-[54%_46%_32%_68%/55%_45%_55%_45%] blur-2xl sm:blur-3xl md:blur-[55px]"
                   style={{
                     background: detailThemeExtras.gridPattern.glowGradientBottomLeft || detailThemeExtras.gridPattern.glowGradient,
                   }}
@@ -4166,31 +4167,31 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
                 {/* Lời nhắn của người đăng (Thay thế mục Cập nhật mới nhất đã bỏ) */}
                 {novel.uploaderNote && (
-                  <div className={`p-4 sm:p-5 rounded-lg border transition-all ${
+                  <div className={`p-4 sm:p-5 rounded-2xl transition-all ${
                     isJournalStyle
                       ? isDarkEffective
-                        ? 'bg-zinc-850/90 border-zinc-700/80 text-zinc-100'
-                        : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-2xs'
+                        ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+                        : 'notebook-light-novel-tag text-[#3D3A37] shadow-2xs'
                       : isNoteStyle
                       ? isDarkEffective
-                        ? 'bg-[#1D1B16] border-amber-900/40 text-amber-100 shadow-2xs'
-                        : 'bg-white border-amber-200 text-[#3C321E] shadow-2xs'
+                        ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-amber-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+                        : 'mocha-light-novel-tag text-[#3C321E] shadow-2xs'
                       : isCinemaStyle
                       ? isDarkEffective
-                        ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100 shadow-2xs'
-                        : 'bg-white border-[#E2DDD5] text-neutral-900 shadow-2xs'
+                        ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-neutral-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+                        : 'frost-light-novel-tag text-neutral-900 shadow-2xs'
                       : isCyberStyle
                       ? isDarkEffective
-                        ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100 shadow-2xs'
-                        : 'bg-white border-cyan-600/30 text-[#092B38] shadow-2xs'
+                        ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+                        : 'frost-light-novel-tag text-[#092B38] shadow-2xs'
                       : isWaxSealStyle
                       ? isDarkEffective
-                        ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4] shadow-2xs'
-                        : 'bg-white border-[#DAC8B6] text-[#3A2A22] shadow-2xs'
+                        ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-[#EDE0D4] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+                        : 'mocha-light-novel-tag text-[#3A2A22] shadow-2xs'
                       : isEditorialStyle
                       ? isDarkEffective
-                        ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
-                        : 'bg-white border-stone-300 text-stone-900 shadow-2xs'
+                        ? 'border border-white/12 bg-white/[0.04] backdrop-blur-xl text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]'
+                        : 'notebook-light-novel-tag text-stone-900 shadow-2xs'
                       : `${detailThemeExtras.posterNoteBox} font-source-sans`
                   }`}>
                     <div className="w-full min-w-0 font-source-sans">
@@ -4752,106 +4753,118 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
                 {/* Comment List */}
                 <div className="space-y-3.5">
-                  {comments.map((comment) => (
-                    <div
-                      key={comment.id}
-                      className={`p-5 rounded-2xl border space-y-3 ${
-                        isJournalStyle
-                          ? isDarkEffective
-                            ? 'bg-[#15161C]/90 border-zinc-700/70 text-zinc-200'
-                            : 'bg-white border-[#E8DFD8] text-stone-800 shadow-2xs'
-                          : isNoteStyle
-                          ? isDarkEffective
-                            ? 'bg-[#1D1B16]/95 border-amber-900/40 text-amber-100'
-                            : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-2xs'
-                          : isCinemaStyle
-                          ? isDarkEffective
-                            ? 'bg-[#18181B]/95 border-neutral-700/60 text-neutral-100 font-sans'
-                            : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-2xs font-sans'
-                          : isCyberStyle
-                          ? isDarkEffective
-                            ? 'bg-[#09111C]/95 border-cyan-500/40 text-cyan-100 font-mono'
-                            : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-2xs font-mono'
-                          : isWaxSealStyle
-                          ? isDarkEffective
-                            ? 'bg-[#1C1613]/95 border-[#4A3831] text-[#EDE0D4] font-serif'
-                            : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-2xs font-serif'
-                          : isEditorialStyle
-                          ? isDarkEffective
-                            ? 'bg-[#15161A] border-zinc-800 text-zinc-200'
-                            : 'bg-white border-stone-300 text-stone-900 shadow-2xs'
-                          : tStyles.commentCard || tStyles.card
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          {comment.avatar && (comment.avatar.startsWith('http://') || comment.avatar.startsWith('https://')) ? (
-                            <img
-                              src={comment.avatar}
-                              alt={comment.author}
-                              className={`w-10 h-10 rounded-full border object-cover shrink-0 ${tStyles.cardCoverBorder}`}
-                            />
-                          ) : (
-                            <div
-                              className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center font-bold text-[16px] select-none shadow-xs text-white ${getAvatarBgColor(
-                                comment.author
-                              )}`}
-                              title={comment.author}
-                            >
-                              {(comment.author?.trim().charAt(0) || 'Đ').toUpperCase()}
-                            </div>
-                          )}
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className={`text-[14px] sm:text-[16px] font-sans font-bold truncate ${tStyles.cardTitle}`}>{comment.author}</span>
-                              {typeof comment.chapterNumber === 'number' && (
-                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold ${getCommentChapterBadgeStyle(theme, isDarkEffective)}`}>
-                                  Chương {comment.chapterNumber}
-                                </span>
-                              )}
-                            </div>
-                            <span className={`text-[13px] sm:text-[14px] font-sans ${tStyles.cardAuthor}`}>{normalizeCommentDate(comment.createdAt)}</span>
+                  {comments.map((comment) => {
+                    const parsed = parseCommentContent(comment.content);
+                    return (
+                      <div
+                        key={comment.id}
+                        className={`p-5 rounded-2xl border space-y-3.5 ${
+                          isJournalStyle
+                            ? isDarkEffective
+                              ? 'bg-[#15161C]/90 border-zinc-700/70 text-zinc-200'
+                              : 'bg-white border-[#E8DFD8] text-stone-800 shadow-2xs'
+                            : isNoteStyle
+                            ? isDarkEffective
+                              ? 'bg-[#1D1B16]/95 border-amber-900/40 text-amber-100'
+                              : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-2xs'
+                            : isCinemaStyle
+                            ? isDarkEffective
+                              ? 'bg-[#18181B]/95 border-neutral-700/60 text-neutral-100 font-sans'
+                              : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-2xs font-sans'
+                            : isCyberStyle
+                            ? isDarkEffective
+                              ? 'bg-[#09111C]/95 border-cyan-500/40 text-cyan-100 font-mono'
+                              : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-2xs font-mono'
+                            : isWaxSealStyle
+                            ? isDarkEffective
+                              ? 'bg-[#1C1613]/95 border-[#4A3831] text-[#EDE0D4] font-serif'
+                              : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-2xs font-serif'
+                            : isEditorialStyle
+                            ? isDarkEffective
+                              ? 'bg-[#15161A] border-zinc-800 text-zinc-200'
+                              : 'bg-white border-stone-300 text-stone-900 shadow-2xs'
+                            : tStyles.commentCard || tStyles.card
+                        }`}
+                      >
+                        {/* 1. Nếu là bình luận trích dẫn: Khung trích dẫn ở trên cùng như ảnh */}
+                        {parsed.hasQuote && (
+                          <div className="p-4 sm:p-5 rounded-2xl bg-[#fef9ee] dark:bg-[#252016] border border-amber-200/80 dark:border-amber-900/50 shadow-xs">
+                            <p className="font-serif italic text-[14px] sm:text-[16px] text-stone-800 dark:text-amber-100/90 leading-relaxed">
+                              “{parsed.quoteText}”
+                            </p>
                           </div>
+                        )}
+
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            {comment.avatar && (comment.avatar.startsWith('http://') || comment.avatar.startsWith('https://')) ? (
+                              <img
+                                src={comment.avatar}
+                                alt={comment.author}
+                                className={`w-10 h-10 rounded-full border object-cover shrink-0 ${tStyles.cardCoverBorder}`}
+                              />
+                            ) : (
+                              <div
+                                className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center font-bold text-[16px] select-none shadow-xs text-white ${getAvatarBgColor(
+                                  comment.author
+                                )}`}
+                                title={comment.author}
+                              >
+                                {(comment.author?.trim().charAt(0) || 'Đ').toUpperCase()}
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={`text-[14px] sm:text-[16px] font-sans font-bold truncate ${tStyles.cardTitle}`}>{comment.author}</span>
+                                {typeof comment.chapterNumber === 'number' && (
+                                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold ${getCommentChapterBadgeStyle(theme, isDarkEffective)}`}>
+                                    Chương {comment.chapterNumber}
+                                  </span>
+                                )}
+                              </div>
+                              <span className={`text-[13px] sm:text-[14px] font-sans ${tStyles.cardAuthor}`}>{normalizeCommentDate(comment.createdAt)}</span>
+                            </div>
+                          </div>
+
+                          {/* Nút xóa bình luận (Chỉ dành cho Quản trị viên) */}
+                          {isAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenDeleteComment(comment)}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[14px] font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all cursor-pointer shrink-0"
+                              title="Xóa bình luận này (Quản trị viên)"
+                              aria-label="Xóa bình luận"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              <span>Xóa</span>
+                            </button>
+                          )}
                         </div>
 
-                        {/* Nút xóa bình luận (Chỉ dành cho Quản trị viên) */}
-                        {isAdmin && (
+                        <p className={`text-[14px] sm:text-[16px] font-sans leading-relaxed ${isDarkEffective ? 'text-stone-200' : 'text-stone-700'}`} style={{ lineHeight: '1.75' }}>
+                          {parsed.hasQuote ? (parsed.commentBody || '') : comment.content}
+                        </p>
+
+                        <div className="flex items-center gap-4 pt-1">
                           <button
                             type="button"
-                            onClick={() => handleOpenDeleteComment(comment)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[14px] font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all cursor-pointer shrink-0"
-                            title="Xóa bình luận này (Quản trị viên)"
-                            aria-label="Xóa bình luận"
+                            onClick={() => {
+                              const mention = `@${comment.author} `;
+                              if (!newCommentText.includes(mention)) {
+                                setNewCommentText((prev) => `${mention}${prev}`);
+                              }
+                              const formEl = document.getElementById('detail-comment-form');
+                              formEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }}
+                            className={`flex items-center gap-2 text-[14px] sm:text-[15px] font-sans font-bold transition-colors cursor-pointer ${tStyles.cardAuthor} ${tStyles.heroTitleHover}`}
                           >
-                            <Trash2 className="w-4 h-4" />
-                            <span>Xóa</span>
+                            <Reply className="w-4 h-4" />
+                            <span>Trả lời</span>
                           </button>
-                        )}
+                        </div>
                       </div>
-
-                      <p className={`text-[14px] sm:text-[16px] font-sans leading-relaxed ${isDarkEffective ? 'text-stone-200' : 'text-stone-700'}`} style={{ lineHeight: '1.75' }}>
-                        {comment.content}
-                      </p>
-
-                      <div className="flex items-center gap-4 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const mention = `@${comment.author} `;
-                            if (!newCommentText.includes(mention)) {
-                              setNewCommentText((prev) => `${mention}${prev}`);
-                            }
-                            const formEl = document.getElementById('detail-comment-form');
-                            formEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                          }}
-                          className={`flex items-center gap-2 text-[14px] sm:text-[15px] font-sans font-bold transition-colors cursor-pointer ${tStyles.cardAuthor} ${tStyles.heroTitleHover}`}
-                        >
-                          <Reply className="w-4 h-4" />
-                          <span>Trả lời</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
@@ -5841,11 +5854,11 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.2 }}
-            className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-lg p-2.5 rounded-full backdrop-blur-xl border ${floatingBarTheme.container} flex items-center justify-between gap-3`}
+            className={`fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-lg md:max-w-xl lg:max-w-2xl p-2.5 md:p-3.5 md:px-5 rounded-full backdrop-blur-xl border ${floatingBarTheme.container} flex items-center justify-between gap-3 md:gap-5 shadow-xl`}
           >
-            {/* Thông tin truyện thu nhỏ (Đã bỏ tiến độ đọc theo yêu cầu) */}
-            <div className="flex items-center gap-2.5 min-w-0 pl-1">
-              <div className={`w-9 h-9 rounded-full overflow-hidden border shrink-0 ${floatingBarTheme.avatarBorder}`}>
+            {/* Thông tin truyện thu nhỏ (Đã bỏ tiến độ đọc theo yêu cầu; trên máy tính kích thước to hơn rõ rệt) */}
+            <div className="flex items-center gap-2.5 md:gap-3.5 min-w-0 pl-1">
+              <div className={`w-9 h-9 md:w-12 md:h-12 rounded-full overflow-hidden border shrink-0 ${floatingBarTheme.avatarBorder}`}>
                 <img
                   src={getDirectImageUrl(activeCoverImage, novel.id || novel.title)}
                   alt={novel.title}
@@ -5854,17 +5867,17 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                 />
               </div>
               <div className="min-w-0">
-                <h4 className={`text-xs sm:text-sm font-bold truncate ${floatingBarTheme.title}`}>
+                <h4 className={`text-xs sm:text-sm md:text-base font-bold truncate ${floatingBarTheme.title}`}>
                   {novel.title}
                 </h4>
-                <p className={`text-[10px] sm:text-[11px] font-semibold truncate ${floatingBarTheme.subtitle}`}>
+                <p className={`text-[10px] sm:text-[11px] md:text-xs font-semibold truncate ${floatingBarTheme.subtitle}`}>
                   {novel.author?.name || 'Tác giả'}
                 </p>
               </div>
             </div>
 
-            {/* Nút hành động: Chỉ còn nút Đọc Ngay */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            {/* Nút hành động: Chỉ còn nút Đọc Ngay (kích thước mở rộng trên desktop) */}
+            <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
               <button
                 onClick={() => {
                   try {
@@ -5872,9 +5885,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   } catch {}
                   onReadChapter(readingChapter);
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer ${floatingBarTheme.btn}`}
+                className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-xs md:text-sm font-bold flex items-center gap-1.5 md:gap-2 active:scale-95 transition-all cursor-pointer shadow-md ${floatingBarTheme.btn}`}
               >
-                <BookOpen className="w-3.5 h-3.5" />
+                <BookOpen className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 <span>Đọc Ngay</span>
               </button>
             </div>

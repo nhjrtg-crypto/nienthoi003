@@ -18,8 +18,26 @@ import {
   Reply,
   Lock,
   KeyRound,
+  Highlighter,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { Novel, NovelChapter, NovelComment } from '../types';
+import { cosmicAudio } from '../utils/audioSynth';
+import {
+  HighlightColor,
+  HighlightStyle,
+  UserBookHighlight,
+  HIGHLIGHT_COLORS,
+  HIGHLIGHT_STYLES,
+  HIGHLIGHT_COLOR_VALUES,
+  getHighlightRenderClasses,
+  loadChapterHighlights,
+  saveChapterHighlights,
+  parseCommentContent,
+} from '../utils/chapterHighlights';
+import { HighlightToolbarPopup } from './HighlightToolbarPopup';
+import { HighlightCommentModal } from './HighlightCommentModal';
 import {
   getNovelThemeStyles,
   NovelThemeId,
@@ -187,6 +205,43 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const [showChapterList, setShowChapterList] = useState(false);
   const [showCommentsPopup, setShowCommentsPopup] = useState(false);
   const [chapterPage, setChapterPage] = useState(1);
+
+  // Highlight feature states
+  const [isHighlighterMode, setIsHighlighterMode] = useState(false);
+  const [isHighlightsHidden, setIsHighlightsHidden] = useState(false);
+  const [activeHighlightColor, setActiveHighlightColor] = useState<HighlightColor>('yellow');
+  const [activeHighlightStyle, setActiveHighlightStyle] = useState<HighlightStyle>('classic');
+  const [showHighlightIntroTooltip, setShowHighlightIntroTooltip] = useState(false);
+  const [chapterHighlights, setChapterHighlights] = useState<UserBookHighlight[]>(() => {
+    if (novel?.id && chapterNumber !== null) {
+      return loadChapterHighlights(novel.id, chapterNumber);
+    }
+    return [];
+  });
+  const [floatingSelection, setFloatingSelection] = useState<{ paragraphIndex: number; selectedText: string } | null>(null);
+  const lastSelectionRef = useRef<{ paragraphIndex: number; selectedText: string } | null>(null);
+  const [clickedHighlightId, setClickedHighlightId] = useState<string | null>(null);
+  const [editingNote, setEditingNote] = useState('');
+  const [toastNotification, setToastNotification] = useState<string | null>(null);
+  const showToast = (msg: string) => {
+    setToastNotification(msg);
+    setTimeout(() => setToastNotification(null), 3000);
+  };
+  const [quoteCommentModal, setQuoteCommentModal] = useState<{ isOpen: boolean; quoteText: string }>({
+    isOpen: false,
+    quoteText: '',
+  });
+  const setIsCommentsDrawerOpen = setShowCommentsPopup;
+
+  // Sync chapter highlights when novel or chapter changes
+  useEffect(() => {
+    if (novel?.id && chapterNumber !== null) {
+      setChapterHighlights(loadChapterHighlights(novel.id, chapterNumber));
+      setFloatingSelection(null);
+      lastSelectionRef.current = null;
+      setClickedHighlightId(null);
+    }
+  }, [novel?.id, chapterNumber]);
 
   const settingsMenuRef = useRef<HTMLDivElement>(null);
   const chapterMenuRef = useRef<HTMLDivElement>(null);
@@ -717,8 +772,12 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     e.preventDefault();
     if (!newCommentContent.trim() || !novel || chapterNumber === null) return;
 
-    setIsSubmittingComment(true);
-    const finalAuthor = authorNameInput.trim() || 'Độc Giả';
+    const finalAuthor = authorNameInput.trim();
+    if (!finalAuthor || finalAuthor.length <= 1) {
+      window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
+      setIsSubmittingComment(false);
+      return;
+    }
     const finalAvatar = '';
     const formattedDate = formatCommentDate();
 
@@ -749,6 +808,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     } catch {}
     onUpdateNovel?.({ ...novel, comments: updated });
     setNewCommentContent('');
+    showToast('Bình luận thành công!');
 
     try {
       await addD1Comment({
@@ -1058,6 +1118,276 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     }
   };
 
+  // Bắt Sự Kiện Bôi Đen Văn Bản trên Trang Sách
+  const handleTextSelectionCheck = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) return;
+    const text = sel.toString().trim();
+    if (text.length < 1) return;
+
+    // Xác định đoạn văn (paragraphIndex) chứa văn bản được bôi đen
+    let pIdx = -1;
+    const anchorEl = sel.anchorNode instanceof Element ? sel.anchorNode : sel.anchorNode?.parentElement;
+    let paraEl = anchorEl?.closest('[data-paragraph-index]');
+    if (paraEl) {
+      pIdx = parseInt(paraEl.getAttribute('data-paragraph-index') || '-1', 10);
+    }
+
+    if (pIdx < 0 || !paragraphs[pIdx]?.includes(text)) {
+      const foundIdx = paragraphs.findIndex((p) => p.includes(text));
+      if (foundIdx !== -1) pIdx = foundIdx;
+    }
+
+    const selData = { paragraphIndex: pIdx, selectedText: text };
+    setFloatingSelection(selData);
+    lastSelectionRef.current = selData;
+
+  };
+
+  // Lắng nghe sự kiện mouseup và touchend trên tài liệu
+  useEffect(() => {
+    const handleDocSelection = () => setTimeout(() => handleTextSelectionCheck(), 30);
+    document.addEventListener('mouseup', handleDocSelection);
+    document.addEventListener('touchend', handleDocSelection);
+    return () => {
+      document.removeEventListener('mouseup', handleDocSelection);
+      document.removeEventListener('touchend', handleDocSelection);
+    };
+  }, [paragraphs]);
+
+  // Xử lý gửi trích dẫn & bình luận
+  const handleSubmitQuoteComment = async (commentText: string, quote: string, customAuthor?: string) => {
+    if (!novel || chapterNumber === null) return;
+
+    let author = customAuthor?.trim() || authorNameInput.trim();
+    if (!author || author.length <= 1) {
+      window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
+      return;
+    }
+
+    if (author !== authorNameInput) {
+      setAuthorNameInput(author);
+      try {
+        safeStorage.setItem('cosmo_comment_author_name', author);
+      } catch {}
+    }
+
+    const fullContent = commentText.trim()
+      ? `“${quote}”\n\n${commentText.trim()}`
+      : `“${quote}”`;
+
+    const formattedDate = formatCommentDate();
+    const tempComment: NovelComment = {
+      id: `cm-${Date.now()}`,
+      truyenId: novel.id,
+      author: author,
+      avatar: '',
+      content: fullContent,
+      createdAt: formattedDate,
+      ngayTao: new Date().toISOString(),
+      likes: 0,
+      badge: 'Độc Giả',
+      chapterNumber: chapterNumber,
+      chapterTitle: currentChapter?.title || `Chương ${chapterNumber}`,
+    };
+
+    const updated = [tempComment, ...chapterComments.filter((c) => c.id !== tempComment.id)];
+    setChapterComments(updated);
+    try {
+      safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
+    } catch {}
+    showToast('Bình luận thành công!');
+
+    // Chuyển việc cập nhật nặng xuống background non-blocking để màn hình không bị giật/đơ
+    setTimeout(() => {
+      try {
+        onUpdateNovel?.({ ...novel, comments: updated });
+      } catch {}
+      addD1Comment({
+        id: tempComment.id,
+        truyenId: novel.id,
+        author: author,
+        avatar: '',
+        content: fullContent,
+        badge: 'Độc Giả',
+        chapterNumber: chapterNumber,
+        chapterTitle: currentChapter?.title || `Chương ${chapterNumber}`,
+      }).catch(() => {});
+    }, 50);
+  };
+
+  // Hành động Highlight
+  const handleQuickHighlight = (color: HighlightColor, style: HighlightStyle = activeHighlightStyle) => {
+    const currentSel = floatingSelection || lastSelectionRef.current;
+    if (!currentSel || !currentSel.selectedText || !novel || chapterNumber === null) {
+      window.alert('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+      return;
+    }
+
+    cosmicAudio.playChime('sparkle');
+    const newHl: UserBookHighlight = {
+      id: `hl-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      novelId: novel.id,
+      chapterNumber,
+      paragraphIndex: currentSel.paragraphIndex,
+      selectedText: currentSel.selectedText,
+      color,
+      style,
+      createdAt: Date.now(),
+    };
+
+    // Lọc bỏ highlight cũ bị trùng/đè nội dung trong cùng đoạn văn (tránh tạo 2 bản ghi chồng lên nhau)
+    const updated = chapterHighlights.filter((h) => {
+      if (h.paragraphIndex !== currentSel.paragraphIndex) return true;
+      if (h.selectedText === currentSel.selectedText) return false;
+      if (h.selectedText.includes(currentSel.selectedText) || currentSel.selectedText.includes(h.selectedText)) return false;
+      return true;
+    });
+    updated.push(newHl);
+    setChapterHighlights(updated);
+    saveChapterHighlights(novel.id, chapterNumber, updated);
+
+    try {
+      window.getSelection()?.removeAllRanges();
+    } catch {}
+    setFloatingSelection(null);
+    lastSelectionRef.current = null;
+    showToast('Đã lưu highlight thành công!');
+  };
+
+  // Hành động Highlight & B.luận
+  const handleHighlightAndComment = () => {
+    const currentSel = floatingSelection || lastSelectionRef.current;
+    if (!currentSel || !currentSel.selectedText) {
+      window.alert('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+      return;
+    }
+    const text = currentSel.selectedText;
+    handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+    setNewCommentContent(`“${text}”\n\n`);
+    setShowCommentsPopup(true);
+  };
+
+  // Render Vệt Bút Highlight trên Từng Đoạn Văn
+  const renderHighlightedParagraph = (
+    text: string,
+    paraIndex: number,
+    myHighlights: UserBookHighlight[],
+    isOtherPerspectiveMode: boolean = false
+  ) => {
+    if (isOtherPerspectiveMode || isHighlightsHidden || myHighlights.length === 0) {
+      return text;
+    }
+
+    // Lọc và sắp xếp các segment highlight trong đoạn văn
+    type Segment = { start: number; end: number; hl: UserBookHighlight };
+    const segments: Segment[] = [];
+    for (const hl of myHighlights) {
+      if (!hl.selectedText) continue;
+      let startIndex = 0;
+      while (true) {
+        const idx = text.indexOf(hl.selectedText, startIndex);
+        if (idx === -1) break;
+        segments.push({ start: idx, end: idx + hl.selectedText.length, hl });
+        startIndex = idx + hl.selectedText.length;
+      }
+    }
+
+    if (segments.length === 0) return text;
+    segments.sort((a, b) => a.start - b.start);
+
+    // Loại bỏ các đoạn trùng lặp và render các thẻ <mark>
+    const nodes: React.ReactNode[] = [];
+    let currentPos = 0;
+
+    segments.forEach((seg, i) => {
+      if (seg.start < currentPos) return;
+
+      if (seg.start > currentPos) {
+        nodes.push(text.slice(currentPos, seg.start));
+      }
+      const strokeClass = getHighlightRenderClasses(seg.hl.color, seg.hl.style || 'classic', isDarkEffective);
+
+      nodes.push(
+        <mark
+          key={`mark-${seg.hl.id}-${i}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsHighlighterMode(true);
+            setFloatingSelection({
+              paragraphIndex: paraIndex,
+              selectedText: seg.hl.selectedText,
+            });
+            lastSelectionRef.current = {
+              paragraphIndex: paraIndex,
+              selectedText: seg.hl.selectedText,
+            };
+            setActiveHighlightColor(seg.hl.color);
+            setActiveHighlightStyle(seg.hl.style || 'classic');
+            setClickedHighlightId(seg.hl.id);
+          }}
+          className={`book-marker-streak select-text font-inherit text-inherit cursor-pointer transition-all ${strokeClass}`}
+          title="Nhấn để đổi màu hoặc xóa highlight"
+        >
+          {text.slice(seg.start, seg.end)}
+        </mark>
+      );
+      currentPos = seg.end;
+    });
+
+    if (currentPos < text.length) {
+      nodes.push(text.slice(currentPos));
+    }
+
+    return nodes;
+  };
+
+  const handleDeleteHighlight = (id: string | null, textMatch?: string, paraIndex?: number) => {
+    if (!novel || chapterNumber === null) return;
+    const target = id ? chapterHighlights.find((h) => h.id === id) : null;
+    const textToMatch = textMatch || target?.selectedText;
+    const targetPara = paraIndex !== undefined ? paraIndex : target?.paragraphIndex;
+
+    const updated = chapterHighlights.filter((h) => {
+      // Nếu khớp ID -> xóa
+      if (id && h.id === id) return false;
+      // Nếu khớp cùng đoạn văn và cùng đoạn text highlight -> xóa (chống lưu đè highlight cũ)
+      if (textToMatch && h.selectedText === textToMatch) {
+        if (targetPara === undefined || h.paragraphIndex === targetPara) return false;
+      }
+      return true;
+    });
+
+    setChapterHighlights(updated);
+    saveChapterHighlights(novel.id, chapterNumber, updated);
+    setClickedHighlightId(null);
+  };
+
+  const handleSaveHighlightNote = (id: string, note: string) => {
+    if (!novel || chapterNumber === null) return;
+    const updated = chapterHighlights.map((h) => (h.id === id ? { ...h, personalNote: note } : h));
+    setChapterHighlights(updated);
+    saveChapterHighlights(novel.id, chapterNumber, updated);
+  };
+
+  const handleChangeHighlightColor = (id: string, color: HighlightColor, style?: HighlightStyle) => {
+    if (!novel || chapterNumber === null) return;
+    const target = chapterHighlights.find((h) => h.id === id);
+    const updated = chapterHighlights
+      .filter((h) => {
+        if (h.id === id) return true;
+        if (target && h.paragraphIndex === target.paragraphIndex && h.selectedText === target.selectedText) {
+          return false;
+        }
+        return true;
+      })
+      .map((h) =>
+        h.id === id ? { ...h, color, style: style || h.style || 'classic' } : h
+      );
+    setChapterHighlights(updated);
+    saveChapterHighlights(novel.id, chapterNumber, updated);
+  };
+
   const readerSettingsScrollbarColor = useMemo(() => {
     if (isDarkEffective) {
       switch (readerTheme) {
@@ -1087,6 +1417,144 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
         case 'notebook':
         default:
           return '#737373';
+      }
+    }
+  }, [readerTheme, isDarkEffective]);
+
+  const floatingToolbarTheme = useMemo(() => {
+    if (isDarkEffective) {
+      switch (readerTheme) {
+        case 'amethyst-haze':
+          return {
+            container: 'bg-[#181324]/90 border-purple-800/40 shadow-purple-950/30 divide-purple-900/40',
+            btn: 'text-purple-200 hover:bg-purple-900/30',
+            btnActive: 'bg-purple-900/50 text-purple-100 font-bold',
+            tooltip: 'bg-[#181324] text-purple-200 border border-purple-800/40',
+          };
+        case 'sage':
+          return {
+            container: 'bg-[#111c15]/90 border-emerald-800/40 shadow-emerald-950/30 divide-emerald-900/40',
+            btn: 'text-emerald-200 hover:bg-emerald-900/30',
+            btnActive: 'bg-emerald-900/50 text-emerald-100 font-bold',
+            tooltip: 'bg-[#111c15] text-emerald-200 border border-emerald-800/40',
+          };
+        case 'mocha':
+          return {
+            container: 'bg-[#1c1512]/90 border-amber-900/40 shadow-stone-950/30 divide-amber-900/40',
+            btn: 'text-amber-200 hover:bg-amber-950/40',
+            btnActive: 'bg-amber-950/60 text-amber-100 font-bold',
+            tooltip: 'bg-[#1c1512] text-amber-200 border border-amber-900/40',
+          };
+        case 'notebook':
+        case 'white':
+          return {
+            container: 'bg-[#161618]/95 border-zinc-800 shadow-black/40 divide-zinc-800',
+            btn: 'text-zinc-300 hover:bg-zinc-800/80',
+            btnActive: 'bg-zinc-800 text-white font-bold',
+            tooltip: 'bg-[#161618] text-zinc-200 border border-zinc-800',
+          };
+        case 'slate':
+          return {
+            container: 'bg-[#18181b]/95 border-zinc-800 shadow-black/40 divide-zinc-800',
+            btn: 'text-zinc-300 hover:bg-zinc-800',
+            btnActive: 'bg-zinc-800 text-white font-bold',
+            tooltip: 'bg-[#18181b] text-zinc-200 border border-zinc-800',
+          };
+        case 'cosmic':
+        default:
+          return {
+            container: 'bg-[#0f172a]/95 border-slate-700/80 shadow-slate-950/50 divide-slate-800',
+            btn: 'text-slate-300 hover:bg-slate-800/80',
+            btnActive: 'bg-indigo-950/80 text-indigo-200 font-bold',
+            tooltip: 'bg-[#0f172a] text-slate-200 border border-slate-700',
+          };
+      }
+    } else {
+      switch (readerTheme) {
+        case 'amethyst-haze':
+          return {
+            container: 'bg-[#fbf8fe]/95 border-purple-100 shadow-purple-900/5 divide-purple-100/60',
+            btn: 'text-purple-900 hover:bg-purple-50',
+            btnActive: 'bg-purple-50 text-purple-950 font-bold',
+            tooltip: 'bg-white text-purple-950 border border-purple-100',
+          };
+        case 'sage':
+          return {
+            container: 'bg-[#f7fbf8]/95 border-emerald-100 shadow-emerald-900/5 divide-emerald-100/60',
+            btn: 'text-emerald-900 hover:bg-emerald-50',
+            btnActive: 'bg-emerald-50 text-emerald-950 font-bold',
+            tooltip: 'bg-white text-emerald-950 border border-emerald-100',
+          };
+        case 'mocha':
+          return {
+            container: 'bg-[#fdfbf7]/95 border-amber-100 shadow-stone-900/5 divide-amber-100/60',
+            btn: 'text-amber-950 hover:bg-amber-50',
+            btnActive: 'bg-amber-50 text-amber-950 font-bold',
+            tooltip: 'bg-white text-amber-950 border border-amber-100',
+          };
+        case 'notebook':
+        case 'white':
+          return {
+            container: 'bg-white/95 border-zinc-200 shadow-zinc-900/10 divide-zinc-100',
+            btn: 'text-zinc-800 hover:bg-zinc-100',
+            btnActive: 'bg-zinc-100 text-zinc-950 font-bold',
+            tooltip: 'bg-white text-zinc-900 border border-zinc-200',
+          };
+        case 'slate':
+          return {
+            container: 'bg-white/95 border-zinc-200 shadow-zinc-900/10 divide-zinc-100',
+            btn: 'text-zinc-800 hover:bg-zinc-100',
+            btnActive: 'bg-zinc-200 text-zinc-900 font-bold',
+            tooltip: 'bg-zinc-900 text-white border border-zinc-700',
+          };
+        case 'cosmic':
+        default:
+          return {
+            container: 'bg-white/95 border-slate-200 shadow-slate-900/10 divide-slate-100',
+            btn: 'text-slate-800 hover:bg-slate-100',
+            btnActive: 'bg-indigo-50 text-indigo-900 font-bold',
+            tooltip: 'bg-slate-900 text-white border border-slate-700',
+          };
+      }
+    }
+  }, [readerTheme, isDarkEffective]);
+
+  const paraCommentBadgeStyle = useMemo(() => {
+    if (isDarkEffective) {
+      switch (readerTheme) {
+        case 'amethyst-haze':
+          return 'bg-purple-950/40 border-purple-800/40 text-purple-200 hover:bg-purple-900/50';
+        case 'sage':
+          return 'bg-emerald-950/40 border-emerald-800/40 text-emerald-200 hover:bg-emerald-900/50';
+        case 'mocha':
+          return 'bg-amber-950/40 border-amber-900/40 text-amber-200 hover:bg-amber-900/50';
+        case 'notebook':
+        case 'white':
+          return 'bg-zinc-800/80 border-zinc-700 text-zinc-200 hover:bg-zinc-700/80';
+        case 'slate':
+        case 'slate-haze':
+          return 'bg-zinc-800/80 border-zinc-700 text-zinc-200 hover:bg-zinc-700/80';
+        case 'cosmic':
+        default:
+          return 'bg-indigo-950/60 border-indigo-800/60 text-indigo-200 hover:bg-indigo-900/60';
+      }
+    } else {
+      switch (readerTheme) {
+        case 'amethyst-haze':
+          return 'bg-purple-50/90 hover:bg-purple-100/80 border-purple-100 text-purple-800';
+        case 'sage':
+          return 'bg-emerald-50/90 hover:bg-emerald-100/80 border-emerald-100 text-emerald-800';
+        case 'mocha':
+          return 'bg-amber-50/90 hover:bg-amber-100/80 border-amber-100 text-amber-900';
+        case 'notebook':
+        case 'white':
+          return 'bg-zinc-100 hover:bg-zinc-200 border-zinc-200 text-zinc-900';
+        case 'slate':
+        case 'slate-haze':
+          return 'bg-zinc-100 hover:bg-zinc-200 border-zinc-200 text-zinc-800';
+        case 'cosmic':
+        default:
+          return 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-900';
       }
     }
   }, [readerTheme, isDarkEffective]);
@@ -1239,30 +1707,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             <ChevronRight className="w-4 h-4" />
           </button>
 
-          {/* Nút Bình Luận (Chỉ có icon MessageSquare) - Mở Popup bình luận nhanh */}
-          <button
-            type="button"
-            onClick={() => {
-              if (!isChapterUnlocked) {
-                setShowPasswordModal(true);
-                return;
-              }
-              setShowCommentsPopup(!showCommentsPopup);
-              setShowChapterList(false);
-              setShowSettings(false);
-            }}
-            className={`p-2 rounded-xl border transition-colors cursor-pointer flex items-center justify-center shadow-xs ${
-              showCommentsPopup
-                ? tStyles.categoryTabActive
-                : isDarkEffective
-                ? 'bg-white/[0.08] hover:bg-white/[0.16] border-white/20 text-white'
-                : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800'
-            }`}
-            title="Bình luận chương nhanh (không cần cuộn)"
-            aria-label="Bình luận chương nhanh"
-          >
-            <MessageSquare className="w-4 h-4" />
-          </button>
 
           {/* Reading Display Settings (Cài Đặt) Popover -> Không thay đổi hình dạng khi bấm */}
           <div className="relative" ref={settingsMenuRef}>
@@ -1649,24 +2093,87 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               <div className="h-4 bg-stone-500/15 rounded-md w-3/4" />
             </div>
           ) : paragraphs.length > 0 ? (
-            paragraphs.map((para, idx) => (
-              <p
-                key={idx}
-                className={`${
-                  paragraphSpacing === 'tight'
-                    ? 'mb-1 sm:mb-1.5'
-                    : paragraphSpacing === '2-lines'
-                    ? 'mb-7 sm:mb-8'
-                    : 'mb-3.5 sm:mb-4.5'
-                } ${hasIndent ? 'indent-7 sm:indent-8' : ''} whitespace-pre-line`}
-              >
-                {para}
-              </p>
-            ))
+            paragraphs.map((para, idx) => {
+              const paraHighlights = chapterHighlights.filter(
+                (h) => h.paragraphIndex === idx || (h.selectedText && para.includes(h.selectedText))
+              );
+              const paraCommentsCount = currentChapterComments.filter((cm) => {
+                return paraHighlights.some((h) => h.selectedText && cm.content.includes(h.selectedText));
+              }).length;
+
+              return (
+                <div
+                  key={idx}
+                  data-paragraph-index={idx}
+                  className={`${
+                    paragraphSpacing === 'tight'
+                      ? 'mb-1 sm:mb-1.5'
+                      : paragraphSpacing === '2-lines'
+                      ? 'mb-7 sm:mb-8'
+                      : 'mb-3.5 sm:mb-4.5'
+                  }`}
+                >
+                  <p className={`${hasIndent ? 'indent-7 sm:indent-8' : ''} whitespace-pre-line`}>
+                    {renderHighlightedParagraph(para, idx, chapterHighlights, false)}
+                  </p>
+
+                  {/* Số lượng bình luận nằm dưới cùng của đoạn highlight có bình luận (ví dụ: 💬 2 ) */}
+                  {paraCommentsCount > 0 && (
+                    <div className="flex items-center justify-end pt-1 not-italic select-none">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const targetQuote = paraHighlights[0]?.selectedText || '';
+                          setQuoteCommentModal({
+                            isOpen: true,
+                            quoteText: targetQuote,
+                          });
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95 ${paraCommentBadgeStyle}`}
+                        title={`Có ${paraCommentsCount} bình luận về đoạn này (bấm để xem)`}
+                      >
+                        <span>💬 {paraCommentsCount}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })
           ) : (
-            <p className="whitespace-pre-line">
-              {activeContent || 'Nội dung chương đang được chuẩn bị hoặc trống...'}
-            </p>
+            (() => {
+              const paraHighlights = chapterHighlights;
+              const paraCommentsCount = currentChapterComments.filter((cm) => {
+                return paraHighlights.some((h) => h.selectedText && cm.content.includes(h.selectedText));
+              }).length;
+
+              return (
+                <div data-paragraph-index={0}>
+                  <p className="whitespace-pre-line">
+                    {renderHighlightedParagraph(activeContent || 'Nội dung chương đang được chuẩn bị hoặc trống...', 0, chapterHighlights, false)}
+                  </p>
+                  {paraCommentsCount > 0 && (
+                    <div className="flex items-center justify-end pt-1 not-italic select-none">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const targetQuote = paraHighlights[0]?.selectedText || '';
+                          setQuoteCommentModal({
+                            isOpen: true,
+                            quoteText: targetQuote,
+                          });
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95 ${paraCommentBadgeStyle}`}
+                        title={`Có ${paraCommentsCount} bình luận về đoạn này (bấm để xem)`}
+                      >
+                        <span>💬 {paraCommentsCount}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()
           )}
         </article>
 
@@ -2037,31 +2544,42 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       </p>
                     </div>
                   ) : (
-                    displayedComments.map((cm) => (
-                      <div
-                        key={cm.id}
-                        className={`p-3.5 rounded-2xl border space-y-2 transition-colors ${tStyles.commentCard || tStyles.card}`}
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            {cm.avatar && (cm.avatar.startsWith('http://') || cm.avatar.startsWith('https://')) ? (
-                              <img
-                                src={cm.avatar}
-                                alt={cm.author}
-                                className="w-7 h-7 rounded-full border object-cover shrink-0"
-                              />
-                            ) : (
-                              <div
-                                className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center font-bold text-xs select-none shadow-xs text-white ${getAvatarBgColor(
-                                  cm.author
-                                )}`}
-                              >
-                                {(cm.author?.trim().charAt(0) || 'Đ').toUpperCase()}
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className={`text-xs font-bold truncate block ${tStyles.cardTitle}`}>
+                    displayedComments.map((cm) => {
+                      const parsed = parseCommentContent(cm.content);
+                      return (
+                        <div
+                          key={cm.id}
+                          className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.commentCard || tStyles.card}`}
+                        >
+                          {/* 1. Nếu là bình luận trích dẫn: Hiển thị khung trích dẫn ở trên cùng theo ảnh */}
+                          {parsed.hasQuote && (
+                            <div className="p-3.5 sm:p-4 rounded-2xl bg-[#fef9ee] dark:bg-[#252016] border border-amber-200/80 dark:border-amber-900/50 shadow-xs">
+                              <p className="font-serif italic text-xs sm:text-[13px] text-stone-800 dark:text-amber-100/90 leading-relaxed">
+                                “{parsed.quoteText}”
+                              </p>
+                            </div>
+                          )}
+
+                          {/* 2. Dòng thông tin tác giả & Thời gian */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              {cm.avatar && (cm.avatar.startsWith('http://') || cm.avatar.startsWith('https://')) ? (
+                                <img
+                                  src={cm.avatar}
+                                  alt={cm.author}
+                                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border object-cover shrink-0"
+                                />
+                              ) : (
+                                <div
+                                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full shrink-0 flex items-center justify-center font-bold text-xs select-none shadow-xs text-white ${getAvatarBgColor(
+                                    cm.author
+                                  )}`}
+                                >
+                                  {(cm.author?.trim().charAt(0) || 'Đ').toUpperCase()}
+                                </div>
+                              )}
+                              <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                                <span className={`text-xs sm:text-sm font-bold truncate block ${tStyles.cardTitle}`}>
                                   {cm.author}
                                 </span>
                                 {typeof cm.chapterNumber === 'number' && (
@@ -2070,47 +2588,50 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                                   </span>
                                 )}
                               </div>
-                              <span className={`text-[10px] block font-mono ${tStyles.cardAuthor}`}>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className={`text-[11px] font-normal opacity-70 ${tStyles.cardAuthor}`}>
                                 {normalizeCommentDate(cm.createdAt)}
                               </span>
+                              {isAdmin && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteChapterComment(cm.id)}
+                                  className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                  title="Xóa bình luận"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
                             </div>
                           </div>
 
-                          {isAdmin && (
+                          {/* 3. Nội dung bình luận của độc giả */}
+                          <p className={`text-xs sm:text-sm leading-relaxed pl-1 ${
+                            isDarkEffective ? 'text-stone-200' : 'text-stone-700'
+                          }`}>
+                            {parsed.hasQuote ? (parsed.commentBody || '') : cm.content}
+                          </p>
+
+                          <div className="flex items-center gap-3 pl-1 pt-0.5">
                             <button
                               type="button"
-                              onClick={() => handleDeleteChapterComment(cm.id)}
-                              className="p-1 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                              title="Xóa bình luận"
+                              onClick={() => {
+                                const mention = `@${cm.author} `;
+                                if (!newCommentContent.includes(mention)) {
+                                  setNewCommentContent((prev) => `${mention}${prev}`);
+                                }
+                              }}
+                              className={`flex items-center gap-1.5 text-[11px] font-semibold cursor-pointer transition-colors ${tStyles.cardAuthor} hover:text-purple-500`}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Reply className="w-3 h-3" />
+                              <span>Trả lời</span>
                             </button>
-                          )}
+                          </div>
                         </div>
-
-                        <p className={`text-xs leading-relaxed pl-9 ${
-                          isDarkEffective ? 'text-stone-200' : 'text-stone-700'
-                        }`}>
-                          {cm.content}
-                        </p>
-
-                        <div className="flex items-center gap-3 pl-9 pt-0.5">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const mention = `@${cm.author} `;
-                              if (!newCommentContent.includes(mention)) {
-                                setNewCommentContent((prev) => `${mention}${prev}`);
-                              }
-                            }}
-                            className={`flex items-center gap-1.5 text-[11px] font-semibold cursor-pointer transition-colors ${tStyles.cardAuthor} hover:text-purple-500`}
-                          >
-                            <Reply className="w-3 h-3" />
-                            <span>Trả lời</span>
-                          </button>
-                        </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>
@@ -2118,6 +2639,230 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
           </div>
         )}
       </AnimatePresence>
+
+      {/* Floating Toolbar ở góc dưới bên phải: 1 khối hình chữ nhật dọc, nền màu trắng, icon 2 nút màu đen tối giản */}
+      <div
+        className={`fixed right-4 sm:right-7 z-30 transition-all duration-300 ease-out transform ${
+          isHighlighterMode ? 'bottom-28 sm:bottom-32' : 'bottom-6 sm:bottom-8'
+        } ${
+          shouldShowHeader && !showSettings
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
+            : 'translate-y-20 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="relative">
+          {/* Khối hình chữ nhật dọc chứa 2 nút đổi màu theo theme sáng/tối */}
+          <div className={`flex flex-col items-center rounded-2xl shadow-xl border overflow-hidden backdrop-blur-md transition-colors divide-y ${floatingToolbarTheme.container}`}>
+            
+            {/* 1. NÚT BÚT HIGHLIGHT */}
+            <div className="relative group">
+              <button
+                type="button"
+                onClick={() => {
+                  cosmicAudio.playChime('sparkle');
+                  setShowSettings(false);
+                  setShowChapterList(false);
+                  const hasSeenIntro = safeStorage.getItem('cosmo_highlight_intro_seen');
+                  if (!hasSeenIntro) {
+                    setShowHighlightIntroTooltip(true);
+                    safeStorage.setItem('cosmo_highlight_intro_seen', 'true');
+                    setIsHighlighterMode(true);
+                  } else {
+                    setIsHighlighterMode((prev) => {
+                      const next = !prev;
+                      if (!next) {
+                        setFloatingSelection(null);
+                        lastSelectionRef.current = null;
+                        setClickedHighlightId(null);
+                      }
+                      return next;
+                    });
+                  }
+                }}
+                className={`w-12 h-12 sm:w-13 sm:h-13 flex items-center justify-center transition-all duration-150 cursor-pointer active:scale-95 relative ${
+                  isHighlighterMode ? floatingToolbarTheme.btnActive : floatingToolbarTheme.btn
+                }`}
+                title={
+                  isHighlighterMode
+                    ? 'Đang bật Bút Highlight (nhấn để tắt)'
+                    : 'Bật Bút Highlight (Tô câu chữ và trích dẫn trên trang sách)'
+                }
+              >
+                <Highlighter className="w-5 h-5 sm:w-5.5 sm:h-5.5 transition-transform group-hover:scale-105" />
+              </button>
+
+              {/* Tooltip hover sang trái trên desktop */}
+              <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-3 px-2.5 py-1 rounded-xl text-[11px] font-medium shadow-lg pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block z-40 ${floatingToolbarTheme.tooltip}`}>
+                {isHighlighterMode ? 'Đang bật Highlight' : 'Bút Highlight'}
+              </div>
+            </div>
+
+            {/* 2. NÚT BÌNH LUẬN CHƯƠNG */}
+            <div className="relative group">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCommentsDrawerOpen(true);
+                  setShowSettings(false);
+                  setShowChapterList(false);
+                }}
+                className={`w-12 h-12 sm:w-13 sm:h-13 flex items-center justify-center transition-all duration-150 cursor-pointer active:scale-95 relative ${floatingToolbarTheme.btn}`}
+                title={`Xem danh sách bình luận của chương`}
+              >
+                <MessageSquare className="w-5 h-5 sm:w-5.5 sm:h-5.5 transition-transform group-hover:scale-105" />
+              </button>
+
+              {/* Tooltip hover sang trái trên desktop */}
+              <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-3 px-2.5 py-1 rounded-xl text-[11px] font-medium shadow-lg pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block z-40 ${floatingToolbarTheme.tooltip}`}>
+                Bình luận
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Thanh Công Cụ Highlight: Chỉ khi bấm vào nút highlight mới hiện thanh công cụ, cố định ở phía dưới cùng */}
+      {isHighlighterMode && (
+        <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-auto">
+          <HighlightToolbarPopup
+            selectedText={floatingSelection?.selectedText || lastSelectionRef.current?.selectedText || ''}
+            activeColor={activeHighlightColor}
+            activeStyle={activeHighlightStyle}
+            isDark={isDarkEffective}
+            theme={readerTheme}
+            isHighlightsHidden={isHighlightsHidden}
+            isEditingExisting={!!clickedHighlightId}
+            onToggleHide={() => setIsHighlightsHidden((prev) => !prev)}
+            onClose={() => {
+              setIsHighlighterMode(false);
+              setFloatingSelection(null);
+              setClickedHighlightId(null);
+            }}
+            onSelectColor={(c) => {
+              setActiveHighlightColor(c);
+            }}
+            onSelectStyle={(s) => {
+              setActiveHighlightStyle(s);
+            }}
+            onApplyHighlight={() => {
+              const currentSel = floatingSelection || lastSelectionRef.current;
+              if (currentSel?.selectedText) {
+                handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+                setClickedHighlightId(null);
+              } else {
+                window.alert('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+              }
+            }}
+            onSaveExistingHighlight={() => {
+              if (clickedHighlightId) {
+                handleChangeHighlightColor(clickedHighlightId, activeHighlightColor, activeHighlightStyle);
+                setClickedHighlightId(null);
+                showToast('Đã lưu thay đổi highlight thành công!');
+              }
+            }}
+            onOpenCommentModal={() => {
+              const currentSel = floatingSelection || lastSelectionRef.current;
+              let quote = currentSel?.selectedText || '';
+              if (!quote && clickedHighlightId) {
+                const found = chapterHighlights.find((h) => h.id === clickedHighlightId);
+                if (found) quote = found.selectedText;
+              }
+              if (quote && !clickedHighlightId) {
+                handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+              }
+              // Luôn mở trực tiếp modal Trích Dẫn & Bình Luận
+              setQuoteCommentModal({
+                isOpen: true,
+                quoteText: quote,
+              });
+              setClickedHighlightId(null);
+            }}
+            onRemoveHighlight={() => {
+              const currentSel = floatingSelection || lastSelectionRef.current;
+              let targetId = clickedHighlightId;
+              let targetText = currentSel?.selectedText || '';
+              let targetPara = currentSel?.paragraphIndex;
+
+              if (!targetId && targetText) {
+                const found = chapterHighlights.find(
+                  (h) =>
+                    h.selectedText === targetText ||
+                    h.selectedText.includes(targetText) ||
+                    targetText.includes(h.selectedText)
+                );
+                if (found) {
+                  targetId = found.id;
+                  targetPara = found.paragraphIndex;
+                  targetText = found.selectedText;
+                }
+              }
+
+              if (targetId || targetText) {
+                handleDeleteHighlight(targetId, targetText, targetPara);
+                setClickedHighlightId(null);
+                setFloatingSelection(null);
+                lastSelectionRef.current = null;
+                try {
+                  window.getSelection()?.removeAllRanges();
+                } catch {}
+                showToast('Đã xóa highlight thành công!');
+              }
+            }}
+          />
+        </div>
+      )}
+
+      {/* Intro Tooltip Bút Highlight */}
+      <AnimatePresence>
+        {showHighlightIntroTooltip && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 10 }}
+            className="fixed bottom-24 sm:bottom-28 right-4 sm:right-7 z-50 max-w-xs p-3.5 rounded-2xl bg-stone-900 text-white shadow-2xl border border-stone-700 space-y-2 text-xs"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-bold flex items-center gap-1.5 text-amber-300">
+                <Highlighter className="w-3.5 h-3.5" />
+                Bút Highlight Sẵn Sàng!
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowHighlightIntroTooltip(false)}
+                className="p-1 hover:bg-stone-800 rounded-lg text-stone-400 hover:text-white"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <p className="text-[11px] text-stone-300 leading-relaxed">
+              Bạn hãy dùng chuột hoặc ngón tay bôi đen câu chữ yêu thích trên trang sách, sau đó nhấn nút <b>Highlight</b> để tô màu và lưu lại nhé.
+            </p>
+            <div className="flex justify-end pt-1">
+              <button
+                type="button"
+                onClick={() => setShowHighlightIntroTooltip(false)}
+                className="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold rounded-lg text-[11px] cursor-pointer"
+              >
+                Đã hiểu
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 4. Modal Trích Dẫn & Bình Luận */}
+      <HighlightCommentModal
+        isOpen={quoteCommentModal.isOpen}
+        onClose={() => setQuoteCommentModal({ isOpen: false, quoteText: '' })}
+        quoteText={quoteCommentModal.quoteText}
+        initialAuthor={authorNameInput}
+        theme={readerTheme}
+        isDark={isDarkEffective}
+        comments={chapterComments}
+        chapterNumber={chapterNumber}
+        onSubmit={handleSubmitQuoteComment}
+      />
 
       {/* 18+ Chapter Password Gate Modal (Pop up xác thực mật khẩu chương truyện) */}
       <ChapterPasswordModal
@@ -2127,6 +2872,22 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
         onCancel={handleCancelPassword}
         isDarkMode={isDarkEffective}
       />
+
+      {/* Toast Notification ở phía trên màn hình */}
+      <AnimatePresence>
+        {toastNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -24, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -24, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-5 sm:top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-emerald-600 text-white shadow-2xl shadow-emerald-950/30 text-xs sm:text-sm font-bold pointer-events-none"
+          >
+            <Check className="w-4 h-4 text-emerald-200 stroke-[3]" />
+            <span>{toastNotification}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

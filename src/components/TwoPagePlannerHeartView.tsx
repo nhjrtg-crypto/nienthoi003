@@ -830,7 +830,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                         <span className="flex items-center gap-1.5">
                           <MessageCircle className="w-3.5 h-3.5 text-pink-600" />
                           <span className="font-source-serif tracking-wide text-pink-950 font-bold">
-                            Những Tin Nhắn Đã Gửi ({guestNotes.length})
+                            Tin nhắn đã gửi
                           </span>
                         </span>
 
@@ -843,7 +843,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                             }}
                             className="px-3 py-1 rounded-full font-bold text-pink-700 bg-pink-100 hover:bg-pink-200/80 border border-pink-300/80 border-b-2 border-b-pink-400 shadow-[0_1.5px_4px_rgba(244,114,182,0.18)] active:scale-95 hover:scale-105 transition-all cursor-pointer flex items-center justify-center text-[10px]"
                           >
-                            <span>Xem tiếp (Trang {safePage}/{totalPages})</span>
+                            <span>({safePage}/{totalPages})</span>
                           </button>
                         ) : (
                           <span className="text-[10px] text-pink-500 font-mono font-medium px-2 py-0.5 rounded-full bg-pink-50 border border-pink-100/80">

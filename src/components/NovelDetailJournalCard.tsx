@@ -179,7 +179,7 @@ export const NovelDetailJournalCard: React.FC<NovelDetailJournalCardProps> = ({
               <div
                 className={`relative w-full max-w-[210px] sm:max-w-[230px] p-2.5 sm:p-3 rounded-2xl border shadow-md transition-transform hover:-rotate-1 ${
                   isDarkEffective
-                    ? 'bg-[#15161C] border-zinc-700'
+                    ? 'bg-[#20222A] border-zinc-700/80'
                     : 'bg-white border-[#E5DCD6] shadow-[0_8px_24px_rgba(0,0,0,0.06)]'
                 }`}
               >
