@@ -3678,26 +3678,30 @@ mark.book-marker-streak,
 }
 
 .bga-25__layer--far {
-  opacity: calc(var(--bga-25-op, 1) * 0.45);
-  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 1px, transparent 1.4px);
-  background-size: 97px 97px;
-  animation-duration: calc(22s / var(--bga-25-spd, 1));
+  opacity: calc(var(--bga-25-op, 1) * 0.35);
+  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 0.9px, transparent 1.3px);
+  background-size: 220px 220px;
+  --bga-25-tile-y: 220px;
+  animation-duration: calc(24s / var(--bga-25-spd, 1));
   --bga-25-wind: 18px;
 }
 
 .bga-25__layer--mid {
-  opacity: calc(var(--bga-25-op, 1) * 0.7);
-  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 1.4px, transparent 1.8px);
-  background-size: 131px 131px;
-  animation-duration: calc(16s / var(--bga-25-spd, 1));
+  opacity: calc(var(--bga-25-op, 1) * 0.52);
+  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 1.3px, transparent 1.7px);
+  background-size: 280px 280px;
+  --bga-25-tile-y: 280px;
+  animation-duration: calc(18s / var(--bga-25-spd, 1));
   --bga-25-wind: 36px;
 }
 
 .bga-25__layer--near {
   filter: blur(0.6px);
-  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 2px, transparent 2.5px);
-  background-size: 173px 173px;
-  animation-duration: calc(11s / var(--bga-25-spd, 1));
+  opacity: calc(var(--bga-25-op, 1) * 0.8);
+  background-image: radial-gradient(var(--bga-25-flake, #f5eeff) 1.8px, transparent 2.4px);
+  background-size: 340px 340px;
+  --bga-25-tile-y: 340px;
+  animation-duration: calc(12s / var(--bga-25-spd, 1));
   --bga-25-wind: 64px;
 }
 
@@ -3706,7 +3710,7 @@ mark.book-marker-streak,
     background-position: 0 0;
   }
   to {
-    background-position: var(--bga-25-wind, 40px) 173px;
+    background-position: var(--bga-25-wind, 40px) var(--bga-25-tile-y, 280px);
   }
 }
 

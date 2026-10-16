@@ -125,14 +125,11 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
         <div className="bga-25__layer bga-25__layer--near" aria-hidden="true" />
 
         <div className="bga-25__hero" aria-hidden="true">
-          <span style={{ ['--bga-25-x' as any]: '9%', ['--bga-25-t' as any]: '11s', ['--bga-25-s' as any]: '9px', ['--bga-25-d' as any]: '-2s' }} />
-          <span style={{ ['--bga-25-x' as any]: '21%', ['--bga-25-t' as any]: '15s', ['--bga-25-s' as any]: '6px', ['--bga-25-d' as any]: '-7s' }} />
-          <span style={{ ['--bga-25-x' as any]: '34%', ['--bga-25-t' as any]: '9s', ['--bga-25-s' as any]: '11px', ['--bga-25-d' as any]: '-4s' }} />
-          <span style={{ ['--bga-25-x' as any]: '48%', ['--bga-25-t' as any]: '13s', ['--bga-25-s' as any]: '7px', ['--bga-25-d' as any]: '-9s' }} />
-          <span style={{ ['--bga-25-x' as any]: '59%', ['--bga-25-t' as any]: '17s', ['--bga-25-s' as any]: '10px', ['--bga-25-d' as any]: '-1s' }} />
-          <span style={{ ['--bga-25-x' as any]: '71%', ['--bga-25-t' as any]: '10s', ['--bga-25-s' as any]: '8px', ['--bga-25-d' as any]: '-6s' }} />
-          <span style={{ ['--bga-25-x' as any]: '84%', ['--bga-25-t' as any]: '14s', ['--bga-25-s' as any]: '12px', ['--bga-25-d' as any]: '-11s' }} />
-          <span style={{ ['--bga-25-x' as any]: '94%', ['--bga-25-t' as any]: '12s', ['--bga-25-s' as any]: '7px', ['--bga-25-d' as any]: '-3s' }} />
+          <span style={{ ['--bga-25-x' as any]: '12%', ['--bga-25-t' as any]: '12s', ['--bga-25-s' as any]: '10px', ['--bga-25-d' as any]: '-2s' }} />
+          <span style={{ ['--bga-25-x' as any]: '32%', ['--bga-25-t' as any]: '10s', ['--bga-25-s' as any]: '11px', ['--bga-25-d' as any]: '-5s' }} />
+          <span style={{ ['--bga-25-x' as any]: '56%', ['--bga-25-t' as any]: '16s', ['--bga-25-s' as any]: '9px', ['--bga-25-d' as any]: '-1s' }} />
+          <span style={{ ['--bga-25-x' as any]: '76%', ['--bga-25-t' as any]: '13s', ['--bga-25-s' as any]: '12px', ['--bga-25-d' as any]: '-9s' }} />
+          <span style={{ ['--bga-25-x' as any]: '91%', ['--bga-25-t' as any]: '15s', ['--bga-25-s' as any]: '7px', ['--bga-25-d' as any]: '-4s' }} />
         </div>
       </section>
     </div>
