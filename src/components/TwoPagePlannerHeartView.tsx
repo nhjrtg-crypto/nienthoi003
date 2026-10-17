@@ -478,7 +478,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                     <div className="flex items-center justify-between border-b border-pink-200/80 pb-1">
                       <div className="flex items-center gap-1.5 group cursor-default">
                         <Feather className="w-4 h-4 text-pink-600 group-hover:rotate-12 transition-transform duration-300" />
-                        <h3 className="text-sm font-bold text-pink-950 font-source-serif tracking-wide">
+                        <h3 className="text-sm font-normal text-pink-950 font-source-serif tracking-wide">
                           Lời Ngỏ · Note 01
                         </h3>
                       </div>
@@ -489,10 +489,10 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                           <span className="text-[6px] sm:text-[6.5px] font-mono font-black tracking-widest uppercase text-[#854556] leading-none">
                             POST OFFICE
                           </span>
-                          <span className="text-[9px] sm:text-[10px] font-source-serif font-black leading-none my-0.5 text-[#854556]">
+                          <span className="text-[9px] sm:text-[10px] font-source-serif font-normal leading-none my-0.5 text-[#854556]">
                             DIARY
                           </span>
-                          <span className="text-[9px] sm:text-[10px] font-source-serif font-bold leading-none text-[#854556]">
+                          <span className="text-[9px] sm:text-[10px] font-source-serif font-normal leading-none text-[#854556]">
                             074.
                           </span>
                           <span className="text-[5.5px] sm:text-[6px] font-mono mt-0.5 text-[#854556]/85 tracking-wider uppercase leading-none">
@@ -515,7 +515,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                       <span className="text-xs font-mono text-pink-500 font-medium hover:text-pink-600 transition-colors">
                         #dammy #hoanthanh #nienthoi
                       </span>
-                      <span className="font-source-serif italic font-bold text-pink-700 text-sm hover:scale-105 transition-transform inline-block">
+                      <span className="font-source-serif italic font-normal text-pink-700 text-sm hover:scale-105 transition-transform inline-block">
                         — Jouriee65
                       </span>
                     </div>
@@ -668,7 +668,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                     <div className="flex items-center justify-between border-b border-purple-200/80 pb-1">
                       <div className="flex items-center gap-1.5 group cursor-default">
                         <MessageCircle className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" />
-                        <h3 className="text-sm font-bold text-purple-950 font-source-serif tracking-wide">
+                        <h3 className="text-sm font-normal text-purple-950 font-source-serif tracking-wide">
                           Quy Định Bình Luận
                         </h3>
                       </div>
@@ -774,7 +774,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                     <div className="flex items-center justify-between border-b border-pink-200/80 pb-1">
                       <div className="flex items-center gap-1.5 group cursor-default">
                         <Heart className="w-4 h-4 text-pink-600 fill-pink-300" />
-                        <h3 className="text-sm font-bold text-pink-950 font-source-serif tracking-wide">
+                        <h3 className="text-sm font-normal text-pink-950 font-source-serif tracking-wide">
                           Sổ Lưu Trữ Tin Nhắn ({guestNotes.length})
                         </h3>
                       </div>
@@ -829,7 +829,7 @@ export const TwoPagePlannerHeartView: React.FC<TwoPagePlannerHeartViewProps> = (
                       <div className="flex items-center justify-between text-[11px] font-bold text-stone-800 pb-1.5 border-b border-pink-100/90 px-0.5">
                         <span className="flex items-center gap-1.5">
                           <MessageCircle className="w-3.5 h-3.5 text-pink-600" />
-                          <span className="font-source-serif tracking-wide text-pink-950 font-bold">
+                          <span className="font-source-serif tracking-wide text-pink-950 font-normal">
                             Tin nhắn đã gửi
                           </span>
                         </span>

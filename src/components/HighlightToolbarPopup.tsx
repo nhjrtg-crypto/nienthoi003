@@ -365,7 +365,7 @@ export const HighlightToolbarPopup: React.FC<HighlightToolbarPopupProps> = ({
             type="button"
             onMouseDown={(e) => e.preventDefault()}
             onClick={onSaveExistingHighlight}
-            className={`flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold active:scale-98 shadow-md transition-all cursor-pointer truncate ${st.saveBtn}`}
+            className={`flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold active:scale-98 ${isDark ? 'shadow-md' : 'shadow-none'} transition-all cursor-pointer truncate ${st.saveBtn}`}
             title="Lưu màu sắc và kiểu vệt bút mới cho đoạn highlight này"
           >
             <Save className="w-3.5 h-3.5 shrink-0" />
@@ -376,7 +376,7 @@ export const HighlightToolbarPopup: React.FC<HighlightToolbarPopupProps> = ({
             type="button"
             onMouseDown={(e) => e.preventDefault()}
             onClick={onApplyHighlight}
-            className={`flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold active:scale-98 shadow-md transition-all cursor-pointer truncate ${st.primaryBtn}`}
+            className={`flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold active:scale-98 ${isDark ? 'shadow-md' : 'shadow-none'} transition-all cursor-pointer truncate ${st.primaryBtn}`}
             title="Tô màu highlight cho đoạn văn bản đã chọn"
           >
             <Highlighter className="w-3.5 h-3.5 shrink-0" />
@@ -388,11 +388,11 @@ export const HighlightToolbarPopup: React.FC<HighlightToolbarPopupProps> = ({
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={onOpenCommentModal}
-          className={`flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold active:scale-98 shadow-md transition-all cursor-pointer truncate ${st.commentBtn}`}
+          className={`flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold active:scale-98 ${isDark ? 'shadow-md' : 'shadow-none'} transition-all cursor-pointer truncate ${st.commentBtn}`}
           title="Mở hộp thoại trích dẫn bình luận"
         >
           <MessageSquare className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Highlight & B.luận</span>
+          <span className="truncate">Trích dẫn & B.luận</span>
         </button>
       </div>
     </div>

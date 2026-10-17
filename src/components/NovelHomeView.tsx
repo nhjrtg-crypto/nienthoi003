@@ -48,6 +48,7 @@ import { IntroAboutButton, ClassicIntroAboutButton } from './IntroAboutButton';
 import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { Footer } from './Footer';
 import { CosmicStarsBackground } from './CosmicStarsBackground';
+import SugarTodayWidget from './SugarTodayWidget';
 import { safeStorage } from '../utils/safeStorage';
 import { getRecentReads, RecentReadRecord } from '../utils/recentReads';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
@@ -1203,11 +1204,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         case 'slate-haze':
           return {
             container: 'bg-[#eaf2f9] border border-[#cde0f3] shadow-inner',
-            activePill: 'bg-white border border-[#bfe0fa] shadow-sm',
-            activeText: 'text-[#0284c7]',
-            inactiveText: 'text-[#526982] hover:text-[#0284c7]',
+            activePill: 'bg-[#3f658c] border border-[#2f4d6d] shadow-xs',
+            activeText: 'text-white',
+            inactiveText: 'text-[#526982] hover:text-[#192635]',
             getActivePill: () => ({ gradient: '', glow: '' }),
-            getInactiveText: () => 'text-[#526982] hover:text-[#0284c7]',
+            getInactiveText: () => 'text-[#526982] hover:text-[#192635]',
           };
         case 'sage':
           return {
@@ -3136,7 +3137,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           dashedDivider: 'border-stone-300',
           cutout: 'bg-[#e3ede1] border border-[#b2c6ad] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
           kicker: 'text-[#6b8268]',
-          title: 'text-[#1c291e] hover:text-[#3e5b43]',
+          title: 'text-[#374151] hover:text-[#1f2937]',
           meta: 'text-[#4d664a]',
           author: 'text-[#1c291e]',
           synopsis: 'text-[#394a3b]',
@@ -3157,7 +3158,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           dashedDivider: 'border-stone-300',
           cutout: 'bg-[#ede5d8] border border-[#d5c7ab] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
           kicker: 'text-[#a37764]',
-          title: 'text-[#3a2a2a] hover:text-[#8c6150]',
+          title: 'text-[#374151] hover:text-[#1f2937]',
           meta: 'text-[#8c7a6e]',
           author: 'text-[#3a2a2a]',
           synopsis: 'text-[#614b43]',
@@ -3178,7 +3179,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           dashedDivider: 'border-stone-300',
           cutout: 'bg-[#e2ebf4] border border-[#b8c9dc] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
           kicker: 'text-[#5d7e9d]',
-          title: 'text-[#192635] hover:text-[#3b5979]',
+          title: 'text-[#374151] hover:text-[#1f2937]',
           meta: 'text-[#58738e]',
           author: 'text-[#192635]',
           synopsis: 'text-[#38516b]',
@@ -3199,7 +3200,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           dashedDivider: 'border-stone-300',
           cutout: 'bg-[#e8e6e3] border border-stone-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
           kicker: 'text-neutral-400',
-          title: 'text-neutral-900 hover:text-rose-600',
+          title: 'text-[#374151] hover:text-[#1f2937]',
           meta: 'text-neutral-500',
           author: 'text-neutral-800',
           synopsis: 'text-neutral-600',
@@ -3220,7 +3221,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           dashedDivider: 'border-[#d8c5ca]',
           cutout: 'bg-[#ebdce0] border border-[#d8c5ca] shadow-[inset_0_2px_4px_rgba(204,123,143,0.08)]',
           kicker: 'text-[#8c5a67]',
-          title: 'text-[#382329] hover:text-[#ad4862]',
+          title: 'text-[#374151] hover:text-[#1f2937]',
           meta: 'text-[#8c5a67]',
           author: 'text-[#382329]',
           synopsis: 'text-[#573740]',
@@ -3242,7 +3243,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           dashedDivider: 'border-stone-300',
           cutout: 'bg-[#ede8f4] border border-[#cbbfe0] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
           kicker: 'text-neutral-400 dark:text-neutral-500',
-          title: 'text-stone-900 dark:text-stone-100 hover:text-purple-700 dark:hover:text-purple-400',
+          title: 'text-[#374151] hover:text-[#1f2937]',
           meta: 'text-neutral-600 dark:text-neutral-400',
           author: 'text-stone-900 dark:text-stone-100 font-semibold',
           synopsis: 'text-stone-700 dark:text-stone-300',
@@ -3536,7 +3537,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   const shouldShowHeader = isHeaderVisible || isThemeMenuOpen;
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${tStyles.pageBg} relative`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${tStyles.pageBg} relative overflow-x-clip`}>
       {/* Trang trí nền: Cosmic hiển thị sao & khí quyển; các theme tối hiển thị hiệu ứng nền chọn lọc làm nổi bật Glassmorphism */}
       <CosmicStarsBackground
         theme={theme}
@@ -3545,6 +3546,39 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         bgSeed={bgSeed}
         purpleBgEffectsEnabled={purpleBgEffectsEnabled}
       />
+
+      {/* Nền trang chủ chế độ sáng: Khối màu loang theo theme bao phủ toàn bộ nền trang, ngoại trừ ở góc trên bên trái có Khối màu loang trắng */}
+      {!isDarkEffective && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          {/* 1. Khối màu loang theo theme bao phủ toàn bộ nền trang */}
+          <div
+            className="absolute inset-0 pointer-events-none select-none transition-all duration-500"
+            style={{
+              backgroundImage:
+                theme === 'sage'
+                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(140, 195, 155, 0.22) 0%, rgba(180, 220, 192, 0.12) 45%, rgba(225, 245, 230, 0.05) 75%, transparent 95%)'
+                  : theme === 'mocha'
+                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(210, 175, 150, 0.24) 0%, rgba(224, 195, 175, 0.14) 45%, rgba(238, 215, 200, 0.06) 75%, transparent 95%)'
+                  : theme === 'slate-haze'
+                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(160, 205, 245, 0.20) 0%, rgba(200, 230, 252, 0.11) 45%, rgba(232, 244, 255, 0.04) 75%, transparent 95%)'
+                  : theme === 'notebook'
+                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(210, 210, 215, 0.18) 0%, rgba(230, 230, 235, 0.09) 45%, transparent 85%)'
+                  : 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(218, 172, 254, 0.20) 0%, rgba(238, 210, 255, 0.11) 45%, rgba(250, 240, 255, 0.04) 75%, transparent 95%)',
+            }}
+            aria-hidden="true"
+          />
+
+          {/* 2. Khối màu loang trắng ở góc trên bên trái */}
+          <div
+            className="absolute -top-20 -left-20 sm:-top-28 sm:-left-28 md:-top-36 md:-left-36 lg:-top-48 lg:-left-48 w-[28rem] h-[26rem] sm:w-[38rem] sm:h-[34rem] md:w-[54rem] md:h-[48rem] lg:w-[66rem] lg:h-[58rem] pointer-events-none select-none transition-all duration-500 rounded-[46%_54%_68%_32%/45%_55%_45%_55%] blur-2xl sm:blur-3xl md:blur-[60px] lg:blur-[75px]"
+            style={{
+              backgroundImage:
+                'radial-gradient(ellipse 75% 65% at 30% 30%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.78) 38%, rgba(255, 255, 255, 0.40) 65%, transparent 85%)',
+            }}
+            aria-hidden="true"
+          />
+        </div>
+      )}
 
       {/* Novel Platform Top Bar */}
       <header
@@ -3568,7 +3602,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                 size="md"
               />
               <div>
-                <span className={`font-brand-title text-lg sm:text-xl tracking-tight leading-none transition-colors ${tStyles.logoTextHover}`}>
+                <span className={`font-brand-title font-playfair text-lg sm:text-xl tracking-normal leading-none transition-colors ${tStyles.logoTextHover}`}>
                   Niên Thời
                 </span>
               </div>
@@ -4125,7 +4159,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                   {/* Tên truyện chữ nghiêng đậm to rõ */}
                   <h1
                     onClick={() => onSelectNovel(currentHeroNovel)}
-                    className={`font-bold italic text-2xl sm:text-3xl md:text-3xl lg:text-[34px] tracking-tight leading-snug cursor-pointer transition-colors ${ticketTheme.title}`}
+                    className={`font-source-serif font-bold italic text-2xl sm:text-3xl md:text-3xl lg:text-[34px] tracking-tight leading-snug cursor-pointer transition-colors ${ticketTheme.title}`}
                   >
                     {currentHeroNovel.title}
                   </h1>
@@ -4476,7 +4510,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               }`}>
                 <div className="flex items-center gap-2 min-w-0">
                   <Search className={`w-4 h-4 shrink-0 ${!isDarkEffective ? searchDropdownStyles.noticeHighlight : tStyles.sectionIcon}`} />
-                  <span className="truncate">
+                  <span className="truncate font-source-serif">
                     Kết quả tìm kiếm cho: <strong className={`font-bold underline decoration-dotted ${searchDropdownStyles.noticeHighlight}`}>{searchQuery.trim()}</strong>{' '}
                     <span className="opacity-75">({filteredNovels.length} truyện)</span>
                   </span>
@@ -4496,12 +4530,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           {filteredNovels.length === 0 ? (
             <div className={`py-16 text-center rounded-3xl border space-y-3 ${tStyles.card}`}>
               <Compass className={`w-10 h-10 mx-auto ${tStyles.sectionIcon}`} />
-              <h4 className={`text-base font-bold ${tStyles.sectionTitle}`}>
+              <h4 className={`text-base font-source-serif font-bold ${tStyles.sectionTitle}`}>
                 {searchQuery.trim()
                   ? `Không tìm thấy tiểu thuyết nào khớp với "${searchQuery}"`
                   : 'Không tìm thấy tiểu thuyết phù hợp'}
               </h4>
-              <p className={`text-xs ${tStyles.sectionSub}`}>
+              <p className={`text-xs font-source-serif ${tStyles.sectionSub}`}>
                 {searchQuery.trim()
                   ? 'Hãy thử kiểm tra lại chính tả hoặc tìm theo tên tác giả, thể loại khác.'
                   : 'Hãy thử tìm kiếm với từ khóa khác hoặc chuyển sang thể loại khác.'}
@@ -4560,12 +4594,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       {/* Title & Synopsis grouped closely */}
                       <div className="space-y-1">
                         {/* Title */}
-                        <h3 className={`text-xs sm:text-sm font-novel-title transition-colors line-clamp-2 leading-snug sm:leading-snug min-h-[2.4em] ${tStyles.cardTitle} ${tStyles.cardTitleHover}`}>
+                        <h3 className={`text-xs sm:text-sm font-source-serif font-novel-title transition-colors line-clamp-2 leading-snug sm:leading-snug min-h-[2.4em] ${tStyles.cardTitle} ${tStyles.cardTitleHover}`}>
                           {novel.title}
                         </h3>
 
                         {/* Synopsis snippet - narrowed gap and slightly larger font */}
-                        <p className={`text-[12px] sm:text-[13px] line-clamp-2 leading-relaxed font-sans ${tStyles.cardSynopsis}`}>
+                        <p className={`text-[12px] sm:text-[13px] line-clamp-2 leading-relaxed font-source-sans ${tStyles.cardSynopsis}`}>
                           {novel.synopsis}
                         </p>
                       </div>
@@ -4573,7 +4607,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
                     {/* Card Bottom: Author & Latest chapter */}
                     <div className={`pt-2 sm:pt-3 mt-2 sm:mt-3 border-t flex items-center justify-between text-[10px] sm:text-xs font-sans ${tStyles.cardFooterBorder}`}>
-                      <span className={`truncate max-w-[70px] sm:max-w-[120px] font-semibold ${tStyles.cardAuthor}`}>
+                      <span className={`truncate max-w-[70px] sm:max-w-[120px] font-semibold font-source-sans ${tStyles.cardAuthor}`}>
                         {novel.author.name}
                       </span>
                       <span className={`text-[9px] sm:text-[10px] font-sans font-bold group-hover:translate-x-0.5 transition-transform truncate max-w-[65px] sm:max-w-none ${tStyles.cardChapterBtn}`}>
@@ -5255,6 +5289,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             );
           })()}
 
+          {/* Widget Ngày Mới & Kỷ Niệm (Hiển thị cho tất cả theme chế độ sáng & tối, đổi màu theo theme) */}
+          <div className="w-full">
+            <SugarTodayWidget theme={theme} isDarkMode={isDarkEffective} />
+          </div>
+
           {/* Mục "Chọn Truyện Ngẫu Nhiên" / "Hôm Nay Đọc Gì" */}
           <RandomNovelPicker
             novels={novels}
@@ -5290,7 +5329,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
                       {/* Tiêu đề & Phụ đề */}
                       <div className="min-w-0">
-                        <h3 className={`text-sm sm:text-base font-bold truncate ${recentStyles.titleColor}`}>
+                        <h3 className={`text-sm sm:text-base font-source-serif font-bold truncate ${recentStyles.titleColor}`}>
                           Truyện Vừa Mới Đăng
                         </h3>
                         <p className={`text-[10px] font-mono tracking-wider uppercase truncate font-semibold ${recentStyles.subtitleColor}`}>
@@ -5344,11 +5383,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                               className="w-9 h-12 sm:w-10 sm:h-13 rounded-lg sm:rounded-xl object-cover shrink-0 border border-white/10 shadow-xs group-hover:scale-105 transition-transform duration-300"
                             />
                             <div className="flex-1 min-w-0">
-                              <h4 className={`text-xs sm:text-[13px] font-semibold truncate transition-colors ${recentStyles.titleColor} ${recentStyles.itemTitleHoverClass}`}>
+                              <h4 className={`text-xs sm:text-[13px] font-source-serif font-semibold truncate transition-colors ${recentStyles.titleColor} ${recentStyles.itemTitleHoverClass}`}>
                                 {n.title}
                               </h4>
                               <div className="flex items-center justify-between gap-1.5 mt-0.5 sm:mt-1">
-                                <span className={`text-[10px] sm:text-[11px] truncate max-w-[130px] sm:max-w-[160px] lg:max-w-[210px] opacity-75 ${recentStyles.subtitleColor}`}>
+                                <span className={`text-[10px] sm:text-[11px] font-source-serif truncate max-w-[130px] sm:max-w-[160px] lg:max-w-[210px] opacity-75 ${recentStyles.subtitleColor}`}>
                                   {n.latestChapter?.title || 'Chương mới'}
                                 </span>
                                 {/* Badge ngày tháng: đổ màu khối nhẹ, bỏ viền chằng chịt */}
@@ -5393,7 +5432,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
                       {/* Tiêu đề & Phụ đề */}
                       <div className="min-w-0">
-                        <h3 className={`text-sm sm:text-base font-bold truncate ${recentStyles.titleColor}`}>
+                        <h3 className={`text-sm sm:text-base font-source-serif font-bold truncate ${recentStyles.titleColor}`}>
                           Truyện Vừa Mới Đăng
                         </h3>
                         <p className={`text-[10px] font-mono tracking-wider uppercase truncate ${recentStyles.subtitleColor}`}>
@@ -5447,11 +5486,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                               className="w-9 h-12 rounded-lg object-cover shrink-0 border border-white/60 dark:border-white/10 group-hover:scale-105 transition-transform"
                             />
                             <div className="flex-1 min-w-0">
-                              <h4 className={`text-xs font-semibold truncate transition-colors ${recentStyles.itemTitleHoverClass}`}>
+                              <h4 className={`text-xs font-source-serif font-semibold truncate transition-colors ${recentStyles.itemTitleHoverClass}`}>
                                 {n.title}
                               </h4>
                               <div className="flex items-center justify-between gap-1 mt-0.5">
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[140px] sm:max-w-[160px] lg:max-w-[210px]">
+                                <span className="text-[10px] font-source-serif text-slate-500 dark:text-slate-400 truncate max-w-[140px] sm:max-w-[160px] lg:max-w-[210px]">
                                   {n.latestChapter?.title || 'Chương mới'}
                                 </span>
                                 <span className={`text-[9px] font-mono font-medium shrink-0 ${recentStyles.itemDateClass}`}>

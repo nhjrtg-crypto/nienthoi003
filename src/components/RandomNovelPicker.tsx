@@ -12,6 +12,7 @@ import {
 import { Novel } from '../types';
 import { NovelThemeId, NovelThemeStyles } from '../utils/themeStyles';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
+import { getSugarThemeConfig } from './SugarTodayWidget';
 
 interface RandomNovelPickerProps {
   novels: Novel[];
@@ -1441,6 +1442,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   const bannerPalette = getBannerThemePalette(theme, isDarkEffective);
   const themePickerStyles = getThemePickerStyles(theme, isDarkEffective);
   const cordStyles = getHangingCordStyles(theme, isDarkEffective);
+  const sugarConfig = getSugarThemeConfig(theme, isDarkEffective);
 
   // Hiệu ứng dâng chất lỏng mượt mà trong lúc chờ chọn (~4.2s)
   useEffect(() => {
@@ -1917,11 +1919,11 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
             <div className="space-y-1">
               <h3
                 onClick={() => handleOpenNovel(selectedNovel)}
-                className={`text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug line-clamp-2 drop-shadow-md cursor-pointer transition-colors ${themePickerStyles.titleHover}`}
+                className={`text-xl sm:text-2xl font-source-serif font-normal text-white tracking-tight leading-snug line-clamp-2 drop-shadow-md cursor-pointer transition-colors ${themePickerStyles.titleHover}`}
               >
                 {selectedNovel.title}
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-200 font-medium line-clamp-1 drop-shadow-sm">
+              <p className="text-xs sm:text-sm text-neutral-200 font-source-serif font-normal line-clamp-1 drop-shadow-sm">
                 Tác giả: {selectedNovel.author.name}
               </p>
             </div>
@@ -1994,15 +1996,19 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           } ${
             isDarkEffective ? 'border-white/[0.07]' : 'border-black/[0.04]'
           }`}
-          style={{
-            backgroundImage: isDarkEffective
-              ? undefined
-              : `radial-gradient(${getPickerDotColor(theme, isDarkEffective)} 1.2px, transparent 1.2px)`,
-            backgroundSize: isDarkEffective ? undefined : '18px 18px',
-            boxShadow: isDarkEffective
-              ? '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)'
-              : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
-          }}
+          style={
+            isDarkEffective
+              ? {
+                  boxShadow:
+                    '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)',
+                }
+              : {
+                  backgroundImage: `radial-gradient(${getPickerDotColor(theme, isDarkEffective)} 1.2px, transparent 1.2px)`,
+                  backgroundSize: '18px 18px',
+                  boxShadow:
+                    '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
+                }
+          }
         >
           {/* Vùng Icon minh họa của theme (Đã bỏ hiệu ứng Neumorphism theo yêu cầu) */}
           <div className="mb-2 flex items-center justify-center">
@@ -2012,7 +2018,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           {/* Nội dung bên dưới: Tiêu đề "Đang tìm truyện cho bạn" */}
           <div className="space-y-3 max-w-xs sm:max-w-sm mt-1">
             <h3
-              className={`text-xl sm:text-2xl font-extrabold tracking-tight ${
+              className={`text-xl sm:text-2xl font-source-serif font-normal tracking-tight ${
                 isDarkEffective ? 'text-white' : 'text-neutral-900'
               }`}
             >
@@ -2119,22 +2125,21 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
   // -------------------------------------------------------------
   return (
     <div className={`w-full ${isEnteringFromPicked ? 'anim-picker-flip-in' : 'animate-picker-fade-in'}`}>
-      {/* Khung cảnh 1 - Áp dụng Neumorphism tương tự mục Truyện Vừa Mới Đăng */}
+      {/* Khung cảnh 1 - Áp dụng màu sắc, hiệu ứng, đường viền của SugarTodayWidget ở chế độ sáng */}
       <div
-        className={`relative w-full rounded-[28px] sm:rounded-[32px] overflow-hidden border p-4 sm:p-5 transition-all duration-300 ${
-          getRandomPickerCardBg(theme, isDarkEffective)
-        } ${
-          isDarkEffective ? 'border-white/[0.07]' : 'border-black/[0.04]'
+        className={`relative w-full rounded-[2.2rem] overflow-hidden p-4 sm:p-5 transition-all duration-300 ${
+          isDarkEffective
+            ? `border ${getRandomPickerCardBg(theme, isDarkEffective)} border-white/[0.07]`
+            : ''
         }`}
-        style={{
-          backgroundImage: isDarkEffective
-            ? undefined
-            : `radial-gradient(${getPickerDotColor(theme, isDarkEffective)} 1.2px, transparent 1.2px)`,
-          backgroundSize: isDarkEffective ? undefined : '18px 18px',
-          boxShadow: isDarkEffective
-            ? '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)'
-            : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
-        }}
+        style={
+          !isDarkEffective
+            ? sugarConfig.glassStyle
+            : {
+                boxShadow:
+                  '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)',
+              }
+        }
       >
         {/* 
           KHUNG ẢNH 1:
@@ -2311,15 +2316,17 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           {/* Title & Subtitle */}
           <div className="space-y-1">
             <h3
-              className={`text-sm sm:text-base font-bold tracking-tight leading-snug ${
-                isDarkEffective ? 'text-neutral-50' : 'text-neutral-900'
+              style={{ color: !isDarkEffective ? sugarConfig.dayNum : undefined }}
+              className={`text-sm sm:text-base font-source-serif font-normal tracking-tight leading-snug ${
+                isDarkEffective ? 'text-neutral-50' : ''
               }`}
             >
               Chọn Truyện Ngẫu Nhiên
             </h3>
             <p
-              className={`text-xs sm:text-sm ${
-                isDarkEffective ? 'text-neutral-400' : 'text-neutral-500'
+              style={{ color: !isDarkEffective ? sugarConfig.quoteText : undefined }}
+              className={`text-xs sm:text-sm font-source-serif font-normal ${
+                isDarkEffective ? 'text-neutral-400' : ''
               }`}
             >
               Nếu hôm nay bạn chưa biết đọc gì.

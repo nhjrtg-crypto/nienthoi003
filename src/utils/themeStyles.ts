@@ -300,10 +300,10 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
     }
     // Frost Light (User custom palette: Nền #f3f7fc, Viền #d8dfe9, Chủ đạo #f9fcff, Nút #87909d)
     return {
-      pageBg: 'bg-[#f3f7fc] text-[#101723]',
-      headerBg: 'bg-[#f3f7fc] backdrop-blur-xl shadow-[0_4px_24px_rgba(16,23,35,0.06)]',
+      pageBg: 'bg-[#ebf3fa] text-[#24466d]',
+      headerBg: 'bg-[#ebf3fa]/85 backdrop-blur-xl shadow-[0_4px_24px_rgba(16,23,35,0.06)]',
       headerBorder: 'border-[#d8dfe9]/80',
-      footerBg: 'bg-[#f3f7fc] border-t border-[#d8dfe9]/80',
+      footerBg: 'bg-[#ebf3fa] border-t border-[#d8dfe9]/80',
       logoBg: 'bg-[#87909d] text-white shadow-xs',
       logoBadge: 'bg-[#f9fcff] text-[#101723] border-[#d8dfe9]',
       logoTextHover: 'text-[#244b73] group-hover:text-[#0284c7]',

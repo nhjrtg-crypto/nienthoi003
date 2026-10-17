@@ -2768,7 +2768,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               setActiveHighlightStyle((prev) => (prev === s ? null : s));
             }}
             onApplyHighlight={() => {
-              const currentSel = floatingSelection || lastSelectionRef.current;
+              const liveText = window.getSelection()?.toString().trim();
+              const currentSel = liveText ? { selectedText: liveText, paragraphIndex: lastSelectionRef.current?.paragraphIndex ?? 0 } : (floatingSelection || lastSelectionRef.current);
               if (!currentSel?.selectedText) {
                 showToast('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
                 return;
@@ -2809,8 +2810,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               }
             }}
             onOpenCommentModal={() => {
-              const currentSel = floatingSelection || lastSelectionRef.current;
-              let quote = currentSel?.selectedText || '';
+              const liveText = window.getSelection()?.toString().trim();
+              let quote = liveText || floatingSelection?.selectedText || lastSelectionRef.current?.selectedText || '';
               if (!quote && clickedHighlightId) {
                 const found = chapterHighlights.find((h) => h.id === clickedHighlightId);
                 if (found) quote = found.selectedText;
@@ -2820,7 +2821,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
                 }
               }
-              // Luôn mở trực tiếp modal Trích Dẫn & Bình Luận
+              // Luôn mở trực tiếp modal Trích Dẫn & Bình Luận với quote live chính xác nhất
               setQuoteCommentModal({
                 isOpen: true,
                 quoteText: quote,
