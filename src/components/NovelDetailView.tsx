@@ -1484,13 +1484,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               : '#ffffff',
             glowGradient: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(85, 125, 160, 0.32) 0%, rgba(50, 75, 105, 0.16) 45%, transparent 75%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.18) 35%, rgba(186, 230, 253, 0.08) 65%, transparent 88%)',
             glowGradientTopRight: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(85, 125, 160, 0.32) 0%, rgba(50, 75, 105, 0.16) 45%, transparent 75%)'
-              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+              : 'radial-gradient(ellipse 75% 65% at 85% 15%, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.18) 35%, rgba(186, 230, 253, 0.08) 65%, transparent 88%)',
             glowGradientBottomLeft: isDarkEffective
               ? 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(85, 125, 160, 0.32) 0%, rgba(50, 75, 105, 0.16) 45%, transparent 75%)'
-              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(160, 205, 245, 0.25) 0%, rgba(185, 220, 248, 0.18) 24%, rgba(210, 232, 252, 0.12) 48%, rgba(232, 244, 255, 0.06) 72%, rgba(248, 252, 255, 0.02) 88%, #ffffff 100%)',
+              : 'radial-gradient(ellipse 75% 65% at 15% 85%, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.18) 35%, rgba(186, 230, 253, 0.08) 65%, transparent 88%)',
             gridLineColor: isDarkEffective
               ? 'rgba(186, 208, 230, 0.16)'
               : 'rgba(56, 189, 248, 0.28)',
@@ -4443,7 +4443,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                             })()}
                             {chap.publishedAt && (
                               <div
-                                className={`flex items-center gap-2.5 text-[12px] sm:text-[13px] font-mono mt-0.5 ${
+                                className={`flex items-center gap-2.5 text-[10px] sm:text-[11px] font-mono mt-0.5 ${
                                   isJournalStyle
                                     ? 'text-stone-500 dark:text-zinc-400'
                                     : isNoteStyle

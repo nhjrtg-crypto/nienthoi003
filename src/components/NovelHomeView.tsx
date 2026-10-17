@@ -5332,7 +5332,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         <h3 className={`text-sm sm:text-base font-source-serif font-bold truncate ${recentStyles.titleColor}`}>
                           Truyện Vừa Mới Đăng
                         </h3>
-                        <p className={`text-[10px] font-mono tracking-wider uppercase truncate font-semibold ${recentStyles.subtitleColor}`}>
+                        <p className={`text-[10px] font-source-serif font-normal tracking-wider uppercase truncate ${recentStyles.subtitleColor}`}>
                           CHƯƠNG MỚI
                         </p>
                       </div>
@@ -5435,7 +5435,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         <h3 className={`text-sm sm:text-base font-source-serif font-bold truncate ${recentStyles.titleColor}`}>
                           Truyện Vừa Mới Đăng
                         </h3>
-                        <p className={`text-[10px] font-mono tracking-wider uppercase truncate ${recentStyles.subtitleColor}`}>
+                        <p className={`text-[10px] font-source-serif font-normal tracking-wider uppercase truncate ${recentStyles.subtitleColor}`}>
                           CHƯƠNG MỚI
                         </p>
                       </div>

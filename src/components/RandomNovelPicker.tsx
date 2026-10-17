@@ -1919,11 +1919,11 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
             <div className="space-y-1">
               <h3
                 onClick={() => handleOpenNovel(selectedNovel)}
-                className={`text-xl sm:text-2xl font-source-serif font-normal text-white tracking-tight leading-snug line-clamp-2 drop-shadow-md cursor-pointer transition-colors ${themePickerStyles.titleHover}`}
+                className={`text-xl sm:text-2xl font-source-serif font-bold text-white tracking-tight leading-snug line-clamp-2 drop-shadow-md cursor-pointer transition-colors ${themePickerStyles.titleHover}`}
               >
                 {selectedNovel.title}
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-200 font-source-serif font-normal line-clamp-1 drop-shadow-sm">
+              <p className="text-xs sm:text-sm text-neutral-200 font-source-serif font-medium line-clamp-1 drop-shadow-sm">
                 Tác giả: {selectedNovel.author.name}
               </p>
             </div>
@@ -2018,7 +2018,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           {/* Nội dung bên dưới: Tiêu đề "Đang tìm truyện cho bạn" */}
           <div className="space-y-3 max-w-xs sm:max-w-sm mt-1">
             <h3
-              className={`text-xl sm:text-2xl font-source-serif font-normal tracking-tight ${
+              className={`text-xl sm:text-2xl font-source-serif font-extrabold tracking-tight ${
                 isDarkEffective ? 'text-white' : 'text-neutral-900'
               }`}
             >
@@ -2317,7 +2317,7 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
           <div className="space-y-1">
             <h3
               style={{ color: !isDarkEffective ? sugarConfig.dayNum : undefined }}
-              className={`text-sm sm:text-base font-source-serif font-normal tracking-tight leading-snug ${
+              className={`text-sm sm:text-base font-source-serif font-bold tracking-tight leading-snug ${
                 isDarkEffective ? 'text-neutral-50' : ''
               }`}
             >

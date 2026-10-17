@@ -483,7 +483,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       case 'mocha':
         return 'bg-[#fdfaf7]/95 border border-[#f0e7dd] shadow-2xs text-[#3A2A2A]';
       case 'slate-haze':
-        return 'bg-[#f8fafd]/95 border border-[#e0ecf7] shadow-2xs text-[#101723]';
+        return 'bg-[#f2f7fc]/95 border border-[#d8e7f5] shadow-2xs text-[#101723]';
       case 'amethyst-haze':
         return 'bg-[#fdfaff]/95 border border-[#f1e8f9] shadow-2xs text-[#211c2f]';
       case 'notebook':
