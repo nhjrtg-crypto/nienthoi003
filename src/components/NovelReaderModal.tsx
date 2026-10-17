@@ -1252,6 +1252,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     } catch {}
     setFloatingSelection(null);
     lastSelectionRef.current = null;
+    setActiveHighlightColor(null);
+    setActiveHighlightStyle(null);
+    setClickedHighlightId(null);
     showToast('Đã lưu highlight thành công!');
   };
 
@@ -1388,6 +1391,11 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       );
     setChapterHighlights(updated);
     saveChapterHighlights(novel.id, chapterNumber, updated);
+    setActiveHighlightColor(null);
+    setActiveHighlightStyle(null);
+    setClickedHighlightId(null);
+    setFloatingSelection(null);
+    lastSelectionRef.current = null;
   };
 
   const readerSettingsScrollbarColor = useMemo(() => {
@@ -2734,7 +2742,11 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       {isHighlighterMode && (
         <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-auto">
           <HighlightToolbarPopup
-            selectedText={floatingSelection?.selectedText || lastSelectionRef.current?.selectedText || ''}
+            selectedText={
+              floatingSelection?.selectedText ||
+              lastSelectionRef.current?.selectedText ||
+              (clickedHighlightId ? chapterHighlights.find((h) => h.id === clickedHighlightId)?.selectedText || '' : '')
+            }
             activeColor={activeHighlightColor}
             activeStyle={activeHighlightStyle}
             isDark={isDarkEffective}
@@ -2775,6 +2787,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               }
               handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
               setClickedHighlightId(null);
+              setActiveHighlightColor(null);
+              setActiveHighlightStyle(null);
             }}
             onSaveExistingHighlight={() => {
               if (clickedHighlightId) {
@@ -2787,6 +2801,10 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                 }
                 handleChangeHighlightColor(clickedHighlightId, colorToUse || 'yellow', styleToUse);
                 setClickedHighlightId(null);
+                setFloatingSelection(null);
+                lastSelectionRef.current = null;
+                setActiveHighlightColor(null);
+                setActiveHighlightStyle(null);
                 showToast('Đã lưu thay đổi highlight thành công!');
               }
             }}
@@ -2834,6 +2852,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                 setClickedHighlightId(null);
                 setFloatingSelection(null);
                 lastSelectionRef.current = null;
+                setActiveHighlightColor(null);
+                setActiveHighlightStyle(null);
                 try {
                   window.getSelection()?.removeAllRanges();
                 } catch {}
