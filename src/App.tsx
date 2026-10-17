@@ -218,7 +218,15 @@ function cleanNovelChapters(novel: Novel): Novel {
       continue;
     }
 
-    cleaned.push(chap);
+    let chapToPush = chap;
+    if (chap.content && chap.content.includes('Ngôn Tình Tổng Tài')) {
+      hadModifications = true;
+      chapToPush = {
+        ...chap,
+        content: chap.content.replace(/\.?\s*Ngôn Tình Tổng Tài/g, ''),
+      };
+    }
+    cleaned.push(chapToPush);
   }
 
   if (!hadModifications) return novel;
