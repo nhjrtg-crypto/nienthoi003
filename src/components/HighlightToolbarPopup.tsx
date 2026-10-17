@@ -4,8 +4,8 @@ import { HighlightColor, HighlightStyle, HIGHLIGHT_COLORS } from '../utils/chapt
 
 export interface HighlightToolbarPopupProps {
   selectedText: string;
-  activeColor: HighlightColor;
-  activeStyle: HighlightStyle;
+  activeColor: HighlightColor | null;
+  activeStyle: HighlightStyle | null;
   onSelectColor: (color: HighlightColor) => void;
   onSelectStyle: (style: HighlightStyle) => void;
   onApplyHighlight: () => void;

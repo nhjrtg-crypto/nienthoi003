@@ -209,8 +209,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   // Highlight feature states
   const [isHighlighterMode, setIsHighlighterMode] = useState(false);
   const [isHighlightsHidden, setIsHighlightsHidden] = useState(false);
-  const [activeHighlightColor, setActiveHighlightColor] = useState<HighlightColor>('yellow');
-  const [activeHighlightStyle, setActiveHighlightStyle] = useState<HighlightStyle>('classic');
+  const [activeHighlightColor, setActiveHighlightColor] = useState<HighlightColor | null>(null);
+  const [activeHighlightStyle, setActiveHighlightStyle] = useState<HighlightStyle | null>(null);
   const [showHighlightIntroTooltip, setShowHighlightIntroTooltip] = useState(false);
   const [chapterHighlights, setChapterHighlights] = useState<UserBookHighlight[]>(() => {
     if (novel?.id && chapterNumber !== null) {
@@ -1217,10 +1217,10 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   };
 
   // Hành động Highlight
-  const handleQuickHighlight = (color: HighlightColor, style: HighlightStyle = activeHighlightStyle) => {
+  const handleQuickHighlight = (color: HighlightColor, style: HighlightStyle = activeHighlightStyle || 'classic') => {
     const currentSel = floatingSelection || lastSelectionRef.current;
     if (!currentSel || !currentSel.selectedText || !novel || chapterNumber === null) {
-      window.alert('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+      showToast('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
       return;
     }
 
@@ -1259,11 +1259,13 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   const handleHighlightAndComment = () => {
     const currentSel = floatingSelection || lastSelectionRef.current;
     if (!currentSel || !currentSel.selectedText) {
-      window.alert('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+      showToast('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
       return;
     }
+    const colorToUse = activeHighlightColor || 'yellow';
+    const styleToUse = activeHighlightStyle || 'classic';
     const text = currentSel.selectedText;
-    handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+    handleQuickHighlight(colorToUse, styleToUse);
     setNewCommentContent(`“${text}”\n\n`);
     setShowCommentsPopup(true);
   };
@@ -1322,8 +1324,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               paragraphIndex: paraIndex,
               selectedText: seg.hl.selectedText,
             };
-            setActiveHighlightColor(seg.hl.color);
-            setActiveHighlightStyle(seg.hl.style || 'classic');
+            setActiveHighlightColor(null);
+            setActiveHighlightStyle(null);
             setClickedHighlightId(seg.hl.id);
           }}
           className={`book-marker-streak select-text font-inherit text-inherit cursor-pointer transition-all ${strokeClass}`}
@@ -2667,6 +2669,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                     setShowHighlightIntroTooltip(true);
                     safeStorage.setItem('cosmo_highlight_intro_seen', 'true');
                     setIsHighlighterMode(true);
+                    setActiveHighlightColor(null);
+                    setActiveHighlightStyle(null);
+                    setClickedHighlightId(null);
                   } else {
                     setIsHighlighterMode((prev) => {
                       const next = !prev;
@@ -2677,6 +2682,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                       }
                       return next;
                     });
+                    setActiveHighlightColor(null);
+                    setActiveHighlightStyle(null);
+                    setClickedHighlightId(null);
                   }
                 }}
                 className={`w-12 h-12 sm:w-13 sm:h-13 flex items-center justify-center transition-all duration-150 cursor-pointer active:scale-95 relative ${
@@ -2738,25 +2746,46 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
               setIsHighlighterMode(false);
               setFloatingSelection(null);
               setClickedHighlightId(null);
+              setActiveHighlightColor(null);
+              setActiveHighlightStyle(null);
             }}
             onSelectColor={(c) => {
-              setActiveHighlightColor(c);
+              setActiveHighlightColor((prev) => (prev === c ? null : c));
             }}
             onSelectStyle={(s) => {
-              setActiveHighlightStyle(s);
+              setActiveHighlightStyle((prev) => (prev === s ? null : s));
             }}
             onApplyHighlight={() => {
               const currentSel = floatingSelection || lastSelectionRef.current;
-              if (currentSel?.selectedText) {
-                handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
-                setClickedHighlightId(null);
-              } else {
-                window.alert('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+              if (!currentSel?.selectedText) {
+                showToast('Vui lòng dùng chuột hoặc chạm để bôi đen một cụm từ trên trang trước khi bấm Highlight nhé!');
+                return;
               }
+              if (!activeHighlightColor && !activeHighlightStyle) {
+                showToast('Vui lòng chọn màu bút và dạng vệt bút!');
+                return;
+              }
+              if (!activeHighlightColor) {
+                showToast('Vui lòng chọn màu bút highlight!');
+                return;
+              }
+              if (!activeHighlightStyle) {
+                showToast('Vui lòng chọn dạng vệt bút highlight!');
+                return;
+              }
+              handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+              setClickedHighlightId(null);
             }}
             onSaveExistingHighlight={() => {
               if (clickedHighlightId) {
-                handleChangeHighlightColor(clickedHighlightId, activeHighlightColor, activeHighlightStyle);
+                const target = chapterHighlights.find((h) => h.id === clickedHighlightId);
+                const colorToUse = activeHighlightColor || target?.color;
+                const styleToUse = activeHighlightStyle || target?.style || 'classic';
+                if (!activeHighlightColor && !activeHighlightStyle) {
+                  showToast('Vui lòng chọn màu bút hoặc dạng vệt bút mới để lưu!');
+                  return;
+                }
+                handleChangeHighlightColor(clickedHighlightId, colorToUse || 'yellow', styleToUse);
                 setClickedHighlightId(null);
                 showToast('Đã lưu thay đổi highlight thành công!');
               }
@@ -2769,7 +2798,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                 if (found) quote = found.selectedText;
               }
               if (quote && !clickedHighlightId) {
-                handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+                if (activeHighlightColor && activeHighlightStyle) {
+                  handleQuickHighlight(activeHighlightColor, activeHighlightStyle);
+                }
               }
               // Luôn mở trực tiếp modal Trích Dẫn & Bình Luận
               setQuoteCommentModal({
