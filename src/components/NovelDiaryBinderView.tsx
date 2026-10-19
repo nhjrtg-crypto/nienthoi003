@@ -502,7 +502,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                 <div className="mt-3.5 grid grid-cols-2 gap-2.5">
                   <button
                     onClick={() => onReadChapter(1)}
-                    className="group relative py-2.5 px-3 rounded-full text-xs font-bold active:scale-95 cursor-pointer flex items-center justify-center select-none"
+                    className="group relative py-2.5 px-3 rounded-full text-xs font-bold active:scale-95 cursor-pointer flex items-center justify-center select-none transition-all duration-200 hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-md"
                     style={bTheme.btnCandyPrimary}
                   >
                     {/* Vệt sáng bóng phản chiếu (Specular Highlight) ở nửa trên */}
@@ -518,7 +518,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
 
                   <button
                     onClick={() => onReadChapter(readingChapter)}
-                    className="group relative py-2.5 px-3 rounded-full text-xs font-bold active:scale-95 cursor-pointer flex items-center justify-center select-none"
+                    className="group relative py-2.5 px-3 rounded-full text-xs font-bold active:scale-95 cursor-pointer flex items-center justify-center select-none transition-all duration-200 hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-md"
                     style={bTheme.btnCandySecondary}
                   >
                     <div
@@ -546,7 +546,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowGuideNotice((prev) => !prev)}
-                    className="text-[10px] px-2.5 py-0.5 rounded-full font-semibold cursor-pointer shrink-0"
+                    className="text-[10px] px-2.5 py-0.5 rounded-full font-semibold cursor-pointer shrink-0 transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xs"
                     style={bTheme.btnClayPill}
                     title="Hướng dẫn điều hướng các trang"
                   >
@@ -556,14 +556,14 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                 <div className="p-2 space-y-1.5 text-xs">
                   <button
                     onClick={() => setDiaryTab('home')}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all"
+                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
                     style={diaryTab === 'home' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Hồ sơ truyện</span>
                   </button>
                   <button
                     onClick={() => setDiaryTab('diary')}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all"
+                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
                     style={diaryTab === 'diary' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Giới thiệu truyện</span>
@@ -573,14 +573,14 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                       setDiaryTab('chapters');
                       setCurrentPage(1);
                     }}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all"
+                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
                     style={diaryTab === 'chapters' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Mục lục chương</span>
                   </button>
                   <button
                     onClick={() => setDiaryTab('guestbook')}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all"
+                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
                     style={diaryTab === 'guestbook' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Bình luận</span>
@@ -984,14 +984,14 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                         <button
                           onClick={handlePrevTrack}
-                          className={`w-7 h-7 rounded-full flex items-center justify-center ${bTheme.actionBtnSecondaryText} hover:opacity-80 active:scale-90 transition-transform cursor-pointer`}
+                          className={`w-7 h-7 rounded-full flex items-center justify-center ${bTheme.actionBtnSecondaryText} hover:opacity-100 hover:scale-110 active:scale-90 transition-all cursor-pointer`}
                           title="Bài trước"
                         >
                           <SkipBack className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={toggleAudio}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center ${bTheme.actionBtnPrimaryText} shadow-xs active:scale-95 transition-all cursor-pointer`}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center ${bTheme.actionBtnPrimaryText} shadow-xs active:scale-95 hover:scale-105 hover:shadow-md transition-all cursor-pointer`}
                           style={bTheme.btnClayPrimary}
                           title={isPlayingAudio ? 'Tạm dừng' : 'Phát nhạc'}
                         >
@@ -999,7 +999,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                         </button>
                         <button
                           onClick={handleNextTrack}
-                          className={`w-7 h-7 rounded-full flex items-center justify-center ${bTheme.actionBtnSecondaryText} hover:opacity-80 active:scale-90 transition-transform cursor-pointer`}
+                          className={`w-7 h-7 rounded-full flex items-center justify-center ${bTheme.actionBtnSecondaryText} hover:opacity-100 hover:scale-110 active:scale-90 transition-all cursor-pointer`}
                           title="Bài tiếp theo"
                         >
                           <SkipForward className="w-3.5 h-3.5" />
@@ -1285,7 +1285,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                         <button
                           type="submit"
                           disabled={!newCommentText.trim()}
-                          className={`px-5 py-2 rounded-full disabled:opacity-40 ${bTheme.commentBtnText} text-xs font-bold cursor-pointer transition-all flex items-center gap-1.5 active:scale-95`}
+                          className={`px-5 py-2 rounded-full disabled:opacity-40 ${bTheme.commentBtnText} text-xs font-bold cursor-pointer transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-md flex items-center gap-1.5 active:scale-95`}
                           style={bTheme.btnClayPrimary}
                         >
                           <Send className="w-3 h-3 text-current" />

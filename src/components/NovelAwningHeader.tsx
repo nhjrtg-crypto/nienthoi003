@@ -60,7 +60,7 @@ export const NovelAwningHeader: React.FC<NovelAwningHeaderProps> = ({
   const creamGradId = `paper-awning-cream-${theme}`;
 
   return (
-    <div className="relative w-screen max-w-[100vw] left-1/2 -translate-x-1/2 overflow-visible select-none z-20 pt-0 mb-6 sm:mb-8">
+    <div className="relative w-full max-w-full overflow-hidden select-none z-20 pt-0 mb-6 sm:mb-8">
       {/* 0. ĐỔ MÀU PHỦ KÍN KHOẢNG TRỐNG PHÍA TRÊN MÁI VÒM THEO TỪNG THEME */}
       <div
         className="w-full min-w-full h-3 sm:h-5 -mt-2 sm:-mt-3"

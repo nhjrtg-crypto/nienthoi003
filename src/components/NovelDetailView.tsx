@@ -2447,7 +2447,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const isEditorialStyle = false;
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isSpiralStyle ? currentBinderTheme.pageBgClass : tStyles.pageBg} relative`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isSpiralStyle ? currentBinderTheme.pageBgClass : tStyles.pageBg} relative overflow-x-hidden`}>
       {/* Trang trí nền: Cosmic hiển thị sao & khí quyển; các theme tối khác hiển thị các khối tròn màu sắc thanh tao */}
       {!isSpiralStyle && (
         <CosmicStarsBackground
