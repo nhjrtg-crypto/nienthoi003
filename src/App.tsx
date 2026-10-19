@@ -658,6 +658,15 @@ export default function App() {
     });
   };
 
+  // Đồng bộ class dark trên document.documentElement theo trạng thái isDarkMode
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   // Listen to Firebase Auth state
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {

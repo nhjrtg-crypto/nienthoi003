@@ -14,7 +14,7 @@ export const NOVEL_THEME_OPTIONS: ThemeOption[] = [
     name: 'Purple',
     badge: 'Mặc định',
     fontHint: 'Font Cổ Phong (Serif)',
-    dots: ['#7e739f', '#9333ea', '#ec4899'],
+    dots: ['#6e5d8a', '#baa4db', '#dfd2f2'],
   },
   {
     id: 'notebook',
@@ -42,7 +42,7 @@ export const NOVEL_THEME_OPTIONS: ThemeOption[] = [
     name: 'Linen',
     badge: 'Linen',
     fontHint: 'Font Cổ Phong (Serif)',
-    dots: ['#A37764', '#F8F4EE', '#f5f1e6'],
+    dots: ['#8c6d5d', '#ded2c7', '#f5efe8'],
   },
 ];
 
@@ -300,7 +300,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
     }
     // Frost Light (User custom palette: Nền #f3f7fc, Viền #d8dfe9, Chủ đạo #f9fcff, Nút #87909d)
     return {
-      pageBg: 'bg-[#ebf3fa] text-[#24466d]',
+      pageBg: 'bg-[#f3f7fc] text-[#334e68]',
       headerBg: 'bg-[#ebf3fa]/85 backdrop-blur-xl shadow-[0_4px_24px_rgba(16,23,35,0.06)]',
       headerBorder: 'border-[#d8dfe9]/80',
       footerBg: 'bg-[#ebf3fa] border-t border-[#d8dfe9]/80',
@@ -377,7 +377,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
       badgeText: 'text-[#87909d]',
       leaderboardItem: 'bg-[#f3f7fc] hover:bg-white border border-[#d8dfe9] hover:border-[#87909d]/50 transition-all',
       leaderboardRankBadge: 'bg-[#d8dfe9] text-[#101723]',
-      readerText: 'text-[#101723]',
+      readerText: 'text-[#334e68]',
     };
   }
 

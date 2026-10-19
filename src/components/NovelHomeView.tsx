@@ -3547,38 +3547,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         purpleBgEffectsEnabled={purpleBgEffectsEnabled}
       />
 
-      {/* Nền trang chủ chế độ sáng: Khối màu loang theo theme bao phủ toàn bộ nền trang, ngoại trừ ở góc trên bên trái có Khối màu loang trắng */}
-      {!isDarkEffective && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-          {/* 1. Khối màu loang theo theme bao phủ toàn bộ nền trang */}
-          <div
-            className="absolute inset-0 pointer-events-none select-none transition-all duration-500"
-            style={{
-              backgroundImage:
-                theme === 'sage'
-                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(140, 195, 155, 0.22) 0%, rgba(180, 220, 192, 0.12) 45%, rgba(225, 245, 230, 0.05) 75%, transparent 95%)'
-                  : theme === 'mocha'
-                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(210, 175, 150, 0.24) 0%, rgba(224, 195, 175, 0.14) 45%, rgba(238, 215, 200, 0.06) 75%, transparent 95%)'
-                  : theme === 'slate-haze'
-                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(160, 205, 245, 0.20) 0%, rgba(200, 230, 252, 0.11) 45%, rgba(232, 244, 255, 0.04) 75%, transparent 95%)'
-                  : theme === 'notebook'
-                  ? 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(210, 210, 215, 0.18) 0%, rgba(230, 230, 235, 0.09) 45%, transparent 85%)'
-                  : 'radial-gradient(ellipse 90% 80% at 75% 25%, rgba(218, 172, 254, 0.20) 0%, rgba(238, 210, 255, 0.11) 45%, rgba(250, 240, 255, 0.04) 75%, transparent 95%)',
-            }}
-            aria-hidden="true"
-          />
 
-          {/* 2. Khối màu loang trắng ở góc trên bên trái */}
-          <div
-            className="absolute -top-20 -left-20 sm:-top-28 sm:-left-28 md:-top-36 md:-left-36 lg:-top-48 lg:-left-48 w-[28rem] h-[26rem] sm:w-[38rem] sm:h-[34rem] md:w-[54rem] md:h-[48rem] lg:w-[66rem] lg:h-[58rem] pointer-events-none select-none transition-all duration-500 rounded-[46%_54%_68%_32%/45%_55%_45%_55%] blur-2xl sm:blur-3xl md:blur-[60px] lg:blur-[75px]"
-            style={{
-              backgroundImage:
-                'radial-gradient(ellipse 75% 65% at 30% 30%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.78) 38%, rgba(255, 255, 255, 0.40) 65%, transparent 85%)',
-            }}
-            aria-hidden="true"
-          />
-        </div>
-      )}
 
       {/* Novel Platform Top Bar */}
       <header

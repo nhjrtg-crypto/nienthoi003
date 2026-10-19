@@ -88,6 +88,9 @@ import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { Footer } from './Footer';
 import { CosmicStarsBackground } from './CosmicStarsBackground';
 import { SpiralNotebookView, getSpiralPlannerCaroGridStyle } from './SpiralNotebookView';
+import { NovelAwningHeader } from './NovelAwningHeader';
+import { NovelDiaryBinderView } from './NovelDiaryBinderView';
+import { getBinderTheme } from '../utils/binderThemeConfig';
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { safeStorage } from '../utils/safeStorage';
 import { TxtImportModal } from './TxtImportModal';
@@ -1149,9 +1152,30 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   // Centralized Theme Color Styles
   const isCosmic = theme === 'cosmic';
-  const isDarkEffective = isCosmic || isDarkMode;
+  const isSpiralStyle = detailLayoutOption === 'spiral';
+  // Trang thông tin truyện kiểu cuốn sổ bỏ chế độ tối, chỉ giữ chế độ sáng
+  const isDarkEffective = isSpiralStyle ? false : (isCosmic || isDarkMode);
+  const currentBinderTheme = useMemo(() => getBinderTheme(theme), [theme]);
   const tStyles = useMemo(() => getNovelThemeStyles(theme, isDarkEffective), [theme, isDarkEffective]);
   const currentThemeOption = NOVEL_THEME_OPTIONS.find((t) => t.id === theme) || NOVEL_THEME_OPTIONS[0];
+
+  // Đồng bộ class dark trên document.documentElement:
+  // Nếu ở chế độ sổ còng (isSpiralStyle), luôn gỡ bỏ class 'dark' để bảo đảm toàn bộ trang và lòng sổ hoàn toàn sáng trong trẻo
+  useEffect(() => {
+    if (isSpiralStyle || !isDarkEffective) {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+    return () => {
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+  }, [isSpiralStyle, isDarkEffective, isDarkMode]);
+
   // Uniform font-source-serif across all themes
   const themeFontHeading = 'font-source-serif';
 
@@ -2415,7 +2439,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   // Check active layout style
   const isJournalStyle = false;
-  const isSpiralStyle = detailLayoutOption === 'spiral';
+  const isFrostSpiral = isSpiralStyle && theme === 'slate-haze';
   const isNoteStyle = false;
   const isCinemaStyle = false;
   const isCyberStyle = false;
@@ -2423,23 +2447,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const isEditorialStyle = false;
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${tStyles.pageBg} relative`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isSpiralStyle ? currentBinderTheme.pageBgClass : tStyles.pageBg} relative`}>
       {/* Trang trí nền: Cosmic hiển thị sao & khí quyển; các theme tối khác hiển thị các khối tròn màu sắc thanh tao */}
-      <CosmicStarsBackground
-        theme={theme}
-        isDarkMode={isDarkEffective}
-        darkBgOption={darkBgOption}
-        bgSeed={bgSeed}
-        purpleBgEffectsEnabled={purpleBgEffectsEnabled}
-      />
-      
-      {/* HỌA TIẾT NỀN: LƯỚI CARO SỔ CÒNG (PLANNER BINDER GRID) CHO CHẾ ĐỘ THEME SÁNG TRANG THÔNG TIN TRUYỆN */}
-      {isSpiralStyle && !isDarkEffective && (
-        <div
-          id="spiral-page-planner-caro-bg"
-          className="fixed inset-0 pointer-events-none z-0 transition-all duration-500"
-          style={getSpiralPlannerCaroGridStyle(theme)}
-          aria-hidden="true"
+      {!isSpiralStyle && (
+        <CosmicStarsBackground
+          theme={theme}
+          isDarkMode={isDarkEffective}
+          darkBgOption={darkBgOption}
+          bgSeed={bgSeed}
+          purpleBgEffectsEnabled={purpleBgEffectsEnabled}
         />
       )}
       
@@ -2562,7 +2578,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                 </div>
 
                 {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme (Mặc định tắt khi lần đầu vào trang) */}
-                {isDarkEffective && (
+                {isDarkEffective && !isSpiralStyle && (
                   <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
                     <button
                       id="btn-detail-toggle-purple-bg"
@@ -2594,19 +2610,21 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                   </div>
                 )}
 
-                {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Không nền hồng bao bọc, không icon minh họa, không dòng nền tối dịu mắt) */}
-                <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
-                  <span className="text-xs font-semibold select-none">
-                    Chế độ tối
-                  </span>
-                  <ClayThemeToggle
-                    id="clay-toggle-detail"
-                    isOn={isDarkEffective}
-                    onToggle={toggleDarkMode}
-                    theme={theme}
-                    title={isDarkEffective ? 'Gạt để chuyển sang chế độ sáng' : 'Gạt để chuyển sang chế độ tối'}
-                  />
-                </div>
+                {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Ẩn hoàn toàn ở trang thông tin truyện kiểu cuốn sổ) */}
+                {!isSpiralStyle && (
+                  <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
+                    <span className="text-xs font-semibold select-none">
+                      Chế độ tối
+                    </span>
+                    <ClayThemeToggle
+                      id="clay-toggle-detail"
+                      isOn={isDarkEffective}
+                      onToggle={toggleDarkMode}
+                      theme={theme}
+                      title={isDarkEffective ? 'Gạt để chuyển sang chế độ sáng' : 'Gạt để chuyển sang chế độ tối'}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -2689,67 +2707,100 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         </div>
       </header>
 
-      {/* Main Content Frame - Kiểu chuẩn trên máy tính thu gọn độ rộng vừa vặn hơn (max-w-5xl) */}
-      <main className={`flex-1 w-full ${detailLayoutOption === 'spiral' ? 'max-w-6xl lg:max-w-7xl' : 'max-w-5xl'} mx-auto ${detailLayoutOption === 'spiral' ? 'px-1 sm:px-6' : 'px-3 sm:px-6'} pt-6 sm:pt-8 pb-16 relative z-10`}>
-        {/* LỰA CHỌN HIỂN THỊ THÔNG TIN CHI TIẾT TRUYỆN: KIỂU SỔ CÒNG HOẶC KIỂU CHUẨN */}
-        {detailLayoutOption === 'spiral' ? (
-          <SpiralNotebookView
-            novel={novel}
-            effectiveChapters={effectiveChapters}
-            comments={comments}
-            isBookmarked={isBookmarked}
-            onToggleBookmark={toggleBookmark}
-            onReadChapter={onReadChapter}
-            onPostComment={(author, content) => {
-              if (author.trim()) {
-                try {
-                  safeStorage.setItem('cosmo_comment_author_name', author.trim());
-                } catch {}
-              }
-              const formattedDate = formatCommentDate();
-              const tempComment: NovelComment = {
-                id: `cm-${Date.now()}`,
-                truyenId: novel.id,
-                author: author.trim() || 'Bạn Độc Giả',
-                avatar: '',
-                content: content.trim(),
-                createdAt: formattedDate,
-                ngayTao: new Date().toISOString(),
-                likes: 0,
-                badge: 'Độc Giả',
-                rating: 5,
-              };
-              const updated = [tempComment, ...comments.filter((c) => c.id !== tempComment.id)];
-              setComments(updated);
-              try {
-                safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
-              } catch {}
-              onUpdateNovel?.({ ...novel, comments: updated });
-              try {
-                addD1Comment({
-                  id: tempComment.id,
-                  truyenId: novel.id,
-                  author: tempComment.author,
-                  content: tempComment.content,
-                  rating: 5,
-                  badge: 'Độc Giả',
-                }).catch(() => {});
-              } catch (err) {
-                console.warn('Could not post comment to Cloudflare D1:', err);
-              }
-              triggerToast('Đã lưu bình luận!', 'Cảm nghĩ của bạn đã được ghi chép vào trang sổ.');
+      {/* MÁI VÒM SỌC TRẢI DÀI TỐI ĐA HẾT ĐỘ RỘNG TRANG WEB & BẢNG TÊN TRUYỆN */}
+      {isSpiralStyle && (
+        <div className="w-full min-w-full overflow-visible relative z-20">
+          <NovelAwningHeader
+            novel={{ id: novel.id, title: novel.title }}
+            allNovels={allNovels.map((n) => ({ id: n.id, title: n.title }))}
+            onSelectNovel={(nSimple) => {
+              const target = allNovels.find((n) => n.id === nSimple.id);
+              if (target) onSelectNovel?.(target);
             }}
-            isDarkEffective={isDarkEffective}
+            onBack={onBack}
+            onReadChapter={onReadChapter}
+            isDarkMode={false}
             theme={theme}
-            effectiveWorldLore={effectiveWorldLore}
-            hasLiked={hasLiked}
-            likeCount={likeCount}
-            onToggleLike={handleLike}
-            allNovels={allNovels}
-            onSelectNovel={onSelectNovel}
-            isAdmin={isAdmin}
-            onDeleteComment={handleOpenDeleteComment}
           />
+        </div>
+      )}
+
+      {/* Main Content Frame - Kiểu chuẩn trên máy tính thu gọn độ rộng vừa vặn hơn (max-w-5xl) */}
+      <main className={`flex-1 w-full ${isSpiralStyle ? 'max-w-6xl lg:max-w-7xl' : 'max-w-5xl'} mx-auto ${isSpiralStyle ? 'px-1 sm:px-6' : 'px-3 sm:px-6'} ${isSpiralStyle ? 'pt-4 sm:pt-6' : 'pt-6 sm:pt-8'} pb-16 relative z-10`}>
+        {/* LỰA CHỌN HIỂN THỊ THÔNG TIN CHI TIẾT TRUYỆN: KIỂU SỔ CÒNG HOẶC KIỂU CHUẨN */}
+        {isSpiralStyle ? (
+          <div className="w-full flex flex-col items-center">
+            <NovelDiaryBinderView
+              novel={{
+                id: novel.id,
+                title: novel.title,
+                author: novel.author,
+                translator: novel.translator || 'Jouriee65',
+                coverImage: novel.coverImage,
+                genres: novel.genres,
+                status: novel.status,
+                synopsis: novel.synopsis,
+                worldLore: effectiveWorldLore,
+                uploaderNote: novel.uploaderNote,
+                chapters: effectiveChapters.map((c) => ({
+                  id: c.id,
+                  chapterNumber: c.chapterNumber,
+                  title: c.title,
+                  publishedAt: c.publishedAt,
+                  isExtra: c.isExtra,
+                })),
+              }}
+              onReadChapter={onReadChapter}
+              isDarkMode={false}
+              theme={theme}
+              comments={comments.map((c) => ({
+                id: c.id,
+                userName: c.author,
+                content: c.content,
+                createdAt: c.createdAt,
+                likes: c.likes || 0,
+              }))}
+              onPostComment={(author, content) => {
+                if (author.trim()) {
+                  try {
+                    safeStorage.setItem('cosmo_comment_author_name', author.trim());
+                  } catch {}
+                }
+                const formattedDate = formatCommentDate();
+                const tempComment: NovelComment = {
+                  id: `cm-${Date.now()}`,
+                  truyenId: novel.id,
+                  author: author.trim() || 'Bạn Độc Giả',
+                  avatar: '',
+                  content: content.trim(),
+                  createdAt: formattedDate,
+                  ngayTao: new Date().toISOString(),
+                  likes: 0,
+                  badge: 'Độc Giả',
+                  rating: 5,
+                };
+                const updated = [tempComment, ...comments.filter((c) => c.id !== tempComment.id)];
+                setComments(updated);
+                try {
+                  safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
+                } catch {}
+                onUpdateNovel?.({ ...novel, comments: updated });
+                try {
+                  addD1Comment({
+                    id: tempComment.id,
+                    truyenId: novel.id,
+                    author: tempComment.author,
+                    content: tempComment.content,
+                    rating: 5,
+                    badge: 'Độc Giả',
+                  }).catch(() => {});
+                } catch (err) {
+                  console.warn('Could not post comment to Cloudflare D1:', err);
+                }
+                triggerToast('Đã lưu bình luận!', 'Cảm nghĩ của bạn đã được ghi chép vào trang sổ.');
+              }}
+            />
+          </div>
         ) : (
           /* Novel Detail Card (Kiểu chuẩn: Kết nối mục bìa truyện và 3 mục Giới thiệu, Mục lục, Bình luận thành chung một khối) */
           <div

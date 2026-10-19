@@ -33,7 +33,7 @@ export function getSugarThemeConfig(
       case 'sage':
         return {
           glassStyle: {
-            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(242, 248, 243, 0.85) 45%, rgba(228, 242, 230, 0.75) 100%)',
+            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(242, 248, 243, 0.85) 60%, rgba(228, 242, 230, 0.75) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(255, 255, 255, 0.95)',
@@ -60,7 +60,7 @@ export function getSugarThemeConfig(
       case 'mocha':
         return {
           glassStyle: {
-            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(253, 248, 243, 0.85) 45%, rgba(247, 237, 227, 0.75) 100%)',
+            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(253, 248, 243, 0.85) 60%, rgba(247, 237, 227, 0.75) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(255, 255, 255, 0.95)',
@@ -87,7 +87,7 @@ export function getSugarThemeConfig(
       case 'notebook':
         return {
           glassStyle: {
-            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 250, 250, 0.88) 45%, rgba(242, 242, 242, 0.80) 100%)',
+            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 250, 250, 0.88) 60%, rgba(242, 242, 242, 0.80) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(255, 255, 255, 0.95)',
@@ -115,7 +115,7 @@ export function getSugarThemeConfig(
       case 'cosmic':
         return {
           glassStyle: {
-            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 245, 253, 0.85) 45%, rgba(238, 230, 250, 0.75) 100%)',
+            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 245, 253, 0.85) 60%, rgba(238, 230, 250, 0.75) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(255, 255, 255, 0.95)',
@@ -142,7 +142,7 @@ export function getSugarThemeConfig(
       case 'lululemon':
         return {
           glassStyle: {
-            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(253, 243, 246, 0.85) 45%, rgba(250, 230, 237, 0.75) 100%)',
+            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(253, 243, 246, 0.85) 60%, rgba(250, 230, 237, 0.75) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(255, 255, 255, 0.95)',
@@ -170,7 +170,7 @@ export function getSugarThemeConfig(
       default:
         return {
           glassStyle: {
-            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 248, 255, 0.80) 45%, rgba(222, 241, 255, 0.70) 100%)',
+            backgroundImage: 'linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 248, 255, 0.80) 60%, rgba(222, 241, 255, 0.70) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(255, 255, 255, 0.95)',

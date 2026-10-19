@@ -483,7 +483,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       case 'mocha':
         return 'bg-[#fdfaf7]/95 border border-[#f0e7dd] shadow-2xs text-[#3A2A2A]';
       case 'slate-haze':
-        return 'bg-[#f8fbff]/95 border border-[#d8e7f5] shadow-2xs text-[#101723]';
+        return 'bg-[#ffffff] border border-[#edf3fb] shadow-2xs text-[#334e68]';
       case 'amethyst-haze':
         return 'bg-[#fdfaff]/95 border border-[#f1e8f9] shadow-2xs text-[#211c2f]';
       case 'notebook':
@@ -502,7 +502,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       case 'mocha':
         return 'bg-white/85 border border-[#f2eae1] text-[#3A2A2A] shadow-2xs';
       case 'slate-haze':
-        return 'bg-white/85 border border-[#e4eef8] text-[#101723] shadow-2xs';
+        return 'bg-[#ffffff] border border-[#edf3fb] text-[#334e68] shadow-2xs';
       case 'amethyst-haze':
         return 'bg-white/85 border border-[#f3ebfa] text-[#211c2f] shadow-2xs';
       case 'notebook':
@@ -1569,8 +1569,15 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     }
   }, [readerTheme, isDarkEffective]);
 
+  const readerRootBgClass = useMemo(() => {
+    if (readerTheme === 'slate-haze' && !isDarkEffective) {
+      return 'bg-[#ffffff] text-[#334e68]';
+    }
+    return tStyles.pageBg;
+  }, [readerTheme, isDarkEffective, tStyles.pageBg]);
+
   return (
-    <div className={`min-h-screen w-full ${tStyles.pageBg} transition-colors duration-300 relative flex flex-col`}>
+    <div className={`min-h-screen w-full ${readerRootBgClass} transition-colors duration-300 relative flex flex-col`}>
       {/* Top Header Bar */}
       <header
         className={`sticky top-0 z-30 border-b glass-header px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all duration-300 transform ${

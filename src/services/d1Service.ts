@@ -379,6 +379,9 @@ export async function fetchLikes(rawTargetId: string, force = false): Promise<nu
       if (res.ok) {
         const data = await res.json();
         if (typeof data.likeCount === 'number') {
+          if (targetId === 'intro_page') {
+             console.log(`[D1] Current Likes for Intro Page: ${data.likeCount}`);
+          }
           lastLikesFetchTime[targetId] = Date.now();
           const serverCount = data.likeCount;
           if (serverCount === 521) {
