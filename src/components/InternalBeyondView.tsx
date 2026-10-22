@@ -23,6 +23,7 @@ import { useHeaderScroll } from '../utils/useHeaderScroll';
 import {
   ScrapbookSvgDefs,
   RetroMessageDialog,
+  MakeAWishStamp,
 } from './HeroPhotoScrapbookDecorations';
 
 interface InternalBeyondViewProps {
@@ -103,6 +104,43 @@ export const Petal: React.FC<PetalProps> = ({
         d="M1 7 C 5 1, 17 0, 21 7 C 17 14, 5 13, 1 7 Z"
         fill={color}
       />
+    </svg>
+  );
+};
+
+/**
+ * 💠 HÌNH THOI LÀM TỪ CÁC CHẤM (DOT-MATRIX DIAMOND)
+ * - Mặc định màu trắng tinh khôi, kích thước nhỏ gọn tinh tế
+ */
+export const DotMatrixDiamond: React.FC<{
+  size?: number;
+  className?: string;
+  dotRadius?: number;
+  color?: string;
+}> = ({ size = 26, className = '', dotRadius = 0.95, color = '#FFFFFF' }) => {
+  const coords: [number, number][] = [];
+  for (let r = -3; r <= 3; r++) {
+    const maxC = 3 - Math.abs(r);
+    for (let c = -maxC; c <= maxC; c++) {
+      coords.push([c, r]);
+    }
+  }
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="-22 -22 44 44"
+      fill={color}
+      className={`pointer-events-none select-none ${className}`}
+    >
+      {coords.map(([x, y], idx) => (
+        <circle
+          key={idx}
+          cx={x * 6}
+          cy={y * 6}
+          r={x === 0 && y === 0 ? dotRadius * 1.35 : dotRadius}
+        />
+      ))}
     </svg>
   );
 };
@@ -686,6 +724,32 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
           ))}
         </div>
 
+        {/* ICON CÁNH HOA TĨNH, BÔNG HOA TĨNH & HÌNH THOI CHẤM TRẮNG TRANG TRÍ NỀN TÍM (KHÔNG CHUYỂN ĐỘNG) */}
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-12 overflow-hidden">
+          {/* 1. Các icon cánh hoa tĩnh không chuyển động (Tất cả chuyển thành màu tím thanh tao) */}
+          <div className="absolute top-[12%] left-[8%] opacity-70 text-[#C084FC] dark:text-[#A855F7]/50">
+            <Petal size={22} rotate={28} color="currentColor" />
+          </div>
+          <div className="absolute top-[26%] left-[24%] opacity-65 text-[#B794F4] dark:text-[#9F7AEA]/50">
+            <Petal size={16} rotate={-38} color="currentColor" />
+          </div>
+          <div className="absolute top-[16%] right-[18%] opacity-70 text-[#C084FC] dark:text-[#A855F7]/50">
+            <Petal size={24} rotate={-20} color="currentColor" />
+          </div>
+          <div className="absolute top-[40%] right-[7%] opacity-60 text-[#D8B4FE] dark:text-[#C084FC]/50">
+            <Petal size={17} rotate={48} color="currentColor" />
+          </div>
+          <div className="absolute bottom-[24%] left-[10%] opacity-60 text-[#C084FC] dark:text-[#A855F7]/45">
+            <Petal size={20} rotate={16} color="currentColor" />
+          </div>
+          <div className="absolute bottom-[16%] right-[22%] opacity-65 text-[#A855F7] dark:text-[#9333EA]/50">
+            <Petal size={18} rotate={-32} color="currentColor" />
+          </div>
+          <div className="absolute top-[48%] left-[5%] opacity-60 text-[#D8B4FE] dark:text-[#C084FC]/45">
+            <Petal size={19} rotate={-14} color="currentColor" />
+          </div>
+        </div>
+
         <div className="relative z-20 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* ================================================================= */}
           {/* POLAROID COLUMN: POLAROID CARD + 4 SEASONS + 10 NIGHT STARS       */}
@@ -705,6 +769,17 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
               title="Nhấn để phóng to hoặc ngắm chi tiết khung ảnh"
             >
               {/* BỘ PHẦN TỬ TRANG TRÍ SCRAPBOOK XUNG QUANH BỨC ẢNH */}
+              {/* Con dấu tròn A LIBRARY OF DAYDREAMS (Nổi ở góc trên bên trái gần bức ảnh) */}
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  cosmicAudio.playChime('sparkle');
+                }}
+                className="absolute -top-5 -left-3.5 sm:-top-7 sm:-left-6 z-30 pointer-events-auto rotate-[-8deg] hover:rotate-0 transition-transform"
+              >
+                <MakeAWishStamp isDarkMode={isDarkMode} />
+              </div>
+
               {/* Hộp thoại Retro Message (Nổi ở góc dưới bên phải - z-30) */}
               <div
                 onClick={(e) => e.stopPropagation()}
@@ -713,23 +788,53 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
                 <RetroMessageDialog isDarkMode={isDarkMode} delay={0.5} />
               </div>
 
-              {/* Washi Tape Pinning Polaroid: Đặt giữa bức ảnh, căn ngay giữa mép trên bức ảnh */}
-              <div
-                className="absolute -top-3.5 sm:-top-4.5 left-1/2 -translate-x-1/2 z-30 w-24 sm:w-32 h-6 sm:h-7.5 rounded-xs shadow-xs pointer-events-none"
-                style={{
-                  background: currentSeason.washiGradient,
-                  backdropFilter: 'blur(3px)',
-                  borderLeft: '1.5px dashed rgba(255, 255, 255, 0.6)',
-                  borderRight: '1.5px dashed rgba(255, 255, 255, 0.6)',
-                }}
-              />
+              {/* HÌNH THOI CHẤM BI ĐỐI XỨNG MÀU TRẮNG - KÍCH THƯỚC NHỎ ĐẶT GẦN BỨC ẢNH */}
+              <div className="absolute -top-3 sm:-top-4 -right-2 sm:-right-3 z-25 pointer-events-none drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]">
+                <DotMatrixDiamond size={20} dotRadius={0.80} color="#FFFFFF" />
+              </div>
 
-              {/* Polaroid Frame: Chế độ tối đổi khung viền trắng thành tím sẫm thanh lịch */}
-              <div className={`relative z-20 ${
-                isDarkMode
-                  ? 'bg-[#1C152E] border border-purple-400/25 shadow-[0_20px_50px_rgba(0,0,0,0.7)]'
-                  : 'bg-white shadow-[0_20px_45px_rgba(78,48,98,0.22)]'
-              } p-3 sm:p-4 pb-6 sm:pb-8 rounded-sm w-[min(16rem,72vw)] sm:w-[min(19rem,80vw)] lg:w-[min(21rem,86vw)] mx-auto transition-colors duration-500`}>
+              {/* KHUNG CHỨA BỘ ẢNH XẾP CHỒNG (STACKED PHOTO CARDS) */}
+              <div className="relative mx-auto w-[min(13.75rem,64vw)] sm:w-[min(19rem,80vw)] lg:w-[min(21rem,86vw)]">
+                {/* 1. BỨC ẢNH PHỤ THỨ NHẤT LÓ RA BÊN TRÁI PHÍA SAU (-4.5 ĐỘ - HIỆU ỨNG XẾP CHỒNG - MÀU TRẮNG Ở CHẾ ĐỘ SÁNG) */}
+                <div
+                  className={`absolute inset-0 z-10 pointer-events-none rounded-sm transition-transform duration-500 origin-bottom-left rotate-[-4.5deg] -translate-x-3 -translate-y-2.5 sm:-translate-x-4 sm:-translate-y-3 p-3 sm:p-4 pb-6 sm:pb-8 shadow-md ${
+                    isDarkMode
+                      ? 'bg-[#181028] border border-purple-400/20 shadow-[0_12px_28px_rgba(0,0,0,0.65)]'
+                      : 'bg-white border border-[#EBE6DF] shadow-[0_10px_24px_rgba(78,48,98,0.10)]'
+                  }`}
+                  style={{ filter: isDarkMode ? 'brightness(0.85)' : 'none' }}
+                >
+                  <div className={`w-full aspect-[4/4.75] rounded-xs overflow-hidden ${
+                    isDarkMode ? 'bg-[#120B20]' : 'bg-[#FAF8F5]'
+                  }`}>
+                    <div className="w-full h-full opacity-35 bg-gradient-to-br from-purple-400/20 via-pink-300/15 to-transparent" />
+                  </div>
+                </div>
+
+                {/* 2. BỨC ẢNH PHỤ THỨ HAI LÓ RA BÊN PHẢI PHÍA SAU (+3.8 ĐỘ - HIỆU ỨNG XẾP CHỒNG - MÀU TRẮNG Ở CHẾ ĐỘ SÁNG) */}
+                <div
+                  className={`absolute inset-0 z-11 pointer-events-none rounded-sm transition-transform duration-500 origin-bottom-right rotate-[3.8deg] translate-x-2.5 translate-y-2 sm:translate-x-3.5 sm:translate-y-2.5 p-3 sm:p-4 pb-6 sm:pb-8 shadow-md ${
+                    isDarkMode
+                      ? 'bg-[#160D24] border border-purple-400/25 shadow-[0_10px_24px_rgba(0,0,0,0.6)]'
+                      : 'bg-white border border-[#EAE4DD] shadow-[0_10px_22px_rgba(78,48,98,0.08)]'
+                  }`}
+                  style={{ filter: isDarkMode ? 'brightness(0.9)' : 'none' }}
+                >
+                  <div className={`w-full aspect-[4/4.75] rounded-xs overflow-hidden ${
+                    isDarkMode ? 'bg-[#140C22]' : 'bg-[#FAF8F5]'
+                  }`}>
+                    <div className="w-full h-full opacity-35 bg-gradient-to-tl from-indigo-400/20 via-purple-300/15 to-transparent" />
+                  </div>
+                </div>
+
+                {/* Polaroid Frame Chính:
+                    - Trên điện thoại: kích thước nhỏ hơn một chút (w-[min(13.75rem,64vw)])
+                    - Trên máy tính: giữ nguyên (sm:w-[min(19rem,80vw)] lg:w-[min(21rem,86vw)]) */}
+                <div className={`relative z-20 ${
+                  isDarkMode
+                    ? 'bg-[#1C152E] border border-purple-400/25 shadow-[0_20px_50px_rgba(0,0,0,0.7)]'
+                    : 'bg-white shadow-[0_20px_45px_rgba(78,48,98,0.22)]'
+                } p-3 sm:p-4 pb-6 sm:pb-8 rounded-sm w-full mx-auto transition-colors duration-500`}>
                 {/* INNER ARTWORK: 4 SEASONS (XUÂN, HẠ, THU, ĐÔNG) */}
                 <div className={`relative aspect-[4/4.75] rounded-xs overflow-hidden transition-all duration-700 flex flex-col justify-between ${
                   isDarkMode ? currentSeason.skyNight : currentSeason.skyDay
@@ -1296,7 +1401,8 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
                   <span className="text-[12px]">{currentSeason.captionIcon}</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
+          </motion.div>
 
             {/* BOTTOM LABEL UNDER POLAROID */}
             <div className="w-full max-w-[16rem] sm:max-w-xs mt-3 sm:mt-6 px-4 flex items-center justify-between select-none mx-auto">

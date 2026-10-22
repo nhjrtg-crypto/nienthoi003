@@ -209,17 +209,17 @@ export const RetroMessageDialog: React.FC<{
         }}
         className={`px-3 py-1.5 rounded-full border shadow-md flex items-center gap-1.5 cursor-pointer pointer-events-auto select-none font-mono text-[10.5px] tracking-wide transition-colors duration-300 ${
           isDarkMode
-            ? 'bg-[#251B18] border-[#543D36] text-[#FAF5EE] hover:bg-[#32231F] hover:border-[#7A5A50]'
-            : 'bg-[#FAF5EE] border-[#D9C6B8] text-[#44322D] hover:bg-white hover:border-[#C4ADA0]'
+            ? 'bg-[#22133B]/90 border-[#653C93] text-[#F3E8FF] hover:bg-[#2F1A52] hover:border-[#965FE0]'
+            : 'bg-[#FDFBF7] border-[#E5DFD6] text-[#3D2E28] hover:bg-white hover:border-[#D0C6BA]'
         } ${className}`}
         style={{
           filter: isDarkMode
-            ? 'drop-shadow(0 6px 14px rgba(0,0,0,0.5))'
-            : 'drop-shadow(0 6px 14px rgba(45,30,25,0.18))',
+            ? 'drop-shadow(0 6px 14px rgba(18,7,32,0.65))'
+            : 'drop-shadow(0 6px 14px rgba(45,30,25,0.14))',
         }}
         title="Mở thông điệp hôm nay"
       >
-        <span className="w-2 h-2 rounded-full bg-[#E58296] inline-block animate-pulse" />
+        <span className={`w-2 h-2 rounded-full inline-block animate-pulse ${isDarkMode ? 'bg-[#C084FC]' : 'bg-[#E58296]'}`} />
         <span className="font-semibold">Message</span>
       </motion.button>
     );
@@ -235,37 +235,37 @@ export const RetroMessageDialog: React.FC<{
       whileHover={{ scale: 1.01 }}
       className={`w-56 sm:w-64 pointer-events-auto rounded-xl border-2 shadow-xl overflow-hidden select-none transition-colors duration-300 cursor-grab active:cursor-grabbing ${
         isDarkMode
-          ? 'bg-[#251B18] border-[#543D36] text-[#FAF5EE]'
-          : 'bg-[#FAF5EE] border-[#D9C6B8] text-[#44322D]'
+          ? 'bg-[#1C112E]/95 border-[#5A3580] text-[#F3E8FF]'
+          : 'bg-[#FAF8F5] border-[#E8E1D8] text-[#3D2E28]'
       } ${className}`}
       style={{
         filter: isDarkMode
-          ? 'drop-shadow(0 10px 24px rgba(0,0,0,0.65))'
-          : 'drop-shadow(0 10px 24px rgba(45,30,25,0.22))',
+          ? 'drop-shadow(0 10px 24px rgba(15,7,28,0.75))'
+          : 'drop-shadow(0 10px 24px rgba(45,30,25,0.18))',
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Titlebar màu Cacao retro kèm 3 chấm + Kẹp ghim giấy kim loại SVG màu hồng */}
+      {/* Titlebar màu tím ở dark mode kèm 3 chấm + Kẹp ghim giấy kim loại SVG */}
       <div
         className={`px-3 py-1.5 flex items-center justify-between transition-colors ${
-          isDarkMode ? 'bg-[#1C1311] text-[#FAF5EE]' : 'bg-[#44322D] text-[#FAF5EE]'
+          isDarkMode ? 'bg-[#140B22] text-[#F3E8FF]' : 'bg-[#44322D] text-[#FAF5EE]'
         }`}
       >
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#E8A6AE]" />
-          <span className="w-2 h-2 rounded-full bg-[#FAF5EE]" />
-          <span className="w-2 h-2 rounded-full bg-[#D7C0B2]" />
+          <span className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-[#C084FC]' : 'bg-[#E8A6AE]'}`} />
+          <span className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-[#E9D5FF]' : 'bg-[#FAF5EE]'}`} />
+          <span className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-[#7C3AED]' : 'bg-[#D7C0B2]'}`} />
         </div>
-        <span className={`font-mono text-[8.5px] tracking-wider ${isDarkMode ? 'text-[#C9AEA7]' : 'text-[#D8BDB7]'}`}>
+        <span className={`font-mono text-[8.5px] tracking-wider ${isDarkMode ? 'text-[#C4B5FD]' : 'text-[#D8BDB7]'}`}>
           secrets.dialog
         </span>
 
-        {/* Kẹp ghim giấy kim loại màu hồng kẹp qua mép */}
+        {/* Kẹp ghim giấy kim loại kẹp qua mép */}
         <div className="w-3.5 h-6 -mt-2">
           <svg viewBox="0 0 16 32" className="w-full h-full" fill="none">
             <path
               d="M 4 8 L 4 24 C 4 28 12 28 12 24 L 12 4 C 12 1 6 1 6 4 L 6 20 C 6 22 10 22 10 20 L 10 8"
-              stroke="#D98890"
+              stroke={isDarkMode ? '#C084FC' : '#D98890'}
               strokeWidth="1.8"
               strokeLinecap="round"
             />
@@ -276,8 +276,10 @@ export const RetroMessageDialog: React.FC<{
       {/* Phần thân hỏi đáp */}
       <div className="p-3">
         <div className="flex items-start gap-2.5 mb-2.5">
-          {/* Vòng tròn hồng chấm than */}
-          <div className="w-7 h-7 rounded-full bg-[#F3CCD1] text-[#B85360] flex items-center justify-center font-bold text-sm shrink-0 shadow-inner">
+          {/* Vòng tròn chấm than */}
+          <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-inner ${
+            isDarkMode ? 'bg-[#6B21A8]/50 text-[#F5EEFD]' : 'bg-[#F3CCD1] text-[#B85360]'
+          }`}>
             !
           </div>
           <p className="text-[10.5px] sm:text-[11.5px] font-sans font-medium leading-snug pt-0.5">
@@ -285,7 +287,7 @@ export const RetroMessageDialog: React.FC<{
           </p>
         </div>
 
-        {/* Thông điệp tiếng Anh bung ra khi người dùng bấm [yes] - ĐÃ BỎ ICON LẤP LÁNH THEO YÊU CẦU */}
+        {/* Thông điệp tiếng Anh bung ra khi người dùng bấm [yes] */}
         <AnimatePresence>
           {hasOpenedMessage && (
             <motion.div
@@ -294,8 +296,8 @@ export const RetroMessageDialog: React.FC<{
               exit={{ opacity: 0, height: 0 }}
               className={`p-2.5 mb-2.5 rounded-lg border text-[10px] sm:text-[10.5px] font-serif italic leading-relaxed shadow-inner ${
                 isDarkMode
-                  ? 'bg-[#342420] border-[#5E423A] text-[#FDECEF]'
-                  : 'bg-[#FFF0F3] border-[#F3CCD1] text-[#8B454E]'
+                  ? 'bg-[#27153D] border-[#5E367E] text-[#F5EEFD]'
+                  : 'bg-[#FCFAF8] border-[#E8E0D6] text-[#583942]'
               }`}
             >
               <span>&ldquo;{todayMessage}&rdquo;</span>
@@ -306,7 +308,7 @@ export const RetroMessageDialog: React.FC<{
         {/* Nút hành động */}
         <div
           className={`flex items-center justify-end gap-2 pt-2 border-t transition-colors ${
-            isDarkMode ? 'border-[#4A352F]' : 'border-[#E8DDD4]'
+            isDarkMode ? 'border-[#3E215B]' : 'border-[#E8DDD4]'
           }`}
         >
           {hasOpenedMessage ? (
@@ -317,7 +319,11 @@ export const RetroMessageDialog: React.FC<{
                 setIsExpanded(false);
                 setHasOpenedMessage(false);
               }}
-              className="px-3.5 py-1 rounded-sm bg-[#F3CCD1] text-[#44322D] text-[10px] font-sans font-bold hover:bg-[#EAAEB6] cursor-pointer shadow-xs transition-colors"
+              className={`px-3.5 py-1 rounded-sm text-[10px] font-sans font-bold cursor-pointer shadow-xs transition-colors ${
+                isDarkMode
+                  ? 'bg-[#9333EA] text-white hover:bg-[#A855F7]'
+                  : 'bg-[#F3CCD1] text-[#44322D] hover:bg-[#EAAEB6]'
+              }`}
             >
               close
             </button>
@@ -327,7 +333,11 @@ export const RetroMessageDialog: React.FC<{
               <button
                 type="button"
                 onClick={() => setHasOpenedMessage(true)}
-                className="px-3.5 py-1 rounded-sm bg-[#F3CCD1] text-[#44322D] text-[9.5px] font-sans font-bold hover:bg-[#EAAEB6] cursor-pointer shadow-xs transition-colors"
+                className={`px-3.5 py-1 rounded-sm text-[9.5px] font-sans font-bold cursor-pointer shadow-xs transition-colors ${
+                  isDarkMode
+                    ? 'bg-[#9333EA] text-white hover:bg-[#A855F7]'
+                    : 'bg-[#F3CCD1] text-[#44322D] hover:bg-[#EAAEB6]'
+                }`}
               >
                 yes
               </button>
@@ -336,8 +346,8 @@ export const RetroMessageDialog: React.FC<{
                 onClick={() => setIsExpanded(false)}
                 className={`px-3 py-1 rounded-sm border text-[9.5px] font-sans font-medium cursor-pointer shadow-xs transition-colors ${
                   isDarkMode
-                    ? 'bg-[#2D201D] border-[#5E423A] text-[#D8BDB7] hover:bg-[#382824]'
-                    : 'bg-[#FAF5EE] border-[#CDBBB0] text-[#785E57] hover:bg-[#F0E6DD]'
+                    ? 'bg-[#25153A] border-[#5E387D] text-[#D8B4FE] hover:bg-[#341E50]'
+                    : 'bg-[#F6F2EC] border-[#DDD5CA] text-[#634E47] hover:bg-white'
                 }`}
               >
                 later
@@ -349,3 +359,79 @@ export const RetroMessageDialog: React.FC<{
     </motion.div>
   );
 };
+
+/**
+ * 💖 TRÁI TIM THUẦN TÚY KHÔNG VIỀN (BORDERLESS HEART)
+ */
+export const BorderlessHeart: React.FC<{ size?: number; color?: string; glow?: string }> = ({
+  size = 16,
+  color = '#F472B6',
+  glow = 'rgba(244, 114, 182, 0.85)',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    style={{ filter: `drop-shadow(0 0 8px ${glow})` }}
+  >
+    <path
+      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+      fill={color}
+      stroke="none"
+      strokeWidth={0}
+    />
+  </svg>
+);
+
+/**
+ * 🌟 CON DẤU TRÒN A LIBRARY OF DAYDREAMS
+ * - Kích thước nhỏ gọn xinh xắn, hài hòa với bố cục ảnh
+ * - Trái tim ở tâm xoay nhẹ nhàng đồng bộ cùng dòng chữ
+ */
+export const MakeAWishStamp: React.FC<{ onClick?: () => void; isDarkMode?: boolean }> = ({ onClick, isDarkMode }) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group relative w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] rounded-full border border-pink-400/40 flex items-center justify-center cursor-pointer hover:border-pink-300 hover:scale-105 transition-all shadow-[0_0_12px_rgba(244,114,182,0.22)] ${
+        isDarkMode ? 'bg-[#21142c]/80' : 'bg-white/80 backdrop-blur-xs'
+      }`}
+      title="A Library of Daydreams"
+    >
+      {/* 1. DÒNG CHỮ CHẠY VÒNG TRÒN XOAY ĐỀU 360 ĐỘ */}
+      <svg
+        className="absolute inset-0 w-full h-full animate-[spin_20s_linear_infinite]"
+        viewBox="0 0 100 100"
+      >
+        <defs>
+          {/* Đường dẫn hình tròn bán kính r = 36.5 nằm tại tâm (50, 50) */}
+          <path
+            id="circlePathWish"
+            d="M 50, 50 m -36.5, 0 a 36.5,36.5 0 1,1 73,0 a 36.5,36.5 0 1,1 -73,0"
+          />
+        </defs>
+        <text className={`text-[7.2px] font-mono tracking-[0.12em] font-bold uppercase select-none ${
+          isDarkMode ? 'fill-pink-200/90' : 'fill-pink-500/85'
+        }`}>
+          <textPath xlinkHref="#circlePathWish" startOffset="0%" textLength="225" lengthAdjust="spacing">
+            ★ A LIBRARY OF DAYDREAMS ★
+          </textPath>
+        </text>
+      </svg>
+
+      {/* 2. TRÁI TIM Ở TÂM: XOAY NHẸ CÙNG VỚI DÒNG CHỮ */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{
+          repeat: Infinity,
+          duration: 20,
+          ease: 'linear',
+        }}
+        className="flex items-center justify-center pointer-events-none"
+      >
+        <BorderlessHeart size={13} color="#F472B6" glow="rgba(244, 114, 182, 0.85)" />
+      </motion.div>
+    </button>
+  );
+};
+

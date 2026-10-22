@@ -48,6 +48,7 @@ import { NovelThemeId, NOVEL_THEME_OPTIONS, getNovelThemeStyles } from '../utils
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { WebLogo } from './WebLogo';
 import { RandomNovelPicker } from './RandomNovelPicker';
+import { CrescentCelestialOrb } from './CrescentCelestialOrb';
 import { IntroAboutButton, ClassicIntroAboutButton } from './IntroAboutButton';
 import { useHeaderScroll } from '../utils/useHeaderScroll';
 import { Footer } from './Footer';
@@ -4630,7 +4631,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       {/* HERO FEATURED BANNER - BOARDING PASS / TICKET STYLE (THEME ADAPTIVE)       */}
       {/* ========================================================================= */}
       {currentHeroNovel && (
-        <section className="relative w-full overflow-hidden pt-4 pb-12 sm:pt-6 sm:pb-16 lg:pt-14 lg:pb-20 select-none">
+        <section className="relative w-full overflow-x-clip overflow-y-visible pt-4 pb-12 sm:pt-6 sm:pb-16 lg:pt-14 lg:pb-20 select-none">
           {/* Lớp chấm bi họa tiết mờ (không có gradient nội bộ bị cắt khúc) */}
           <div
             aria-hidden="true"
@@ -4703,11 +4704,16 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                 </span>
               </div>
 
+              {/* KHỐI CẦU TỎA ÁNH SÁNG Ở CHẾ ĐỘ TỐI (KHỬ VỆT MÀU COLOR BANDING BẰNG SCANLINE / NOISE) */}
+              {isDarkEffective && (
+                <CrescentCelestialOrb theme={theme} />
+              )}
+
               <motion.h1
                 initial={{ opacity: 0, scale: 0.94 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1 }}
-                className={`font-pinyon text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-normal leading-tight italic font-normal py-2 px-6 sm:px-14 md:px-20 select-none whitespace-nowrap ${heroTheme.titleColor}`}
+                className={`relative z-10 font-pinyon text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-normal leading-tight italic font-normal py-2 px-6 sm:px-14 md:px-20 select-none whitespace-nowrap ${heroTheme.titleColor}`}
                 style={{
                   fontFamily: "'Pinyon Script', cursive",
                   fontStyle: 'italic',
@@ -5155,7 +5161,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                               initial={{ scale: 0, rotate: -45, opacity: 0 }}
                               animate={{ scale: 1, rotate: 0, opacity: 1 }}
                               transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                              className="text-white/90 text-xs select-none"
+                              className={`${theme === 'notebook' ? 'text-black' : 'text-white/90'} text-xs select-none`}
                             >
                               ✦
                             </motion.span>
