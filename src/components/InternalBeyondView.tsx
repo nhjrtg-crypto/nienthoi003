@@ -23,7 +23,6 @@ import { useHeaderScroll } from '../utils/useHeaderScroll';
 import {
   ScrapbookSvgDefs,
   RetroMessageDialog,
-  MakeAWishStamp,
 } from './HeroPhotoScrapbookDecorations';
 
 interface InternalBeyondViewProps {
@@ -726,7 +725,7 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
 
         {/* ICON CÁNH HOA TĨNH, BÔNG HOA TĨNH & HÌNH THOI CHẤM TRẮNG TRANG TRÍ NỀN TÍM (KHÔNG CHUYỂN ĐỘNG) */}
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-12 overflow-hidden">
-          {/* 1. Các icon cánh hoa tĩnh không chuyển động (Tất cả chuyển thành màu tím thanh tao) */}
+          {/* 1. Các icon cánh hoa tĩnh không chuyển động (Màu tím thanh tao) */}
           <div className="absolute top-[12%] left-[8%] opacity-70 text-[#C084FC] dark:text-[#A855F7]/50">
             <Petal size={22} rotate={28} color="currentColor" />
           </div>
@@ -736,17 +735,11 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
           <div className="absolute top-[16%] right-[18%] opacity-70 text-[#C084FC] dark:text-[#A855F7]/50">
             <Petal size={24} rotate={-20} color="currentColor" />
           </div>
-          <div className="absolute top-[40%] right-[7%] opacity-60 text-[#D8B4FE] dark:text-[#C084FC]/50">
-            <Petal size={17} rotate={48} color="currentColor" />
-          </div>
           <div className="absolute bottom-[24%] left-[10%] opacity-60 text-[#C084FC] dark:text-[#A855F7]/45">
             <Petal size={20} rotate={16} color="currentColor" />
           </div>
           <div className="absolute bottom-[16%] right-[22%] opacity-65 text-[#A855F7] dark:text-[#9333EA]/50">
             <Petal size={18} rotate={-32} color="currentColor" />
-          </div>
-          <div className="absolute top-[48%] left-[5%] opacity-60 text-[#D8B4FE] dark:text-[#C084FC]/45">
-            <Petal size={19} rotate={-14} color="currentColor" />
           </div>
         </div>
 
@@ -769,16 +762,7 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
               title="Nhấn để phóng to hoặc ngắm chi tiết khung ảnh"
             >
               {/* BỘ PHẦN TỬ TRANG TRÍ SCRAPBOOK XUNG QUANH BỨC ẢNH */}
-              {/* Con dấu tròn A LIBRARY OF DAYDREAMS (Nổi ở góc trên bên trái gần bức ảnh) */}
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  cosmicAudio.playChime('sparkle');
-                }}
-                className="absolute -top-5 -left-3.5 sm:-top-7 sm:-left-6 z-30 pointer-events-auto rotate-[-8deg] hover:rotate-0 transition-transform"
-              >
-                <MakeAWishStamp isDarkMode={isDarkMode} />
-              </div>
+
 
               {/* Hộp thoại Retro Message (Nổi ở góc dưới bên phải - z-30) */}
               <div
@@ -982,22 +966,6 @@ export const InternalBeyondView: React.FC<InternalBeyondViewProps> = ({
                           className="absolute top-[64%] left-[62%]"
                         >
                           <RoundedStar size={18} className="sm:w-[24px] sm:h-[24px]" fill="none" stroke="#FFF7C2" strokeWidth={2} glow rotate={25} />
-                        </motion.div>
-                        <motion.div
-                          initial={{ scale: 0.2, opacity: 0 }}
-                          animate={{ scale: [0.2, 1.15, 1], opacity: [0, 1, 1] }}
-                          transition={{ duration: 1.2, delay: 0.9, ease: 'easeOut' }}
-                          className="absolute top-[72%] left-[14%]"
-                        >
-                          <RoundedStar size={19} className="sm:w-[26px] sm:h-[26px]" fill="#FFE979" rotate={36} />
-                        </motion.div>
-                        <motion.div
-                          initial={{ scale: 0.2, opacity: 0 }}
-                          animate={{ scale: [0.2, 1.15, 1], opacity: [0, 1, 1] }}
-                          transition={{ duration: 1.2, delay: 1.0, ease: 'easeOut' }}
-                          className="absolute top-[72%] right-[12%]"
-                        >
-                          <RoundedStar size={20} className="sm:w-[28px] sm:h-[28px]" fill="#FFE979" rotate={-28} />
                         </motion.div>
                       </div>
                     ) : (
