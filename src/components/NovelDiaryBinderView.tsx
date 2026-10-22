@@ -224,8 +224,8 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
             </p>
             <button
               onClick={handleDismissGuide}
-              className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold active:scale-95 ${bTheme.noticeBtnText} cursor-pointer`}
-              style={bTheme.btnClayPrimary}
+              className="shrink-0 px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
+              style={bTheme.btnClayPill}
             >
               Đã hiểu
             </button>
@@ -315,7 +315,12 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
         {/* ======================================================== */}
         <div
           className={`relative z-10 w-full rounded-[32px] sm:rounded-[42px] p-2.5 sm:p-4 md:p-5 transition-all duration-300 ${bTheme.titleText}`}
-          style={bTheme.notebookOuterGlass}
+          style={{
+            ...bTheme.notebookOuterGlass,
+            '--theme-hover-border': bTheme.hoverBorder,
+            '--theme-hover-bg': bTheme.hoverBg,
+            '--theme-hover-text': bTheme.hoverText,
+          } as React.CSSProperties}
         >
           {/* 1. HÌNH CHỮ X TRÒN HOẠT HÌNH LẮC NHẸ BÊN TRÁI */}
           <div className="absolute -top-4 sm:-top-6 left-2 sm:left-24 w-11 h-11 sm:w-15 sm:h-15 pointer-events-none z-30 animate-sway-badge-left">
@@ -546,7 +551,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowGuideNotice((prev) => !prev)}
-                    className="text-[10px] px-2.5 py-0.5 rounded-full font-semibold cursor-pointer shrink-0 transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xs"
+                    className="text-[10px] px-2.5 py-0.5 rounded-full font-semibold cursor-pointer shrink-0 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
                     style={bTheme.btnClayPill}
                     title="Hướng dẫn điều hướng các trang"
                   >
@@ -556,14 +561,18 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                 <div className="p-2 space-y-1.5 text-xs">
                   <button
                     onClick={() => setDiaryTab('home')}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
+                    className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer transition-all ${
+                      diaryTab === 'home' ? 'tab-clay-glass-active font-bold' : 'tab-clay-glass-inactive'
+                    }`}
                     style={diaryTab === 'home' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Hồ sơ truyện</span>
                   </button>
                   <button
                     onClick={() => setDiaryTab('diary')}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
+                    className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer transition-all ${
+                      diaryTab === 'diary' ? 'tab-clay-glass-active font-bold' : 'tab-clay-glass-inactive'
+                    }`}
                     style={diaryTab === 'diary' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Giới thiệu truyện</span>
@@ -573,14 +582,18 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                       setDiaryTab('chapters');
                       setCurrentPage(1);
                     }}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
+                    className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer transition-all ${
+                      diaryTab === 'chapters' ? 'tab-clay-glass-active font-bold' : 'tab-clay-glass-inactive'
+                    }`}
                     style={diaryTab === 'chapters' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Mục lục chương</span>
                   </button>
                   <button
                     onClick={() => setDiaryTab('guestbook')}
-                    className="w-full text-left px-3.5 py-2.5 rounded-full flex items-center gap-2 cursor-pointer transition-all duration-200 hover:translate-x-1.5 hover:brightness-105 hover:shadow-2xs"
+                    className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2 cursor-pointer transition-all ${
+                      diaryTab === 'guestbook' ? 'tab-clay-glass-active font-bold' : 'tab-clay-glass-inactive'
+                    }`}
                     style={diaryTab === 'guestbook' ? bTheme.tabActiveStyle : bTheme.tabInactiveStyle}
                   >
                     <span>★ Bình luận</span>
@@ -718,11 +731,13 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
 
                     {/* PHẦN 3: Mục PROFILE / HỒ SƠ TÁC PHẨM & D-DAY */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-3">
-                      {/* PHẦN 3.1: Mục PROFILE / HỒ SƠ TÁC PHẨM (Nền trơn thanh lịch, bỏ đường kẻ ngang) */}
+                      {/* PHẦN 3.1: Mục PROFILE / HỒ SƠ TÁC PHẨM (Họa tiết Checkerboard pattern rất nhạt) */}
                       <div
-                        className="lg:col-span-8 rounded-2xl p-3 sm:p-3.5 relative flex flex-col justify-between border border-white/90 backdrop-blur-[16px]"
+                        className="lg:col-span-8 rounded-2xl p-3 sm:p-3.5 relative flex flex-col justify-between border border-white/90 backdrop-blur-[16px] overflow-hidden"
                         style={{
                           backgroundColor: bTheme.profileCardBg,
+                          backgroundImage: `conic-gradient(${bTheme.profileLineColor} 90deg, transparent 90deg 180deg, ${bTheme.profileLineColor} 180deg 270deg, transparent 270deg)`,
+                          backgroundSize: '16px 16px',
                           boxShadow: bTheme.profileCardShadow,
                         }}
                       >
@@ -850,7 +865,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setDiaryTab('diary')}
-                            className="px-3 py-1 text-[11px] font-bold cursor-pointer rounded-full"
+                            className="px-3 py-1 text-[11px] font-bold cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
                             style={bTheme.btnClayPill}
                           >
                             Xem chi tiết &gt;
@@ -915,7 +930,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setDiaryTab('chapters')}
-                            className="px-3 py-1 text-[11px] font-bold cursor-pointer rounded-full"
+                            className="px-3 py-1 text-[11px] font-bold cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
                             style={bTheme.btnClayPill}
                           >
                             Danh sách chương &gt;
@@ -1116,6 +1131,10 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                             className={`mt-1.5 h-[340px] sm:h-[360px] md:h-[220px] lg:h-[240px] overflow-y-auto p-4 pr-3 sugar-scrollbar-1px text-[13px] sm:text-[14px] ${bTheme.titleText} leading-relaxed space-y-2 whitespace-pre-line bg-white/80 rounded-xl border ${bTheme.cardBorder} backdrop-blur-xs`}
                             style={{
                               backgroundImage: `repeating-linear-gradient(180deg, transparent 0px, transparent 9px, ${bTheme.synopsisGridLine} 9px, ${bTheme.synopsisGridLine} 10px)`,
+                              ['--synopsis-scroll-track' as any]: bTheme.synopsisScrollTrack,
+                              ['--synopsis-scroll-thumb' as any]: bTheme.synopsisScrollThumb,
+                              ['--synopsis-scroll-thumb-hover' as any]: bTheme.synopsisScrollThumbHover,
+                              scrollbarColor: `${bTheme.synopsisScrollThumb} ${bTheme.synopsisScrollTrack}`,
                             }}
                           >
                             {novel.synopsis || 'Đang cập nhật nội dung văn án...'}
@@ -1184,7 +1203,7 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                               <div
                                 key={chap.id}
                                 onClick={() => onReadChapter(chap.chapterNumber)}
-                                className={`p-3 sm:px-4 sm:py-2.5 flex items-center justify-between gap-3 ${bTheme.chapterHoverBg} cursor-pointer transition-colors group`}
+                                className={`p-3 sm:px-4 sm:py-2.5 flex items-center justify-between gap-3 ${bTheme.chapterHoverBg} cursor-pointer transition-all active:scale-[0.99] group`}
                               >
                                 <div className="flex items-center gap-2.5 min-w-0">
                                   {/* Chấm tròn đổi màu theo theme zoom nhẹ khi hover */}
@@ -1219,8 +1238,8 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                           <button
                             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-40 cursor-pointer flex items-center gap-1 transition-all"
-                            style={bTheme.btnClaySecondary}
+                            className="px-3 py-1.5 text-xs font-semibold disabled:opacity-40 cursor-pointer flex items-center gap-1 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
+                            style={bTheme.btnClayPill}
                           >
                             <ChevronLeft className="w-3.5 h-3.5" />
                             <span>Trang trước</span>
@@ -1233,8 +1252,8 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                           <button
                             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-40 cursor-pointer flex items-center gap-1 transition-all"
-                            style={bTheme.btnClaySecondary}
+                            className="px-3 py-1.5 text-xs font-semibold disabled:opacity-40 cursor-pointer flex items-center gap-1 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
+                            style={bTheme.btnClayPill}
                           >
                             <span>Trang sau</span>
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -1285,8 +1304,8 @@ export const NovelDiaryBinderView: React.FC<NovelDiaryBinderViewProps> = ({
                         <button
                           type="submit"
                           disabled={!newCommentText.trim()}
-                          className={`px-5 py-2 rounded-full disabled:opacity-40 ${bTheme.commentBtnText} text-xs font-bold cursor-pointer transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-md flex items-center gap-1.5 active:scale-95`}
-                          style={bTheme.btnClayPrimary}
+                          className="px-5 py-2 disabled:opacity-40 text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 btn-clay-glass-pill"
+                          style={bTheme.btnClayPill}
                         >
                           <Send className="w-3 h-3 text-current" />
                           <span>Đăng</span>

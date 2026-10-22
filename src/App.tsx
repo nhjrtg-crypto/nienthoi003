@@ -12,10 +12,12 @@ import { NovelReaderModal } from './components/NovelReaderModal';
 import { PublishNovelModal } from './components/PublishNovelModal';
 import { TwoPagePlannerHeartView } from './components/TwoPagePlannerHeartView';
 import { AboutLightTamagotchiView } from './components/AboutLightTamagotchiView';
+import { InternalBeyondView } from './components/InternalBeyondView';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { CreateFirestoreTruyenModal } from './components/CreateFirestoreTruyenModal';
 import { DailyLimitExceededModal } from './components/DailyLimitExceededModal';
 import { ModernLoadingScreen } from './components/ModernLoadingScreen';
+import { cosmicAudio } from './utils/audioSynth';
 import { Novel, NovelChapter, Project } from './types';
 import { INITIAL_NOVELS } from './data/novelData';
 import { LUA_NHAU_NOVEL } from './data/luaNhauData';
@@ -49,7 +51,7 @@ import {
 import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1, getDeletedCommentIds } from './services/d1Service';
 
 interface SavedViewState {
-  viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
+  viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond';
   selectedNovel: Novel | null;
   readingChapterNumber: number | null;
   targetNovelId?: string | null;
@@ -432,13 +434,24 @@ function getInitialNovels(): Novel[] {
 }
 
 export function parseRouteFromLocation(): {
-  viewMode?: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light';
+  viewMode?: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond';
   novelId?: string;
   chapterNumber?: number;
 } {
   if (typeof window === 'undefined') return {};
 
   let raw = '';
+  // Kiểm tra query params (nếu người dùng chia sẻ link có ?view=library)
+  try {
+    if (window.location.search) {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get('view') || params.get('tab') || params.get('page');
+      if (v === 'library' || v === 'internal-beyond' || v === 'thu-vien') {
+        return { viewMode: 'internal-beyond' };
+      }
+    }
+  } catch {}
+
   // Kiểm tra hash trước (nếu người dùng truy cập link cũ có dấu #)
   if (window.location.hash) {
     raw = window.location.hash.replace(/^#\/?/, '').trim();
@@ -500,6 +513,10 @@ export function parseRouteFromLocation(): {
     return { viewMode: 'novel-home' };
   }
 
+  if (raw === 'internal-beyond' || raw === 'beyond' || raw === 'border' || raw === 'boundary' || raw === 'thu-vien' || raw === 'library') {
+    return { viewMode: 'internal-beyond' };
+  }
+
   return {};
 }
 
@@ -549,13 +566,28 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
         readingChapterNumber: null,
       };
     }
+
+    if (route.viewMode === 'internal-beyond') {
+      return {
+        viewMode: 'internal-beyond',
+        selectedNovel: null,
+        readingChapterNumber: null,
+      };
+    }
   }
 
-  // 2. Ưu tiên số 2: safeStorage 'cosmo_active_view'
+  // 2. Ưu tiên số 2: safeStorage 'cosmo_active_view' (hỗ trợ cả localStorage và sessionStorage)
   try {
-    const saved = safeStorage.getItem('cosmo_active_view');
+    const saved = safeStorage.getItem('cosmo_active_view') || safeStorage.getSessionItem('cosmo_active_view');
     if (saved) {
       const parsed = JSON.parse(saved);
+      if (parsed.viewMode === 'internal-beyond') {
+        return {
+          viewMode: 'internal-beyond',
+          selectedNovel: null,
+          readingChapterNumber: null,
+        };
+      }
       if (parsed.viewMode === 'about-light') {
         return {
           viewMode: 'about-light',
@@ -597,8 +629,10 @@ export default function App() {
   const initialNovels = useMemo(() => getInitialNovels(), []);
   const initialView = useMemo(() => parseSavedViewState(initialNovels), [initialNovels]);
 
-  // Navigation & View Mode: 'portfolio' (Landing) | 'novel-home' (Trang chủ tiểu thuyết) | 'novel-detail' (Chi tiết bộ truyện) | 'about-light' (Giới thiệu chế độ sáng)
-  const [viewMode, setViewMode] = useState<'portfolio' | 'novel-home' | 'novel-detail' | 'about-light'>(initialView.viewMode);
+  // Navigation & View Mode: 'portfolio' (Landing) | 'novel-home' (Trang chủ tiểu thuyết) | 'novel-detail' (Chi tiết bộ truyện) | 'about-light' (Giới thiệu chế độ sáng) | 'internal-beyond' (Internal Beyond)
+  const [viewMode, setViewMode] = useState<
+    'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond'
+  >(initialView.viewMode);
 
   // Light Mode Intro Option: 'style1' (Sổ Kế Hoạch 2 Mặt) | 'style2' (Máy Trứng Tamagotchi)
   // Mặc định luôn là Style 1 khi mở trang giới thiệu theo yêu cầu
@@ -654,6 +688,7 @@ export default function App() {
     setIsDarkMode((prev) => {
       const next = !prev;
       safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+      try { window.dispatchEvent(new Event('storage')); } catch {}
       return next;
     });
   };
@@ -666,6 +701,21 @@ export default function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  // Lắng nghe thay đổi chế độ sáng/tối từ các thành phần khác
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const saved = safeStorage.getItem('cosmo_darkmode');
+        if (saved !== null) {
+          const val = saved === 'true';
+          queueMicrotask(() => setIsDarkMode(val));
+        }
+      } catch {}
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Listen to Firebase Auth state
   useEffect(() => {
@@ -906,14 +956,13 @@ export default function App() {
   // Persist active view state and synchronize clean URL without '#'
   useEffect(() => {
     try {
-      safeStorage.setItem(
-        'cosmo_active_view',
-        JSON.stringify({
-          viewMode,
-          novelId: selectedNovel?.id ?? pendingNovelId ?? null,
-          readingChapterNumber,
-        })
-      );
+      const stateToPersist = JSON.stringify({
+        viewMode,
+        novelId: selectedNovel?.id ?? pendingNovelId ?? null,
+        readingChapterNumber,
+      });
+      safeStorage.setItem('cosmo_active_view', stateToPersist);
+      safeStorage.setSessionItem('cosmo_active_view', stateToPersist);
     } catch (e) {
       console.warn('Could not save active view state', e);
     }
@@ -936,6 +985,8 @@ export default function App() {
         desiredPath = '/portfolio';
       } else if (viewMode === 'about-light') {
         desiredPath = '/about';
+      } else if (viewMode === 'internal-beyond') {
+        desiredPath = '/library';
       }
 
       const currentPath = window.location.pathname;
@@ -1385,12 +1436,53 @@ export default function App() {
               setViewMode('about-light');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
+            onOpenInternalBeyond={() => {
+              setViewMode('internal-beyond');
+              try {
+                const s = JSON.stringify({ viewMode: 'internal-beyond', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             isAdmin={isAdmin}
             currentUser={currentUser}
             onOpenAdminAuth={() => setIsAdminAuthModalOpen(true)}
             onOpenCreateFirestoreTruyen={() => setIsCreateFirestoreModalOpen(true)}
             onToggleNovelStatus={handleToggleNovelStatus}
             onDeleteFirestoreNovel={handleDeleteFirestoreNovel}
+          />
+        </div>
+      )}
+
+      {/* INTERNAL BEYOND VIEW */}
+      {viewMode === 'internal-beyond' && (
+        <div className="relative z-10 min-h-screen flex flex-col">
+          <InternalBeyondView
+            novels={allMergedNovels}
+            onSelectNovel={handleSelectNovel}
+            onOpenNovelToReadingPosition={handleOpenNovelToReadingPosition}
+            isAdmin={isAdmin}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
+            onOpenAdminAuth={() => setIsAdminAuthModalOpen(true)}
+            onOpenLightIntro={() => {
+              setSelectedNovel(null);
+              setReadingChapterNumber(null);
+              setLightIntroOption('style1');
+              setViewMode('about-light');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onBackToNovels={() => {
+              cosmicAudio.playChime('sparkle');
+              setViewMode('novel-home');
+              try {
+                const s = JSON.stringify({ viewMode: 'novel-home', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         </div>
       )}

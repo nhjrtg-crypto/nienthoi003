@@ -23,21 +23,39 @@ export const ClayThemeToggle: React.FC<ClayThemeToggleProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className={`toggle-wrapper inline-flex items-center shrink-0 ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <div
+      role="switch"
+      aria-checked={isOn}
+      tabIndex={disabled ? -1 : 0}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!disabled) onToggle();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!disabled) onToggle();
+        }
+      }}
+      className={`toggle-wrapper inline-flex items-center shrink-0 cursor-pointer ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+    >
       {/* Input checkbox ẩn để xử lý trạng thái bật/tắt & trợ năng (Accessibility) */}
       <input
         type="checkbox"
         id={id}
-        className="cl-10__in"
+        className="cl-10__in pointer-events-none"
         checked={isOn}
         disabled={disabled}
-        onChange={onToggle}
+        readOnly
+        tabIndex={-1}
       />
 
       {/* Khung rãnh gạt và núm tròn */}
       <label
         htmlFor={id}
-        className={`cl-10__switch theme-${theme}`}
+        className={`cl-10__switch theme-${theme} cursor-pointer pointer-events-none`}
         title={title}
       >
         <span className="cl-10__knob" aria-hidden="true" />

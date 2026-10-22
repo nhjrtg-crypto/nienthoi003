@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
 
 @layer base {
   body {
@@ -18,6 +19,13 @@
   button, input[type="submit"], input[type="button"] {
     font-weight: 600;
   }
+}
+
+/* Phông Pinyon Script cursive in nghiêng */
+.font-pinyon {
+  font-family: 'Pinyon Script', cursive !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
 }
 
 /* Tên truyện/tiêu đề trên toàn bộ web: font Source Serif 4, font-weight 600 */
@@ -2774,7 +2782,7 @@ mark.book-marker-streak,
   height: 1px;
   opacity: 0;
   clip-path: inset(50%);
-  pointer-events: none;
+  cursor: pointer;
 }
 
 .cl-10__sr {
@@ -3336,6 +3344,7 @@ mark.book-marker-streak,
     inset 0 -1px 2px rgba(210, 180, 240, 0.2) !important;
   color: #7e58a6 !important;
 }
+
 
 .amethyst-light-tabs-container {
   border: 1.5px solid transparent !important;
@@ -4042,18 +4051,18 @@ mark.book-marker-streak,
   height: 1px;
 }
 .sugar-scrollbar-1px::-webkit-scrollbar-track {
-  background: rgba(200, 225, 250, 0.25);
+  background: var(--synopsis-scroll-track, rgba(200, 225, 250, 0.25));
 }
 .sugar-scrollbar-1px::-webkit-scrollbar-thumb {
-  background: rgba(110, 165, 225, 0.65);
+  background: var(--synopsis-scroll-thumb, rgba(110, 165, 225, 0.65));
   border-radius: 9999px;
 }
 .sugar-scrollbar-1px::-webkit-scrollbar-thumb:hover {
-  background: rgba(65, 130, 200, 0.9);
+  background: var(--synopsis-scroll-thumb-hover, rgba(65, 130, 200, 0.9));
 }
 .sugar-scrollbar-1px {
   scrollbar-width: thin;
-  scrollbar-color: rgba(110, 165, 225, 0.65) rgba(200, 225, 250, 0.25);
+  scrollbar-color: var(--synopsis-scroll-thumb, rgba(110, 165, 225, 0.65)) var(--synopsis-scroll-track, rgba(200, 225, 250, 0.25));
 }
 
 /* ======================================================== */
@@ -4309,5 +4318,492 @@ mark.book-marker-streak,
     inset -1.5px -1.5px 4px #ffffff,
     inset 1.5px 1.5px 4px rgba(155, 190, 225, 0.20);
 }
+
+/* New Notebook Binder Button & Tab Styles */
+.btn-clay-glass-pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    -2.5px -2.5px 7px rgba(255, 255, 255, 0.95),
+    2.5px 2.5px 8px rgba(170, 200, 228, 0.16);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-clay-glass-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--theme-hover-border, rgba(59, 130, 246, 0.7));
+  background: var(--theme-hover-bg, linear-gradient(135deg, #ffffff 0%, #eef6fd 100%));
+  color: var(--theme-hover-text, #1d4ed8);
+  box-shadow:
+    -3px -3px 9px rgba(255, 255, 255, 1),
+    3px 3px 10px rgba(170, 200, 228, 0.22);
+}
+
+.btn-clay-glass-pill:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset -1.5px -1.5px 4px rgba(255, 255, 255, 0.9),
+    inset 1.5px 1.5px 4px rgba(155, 190, 225, 0.2);
+}
+
+.tab-clay-glass-inactive {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    -2px -2px 6px rgba(255, 255, 255, 0.95),
+    2px 2px 7px rgba(175, 202, 228, 0.14),
+    inset 0 1px 1px #ffffff;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-clay-glass-inactive:hover {
+  transform: translateY(-1px);
+  border-color: var(--theme-hover-border, rgba(59, 130, 246, 0.7));
+  background: var(--theme-hover-bg, linear-gradient(135deg, #ffffff 0%, #eef6fd 100%));
+  color: var(--theme-hover-text, #1d4ed8);
+}
+
+.tab-clay-glass-inactive:active {
+  transform: translateY(1px);
+}
+
+.tab-clay-glass-active {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset -2px -2px 5px rgba(255, 255, 255, 0.9),
+    inset 2px 2px 5px rgba(155, 190, 225, 0.22);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-clay-glass-active:active {
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   THEME FROST - SUGAR MENU DROPDOWN & BUTTONS (LIGHT & DARK MODE)
+   ========================================================================== */
+
+/* 1. Nền Dropdown Frost Chế Độ Sáng (Light Mode) */
+.sugar-dropdown-frost,
+.sugar-column-frost,
+.sugar-column-1 {
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.88) 0%, 
+    rgba(240, 248, 255, 0.75) 45%, 
+    rgba(222, 241, 255, 0.65) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 1.35rem;
+  box-shadow: 
+    -4px -4px 16px rgba(255, 255, 255, 0.90),
+    4px 6px 18px rgba(165, 195, 225, 0.14);
+  padding: 1.25rem;
+}
+
+/* Nền Dropdown Frost Chế Độ Tối (Dark Mode) - Nền lớn kính tối */
+.sugar-column-frost-dark,
+.dark .sugar-dropdown-frost,
+.dark .sugar-column-frost,
+.dark .sugar-column-1 {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 32, 49, 0.97) 0%,
+    rgba(14, 23, 36, 0.95) 50%,
+    rgba(10, 16, 26, 0.98) 100%
+  ) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(147, 197, 253, 0.18) !important;
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.03),
+    4px 6px 24px rgba(0, 0, 0, 0.65),
+    inset 0 1px 1px rgba(255, 255, 255, 0.10) !important;
+  padding: 1.25rem;
+}
+
+/* Trạng thái chưa chọn: Khối nổi (Convex) */
+.sugar-btn-convex,
+.sugar-btn-convex-frost {
+  background: linear-gradient(135deg, #f7fbff 0%, #edf5fc 100%);
+  color: #4873a0;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 9999px;
+  box-shadow: -4px -4px 14px rgba(255, 255, 255, 0.95), 4px 4px 14px rgba(175, 202, 228, 0.16);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-convex:hover,
+.sugar-btn-convex-frost:hover {
+  color: #183a62;
+  box-shadow: -5px -5px 16px rgba(255, 255, 255, 1), 5px 5px 16px rgba(160, 195, 225, 0.22);
+}
+
+/* Trạng thái đang chọn: Rãnh lõm chìm (Inset) */
+.sugar-btn-inset,
+.sugar-btn-inset-frost {
+  background: linear-gradient(135deg, #e7f1f9 0%, #edf5fc 100%);
+  color: #183a62;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 9999px;
+  box-shadow: inset -2.5px -2.5px 6px rgba(255, 255, 255, 0.90), inset 2.5px 2.5px 6px rgba(170, 198, 225, 0.16);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Chế độ ban đêm Frost */
+.sugar-btn-convex-frost-dark,
+.dark .sugar-btn-convex {
+  background: linear-gradient(135deg, #172435 0%, #111b27 100%);
+  color: #8ea9c7;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  box-shadow: -3px -3px 9px rgba(255, 255, 255, 0.02), 3px 3px 12px rgba(0, 0, 0, 0.40);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-inset-frost-dark,
+.dark .sugar-btn-inset {
+  background: linear-gradient(135deg, #0d1521 0%, #101925 100%);
+  color: #cce2f9;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+  box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.02), inset 2px 2px 5px rgba(0, 0, 0, 0.50);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   THEME AMETHYST (PURPLE) - SUGAR MENU & BUTTONS
+   ========================================================================== */
+.sugar-dropdown-amethyst,
+.sugar-column-amethyst {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.90) 0%,
+    rgba(248, 243, 255, 0.80) 45%,
+    rgba(238, 226, 253, 0.70) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.95),
+    4px 6px 18px rgba(195, 168, 225, 0.20);
+  padding: 1.25rem;
+}
+
+.sugar-column-amethyst-dark,
+.dark .sugar-dropdown-amethyst,
+.dark .sugar-column-amethyst {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 18, 38, 0.96) 0%,
+    rgba(18, 13, 30, 0.94) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.02),
+    4px 6px 22px rgba(0, 0, 0, 0.60);
+  padding: 1.25rem;
+}
+
+.sugar-btn-convex-amethyst {
+  background: linear-gradient(135deg, #fcf9ff 0%, #f4edfc 100%);
+  color: #725295;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 9999px;
+  box-shadow: -4px -4px 14px rgba(255, 255, 255, 0.95), 4px 4px 14px rgba(206, 185, 230, 0.22);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-convex-amethyst:hover {
+  color: #4b2e6e;
+  box-shadow: -5px -5px 16px rgba(255, 255, 255, 1), 5px 5px 16px rgba(195, 168, 225, 0.30);
+}
+
+.sugar-btn-inset-amethyst {
+  background: linear-gradient(135deg, #efe3fa 0%, #f4edfc 100%);
+  color: #4b2e6e;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  border-radius: 9999px;
+  box-shadow: inset -2.5px -2.5px 6px rgba(255, 255, 255, 0.90), inset 2.5px 2.5px 6px rgba(190, 165, 220, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sugar-btn-convex-amethyst-dark,
+.dark .sugar-btn-convex-amethyst {
+  background: linear-gradient(135deg, #241935 0%, #1a1228 100%);
+  color: #c4b0df;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  box-shadow: -3px -3px 9px rgba(255, 255, 255, 0.02), 3px 3px 12px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-inset-amethyst-dark,
+.dark .sugar-btn-inset-amethyst {
+  background: linear-gradient(135deg, #170f24 0%, #1c132b 100%);
+  color: #ebdffc;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+  box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.02), inset 2px 2px 5px rgba(0, 0, 0, 0.55);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   THEME NOTEBOOK (WHITE) - SUGAR MENU & BUTTONS
+   ========================================================================== */
+.sugar-dropdown-notebook,
+.sugar-column-notebook {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(250, 250, 250, 0.84) 45%,
+    rgba(243, 244, 246, 0.74) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.60);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.95),
+    4px 6px 18px rgba(180, 185, 195, 0.16);
+  padding: 1.25rem;
+}
+
+.sugar-column-notebook-dark,
+.dark .sugar-dropdown-notebook,
+.dark .sugar-column-notebook {
+  background: linear-gradient(
+    135deg,
+    rgba(26, 28, 33, 0.96) 0%,
+    rgba(18, 19, 23, 0.94) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.02),
+    4px 6px 22px rgba(0, 0, 0, 0.60);
+  padding: 1.25rem;
+}
+
+.sugar-btn-convex-notebook {
+  background: linear-gradient(135deg, #ffffff 0%, #f6f7f9 100%);
+  color: #525866;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 9999px;
+  box-shadow: -4px -4px 14px rgba(255, 255, 255, 0.95), 4px 4px 14px rgba(180, 185, 195, 0.18);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-convex-notebook:hover {
+  color: #181a20;
+  box-shadow: -5px -5px 16px rgba(255, 255, 255, 1), 5px 5px 16px rgba(170, 175, 185, 0.25);
+}
+
+.sugar-btn-inset-notebook {
+  background: linear-gradient(135deg, #eceef2 0%, #f6f7f9 100%);
+  color: #181a20;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 9999px;
+  box-shadow: inset -2.5px -2.5px 6px rgba(255, 255, 255, 0.95), inset 2.5px 2.5px 6px rgba(160, 165, 175, 0.20);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sugar-btn-convex-notebook-dark,
+.dark .sugar-btn-convex-notebook {
+  background: linear-gradient(135deg, #25282f 0%, #191b20 100%);
+  color: #a6adbb;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  box-shadow: -3px -3px 9px rgba(255, 255, 255, 0.02), 3px 3px 12px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-inset-notebook-dark,
+.dark .sugar-btn-inset-notebook {
+  background: linear-gradient(135deg, #131518 0%, #17191d 100%);
+  color: #e5e7eb;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+  box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.02), inset 2px 2px 5px rgba(0, 0, 0, 0.55);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   THEME SAGE (GREEN) - SUGAR MENU & BUTTONS
+   ========================================================================== */
+.sugar-dropdown-sage,
+.sugar-column-sage {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.90) 0%,
+    rgba(244, 248, 243, 0.80) 45%,
+    rgba(229, 239, 227, 0.70) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.95),
+    4px 6px 18px rgba(160, 190, 158, 0.18);
+  padding: 1.25rem;
+}
+
+.sugar-column-sage-dark,
+.dark .sugar-dropdown-sage,
+.dark .sugar-column-sage {
+  background: linear-gradient(
+    135deg,
+    rgba(19, 28, 20, 0.96) 0%,
+    rgba(13, 20, 14, 0.94) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.02),
+    4px 6px 22px rgba(0, 0, 0, 0.60);
+  padding: 1.25rem;
+}
+
+.sugar-btn-convex-sage {
+  background: linear-gradient(135deg, #f8fbf7 0%, #edf4ec 100%);
+  color: #4b6c49;
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 9999px;
+  box-shadow: -4px -4px 14px rgba(255, 255, 255, 0.95), 4px 4px 14px rgba(175, 202, 172, 0.20);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-convex-sage:hover {
+  color: #254124;
+  box-shadow: -5px -5px 16px rgba(255, 255, 255, 1), 5px 5px 16px rgba(160, 192, 158, 0.28);
+}
+
+.sugar-btn-inset-sage {
+  background: linear-gradient(135deg, #e3ede1 0%, #edf4ec 100%);
+  color: #254124;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  border-radius: 9999px;
+  box-shadow: inset -2.5px -2.5px 6px rgba(255, 255, 255, 0.90), inset 2.5px 2.5px 6px rgba(160, 192, 158, 0.22);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sugar-btn-convex-sage-dark,
+.dark .sugar-btn-convex-sage {
+  background: linear-gradient(135deg, #1b261c 0%, #131c14 100%);
+  color: #9bb499;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  box-shadow: -3px -3px 9px rgba(255, 255, 255, 0.02), 3px 3px 12px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-inset-sage-dark,
+.dark .sugar-btn-inset-sage {
+  background: linear-gradient(135deg, #0e160f 0%, #111a12 100%);
+  color: #d7ebd5;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+  box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.02), inset 2px 2px 5px rgba(0, 0, 0, 0.55);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   THEME MOCHA (LINEN / COFFEE CREAM) - SUGAR MENU & BUTTONS
+   ========================================================================== */
+.sugar-dropdown-mocha,
+.sugar-column-mocha {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.90) 0%,
+    rgba(251, 248, 245, 0.80) 45%,
+    rgba(243, 236, 229, 0.70) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.95),
+    4px 6px 18px rgba(195, 175, 160, 0.20);
+  padding: 1.25rem;
+}
+
+.sugar-column-mocha-dark,
+.dark .sugar-dropdown-mocha,
+.dark .sugar-column-mocha {
+  background: linear-gradient(
+    135deg,
+    rgba(29, 22, 18, 0.96) 0%,
+    rgba(20, 15, 12, 0.94) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.35rem;
+  box-shadow:
+    -4px -4px 16px rgba(255, 255, 255, 0.02),
+    4px 6px 22px rgba(0, 0, 0, 0.60);
+  padding: 1.25rem;
+}
+
+.sugar-btn-convex-mocha {
+  background: linear-gradient(135deg, #fdfbfa 0%, #f4ede6 100%);
+  color: #7c6353;
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 9999px;
+  box-shadow: -4px -4px 14px rgba(255, 255, 255, 0.95), 4px 4px 14px rgba(205, 185, 170, 0.22);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-convex-mocha:hover {
+  color: #443124;
+  box-shadow: -5px -5px 16px rgba(255, 255, 255, 1), 5px 5px 16px rgba(195, 175, 160, 0.30);
+}
+
+.sugar-btn-inset-mocha {
+  background: linear-gradient(135deg, #ece1d7 0%, #f4ede6 100%);
+  color: #443124;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  border-radius: 9999px;
+  box-shadow: inset -2.5px -2.5px 6px rgba(255, 255, 255, 0.90), inset 2.5px 2.5px 6px rgba(190, 170, 155, 0.24);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sugar-btn-convex-mocha-dark,
+.dark .sugar-btn-convex-mocha {
+  background: linear-gradient(135deg, #291f1a 0%, #1c1511 100%);
+  color: #c7aba0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  box-shadow: -3px -3px 9px rgba(255, 255, 255, 0.02), 3px 3px 12px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sugar-btn-inset-mocha-dark,
+.dark .sugar-btn-inset-mocha {
+  background: linear-gradient(135deg, #140f0c 0%, #19130f 100%);
+  color: #f1ded6;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 9999px;
+  box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.02), inset 2px 2px 5px rgba(0, 0, 0, 0.55);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
 
 

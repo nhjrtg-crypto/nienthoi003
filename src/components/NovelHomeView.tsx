@@ -35,6 +35,10 @@ import {
   CircleDot,
   ArrowRight,
   Users,
+  Heart,
+  Share2,
+  Menu,
+  X,
 } from 'lucide-react';
 import { Novel, NovelGenre, DarkBackgroundOption, DARK_BG_OPTIONS } from '../types';
 import { AdminUserLike } from '../services/firebase';
@@ -60,6 +64,15 @@ const NOVEL_CATEGORY_TABS = [
   { id: 'h-van-ngan', label: 'H văn ngắn' },
   { id: 'dam-my', label: 'Đam mỹ' },
 ] as const;
+
+export const MENU_HEART_PALETTE = [
+  { id: 'sky', name: 'Lam Sương', color: '#487cb5' },
+  { id: 'rose', name: 'Hồng Đào', color: '#fb7185' },
+  { id: 'amethyst', name: 'Tím Oải Hương', color: '#c084fc' },
+  { id: 'mint', name: 'Xanh Bạc Hà', color: '#34d399' },
+  { id: 'amber', name: 'Hổ Phách', color: '#fbbf24' },
+  { id: 'coral', name: 'Cam San Hô', color: '#f97316' },
+];
 
 type NovelCategoryTabId = (typeof NOVEL_CATEGORY_TABS)[number]['id'];
 
@@ -154,6 +167,93 @@ const formatCompactViews = (num: number): string => {
   return `${num}`;
 };
 
+const CELESTIAL_REALMS = [
+  {
+    id: 'flower',
+    name: 'Biên Giới Hoa',
+    chinese: '花之界',
+    subtitle: 'Floral Boundary',
+    symbol: 'flower',
+    tagline: 'Nơi đóa hoa mộc miên nở rộ giữa sương mai vĩnh cửu',
+    poem: [
+      'Gió thoảng qua ranh giới cõi mộng,',
+      'Cánh hoa rơi khẽ chạm mặt hồ gương,',
+      'Một đóa hoa thơm gửi người tri kỷ.',
+    ],
+    element: 'Mộc Miên · Thanh Khiết',
+  },
+  {
+    id: 'moon',
+    name: 'Trăng Vô Tận',
+    chinese: '月之痕',
+    subtitle: 'Eternal Crescent',
+    symbol: 'moon',
+    tagline: 'Ánh trăng huyền ảo dẫn lối tâm hồn vượt thoát thời gian',
+    poem: [
+      'Trăng khuyết treo lơ lửng đỉnh trời xa,',
+      'Bóng đêm tan vào vạt áo sương ngà,',
+      'Bước qua biên giới tìm về cố hương.',
+    ],
+    element: 'Nguyệt Quang · Tĩnh Lặng',
+  },
+  {
+    id: 'waves',
+    name: 'Biển Sóng Sao',
+    chinese: '星之海',
+    subtitle: 'Starry Tides',
+    symbol: 'waves',
+    tagline: 'Sóng biển đại dương hòa quyện cùng dòng chảy tinh hà',
+    poem: [
+      'Triều dâng cuốn theo ánh sao lung linh,',
+      'Đáy biển sâu ngưng đọng những chân tình,',
+      'Tiếng sóng thì thầm khúc ca tiền kiếp.',
+    ],
+    element: 'Thủy Triều · Tinh Tú',
+  },
+  {
+    id: 'portal',
+    name: 'Cổng Khởi Nguyên',
+    chinese: '门之境',
+    subtitle: 'Origin Portal',
+    symbol: 'portal',
+    tagline: 'Cánh cổng vòm nối liền thực tại và thế giới huyền huyễn',
+    poem: [
+      'Khép lại trần gian ngàn nỗi bận tâm,',
+      'Mở ra chân trời lộng lẫy âm thầm,',
+      'Mỗi trang sách là một lần hồi sinh.',
+    ],
+    element: 'Hư Không · Thời Không',
+  },
+  {
+    id: 'lotus',
+    name: 'Đầm Sen Sương',
+    chinese: '莲之池',
+    subtitle: 'Lotus Dewdrop',
+    symbol: 'lotus',
+    tagline: 'Búp sen ngát hương đọng giọt sương lành giữa tĩnh mịch',
+    poem: [
+      'Rễ cắm bùn sâu lòng vẫn trong veo,',
+      'Sương đọng trên gương lá biếc dạt dào,',
+      'Tâm an giữa vạn biến thiên trần thế.',
+    ],
+    element: 'Băng Sương · Tự Tại',
+  },
+  {
+    id: 'aurora',
+    name: 'Rừng Cực Quang',
+    chinese: '极光林',
+    subtitle: 'Aurora Canopy',
+    symbol: 'aurora',
+    tagline: 'Vệt sáng ngũ sắc nhảy múa trên ngọn thông tuyết mùa đông',
+    poem: [
+      'Dải lụa trời xanh thêu dệt mây ngàn,',
+      'Tuyết trắng rơi êm giữa chốn nhân gian,',
+      'Ánh sáng dẫn đường những linh hồn lạc.',
+    ],
+    element: 'Cực Quang · Huyền Ảo',
+  },
+];
+
 interface NovelHomeViewProps {
   novels: Novel[];
   onSelectNovel: (novel: Novel) => void;
@@ -162,6 +262,7 @@ interface NovelHomeViewProps {
   onBackToPortfolio: () => void;
   onOpenLightIntro?: () => void;
   onOpenAboutView?: () => void;
+  onOpenInternalBeyond?: () => void;
   isAdmin?: boolean;
   currentUser?: AdminUserLike | null;
   onOpenAdminAuth?: () => void;
@@ -178,6 +279,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   onBackToPortfolio,
   onOpenLightIntro,
   onOpenAboutView,
+  onOpenInternalBeyond,
   isAdmin = false,
   currentUser = null,
   onOpenAdminAuth,
@@ -187,11 +289,39 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
+  const mainMenuRef = useRef<HTMLDivElement>(null);
+  const desktopSearchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const mobileSearchContainerRef = useRef<HTMLDivElement>(null);
+
+  const [menuHeartColorIndex, setMenuHeartColorIndex] = useState<number>(() => {
+    try {
+      const saved = safeStorage.getItem('cosmo_menu_heart_idx');
+      return saved !== null ? parseInt(saved, 10) % MENU_HEART_PALETTE.length : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const currentMenuHeart = MENU_HEART_PALETTE[menuHeartColorIndex] || MENU_HEART_PALETTE[0];
+
+  const cycleMenuHeartColor = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    cosmicAudio.playChime('sparkle');
+    setMenuHeartColorIndex((prev) => {
+      const next = (prev + 1) % MENU_HEART_PALETTE.length;
+      safeStorage.setItem('cosmo_menu_heart_idx', next.toString());
+      return next;
+    });
+  };
   const [selectedGenre, setSelectedGenre] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState<NovelCategoryTabId>('all');
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [homeRealmId, setHomeRealmId] = useState<string>('flower');
+  const [homeLikedRealm, setHomeLikedRealm] = useState<Record<string, boolean>>({});
   
   // Visual Theme (5 themes supported: 'slate-haze' | 'sage' | 'notebook' | 'mocha' | 'amethyst-haze'; cosmic functions as dark mode for amethyst-haze)
   const [theme, setTheme] = useState<NovelThemeId>(() => {
@@ -223,14 +353,29 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   });
 
-  // Tự động đồng bộ chế độ tối khi quay về trang chủ
+  // Tự động đồng bộ chế độ tối khi quay về trang chủ hoặc từ các view khác
   useEffect(() => {
     try {
       const saved = safeStorage.getItem('cosmo_darkmode');
       if (saved !== null) {
-        setIsDarkMode(saved === 'true');
+        const val = saved === 'true';
+        if (val !== isDarkMode) {
+          queueMicrotask(() => setIsDarkMode(val));
+        }
       }
     } catch {}
+
+    const handleStorageChange = () => {
+      try {
+        const saved = safeStorage.getItem('cosmo_darkmode');
+        if (saved !== null) {
+          const val = saved === 'true';
+          queueMicrotask(() => setIsDarkMode(val));
+        }
+      } catch {}
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Dark Background Option for non-white, non-cosmic dark themes
@@ -292,6 +437,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       if (bgMenuRef.current && !bgMenuRef.current.contains(event.target as Node)) {
         setIsBgMenuOpen(false);
       }
+      if (mainMenuRef.current && !mainMenuRef.current.contains(event.target as Node)) {
+        setIsMainMenuOpen(false);
+      }
       if (
         searchContainerRef.current &&
         !searchContainerRef.current.contains(event.target as Node) &&
@@ -311,12 +459,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       setTheme('amethyst-haze');
       setIsDarkMode(false);
       safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
-      safeStorage.setItem('cosmo_darkmode', JSON.stringify(false));
+      safeStorage.setItem('cosmo_darkmode', 'false');
+      document.documentElement.classList.remove('dark');
+      try { window.dispatchEvent(new Event('storage')); } catch {}
       return;
     }
     setIsDarkMode((prev) => {
       const next = !prev;
       safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      try { window.dispatchEvent(new Event('storage')); } catch {}
       return next;
     });
   };
@@ -3127,59 +3283,59 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       }
     }
 
-    // Light mode (ở chế độ sáng vẫn giữ nguyên)
+    // Light mode (áp dụng kiểu dáng mượt mà, màu sắc đồng bộ chuẩn theo từng theme tương tự frost)
     switch (theme) {
       case 'sage':
         return {
           outer: 'border-[#c8d8c6] bg-[#f0f4ef]/90 shadow-lg',
           inner: 'bg-white border-[#dce6d9] shadow-md',
-          divider: 'border-stone-200',
-          dashedDivider: 'border-stone-300',
+          divider: 'border-[#dce6d9]',
+          dashedDivider: 'border-[#4d6f53]/40',
           cutout: 'bg-[#e3ede1] border border-[#b2c6ad] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
-          kicker: 'text-[#6b8268]',
-          title: 'text-[#374151] hover:text-[#1f2937]',
+          kicker: 'text-[#4d664a]',
+          title: 'text-[#1c291e] hover:text-[#0e1710]',
           meta: 'text-[#4d664a]',
           author: 'text-[#1c291e]',
-          synopsis: 'text-[#394a3b]',
+          synopsis: 'text-[#355333]',
           btnPrimary: 'sage-light-btn font-bold !text-[#466244] hover:!text-[#274225]',
           btnSecondary: 'sage-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
-          dotActive: 'bg-[#466244] ring-1 ring-[#466244]/30 shadow-xs',
+          dotActive: 'bg-[#274225] ring-1 ring-[#274225]/30 shadow-xs',
           dotInactive: 'bg-[#cad8c6]',
-          barcode: 'bg-neutral-800',
-          coverBorder: 'border-black/10 bg-white',
-          borderHeroLine: 'border-stone-200/80',
+          barcode: 'bg-[#4d664a]',
+          coverBorder: 'border-[#dce6d9] bg-white',
+          borderHeroLine: 'border-[#4d6f53]/30',
           fullBadge: 'sage-light-novel-tag font-bold',
         };
       case 'mocha':
         return {
           outer: 'border-[#e4d9bc] bg-[#f8f4ee]/90 shadow-lg',
-          inner: 'bg-[#fdfcf9] border-[#e8ddc2] shadow-md',
-          divider: 'border-stone-200',
-          dashedDivider: 'border-stone-300',
+          inner: 'bg-white border-[#e8ddc2] shadow-md',
+          divider: 'border-[#e8ddc2]',
+          dashedDivider: 'border-[#8c6d5d]/40',
           cutout: 'bg-[#ede5d8] border border-[#d5c7ab] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
-          kicker: 'text-[#a37764]',
-          title: 'text-[#374151] hover:text-[#1f2937]',
-          meta: 'text-[#8c7a6e]',
+          kicker: 'text-[#8c6d5d]',
+          title: 'text-[#3a2a2a] hover:text-[#201414]',
+          meta: 'text-[#8c6d5d]',
           author: 'text-[#3a2a2a]',
-          synopsis: 'text-[#614b43]',
+          synopsis: 'text-[#5e4334]',
           btnPrimary: 'mocha-light-btn font-bold !text-[#7a6256] hover:!text-[#a37764]',
           btnSecondary: 'mocha-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
-          dotActive: 'bg-[#A37764] ring-1 ring-[#A37764]/30 shadow-xs',
+          dotActive: 'bg-[#a37764] ring-1 ring-[#a37764]/30 shadow-xs',
           dotInactive: 'bg-[#e4d9bc]',
-          barcode: 'bg-neutral-800',
-          coverBorder: 'border-black/10 bg-white',
-          borderHeroLine: 'border-stone-200/80',
+          barcode: 'bg-[#8c6d5d]',
+          coverBorder: 'border-[#e8ddc2] bg-white',
+          borderHeroLine: 'border-[#8c6d5d]/30',
           fullBadge: 'mocha-light-novel-tag font-bold',
         };
       case 'slate-haze':
         return {
           outer: 'border-[#c8d6e5] bg-[#f2f6fa]/90 shadow-lg',
           inner: 'bg-white border-[#d8e3ed] shadow-md',
-          divider: 'border-stone-200',
-          dashedDivider: 'border-stone-300',
+          divider: 'border-[#d8e3ed]',
+          dashedDivider: 'border-[#5d7e9d]/40',
           cutout: 'bg-[#e2ebf4] border border-[#b8c9dc] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
           kicker: 'text-[#5d7e9d]',
-          title: 'text-[#374151] hover:text-[#1f2937]',
+          title: 'text-[#1e293b] hover:text-[#0f172a]',
           meta: 'text-[#58738e]',
           author: 'text-[#192635]',
           synopsis: 'text-[#38516b]',
@@ -3187,20 +3343,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           btnSecondary: 'frost-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
           dotActive: 'bg-[#0284c7] ring-1 ring-[#0284c7]/30 shadow-xs',
           dotInactive: 'bg-[#c8d6e5]',
-          barcode: 'bg-neutral-800',
-          coverBorder: 'border-black/10 bg-white',
-          borderHeroLine: 'border-stone-200/80',
+          barcode: 'bg-[#5d7e9d]',
+          coverBorder: 'border-[#d8e3ed] bg-white',
+          borderHeroLine: 'border-[#5d7e9d]/30',
           fullBadge: 'frost-light-novel-tag font-bold',
         };
       case 'notebook':
         return {
-          outer: 'border-stone-200 bg-stone-100/70 shadow-lg',
-          inner: 'bg-white border-stone-200/80 shadow-md',
-          divider: 'border-stone-200',
-          dashedDivider: 'border-stone-300',
-          cutout: 'bg-[#e8e6e3] border border-stone-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
-          kicker: 'text-neutral-400',
-          title: 'text-[#374151] hover:text-[#1f2937]',
+          outer: 'border-neutral-250 bg-[#fafafa]/90 shadow-lg',
+          inner: 'bg-white border-neutral-200 shadow-md',
+          divider: 'border-neutral-200',
+          dashedDivider: 'border-neutral-400/40',
+          cutout: 'bg-[#eaeaea] border border-neutral-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
+          kicker: 'text-neutral-500',
+          title: 'text-neutral-800 hover:text-black',
           meta: 'text-neutral-500',
           author: 'text-neutral-800',
           synopsis: 'text-neutral-600',
@@ -3208,9 +3364,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           btnSecondary: 'notebook-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
           dotActive: 'bg-[#262626] ring-1 ring-black/20 shadow-xs',
           dotInactive: 'bg-neutral-300',
-          barcode: 'bg-neutral-800',
-          coverBorder: 'border-black/10 bg-white',
-          borderHeroLine: 'border-stone-200/80',
+          barcode: 'bg-neutral-600',
+          coverBorder: 'border-neutral-200 bg-white',
+          borderHeroLine: 'border-neutral-300',
           fullBadge: 'notebook-light-novel-tag font-bold',
         };
       case 'lululemon':
@@ -3239,22 +3395,288 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return {
           outer: 'border-[#ded8ea] bg-[#f7f3fb]/90 shadow-lg',
           inner: 'bg-white border-[#e9e3f3] shadow-md',
-          divider: 'border-[#ded8ea]',
-          dashedDivider: 'border-stone-300',
+          divider: 'border-[#e9e3f3]',
+          dashedDivider: 'border-[#856b9e]/40',
           cutout: 'bg-[#ede8f4] border border-[#cbbfe0] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
-          kicker: 'text-neutral-400 dark:text-neutral-500',
-          title: 'text-[#374151] hover:text-[#1f2937]',
-          meta: 'text-neutral-600 dark:text-neutral-400',
-          author: 'text-stone-900 dark:text-stone-100 font-semibold',
-          synopsis: 'text-stone-700 dark:text-stone-300',
+          kicker: 'text-[#6e5394]',
+          title: 'text-[#2e1d47] hover:text-[#180d28]',
+          meta: 'text-[#6e5394]',
+          author: 'text-[#3e2363] font-semibold',
+          synopsis: 'text-[#4e2f7b]',
           btnPrimary: 'amethyst-light-btn font-bold !text-[#6b5887] hover:!text-[#7e58a6]',
           btnSecondary: 'amethyst-light-btn !w-8 !h-8 !rounded-full !p-0 flex items-center justify-center',
-          dotActive: 'bg-[#6b5f82] ring-1 ring-[#6b5f82]/30 shadow-xs',
-          dotInactive: 'bg-stone-300 dark:bg-stone-700',
-          barcode: 'bg-neutral-800',
-          coverBorder: 'border-black/10 bg-white',
-          borderHeroLine: 'border-stone-200/80',
+          dotActive: 'bg-[#7e58a6] ring-1 ring-[#7e58a6]/30 shadow-xs',
+          dotInactive: 'bg-[#ded8ea]',
+          barcode: 'bg-[#6e5394]',
+          coverBorder: 'border-[#e9e3f3] bg-white',
+          borderHeroLine: 'border-[#856b9e]/30',
           fullBadge: 'amethyst-light-novel-tag font-bold',
+        };
+    }
+  }, [theme, isDarkEffective]);
+
+  // Màu nền trang chủ chế độ sáng cho từng theme mô phỏng phong cách mờ ảo của Frost
+  const getThemeLightPageBackground = (th: NovelThemeId): string => {
+    switch (th) {
+      case 'slate-haze':
+        return `
+          radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.95) 0%, rgba(235, 243, 253, 0.85) 40%, rgba(226, 238, 252, 0.60) 70%, rgba(240, 245, 252, 0.90) 100%),
+          linear-gradient(to bottom, #F4F8FD 0%, #EBF2FA 50%, #F5F1FA 100%)
+        `;
+      case 'sage':
+        return `
+          radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 246, 238, 0.85) 40%, rgba(232, 242, 230, 0.60) 70%, rgba(244, 248, 243, 0.90) 100%),
+          linear-gradient(to bottom, #F5F8F4 0%, #EBF3E9 50%, #F3F7F2 100%)
+        `;
+      case 'mocha':
+        return `
+          radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.95) 0%, rgba(252, 248, 242, 0.85) 40%, rgba(247, 240, 230, 0.60) 70%, rgba(253, 249, 244, 0.90) 100%),
+          linear-gradient(to bottom, #FBF8F3 0%, #F4ECE1 50%, #FAF3EA 100%)
+        `;
+      case 'notebook':
+        return `
+          radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.98) 0%, rgba(248, 248, 250, 0.85) 40%, rgba(242, 242, 245, 0.60) 70%, rgba(250, 250, 252, 0.90) 100%),
+          linear-gradient(to bottom, #FAFAFC 0%, #F1F1F4 50%, #F7F7FA 100%)
+        `;
+      case 'amethyst-haze':
+      default:
+        return `
+          radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.95) 0%, rgba(248, 243, 253, 0.85) 40%, rgba(242, 235, 252, 0.60) 70%, rgba(250, 245, 253, 0.90) 100%),
+          linear-gradient(to bottom, #F8F4FC 0%, #EFE8FA 50%, #F7F0FA 100%)
+        `;
+    }
+  };
+
+  // Cấu hình bảng màu Header Banner (Hero Title + 4 nút tròn) tương thích với tất cả theme và cả chế độ sáng / tối
+  const heroTheme = useMemo(() => {
+    if (isDarkEffective) {
+      switch (theme) {
+        case 'sage':
+          return {
+            dotColor: '#43634b',
+            eyebrowColor: 'text-[#8cb391]/85',
+            celestialColor: 'text-[#a3d4a9]',
+            projectTextColor: 'text-[#8cb391]',
+            projectLineBg: 'bg-[#43634b]/60',
+            titleColor: 'text-[#eaf2eb]',
+            titleShadow: '0 2px 25px rgba(163, 212, 169, 0.25)',
+            barcodeColor: 'bg-[#43634b]/60',
+            waveColor: 'text-[#43634b]',
+            dividerCircleBorder: 'border-[#43634b]',
+            dividerCircleBg: 'bg-[#0f1b13]',
+            dividerLineBg: 'bg-gradient-to-r from-[#43634b]/40 via-[#8cb391]/70 to-[#43634b]/40',
+            subTitleColor: 'text-[#b8cebc]',
+            taglineColor: 'text-[#9db6a1]',
+            buttonRowLine: 'bg-[#43634b]/40',
+            buttonWrapper: 'bg-[#142318]/90 hover:bg-[#1a2f20] shadow-sm hover:shadow-md border border-white/10',
+            buttonDashedRing: 'border-[#43634b]/50',
+            buttonSolidRing: 'border-[#8cb391]/70',
+            buttonIconText: 'text-[#cee0d1]',
+          };
+        case 'mocha':
+          return {
+            dotColor: '#6a493a',
+            eyebrowColor: 'text-[#d4a38c]/85',
+            celestialColor: 'text-[#e8b9a2]',
+            projectTextColor: 'text-[#d4a38c]',
+            projectLineBg: 'bg-[#6a493a]/60',
+            titleColor: 'text-[#f5ece6]',
+            titleShadow: '0 2px 25px rgba(232, 185, 162, 0.25)',
+            barcodeColor: 'bg-[#6a493a]/60',
+            waveColor: 'text-[#6a493a]',
+            dividerCircleBorder: 'border-[#6a493a]',
+            dividerCircleBg: 'bg-[#1a120e]',
+            dividerLineBg: 'bg-gradient-to-r from-[#6a493a]/40 via-[#d4a38c]/70 to-[#6a493a]/40',
+            subTitleColor: 'text-[#d6c7bc]',
+            taglineColor: 'text-[#c2b0a2]',
+            buttonRowLine: 'bg-[#6a493a]/40',
+            buttonWrapper: 'bg-[#241913]/90 hover:bg-[#30221a] shadow-sm hover:shadow-md border border-white/10',
+            buttonDashedRing: 'border-[#6a493a]/50',
+            buttonSolidRing: 'border-[#d4a38c]/70',
+            buttonIconText: 'text-[#e8d5cb]',
+          };
+        case 'notebook':
+          return {
+            dotColor: '#52525c',
+            eyebrowColor: 'text-neutral-400/85',
+            celestialColor: 'text-neutral-200',
+            projectTextColor: 'text-neutral-400',
+            projectLineBg: 'bg-neutral-600/60',
+            titleColor: 'text-neutral-100',
+            titleShadow: '0 2px 25px rgba(255, 255, 255, 0.2)',
+            barcodeColor: 'bg-neutral-600/60',
+            waveColor: 'text-neutral-600',
+            dividerCircleBorder: 'border-neutral-600',
+            dividerCircleBg: 'bg-[#18181c]',
+            dividerLineBg: 'bg-gradient-to-r from-neutral-600/40 via-neutral-300/70 to-neutral-600/40',
+            subTitleColor: 'text-neutral-200',
+            taglineColor: 'text-neutral-400',
+            buttonRowLine: 'bg-neutral-700/60',
+            buttonWrapper: 'bg-[#222226]/90 hover:bg-[#2c2c31] shadow-sm hover:shadow-md border border-white/10',
+            buttonDashedRing: 'border-neutral-600/60',
+            buttonSolidRing: 'border-neutral-500/70',
+            buttonIconText: 'text-neutral-200',
+          };
+        case 'slate-haze':
+          return {
+            dotColor: '#5d7e9d',
+            eyebrowColor: 'text-[#8ba0b5]/85',
+            celestialColor: 'text-[#7bb0e0]',
+            projectTextColor: 'text-[#8ba0b5]',
+            projectLineBg: 'bg-[#5d7e9d]/60',
+            titleColor: 'text-[#edf4fa]',
+            titleShadow: '0 2px 25px rgba(123, 176, 224, 0.25)',
+            barcodeColor: 'bg-[#5d7e9d]/60',
+            waveColor: 'text-[#5d7e9d]',
+            dividerCircleBorder: 'border-[#5d7e9d]',
+            dividerCircleBg: 'bg-[#0d1624]',
+            dividerLineBg: 'bg-gradient-to-r from-[#5d7e9d]/40 via-[#7bb0e0]/70 to-[#5d7e9d]/40',
+            subTitleColor: 'text-[#b9cddf]',
+            taglineColor: 'text-[#8ba0b5]',
+            buttonRowLine: 'bg-[#5d7e9d]/40',
+            buttonWrapper: 'bg-[#142132]/90 hover:bg-[#1b2b40] shadow-sm hover:shadow-md border border-white/10',
+            buttonDashedRing: 'border-[#5d7e9d]/50',
+            buttonSolidRing: 'border-[#7bb0e0]/70',
+            buttonIconText: 'text-[#cee0d1]',
+          };
+        case 'amethyst-haze':
+        default:
+          return {
+            dotColor: '#6e4694',
+            eyebrowColor: 'text-purple-300/85',
+            celestialColor: 'text-purple-200',
+            projectTextColor: 'text-purple-300',
+            projectLineBg: 'bg-[#6e4694]/60',
+            titleColor: 'text-neutral-100',
+            titleShadow: '0 2px 25px rgba(167, 139, 250, 0.25)',
+            barcodeColor: 'bg-[#6e4694]/60',
+            waveColor: 'text-[#6e4694]',
+            dividerCircleBorder: 'border-[#6e4694]',
+            dividerCircleBg: 'bg-[#140b22]',
+            dividerLineBg: 'bg-gradient-to-r from-[#4c3167]/40 via-purple-300/70 to-[#4c3167]/40',
+            subTitleColor: 'text-purple-200',
+            taglineColor: 'text-purple-300',
+            buttonRowLine: 'bg-[#6e4694]/40',
+            buttonWrapper: 'bg-[#1d1330]/90 hover:bg-[#281b42] shadow-sm hover:shadow-md border border-white/10',
+            buttonDashedRing: 'border-[#6e4694]/50',
+            buttonSolidRing: 'border-purple-400/70',
+            buttonIconText: 'text-purple-200',
+          };
+      }
+    }
+
+    // Light Mode
+    switch (theme) {
+      case 'sage':
+        return {
+          dotColor: '#7ea17c',
+          eyebrowColor: 'text-[#4d664a]/85',
+          celestialColor: 'text-[#3c593a]',
+          projectTextColor: 'text-[#4d664a]',
+          projectLineBg: 'bg-[#7ea17c]/60',
+          titleColor: 'text-[#274026]',
+          titleShadow: '0 2px 18px rgba(39, 64, 38, 0.12)',
+          barcodeColor: 'bg-[#4d664a]/60',
+          waveColor: 'text-[#7ea17c]',
+          dividerCircleBorder: 'border-[#7ea17c]',
+          dividerCircleBg: 'bg-white',
+          dividerLineBg: 'bg-gradient-to-r from-[#7ea17c]/80 via-[#7ea17c] to-[#7ea17c]/80',
+          subTitleColor: 'text-[#355333]',
+          taglineColor: 'text-[#4d664a]',
+          buttonRowLine: 'bg-[#7ea17c]/50',
+          buttonWrapper: 'bg-white/90 hover:bg-white shadow-sm hover:shadow-md',
+          buttonDashedRing: 'border-[#7ea17c]/50',
+          buttonSolidRing: 'border-[#7ea17c]/70',
+          buttonIconText: 'text-[#355333]',
+        };
+      case 'mocha':
+        return {
+          dotColor: '#bfa595',
+          eyebrowColor: 'text-[#8c6d5d]/85',
+          celestialColor: 'text-[#7a5745]',
+          projectTextColor: 'text-[#8c6d5d]',
+          projectLineBg: 'bg-[#bfa595]/60',
+          titleColor: 'text-[#4a3528]',
+          titleShadow: '0 2px 18px rgba(74, 53, 40, 0.12)',
+          barcodeColor: 'bg-[#8c6d5d]/60',
+          waveColor: 'text-[#bfa595]',
+          dividerCircleBorder: 'border-[#bfa595]',
+          dividerCircleBg: 'bg-white',
+          dividerLineBg: 'bg-gradient-to-r from-[#bfa595]/80 via-[#bfa595] to-[#bfa595]/80',
+          subTitleColor: 'text-[#5e4334]',
+          taglineColor: 'text-[#8c6d5d]',
+          buttonRowLine: 'bg-[#bfa595]/50',
+          buttonWrapper: 'bg-white/90 hover:bg-white shadow-sm hover:shadow-md',
+          buttonDashedRing: 'border-[#bfa595]/50',
+          buttonSolidRing: 'border-[#bfa595]/70',
+          buttonIconText: 'text-[#5e4334]',
+        };
+      case 'notebook':
+        return {
+          dotColor: '#a1a1aa',
+          eyebrowColor: 'text-neutral-500/85',
+          celestialColor: 'text-neutral-700',
+          projectTextColor: 'text-neutral-600',
+          projectLineBg: 'bg-neutral-400/60',
+          titleColor: 'text-neutral-800',
+          titleShadow: '0 2px 18px rgba(38, 38, 38, 0.12)',
+          barcodeColor: 'bg-neutral-500/60',
+          waveColor: 'text-neutral-400',
+          dividerCircleBorder: 'border-neutral-400',
+          dividerCircleBg: 'bg-white',
+          dividerLineBg: 'bg-gradient-to-r from-neutral-400/80 via-neutral-400 to-neutral-400/80',
+          subTitleColor: 'text-neutral-700',
+          taglineColor: 'text-neutral-500',
+          buttonRowLine: 'bg-neutral-300',
+          buttonWrapper: 'bg-white/90 hover:bg-white shadow-sm hover:shadow-md',
+          buttonDashedRing: 'border-neutral-300',
+          buttonSolidRing: 'border-neutral-400',
+          buttonIconText: 'text-neutral-700',
+        };
+      case 'slate-haze':
+        return {
+          dotColor: '#8EA8C7',
+          eyebrowColor: 'text-[#4A6B95]/85',
+          celestialColor: 'text-[#3D5C84]',
+          projectTextColor: 'text-[#4A6B95]',
+          projectLineBg: 'bg-[#8EA8C7]/60',
+          titleColor: 'text-[#234267]',
+          titleShadow: '0 2px 18px rgba(35, 66, 103, 0.12)',
+          barcodeColor: 'bg-[#4A6B95]/60',
+          waveColor: 'text-[#8EA8C7]',
+          dividerCircleBorder: 'border-[#8EA8C7]',
+          dividerCircleBg: 'bg-white',
+          dividerLineBg: 'bg-gradient-to-r from-[#8EA8C7]/80 via-[#8EA8C7] to-[#8EA8C7]/80',
+          subTitleColor: 'text-[#345279]',
+          taglineColor: 'text-[#55759C]',
+          buttonRowLine: 'bg-[#8EA8C7]/50',
+          buttonWrapper: 'bg-white/90 hover:bg-white shadow-sm hover:shadow-md',
+          buttonDashedRing: 'border-[#8EA8C7]/50',
+          buttonSolidRing: 'border-[#8EA8C7]/70',
+          buttonIconText: 'text-[#385377]',
+        };
+      case 'amethyst-haze':
+      default:
+        return {
+          dotColor: '#a892c7',
+          eyebrowColor: 'text-[#6e5394]/85',
+          celestialColor: 'text-[#5c3e85]',
+          projectTextColor: 'text-[#6e5394]',
+          projectLineBg: 'bg-[#a892c7]/60',
+          titleColor: 'text-[#3e2363]',
+          titleShadow: '0 2px 18px rgba(62, 35, 99, 0.12)',
+          barcodeColor: 'bg-[#6e5394]/60',
+          waveColor: 'text-[#a892c7]',
+          dividerCircleBorder: 'border-[#a892c7]',
+          dividerCircleBg: 'bg-white',
+          dividerLineBg: 'bg-gradient-to-r from-[#a892c7]/80 via-[#a892c7] to-[#a892c7]/80',
+          subTitleColor: 'text-[#4e2f7b]',
+          taglineColor: 'text-[#6e5394]',
+          buttonRowLine: 'bg-[#a892c7]/50',
+          buttonWrapper: 'bg-white/90 hover:bg-white shadow-sm hover:shadow-md',
+          buttonDashedRing: 'border-[#a892c7]/50',
+          buttonSolidRing: 'border-[#a892c7]/70',
+          buttonIconText: 'text-[#4e2f7b]',
         };
     }
   }, [theme, isDarkEffective]);
@@ -3534,10 +3956,97 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
   // Auto-hide header when scrolling down, reveal when scrolling up
   const isHeaderVisible = useHeaderScroll({ threshold: 40, delta: 6 });
-  const shouldShowHeader = isHeaderVisible || isThemeMenuOpen;
+  const shouldShowHeader = isHeaderVisible || isThemeMenuOpen || isMainMenuOpen;
+
+  const themeIconColor = useMemo(() => {
+    switch (theme) {
+      case 'amethyst-haze': return 'text-[#9A74B8] dark:text-[#C5A7E6]';
+      case 'slate-haze': return 'text-sky-500 dark:text-sky-400';
+      case 'rosewater': return 'text-rose-500 dark:text-rose-400';
+      case 'sage': return 'text-emerald-600 dark:text-emerald-400';
+      case 'cosmic': default: return 'text-amber-400 dark:text-amber-300';
+    }
+  }, [theme]);
+
+  // Dropdown Menu Neumorphism styles tailored for each theme (Frost, Purple, White, Sage, Linen)
+  const menuThemeStyles = useMemo(() => {
+    switch (theme) {
+      case 'amethyst-haze':
+        return {
+          cloudGradient: isDarkEffective
+            ? 'from-[#3a205a]/85 via-[#271440]/90 to-[#1c0d30]/85'
+            : 'from-[#eddcf8]/90 via-white/85 to-[#e6d0f7]/75',
+          columnClass: isDarkEffective ? 'sugar-column-amethyst-dark' : 'sugar-column-amethyst',
+          btnConvex: isDarkEffective ? 'sugar-btn-convex-amethyst-dark' : 'sugar-btn-convex-amethyst',
+          btnInset: isDarkEffective ? 'sugar-btn-inset-amethyst-dark' : 'sugar-btn-inset-amethyst',
+          badge: isDarkEffective
+            ? 'bg-[#2b1942] text-[#d4b9f5] border border-white/5'
+            : 'bg-[#f0e4fc] text-[#5c3a85] border border-white/40 shadow-xs',
+          heartColor: isDarkEffective ? '#c084fc' : '#9333ea',
+        };
+      case 'notebook':
+        return {
+          cloudGradient: isDarkEffective
+            ? 'from-[#30333d]/85 via-[#22252c]/90 to-[#17191e]/85'
+            : 'from-[#f1f3f7]/90 via-white/85 to-[#e5e7eb]/75',
+          columnClass: isDarkEffective ? 'sugar-column-notebook-dark' : 'sugar-column-notebook',
+          btnConvex: isDarkEffective ? 'sugar-btn-convex-notebook-dark' : 'sugar-btn-convex-notebook',
+          btnInset: isDarkEffective ? 'sugar-btn-inset-notebook-dark' : 'sugar-btn-inset-notebook',
+          badge: isDarkEffective
+            ? 'bg-[#292c34] text-[#d1d5db] border border-white/5'
+            : 'bg-[#e5e7eb] text-[#374151] border border-white/40 shadow-xs',
+          heartColor: isDarkEffective ? '#e5e7eb' : '#4b5563',
+        };
+      case 'sage':
+        return {
+          cloudGradient: isDarkEffective
+            ? 'from-[#233825]/85 via-[#18271a]/90 to-[#101c12]/85'
+            : 'from-[#dce8db]/90 via-white/85 to-[#d1e2cf]/75',
+          columnClass: isDarkEffective ? 'sugar-column-sage-dark' : 'sugar-column-sage',
+          btnConvex: isDarkEffective ? 'sugar-btn-convex-sage-dark' : 'sugar-btn-convex-sage',
+          btnInset: isDarkEffective ? 'sugar-btn-inset-sage-dark' : 'sugar-btn-inset-sage',
+          badge: isDarkEffective
+            ? 'bg-[#1b2b1d] text-[#b4d6b1] border border-white/5'
+            : 'bg-[#deecdc] text-[#2c4e2a] border border-white/40 shadow-xs',
+          heartColor: isDarkEffective ? '#86efac' : '#16a34a',
+        };
+      case 'mocha':
+        return {
+          cloudGradient: isDarkEffective
+            ? 'from-[#3b2c23]/85 via-[#281e18]/90 to-[#1c1510]/85'
+            : 'from-[#ebdcd1]/90 via-white/85 to-[#e2cebe]/75',
+          columnClass: isDarkEffective ? 'sugar-column-mocha-dark' : 'sugar-column-mocha',
+          btnConvex: isDarkEffective ? 'sugar-btn-convex-mocha-dark' : 'sugar-btn-convex-mocha',
+          btnInset: isDarkEffective ? 'sugar-btn-inset-mocha-dark' : 'sugar-btn-inset-mocha',
+          badge: isDarkEffective
+            ? 'bg-[#31251e] text-[#e0c2b2] border border-white/5'
+            : 'bg-[#eee1d6] text-[#5c4232] border border-white/40 shadow-xs',
+          heartColor: isDarkEffective ? '#fcd34d' : '#b45309',
+        };
+      case 'slate-haze':
+      default:
+        return {
+          cloudGradient: isDarkEffective
+            ? 'from-[#38bdf8]/30 via-[#1d4ed8]/25 to-[#0b131e]/20'
+            : 'from-[#cbe5fb]/90 via-white/85 to-[#dbeafc]/75',
+          columnClass: isDarkEffective ? 'sugar-column-frost-dark' : 'sugar-column-frost',
+          btnConvex: isDarkEffective ? 'sugar-btn-convex-frost-dark' : 'sugar-btn-convex',
+          btnInset: isDarkEffective ? 'sugar-btn-inset-frost-dark' : 'sugar-btn-inset',
+          badge: isDarkEffective
+            ? 'bg-[#172435] text-[#8ea9c7] border border-white/5'
+            : 'bg-[#dbeafc] text-[#1e4a78] border border-white/40 shadow-xs',
+          heartColor: isDarkEffective ? '#38bdf8' : '#0284c7',
+        };
+    }
+  }, [theme, isDarkEffective]);
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${tStyles.pageBg} relative overflow-x-clip`}>
+    <div
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${tStyles.pageBg} relative overflow-x-clip`}
+      style={!isDarkEffective ? {
+        background: getThemeLightPageBackground(theme)
+      } : undefined}
+    >
       {/* Trang trí nền: Cosmic hiển thị sao & khí quyển; các theme tối hiển thị hiệu ứng nền chọn lọc làm nổi bật Glassmorphism */}
       <CosmicStarsBackground
         theme={theme}
@@ -3578,105 +4087,121 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             </button>
           </div>
 
-          {/* Center Search Input */}
-          <div ref={searchContainerRef} className="flex-1 max-w-md hidden md:block relative">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <button
-                type="submit"
-                className={`absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer p-0.5 rounded-full hover:opacity-100 ${tStyles.searchIcon}`}
-                title="Tìm kiếm"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-              <input
-                type="text"
-                value={searchQuery}
-                onFocus={() => setIsSearchFocused(true)}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setIsSearchFocused(true);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearchSubmit(e);
-                  }
-                }}
-                placeholder="Tìm kiếm tiểu thuyết, tác giả, thể loại..."
-                className={`w-full pl-9 pr-8 py-2 rounded-full border text-xs font-sans transition-colors focus:outline-hidden ${tStyles.input}`}
-              />
-              {searchQuery && (
+          {/* Center Search Input (Chỉ hiển thị khi bấm vào nút Tìm kiếm trong Menu Dropdown) */}
+          {showSearchBar && (
+            <div ref={searchContainerRef} className="flex-1 max-w-md hidden md:block relative animate-in fade-in zoom-in-95 duration-200">
+              <form onSubmit={handleSearchSubmit} className="relative">
                 <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setIsSearchFocused(false);
-                  }}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold hover:opacity-100 cursor-pointer ${tStyles.searchIcon}`}
-                  title="Xóa tìm kiếm"
+                  type="submit"
+                  className={`absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer p-0.5 rounded-full hover:opacity-100 ${tStyles.searchIcon}`}
+                  title="Tìm kiếm"
                 >
-                  ×
+                  <Search className="w-4 h-4" />
                 </button>
-              )}
-            </form>
-
-            {/* Quick Suggestions Dropdown */}
-            {isSearchFocused && searchQuery.trim().length > 0 && (
-              <div className={`absolute left-0 right-0 top-full mt-2 rounded-2xl border z-50 overflow-hidden backdrop-blur-xl transition-all ${
-                searchDropdownStyles.container
-              }`}>
-                <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
-                  <span>Gợi ý ({searchSuggestions.length})</span>
-                  <span>Nhấn Enter để tìm</span>
-                </div>
-                {searchSuggestions.length === 0 ? (
-                  <div className="p-4 text-center text-xs opacity-75">
-                    Không tìm thấy truyện nào khớp với "{searchQuery}"
-                  </div>
-                ) : (
-                  <div className="max-h-72 overflow-y-auto py-1">
-                    {searchSuggestions.map((item) => (
-                      <div
-                        key={item.id}
-                        onClick={() => {
-                          setIsSearchFocused(false);
-                          onSelectNovel(item);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
-                          searchDropdownStyles.itemHover
-                        }`}
-                      >
-                        <img
-                          src={getDirectImageUrl(item.coverImage, item.id || item.title)}
-                          alt={item.title}
-                          onError={(e) => handleCoverImageError(e, item.id || item.title)}
-                          className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
-                          <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
-                          <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
-                            <span>{item.totalChaptersCount || item.chapters.length} chương</span>
-                            <span>•</span>
-                            <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                <input
+                  ref={desktopSearchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIsSearchFocused(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearchSubmit(e);
+                    }
+                  }}
+                  placeholder="Tìm kiếm tiểu thuyết, tác giả, thể loại..."
+                  className={`w-full pl-9 pr-14 py-2 rounded-full border text-xs font-sans transition-colors focus:outline-hidden ${tStyles.input}`}
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  {searchQuery && (
                     <button
                       type="button"
-                      onClick={handleSearchSubmit}
-                      className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
-                        searchDropdownStyles.viewAllBtn
-                      }`}
+                      onClick={() => {
+                        setSearchQuery('');
+                        setIsSearchFocused(false);
+                      }}
+                      className={`text-xs font-bold hover:opacity-100 cursor-pointer ${tStyles.searchIcon}`}
+                      title="Xóa tìm kiếm"
                     >
-                      Xem tất cả kết quả cho "{searchQuery}" →
+                      ×
                     </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowSearchBar(false);
+                      setIsSearchFocused(false);
+                    }}
+                    className="p-0.5 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+                    title="Đóng tìm kiếm"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </form>
+
+              {/* Quick Suggestions Dropdown */}
+              {isSearchFocused && searchQuery.trim().length > 0 && (
+                <div className={`absolute left-0 right-0 top-full mt-2 rounded-2xl border z-50 overflow-hidden backdrop-blur-xl transition-all ${
+                  searchDropdownStyles.container
+                }`}>
+                  <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
+                    <span>Gợi ý ({searchSuggestions.length})</span>
+                    <span>Nhấn Enter để tìm</span>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+                  {searchSuggestions.length === 0 ? (
+                    <div className="p-4 text-center text-xs opacity-75">
+                      Không tìm thấy truyện nào khớp với "{searchQuery}"
+                    </div>
+                  ) : (
+                    <div className="max-h-72 overflow-y-auto py-1">
+                      {searchSuggestions.map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => {
+                            setIsSearchFocused(false);
+                            onSelectNovel(item);
+                            window.scrollTo({ top: 0, behavior: 'instant' });
+                          }}
+                          className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
+                            searchDropdownStyles.itemHover
+                          }`}
+                        >
+                          <img
+                            src={getDirectImageUrl(item.coverImage, item.id || item.title)}
+                            alt={item.title}
+                            onError={(e) => handleCoverImageError(e, item.id || item.title)}
+                            className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
+                            <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
+                            <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
+                              <span>{item.totalChaptersCount || item.chapters.length} chương</span>
+                              <span>•</span>
+                              <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={handleSearchSubmit}
+                        className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
+                          searchDropdownStyles.viewAllBtn
+                        }`}
+                      >
+                        Xem tất cả kết quả cho "{searchQuery}" →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Action Buttons & Theme Selector */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -3694,7 +4219,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
               {isThemeMenuOpen && (
                 <div
-                  className={`absolute right-0 mt-2 w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                  className={`absolute right-0 mt-2 w-56 sm:w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
                     isDarkEffective
                       ? 'bg-[#181a20] border-zinc-700 text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
                       : 'bg-white border-zinc-200 text-zinc-900 shadow-[0_10px_30px_rgba(0,0,0,0.15)]'
@@ -3777,9 +4302,25 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     </div>
                   )}
 
-                  {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Không nền hồng bao bọc, không icon minh họa, không dòng nền tối dịu mắt) */}
-                  <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
-                    <span className="text-xs font-semibold select-none">
+                  {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      cosmicAudio.playChime('sparkle');
+                      toggleDarkMode();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        cosmicAudio.playChime('sparkle');
+                        toggleDarkMode();
+                      }
+                    }}
+                    className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1.5 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors select-none"
+                    title={isDarkEffective ? 'Nhấp để chuyển sang chế độ sáng' : 'Nhấp để chuyển sang chế độ tối'}
+                  >
+                    <span className="text-xs font-semibold select-none cursor-pointer">
                       Chế độ tối
                     </span>
                     <ClayThemeToggle
@@ -3794,24 +4335,157 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               )}
             </div>
 
-            {/* Admin Login / Account Button */}
-            <button
-              id="btn-admin-auth"
-              onClick={onOpenAdminAuth}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
-                isAdmin
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-xs'
-                  : tStyles.themeSelectorBtn
-              }`}
-              title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}
-            >
-              {isAdmin ? (
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              ) : (
-                <Shield className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            {/* Dropdown Menu (Biểu tượng ☰ trên thanh header) */}
+            <div className="relative" ref={mainMenuRef}>
+              <button
+                id="btn-header-main-menu"
+                type="button"
+                onClick={() => setIsMainMenuOpen(!isMainMenuOpen)}
+                className={`flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer shadow-xs ${tStyles.themeSelectorBtn}`}
+                title="Menu điều hướng (Trang chủ, Thư viện, Tìm kiếm, Giới thiệu)"
+                aria-label="Menu điều hướng"
+                aria-expanded={isMainMenuOpen}
+              >
+                <Menu className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline font-sans font-semibold">Menu</span>
+              </button>
+
+              {isMainMenuOpen && (
+                <div className="absolute right-0 mt-2 z-50">
+                  {/* Lớp mây màu loang nhạt chỉ bao gọn sau khung menu dropdown, không phủ lan ra ngoài web */}
+                  <div
+                    aria-hidden="true"
+                    className={`absolute inset-0 rounded-[1.35rem] bg-gradient-to-br ${menuThemeStyles.cloudGradient} blur-xl pointer-events-none -z-10`}
+                  />
+
+                  {/* Khung Menu với hiệu ứng Kính Mờ & Neumorphism theo từng Theme */}
+                  <div
+                    className={`${menuThemeStyles.columnClass} flex flex-col justify-between w-60 sm:w-64 animate-in fade-in zoom-in-95 duration-150 relative z-10 !rounded-[1.35rem]`}
+                  >
+                    <div className="space-y-2">
+                      {/* 1. Trang chủ */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          cosmicAudio.playChime('sparkle');
+                          setIsMainMenuOpen(false);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                          !showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
+                          <span>Trang chủ</span>
+                        </div>
+                        {!showSearchBar && (
+                          <Heart
+                            className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
+                            style={{
+                              color: menuThemeStyles.heartColor,
+                              fill: menuThemeStyles.heartColor,
+                            }}
+                          />
+                        )}
+                      </button>
+
+                      {/* 2. Thư viện */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          cosmicAudio.playChime('sparkle');
+                          setIsMainMenuOpen(false);
+                          onOpenInternalBeyond?.();
+                        }}
+                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                          menuThemeStyles.btnConvex
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
+                          <span>Thư viện</span>
+                          <span className={`text-[8px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
+                            Lịch sử đọc
+                          </span>
+                        </div>
+                      </button>
+
+                      {/* 3. Tìm kiếm */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          cosmicAudio.playChime('sparkle');
+                          setIsMainMenuOpen(false);
+                          setShowSearchBar(true);
+                          setTimeout(() => {
+                            desktopSearchInputRef.current?.focus();
+                            mobileSearchInputRef.current?.focus();
+                          }, 120);
+                        }}
+                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                          showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
+                          <span>Tìm kiếm</span>
+                        </div>
+                        {showSearchBar && (
+                          <Heart
+                            className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
+                            style={{
+                              color: menuThemeStyles.heartColor,
+                              fill: menuThemeStyles.heartColor,
+                            }}
+                          />
+                        )}
+                      </button>
+
+                      {/* 4. Giới thiệu về web */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          cosmicAudio.playChime('sparkle');
+                          setIsMainMenuOpen(false);
+                          if (onOpenLightIntro) {
+                            onOpenLightIntro();
+                          } else {
+                            window.dispatchEvent(new CustomEvent('open-novel-intro'));
+                          }
+                        }}
+                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                          menuThemeStyles.btnConvex
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
+                          <span>Giới thiệu về web</span>
+                        </div>
+                      </button>
+
+                      {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu) */}
+                      <button
+                        type="button"
+                        id="btn-admin-auth-menu"
+                        onClick={() => {
+                          cosmicAudio.playChime('sparkle');
+                          setIsMainMenuOpen(false);
+                          onOpenAdminAuth();
+                        }}
+                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                          menuThemeStyles.btnConvex
+                        }`}
+                        title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}
+                      >
+                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
+                          <span>{isAdmin ? 'Quản trị (Admin)' : 'Quản trị'}</span>
+                        </div>
+                        {isAdmin && (
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
-              <span className="hidden sm:inline">{isAdmin ? 'Admin' : 'Quản Trị'}</span>
-            </button>
+            </div>
 
             {/* Publish Novel Button (Chỉ hiển thị khi đã đăng nhập Admin) */}
             {isAdmin && (
@@ -3833,118 +4507,266 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
       {/* Main Page Content */}
       <main className="flex-1 w-full">
-        {/* Mobile Search Bar */}
-        <div ref={mobileSearchContainerRef} className="px-4 py-2 md:hidden relative">
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <button
-              type="submit"
-              className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 cursor-pointer ${tStyles.searchIcon}`}
-              title="Tìm kiếm"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-            <input
-              type="text"
-              value={searchQuery}
-              onFocus={() => setIsSearchFocused(true)}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setIsSearchFocused(true);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSearchSubmit(e);
-                }
-              }}
-              placeholder="Tìm kiếm tiểu thuyết, tác giả, thể loại..."
-              className={`w-full pl-9 pr-8 py-2 rounded-xl border text-xs font-sans focus:outline-hidden ${tStyles.input}`}
-            />
-            {searchQuery && (
+        {/* Mobile Search Bar Section */}
+        {showSearchBar ? (
+          <div ref={mobileSearchContainerRef} className="px-4 py-2 md:hidden relative animate-in fade-in duration-200">
+            <form onSubmit={handleSearchSubmit} className="relative">
               <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setIsSearchFocused(false);
-                }}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold hover:opacity-100 cursor-pointer ${tStyles.searchIcon}`}
-                title="Xóa tìm kiếm"
+                type="submit"
+                className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 cursor-pointer ${tStyles.searchIcon}`}
+                title="Tìm kiếm"
               >
-                ×
+                <Search className="w-4 h-4" />
               </button>
-            )}
-          </form>
-
-          {/* Quick Suggestions Dropdown on Mobile */}
-          {isSearchFocused && searchQuery.trim().length > 0 && (
-            <div className={`absolute left-4 right-4 top-full mt-1.5 rounded-2xl border z-50 overflow-hidden backdrop-blur-xl transition-all ${
-              searchDropdownStyles.container
-            }`}>
-              <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
-                <span>Gợi ý ({searchSuggestions.length})</span>
-                <span>Bấm Enter để xem</span>
-              </div>
-              {searchSuggestions.length === 0 ? (
-                <div className="p-4 text-center text-xs opacity-75">
-                  Không tìm thấy truyện nào khớp với "{searchQuery}"
-                </div>
-              ) : (
-                <div className="max-h-64 overflow-y-auto py-1">
-                  {searchSuggestions.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => {
-                        setIsSearchFocused(false);
-                        onSelectNovel(item);
-                        window.scrollTo({ top: 0, behavior: 'instant' });
-                      }}
-                      className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
-                        searchDropdownStyles.itemHover
-                      }`}
-                    >
-                      <img
-                        src={getDirectImageUrl(item.coverImage, item.id || item.title)}
-                        alt={item.title}
-                        onError={(e) => handleCoverImageError(e, item.id || item.title)}
-                        className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
-                        <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
-                        <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
-                          <span>{item.totalChaptersCount || item.chapters.length} chương</span>
-                          <span>•</span>
-                          <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              <input
+                ref={mobileSearchInputRef}
+                type="text"
+                value={searchQuery}
+                onFocus={() => setIsSearchFocused(true)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchFocused(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearchSubmit(e);
+                  }
+                }}
+                placeholder="Tìm kiếm tiểu thuyết, tác giả, thể loại..."
+                className={`w-full pl-9 pr-14 py-2 rounded-xl border text-xs font-sans focus:outline-hidden ${tStyles.input}`}
+              />
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                {searchQuery && (
                   <button
                     type="button"
-                    onClick={handleSearchSubmit}
-                    className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
-                      searchDropdownStyles.viewAllBtn
-                    }`}
+                    onClick={() => {
+                      setSearchQuery('');
+                      setIsSearchFocused(false);
+                    }}
+                    className={`text-xs font-bold p-1 hover:opacity-100 cursor-pointer ${tStyles.searchIcon}`}
+                    title="Xóa tìm kiếm"
                   >
-                    Xem tất cả kết quả cho "{searchQuery}" →
+                    ×
                   </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSearchBar(false);
+                    setIsSearchFocused(false);
+                  }}
+                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+                  title="Đóng tìm kiếm"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </form>
+
+            {/* Quick Suggestions Dropdown on Mobile */}
+            {isSearchFocused && searchQuery.trim().length > 0 && (
+              <div className={`absolute left-4 right-4 top-full mt-1.5 rounded-2xl border z-50 overflow-hidden backdrop-blur-xl transition-all ${
+                searchDropdownStyles.container
+              }`}>
+                <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
+                  <span>Gợi ý ({searchSuggestions.length})</span>
+                  <span>Bấm Enter để xem</span>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+                {searchSuggestions.length === 0 ? (
+                  <div className="p-4 text-center text-xs opacity-75">
+                    Không tìm thấy truyện nào khớp với "{searchQuery}"
+                  </div>
+                ) : (
+                  <div className="max-h-64 overflow-y-auto py-1">
+                    {searchSuggestions.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          setIsSearchFocused(false);
+                          onSelectNovel(item);
+                          window.scrollTo({ top: 0, behavior: 'instant' });
+                        }}
+                        className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
+                          searchDropdownStyles.itemHover
+                        }`}
+                      >
+                        <img
+                          src={getDirectImageUrl(item.coverImage, item.id || item.title)}
+                          alt={item.title}
+                          onError={(e) => handleCoverImageError(e, item.id || item.title)}
+                          className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
+                          <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
+                            <span>{item.totalChaptersCount || item.chapters.length} chương</span>
+                            <span>•</span>
+                            <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={handleSearchSubmit}
+                      className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
+                        searchDropdownStyles.viewAllBtn
+                      }`}
+                    >
+                      Xem tất cả kết quả cho "{searchQuery}" →
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Giữ nguyên khoảng trống trên điện thoại khi thanh tìm kiếm chưa mở, không dời mục lên */
+          <div aria-hidden="true" className="px-4 py-2 md:hidden relative h-[50px] pointer-events-none select-none" />
+        )}
 
       {/* ========================================================================= */}
       {/* HERO FEATURED BANNER - BOARDING PASS / TICKET STYLE (THEME ADAPTIVE)       */}
       {/* ========================================================================= */}
       {currentHeroNovel && (
-        <section className="relative pt-4 sm:pt-6 pb-8 sm:pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Nút GIỚI THIỆU VỀ TRANG WEB nằm trên mục truyện nổi bật */}
-          <div className="mb-4 sm:mb-5 pt-1 pb-2 flex items-center justify-between">
-            {!isDarkEffective ? (
-              /* CHẾ ĐỘ SÁNG: MÀU SẮC VÀ HIỆU ỨNG GIỐNG KIỂU TAGS TRONG TIỂU THUYẾT ĐÃ HOÀN */
+        <section className="relative w-full overflow-hidden pt-4 pb-12 sm:pt-6 sm:pb-16 lg:pt-14 lg:pb-20 select-none">
+          {/* Lớp chấm bi họa tiết mờ (không có gradient nội bộ bị cắt khúc) */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none opacity-40"
+            style={{
+              backgroundImage: `radial-gradient(circle at 18% 28%, ${heroTheme.dotColor} 1px, transparent 1px), radial-gradient(circle at 82% 22%, ${heroTheme.dotColor} 1.2px, transparent 1.2px), radial-gradient(circle at 74% 65%, ${heroTheme.dotColor} 1px, transparent 1px), radial-gradient(circle at 28% 78%, ${heroTheme.dotColor} 1px, transparent 1px)`,
+              backgroundSize: '160px 160px',
+            }}
+          />
+
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-8 text-center flex flex-col items-center mb-8 sm:mb-12">
+            {/* 1. TOP EYEBROW: + SIDE NOTES · ARCHIVE + */}
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className={`flex items-center gap-2 text-[10px] sm:text-xs font-sans tracking-[0.38em] uppercase ${heroTheme.eyebrowColor} font-medium mb-3 sm:mb-4`}
+            >
+              <span>+</span>
+              <span>SIDE NOTES · ARCHIVE</span>
+              <span>+</span>
+            </motion.div>
+
+            {/* 2. CELESTIAL ICONS & HERO TITLE */}
+            <div className="relative w-full max-w-5xl flex items-center justify-center my-1 sm:my-2 px-2 sm:px-6">
+              <motion.div
+                animate={{
+                  scale: [1, 1.15, 1],
+                  opacity: [0.75, 1, 0.75],
+                }}
+                transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+                className={`absolute left-4 sm:left-10 md:left-14 lg:left-16 top-0 -translate-y-2 ${heroTheme.celestialColor}`}
+                aria-hidden="true"
+              >
+                <svg className="w-6 h-6 sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0 C12 7 7 12 0 12 C7 12 12 17 12 24 C12 17 17 12 24 12 C17 12 12 7 12 0 Z" />
+                </svg>
+              </motion.div>
+
+              <motion.div
+                animate={{
+                  y: [0, -3, 0],
+                  opacity: [0.8, 1, 0.8],
+                }}
+                transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
+                className={`absolute right-4 sm:right-10 md:right-14 lg:right-16 top-0 -translate-y-2 flex items-center gap-1 ${heroTheme.celestialColor}`}
+                aria-hidden="true"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
+                </svg>
+                <span className="text-[10px]">✦</span>
+              </motion.div>
+
+              {/* KHỐI WEBSITE & SHELF 0922 (DỜI GẦN CHỮ CRESCENT DREAMS MỘT CHÚT) */}
+              <div className="absolute left-2 sm:left-4 md:left-6 lg:left-8 bottom-4 sm:bottom-6 text-left hidden sm:flex flex-col items-start select-none z-10">
+                <div className="flex items-center gap-1.5 leading-none">
+                  <span className={`italic text-xl sm:text-2xl ${heroTheme.celestialColor} font-pinyon`}>
+                    W
+                  </span>
+                  <span className={`font-sans text-[9px] tracking-[0.24em] ${heroTheme.projectTextColor} uppercase`}>
+                    EBSITE
+                  </span>
+                  <div className={`h-[1px] w-8 sm:w-12 ${heroTheme.projectLineBg} relative`}>
+                    <span className={`absolute -right-1 -top-[7px] text-[10px] ${heroTheme.projectTextColor}`}>+</span>
+                  </div>
+                </div>
+                <span className={`text-[7.5px] sm:text-[8.5px] tracking-[0.26em] ${heroTheme.taglineColor} uppercase font-sans mt-0.5`}>
+                  SHELF 0922
+                </span>
+              </div>
+
+              <motion.h1
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1 }}
+                className={`font-pinyon text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-normal leading-tight italic font-normal py-2 px-6 sm:px-14 md:px-20 select-none whitespace-nowrap ${heroTheme.titleColor}`}
+                style={{
+                  fontFamily: "'Pinyon Script', cursive",
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  textShadow: heroTheme.titleShadow,
+                }}
+              >
+                Crescent Dreams
+              </motion.h1>
+
+              {/* MÃ VẠCH (DỜI GẦN CHỮ CRESCENT DREAMS MỘT CHÚT) */}
+              <div className="absolute right-2 sm:right-4 md:right-6 lg:right-8 bottom-3 sm:bottom-4 hidden sm:flex flex-col gap-[2px] items-end select-none z-10">
+                {[
+                  'w-6 h-[1.5px]', 'w-4 h-[1px]', 'w-6 h-[2px]', 'w-5 h-[1px]',
+                  'w-6 h-[2.5px]', 'w-3 h-[1px]', 'w-6 h-[1.5px]', 'w-5 h-[1px]',
+                  'w-6 h-[2px]', 'w-4 h-[1px]', 'w-6 h-[1.5px]', 'w-6 h-[1px]',
+                ].map((cls, idx) => (
+                  <span key={idx} className={`${cls} ${heroTheme.barcodeColor} block rounded-[0.5px]`} />
+                ))}
+              </div>
+            </div>
+
+            <div className="relative w-full max-w-xl h-6 sm:h-8 flex items-center justify-center overflow-hidden my-0.5 opacity-60">
+              <svg className={`w-full h-full ${heroTheme.waveColor}`} viewBox="0 0 600 30" preserveAspectRatio="none" fill="none">
+                <path d="M0 15 Q 75 0, 150 15 T 300 15 T 450 15 T 600 15" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 3" />
+                <path d="M0 15 Q 75 30, 150 15 T 300 15 T 450 15 T 600 15" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" />
+                <path d="M0 18 Q 75 6, 150 18 T 300 18 T 450 18 T 600 18" stroke="currentColor" strokeWidth="0.6" strokeDasharray="1 4" />
+              </svg>
+            </div>
+
+            <div className="w-full max-w-3xl flex items-center my-2 sm:my-3">
+              <div className={`w-2 h-2 rounded-full border ${heroTheme.dividerCircleBorder} ${heroTheme.dividerCircleBg} shrink-0`} />
+              <div className={`flex-1 h-[1px] ${heroTheme.dividerLineBg}`} />
+              <div className={`w-2 h-2 rounded-full border ${heroTheme.dividerCircleBorder} ${heroTheme.dividerCircleBg} shrink-0`} />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className={`flex items-center gap-3 text-base sm:text-xl md:text-2xl tracking-[0.45em] ${heroTheme.subTitleColor} font-light mt-1 mb-2 select-none`}
+              style={{ fontFamily: "'Noto Serif SC', serif" }}
+            >
+              <span>+</span>
+              <span>Niên Thời</span>
+              <span>+</span>
+            </motion.div>
+
+            <p className={`text-[8px] sm:text-[9.5px] md:text-[10px] tracking-[0.22em] ${heroTheme.taglineColor} uppercase font-sans text-center max-w-2xl px-2 mb-6 sm:mb-10`}>
+              STARLIGHT — SOFTLY — SOME THINGS STAY BETWEEN THE LINES
+            </p>
+
+            {/* 4 NÚT TIÊU BIỂU: Giới Thiệu, Thư Viện, Wattpad, WordPress */}
+            <div className="relative w-full max-w-2xl flex items-center justify-between px-3 sm:px-8">
+              <div aria-hidden="true" className={`absolute left-6 right-6 top-[22px] sm:top-[28px] h-[1px] ${heroTheme.buttonRowLine} z-0`} />
+              
+              {/* 1. Giới Thiệu */}
               <button
-                id="btn-intro-about-website"
+                type="button"
                 onClick={() => {
                   cosmicAudio.playChime('sparkle');
                   if (onOpenAboutView) {
@@ -3955,239 +4777,296 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                     onBackToPortfolio();
                   }
                 }}
-                className={`relative inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold tracking-wide cursor-pointer transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 select-none ${getLightTagButtonClass(theme)}`}
-                title="Khám phá giới thiệu về trang web - Dư Thủ Ký Visual Journal"
+                className="relative z-10 group cursor-pointer flex flex-col items-center focus:outline-hidden"
+                title="Khám phá Giới Thiệu về trang web"
               >
-                {/* Sóng radar phát xung */}
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-60 bg-current" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-current" />
-                </span>
-                <span className="font-bold tracking-wide">
-                  GIỚI THIỆU VỀ TRANG WEB
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${heroTheme.buttonWrapper}`}
+                >
+                  <div className={`absolute inset-0.5 rounded-full border border-dashed ${heroTheme.buttonDashedRing}`} />
+                  <div className={`absolute inset-1.5 rounded-full border ${heroTheme.buttonSolidRing}`} />
+                  <div className={`relative z-10 ${heroTheme.buttonIconText} transition-transform group-hover:scale-110`}>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="12" cy="12" r="2.5" fill="currentColor" fillOpacity="0.25" />
+                      <circle cx="12" cy="6.5" r="3" stroke="currentColor" />
+                      <circle cx="17.2" cy="10.2" r="3" stroke="currentColor" />
+                      <circle cx="15.2" cy="16.5" r="3" stroke="currentColor" />
+                      <circle cx="8.8" cy="16.5" r="3" stroke="currentColor" />
+                      <circle cx="6.8" cy="10.2" r="3" stroke="currentColor" />
+                    </svg>
+                  </div>
+                </motion.div>
+                <span className={`mt-2 text-[11px] sm:text-xs font-sans font-medium ${heroTheme.buttonIconText}`}>
+                  Giới Thiệu
                 </span>
               </button>
-            ) : (
-              <div className="relative inline-flex items-center group">
-                {/* 1. Lớp đệm hào quang chuyển động (Motion Halo Cushion) */}
-                <span
-                  className={`absolute -inset-0.5 rounded-full pointer-events-none animate-halo-cushion transition-all duration-300 ${introButtonStyles.pulseHaloBg}`}
-                />
 
-                {/* 2. Khung viền chuyển sắc & đổ bóng */}
-                <div
-                  className={`relative p-[1px] rounded-full overflow-hidden transition-all duration-300 ${introButtonStyles.gradientBorder} ${introButtonStyles.glowShadow} ${introButtonStyles.glowShadowHover}`}
+              {/* 2. Thư Viện */}
+              <button
+                type="button"
+                onClick={() => {
+                  cosmicAudio.playChime('sparkle');
+                  onOpenInternalBeyond?.();
+                }}
+                className="relative z-10 group cursor-pointer flex flex-col items-center focus:outline-hidden"
+                title="Khám phá Thư Viện"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${heroTheme.buttonWrapper}`}
                 >
-                  {/* 3. Thẻ button chính */}
-                  <button
-                    id="btn-intro-about-website"
-                    onClick={() => {
-                      cosmicAudio.playChime('sparkle');
-                      if (onOpenAboutView) {
-                        onOpenAboutView();
-                      } else if (onOpenLightIntro) {
-                        onOpenLightIntro();
-                      } else {
-                        onBackToPortfolio();
-                      }
-                    }}
-                    className={`relative z-10 flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold tracking-wide transition-all duration-200 cursor-pointer active:scale-95 overflow-hidden select-none ${introButtonStyles.btnInnerBg} ${introButtonStyles.textColor}`}
-                    title="Khám phá giới thiệu về trang web - Dư Thủ Ký Visual Journal"
-                  >
-                    {/* 4. Hiệu ứng vệt sáng lướt ngang nhẹ nhàng (Soft Shimmer Sweep) */}
-                    <span className="absolute inset-0 overflow-hidden rounded-full pointer-events-none z-20">
-                      <span className="absolute inset-y-0 -left-1/3 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg] animate-shimmer-sweep" />
-                    </span>
+                  <div className={`absolute inset-0.5 rounded-full border border-dashed ${heroTheme.buttonDashedRing}`} />
+                  <div className={`absolute inset-1.5 rounded-full border ${heroTheme.buttonSolidRing}`} />
+                  <div className={`relative z-10 ${heroTheme.buttonIconText} transition-transform group-hover:scale-110`}>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+                    </svg>
+                  </div>
+                </motion.div>
+                <span className={`mt-2 text-[11px] sm:text-xs font-sans font-medium ${heroTheme.buttonIconText}`}>
+                  Thư Viện
+                </span>
+              </button>
 
-                    {/* 5. Chấm tròn phát tín hiệu (Live Ping Dot - 2 lớp) */}
-                    <span className="relative flex h-2.5 w-2.5 shrink-0 z-30">
-                      <span
-                        className={`animate-ping-smooth absolute inline-flex h-full w-full rounded-full opacity-75 ${introButtonStyles.dotPing}`}
-                      />
-                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-xs ${introButtonStyles.dotColor}`} />
-                    </span>
+              {/* 3. Wattpad */}
+              <a
+                href="https://www.wattpad.com/user/Qingxiya52"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => cosmicAudio.playChime('sparkle')}
+                className="relative z-10 group cursor-pointer flex flex-col items-center focus:outline-hidden"
+                title="Kênh đọc truyện Wattpad"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${heroTheme.buttonWrapper}`}
+                >
+                  <div className={`absolute inset-0.5 rounded-full border border-dashed ${heroTheme.buttonDashedRing}`} />
+                  <div className={`absolute inset-1.5 rounded-full border ${heroTheme.buttonSolidRing}`} />
+                  <div className={`relative z-10 ${heroTheme.buttonIconText} transition-transform group-hover:scale-110 flex items-center justify-center`}>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                      <path d="M6 8h2" />
+                      <path d="M6 12h2" />
+                    </svg>
+                  </div>
+                </motion.div>
+                <span className={`mt-2 text-[11px] sm:text-xs font-sans font-medium ${heroTheme.buttonIconText}`}>
+                  Wattpad
+                </span>
+              </a>
 
-                    {/* 6. Tiêu đề nút */}
-                    <span className="relative z-30 font-bold tracking-wide">
-                      GIỚI THIỆU VỀ TRANG WEB
-                    </span>
-                  </button>
-                </div>
-              </div>
-            )}
+              {/* 4. WordPress */}
+              <a
+                href="https://nienthoi003.wordpress.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => cosmicAudio.playChime('sparkle')}
+                className="relative z-10 group cursor-pointer flex flex-col items-center focus:outline-hidden"
+                title="Website WordPress Niên Thời"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${heroTheme.buttonWrapper}`}
+                >
+                  <div className={`absolute inset-0.5 rounded-full border border-dashed ${heroTheme.buttonDashedRing}`} />
+                  <div className={`absolute inset-1.5 rounded-full border ${heroTheme.buttonSolidRing}`} />
+                  <div className={`relative z-10 ${heroTheme.buttonIconText} transition-transform group-hover:scale-110 flex items-center justify-center`}>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                  </div>
+                </motion.div>
+                <span className={`mt-2 text-[11px] sm:text-xs font-sans font-medium ${heroTheme.buttonIconText}`}>
+                  WordPress
+                </span>
+              </a>
+            </div>
           </div>
 
-          {/* KHUNG BAO NGOÀI PHONG CÁCH VÉ LÊN MÁY BAY / TÀU HỎA */}
-          <div className={`relative p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 ${ticketTheme.outer}`}>
-            
-            {/* KHỐI THẺ CHÍNH (Desktop: 2 cột ngang, Mobile: Xếp dọc ảnh trên thông tin dưới) */}
-            <div className={`relative rounded-xl sm:rounded-2xl border overflow-hidden flex flex-col md:flex-row items-stretch transition-all duration-300 ${ticketTheme.inner}`}>
+          <div className="max-w-4xl lg:max-w-5xl mx-auto px-4">
+            {/* KHUNG BAO NGOÀI PHONG CÁCH VÉ LÊN MÁY BAY / TÀU HỎA */}
+            <div className={`relative p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 ${ticketTheme.outer}`}>
               
-              {/* ================================================================= */}
-              {/* CỘT TRÁI (Desktop) / PHẦN TRÊN (Mobile): BÌA TRUYỆN + NÚT SLIDER */}
-              {/* ================================================================= */}
-              <div className="order-1 md:w-[280px] lg:w-[320px] xl:w-[350px] shrink-0 p-3.5 sm:p-4 md:p-5 flex flex-col items-center justify-center bg-black/[0.02] dark:bg-white/[0.02] relative">
+              {/* KHỐI THẺ CHÍNH (Desktop: 2 cột ngang, Mobile: Xếp dọc ảnh trên thông tin dưới) */}
+              <div className={`relative rounded-xl sm:rounded-2xl border overflow-hidden flex flex-col md:flex-row items-stretch transition-all duration-300 ${ticketTheme.inner}`}>
                 
-                {/* Khung Bìa Truyện */}
-                <div
-                  onClick={() => onSelectNovel(currentHeroNovel)}
-                  className={`group relative cursor-pointer w-full aspect-square sm:aspect-4/3 md:aspect-square rounded-lg overflow-hidden border p-1 shadow-xs transition-colors duration-300 ${ticketTheme.coverBorder}`}
-                >
-                  <div className="relative w-full h-full overflow-hidden rounded">
-                    <img
-                      src={getDirectImageUrl(currentHeroNovel.coverImage, currentHeroNovel.id || currentHeroNovel.title)}
-                      onError={(e) => handleCoverImageError(e, currentHeroNovel.id || currentHeroNovel.title)}
-                      alt={currentHeroNovel.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    
-                    {/* Badge FULL góc trên bên trái bìa đồng bộ màu theo theme */}
-                    <div className="absolute top-2 left-2 z-10">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-black tracking-wider uppercase shadow-xs ${ticketTheme.fullBadge}`}>
-                        FULL
-                      </span>
+                {/* ================================================================= */}
+                {/* CỘT TRÁI (Desktop) / PHẦN TRÊN (Mobile): BÌA TRUYỆN + NÚT SLIDER */}
+                {/* ================================================================= */}
+                <div className="order-1 md:w-[280px] lg:w-[320px] xl:w-[350px] shrink-0 p-3.5 sm:p-4 md:p-5 flex flex-col items-center justify-center bg-black/[0.02] dark:bg-white/[0.02] relative">
+                  
+                  {/* Khung Bìa Truyện */}
+                  <div
+                    onClick={() => onSelectNovel(currentHeroNovel)}
+                    className={`group relative cursor-pointer w-full aspect-square sm:aspect-4/3 md:aspect-square rounded-lg overflow-hidden border p-1 shadow-xs transition-colors duration-300 ${ticketTheme.coverBorder}`}
+                  >
+                    <div className="relative w-full h-full overflow-hidden rounded">
+                      <img
+                        src={getDirectImageUrl(currentHeroNovel.coverImage, currentHeroNovel.id || currentHeroNovel.title)}
+                        onError={(e) => handleCoverImageError(e, currentHeroNovel.id || currentHeroNovel.title)}
+                        alt={currentHeroNovel.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      
+                      {/* Badge FULL góc trên bên trái bìa đồng bộ màu theo theme */}
+                      <div className="absolute top-2 left-2 z-10">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-black tracking-wider uppercase shadow-xs ${ticketTheme.fullBadge}`}>
+                          FULL
+                        </span>
+                      </div>
+
+                      {/* Lớp phủ Gradient tối dưới chân ảnh */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Cụm điều khiển Slider (Nút Lùi + Chấm tròn Dots + Nút Tiến) */}
+                  <div className="flex items-center justify-between w-full mt-3 px-1">
+                    {/* Nút Prev */}
+                    <button
+                      onClick={handlePrevFeatured}
+                      aria-label="Truyện trước đó"
+                      className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${ticketTheme.btnSecondary}`}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Chấm tròn chỉ số (Dots) */}
+                    <div className="flex items-center gap-1.5">
+                      {featuredNovels.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setFeaturedIndex(idx)}
+                          className={`transition-all duration-300 cursor-pointer rounded-full ${
+                            featuredIndex === idx
+                              ? `w-5 h-1.5 ${ticketTheme.dotActive}`
+                              : `w-1.5 h-1.5 ${ticketTheme.dotInactive}`
+                          }`}
+                          aria-label={`Chuyển tới truyện ${idx + 1}`}
+                        />
+                      ))}
                     </div>
 
-                    {/* Lớp phủ Gradient tối dưới chân ảnh */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 pointer-events-none" />
-                  </div>
-                </div>
-
-                {/* Cụm điều khiển Slider (Nút Lùi + Chấm tròn Dots + Nút Tiến) */}
-                <div className="flex items-center justify-between w-full mt-3 px-1">
-                  {/* Nút Prev */}
-                  <button
-                    onClick={handlePrevFeatured}
-                    aria-label="Truyện trước đó"
-                    className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${ticketTheme.btnSecondary}`}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  {/* Chấm tròn chỉ số (Dots) */}
-                  <div className="flex items-center gap-1.5">
-                    {featuredNovels.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setFeaturedIndex(idx)}
-                        className={`transition-all duration-300 cursor-pointer rounded-full ${
-                          featuredIndex === idx
-                            ? `w-5 h-1.5 ${ticketTheme.dotActive}`
-                            : `w-1.5 h-1.5 ${ticketTheme.dotInactive}`
-                        }`}
-                        aria-label={`Chuyển tới truyện ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Nút Next */}
-                  <button
-                    onClick={handleNextFeatured}
-                    aria-label="Truyện tiếp theo"
-                    className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${ticketTheme.btnSecondary}`}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* VẾT CẮT KHUYẾT VÉ TRÊN DESKTOP (2 hình bán nguyệt trên - dưới có đường viền) */}
-                <div className={`hidden md:block absolute -top-3.5 -right-3.5 w-7 h-7 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
-                <div className={`hidden md:block absolute -bottom-3.5 -right-3.5 w-7 h-7 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
-              </div>
-
-              {/* ================================================================= */}
-              {/* ĐƯỜNG PHÂN CÁCH VÉ: ĐƯỜNG NÉT ĐỨT Ở GIỮA HAI HÌNH BÁN NGUYỆT      */}
-              {/* ================================================================= */}
-              <div className="relative order-1 md:order-2 flex items-center justify-center">
-                {/* Đường nét đứt dọc desktop ở giữa hai hình bán nguyệt */}
-                <div className={`hidden md:block h-full w-0 border-r-2 border-dashed ${ticketTheme.dashedDivider}`} />
-                
-                {/* Đường nét đứt ngang mobile kèm vết cắt 2 bên */}
-                <div className={`md:hidden relative w-full border-b-2 border-dashed ${ticketTheme.dashedDivider} my-0`}>
-                  <div className={`absolute -left-3.5 -top-3 w-6 h-6 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
-                  <div className={`absolute -right-3.5 -top-3 w-6 h-6 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
-                </div>
-              </div>
-
-              {/* ================================================================= */}
-              {/* CỘT PHẢI: THÔNG TIN CHI TIẾT VÉ, TÁC GIẢ, NÚT BẤM VÀ MÃ VẠCH     */}
-              {/* ================================================================= */}
-              <div className="order-2 flex-1 p-4 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-between space-y-4 bg-transparent">
-                
-                <div className="space-y-3.5">
-                  {/* Dòng Kicker phong cách Stories Ticket */}
-                  <div className="flex items-center justify-between gap-2">
-                    <span className={`font-mono text-xs sm:text-[13px] tracking-[0.22em] uppercase font-medium ${ticketTheme.kicker}`}>
-                      STORIES · M-05-I6W
-                    </span>
-                    <span className={`text-[11px] font-mono ${ticketTheme.kicker}`}>
-                      GATE 01
-                    </span>
-                  </div>
-
-                  {/* Tên truyện chữ nghiêng đậm to rõ */}
-                  <h1
-                    onClick={() => onSelectNovel(currentHeroNovel)}
-                    className={`font-source-serif font-bold italic text-2xl sm:text-3xl md:text-3xl lg:text-[34px] tracking-tight leading-snug cursor-pointer transition-colors ${ticketTheme.title}`}
-                  >
-                    {currentHeroNovel.title}
-                  </h1>
-
-                  {/* Dòng metadata 1: Tác giả · Số chương */}
-                  <div className={`text-xs sm:text-sm font-medium tracking-wide ${ticketTheme.meta}`}>
-                    <span className={`font-semibold ${ticketTheme.author}`}>
-                      {typeof currentHeroNovel.author === 'string' ? currentHeroNovel.author : currentHeroNovel.author?.name || 'Hải Kinh Lạc'}
-                    </span>
-                    <span className="mx-2">·</span>
-                    <span>{currentHeroNovel.totalChaptersCount || currentHeroNovel.totalChapters || currentHeroNovel.chapters?.length || 0} Chương</span>
-                  </div>
-
-                  {/* Dòng metadata 2: Nhóm dịch / Tags */}
-                  <div className={`flex items-center gap-1.5 text-xs sm:text-sm ${ticketTheme.meta}`}>
-                    <Users className="w-4 h-4 opacity-75 shrink-0" />
-                    <span>
-                      {currentHeroNovel.translator ? `Editor: ${currentHeroNovel.translator}` : 'Editor: Jouriee65'}
-                      <span className="mx-1.5">·</span>
-                      {currentHeroNovel.tags && currentHeroNovel.tags.length > 0
-                        ? currentHeroNovel.tags.slice(0, 3).join(' · ')
-                        : 'Ngôn Tình · Hiện Đại · Ngọt Sủng'}
-                    </span>
-                  </div>
-
-                  {/* Tóm tắt nội dung (giới hạn 2 dòng) */}
-                  <p className={`text-xs sm:text-sm line-clamp-2 leading-relaxed max-w-2xl pt-1 ${ticketTheme.synopsis}`}>
-                    {currentHeroNovel.synopsis}
-                  </p>
-                </div>
-
-                {/* DÒNG CUỐI: NÚT CTA ĐỌC TRUYỆN NGAY + MÃ VẠCH (HOÀN TOÀN KHÔNG CÓ NỀN) */}
-                <div className={`pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t ${ticketTheme.borderHeroLine} bg-transparent`}>
-                  
-                  <div className="flex flex-wrap items-center gap-3.5 bg-transparent">
-                    {/* Nút bấm chính: Đọc Truyện Ngay (Đồng bộ màu sắc với nút Tất cả) */}
+                    {/* Nút Next */}
                     <button
-                      type="button"
-                      onClick={() => onSelectNovel(currentHeroNovel)}
-                      className={`px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 select-none active:scale-95 ${ticketTheme.btnPrimary}`}
+                      onClick={handleNextFeatured}
+                      aria-label="Truyện tiếp theo"
+                      className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${ticketTheme.btnSecondary}`}
                     >
-                      <BookOpen className="w-4 h-4 shrink-0" />
-                      <span>Đọc Truyện Ngay</span>
+                      <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* MÃ VẠCH BARCODE VỚI CÁC ĐƯỜNG CÓ ĐỘ RỘNG BẰNG NHAU (KHÔNG NỀN) */}
-                  <div className="hidden sm:flex items-center gap-2 pr-1 select-none bg-transparent">
-                    <div className="flex flex-col gap-[2.5px] items-center bg-transparent">
-                      {[
-                        'w-11 h-[2px]', 'w-11 h-[1px]', 'w-11 h-[3px]', 'w-11 h-[1px]',
-                        'w-11 h-[3.5px]', 'w-11 h-[1px]', 'w-11 h-[2px]', 'w-11 h-[2px]',
-                        'w-11 h-[3px]', 'w-11 h-[1px]', 'w-11 h-[4px]', 'w-11 h-[1.5px]',
-                        'w-11 h-[2px]', 'w-11 h-[1px]', 'w-11 h-[3px]', 'w-11 h-[2px]',
-                        'w-11 h-[3.5px]', 'w-11 h-[1px]', 'w-11 h-[2px]', 'w-11 h-[2.5px]',
-                      ].map((barClass, bIdx) => (
-                        <span key={bIdx} className={`${barClass} ${ticketTheme.barcode} block rounded-[0.5px]`} />
-                      ))}
+                  {/* VẾT CẮT KHUYẾT VÉ TRÊN DESKTOP (2 hình bán nguyệt trên - dưới có đường viền) */}
+                  <div className={`hidden md:block absolute -top-3.5 -right-3.5 w-7 h-7 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                  <div className={`hidden md:block absolute -bottom-3.5 -right-3.5 w-7 h-7 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                </div>
+
+                {/* ================================================================= */}
+                {/* ĐƯỜNG PHÂN CÁCH VÉ: ĐƯỜNG NÉT ĐỨT Ở GIỮA HAI HÌNH BÁN NGUYỆT      */}
+                {/* ================================================================= */}
+                <div className="relative order-1 md:order-2 flex items-center justify-center">
+                  {/* Đường nét đứt dọc desktop ở giữa hai hình bán nguyệt */}
+                  <div className={`hidden md:block h-full w-0 border-r-2 border-dashed ${ticketTheme.dashedDivider}`} />
+                  
+                  {/* Đường nét đứt ngang mobile kèm vết cắt 2 bên */}
+                  <div className={`md:hidden relative w-full border-b-2 border-dashed ${ticketTheme.dashedDivider} my-0`}>
+                    <div className={`absolute -left-3.5 -top-3 w-6 h-6 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                    <div className={`absolute -right-3.5 -top-3 w-6 h-6 rounded-full z-30 pointer-events-none ${ticketTheme.cutout}`} />
+                  </div>
+                </div>
+
+                {/* ================================================================= */}
+                {/* CỘT PHẢI: THÔNG TIN CHI TIẾT VÉ, TÁC GIẢ, NÚT BẤM VÀ MÃ VẠCH     */}
+                {/* ================================================================= */}
+                <div className="order-2 flex-1 p-4 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-between space-y-4 bg-transparent">
+                  
+                  <div className="space-y-3.5">
+                    {/* Dòng Kicker phong cách Stories Ticket */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className={`font-mono text-xs sm:text-[13px] tracking-[0.22em] uppercase font-medium ${ticketTheme.kicker}`}>
+                        STORIES · M-05-I6W
+                      </span>
+                      <span className={`text-[11px] font-mono ${ticketTheme.kicker}`}>
+                        GATE 01
+                      </span>
                     </div>
+
+                    {/* Tên truyện chữ nghiêng đậm to rõ */}
+                    <h1
+                      onClick={() => onSelectNovel(currentHeroNovel)}
+                      className={`font-source-serif font-bold italic text-2xl sm:text-3xl md:text-3xl lg:text-[34px] tracking-tight leading-snug cursor-pointer transition-colors ${ticketTheme.title}`}
+                    >
+                      {currentHeroNovel.title}
+                    </h1>
+
+                    {/* Dòng metadata 1: Tác giả · Số chương */}
+                    <div className={`text-xs sm:text-sm font-medium tracking-wide ${ticketTheme.meta}`}>
+                      <span className={`font-semibold ${ticketTheme.author}`}>
+                        {typeof currentHeroNovel.author === 'string' ? currentHeroNovel.author : currentHeroNovel.author?.name || 'Hải Kinh Lạc'}
+                      </span>
+                      <span className="mx-2">·</span>
+                      <span>{currentHeroNovel.totalChaptersCount || currentHeroNovel.totalChapters || currentHeroNovel.chapters?.length || 0} Chương</span>
+                    </div>
+
+                    {/* Dòng metadata 2: Nhóm dịch / Tags */}
+                    <div className={`flex items-center gap-1.5 text-xs sm:text-sm ${ticketTheme.meta}`}>
+                      <Users className="w-4 h-4 opacity-75 shrink-0" />
+                      <span>
+                        {currentHeroNovel.translator ? `Editor: ${currentHeroNovel.translator}` : 'Editor: Jouriee65'}
+                        <span className="mx-1.5">·</span>
+                        {currentHeroNovel.tags && currentHeroNovel.tags.length > 0
+                          ? currentHeroNovel.tags.slice(0, 2).join(' · ')
+                          : 'Ngôn Tình · Hiện Đại'}
+                      </span>
+                    </div>
+
+                    {/* Tóm tắt nội dung (giới hạn 2 dòng) */}
+                    <p className={`text-xs sm:text-sm line-clamp-2 leading-relaxed max-w-2xl pt-1 ${ticketTheme.synopsis}`}>
+                      {currentHeroNovel.synopsis}
+                    </p>
+                  </div>
+
+                  {/* DÒNG CUỐI: NÚT CTA ĐỌC TRUYỆN NGAY + MÃ VẠCH (HOÀN TOÀN KHÔNG CÓ NỀN) */}
+                  <div className={`pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t ${ticketTheme.borderHeroLine} bg-transparent`}>
+                    
+                    <div className="flex flex-wrap items-center gap-3.5 bg-transparent">
+                      {/* Nút bấm chính: Đọc Truyện Ngay (Đồng bộ màu sắc với nút Tất cả) */}
+                      <button
+                        type="button"
+                        onClick={() => onSelectNovel(currentHeroNovel)}
+                        className={`px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 select-none active:scale-95 ${ticketTheme.btnPrimary}`}
+                      >
+                        <BookOpen className="w-4 h-4 shrink-0" />
+                        <span>Đọc Truyện Ngay</span>
+                      </button>
+                    </div>
+
+                    {/* MÃ VẠCH BARCODE VỚI CÁC ĐƯỜNG CÓ ĐỘ RỘNG BẰNG NHAU (KHÔNG NỀN) */}
+                    <div className="hidden sm:flex items-center gap-2 pr-1 select-none bg-transparent">
+                      <div className="flex flex-col gap-[2.5px] items-center bg-transparent">
+                        {[
+                          'w-11 h-[2px]', 'w-11 h-[1px]', 'w-11 h-[3px]', 'w-11 h-[1px]',
+                          'w-11 h-[3.5px]', 'w-11 h-[1px]', 'w-11 h-[2px]', 'w-11 h-[2px]',
+                          'w-11 h-[3px]', 'w-11 h-[1px]', 'w-11 h-[4px]', 'w-11 h-[1.5px]',
+                          'w-11 h-[2px]', 'w-11 h-[1px]', 'w-11 h-[3px]', 'w-11 h-[2px]',
+                          'w-11 h-[3.5px]', 'w-11 h-[1px]', 'w-11 h-[2px]', 'w-11 h-[2.5px]',
+                        ].map((barClass, bIdx) => (
+                          <span key={bIdx} className={`${barClass} ${ticketTheme.barcode} block rounded-[0.5px]`} />
+                        ))}
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>
@@ -4198,6 +5077,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           </div>
         </section>
       )}
+            
+
+
+
+
 
       {/* Main Content: Novel Grid + Leaderboard */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-16 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_29%] gap-8">
@@ -4205,194 +5089,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         {/* Left: Novel Catalog (Main Content) */}
         <div className="min-w-0 space-y-8">
           
-          {/* MỤC: TRUYỆN ĐỌC GẦN ĐÂY - THIẾT KẾ CHUẨN THEO ẢNH MẪU IMG_20260916_124252 */}
-          {(() => {
-            const recentCardTheme = getRecentReadingCardTheme(theme, isDarkEffective);
-            const hasRecentReads = activeRecentReads.length > 0;
-            const currentRecent = hasRecentReads ? (activeRecentReads[recentIndex] || activeRecentReads[0]) : null;
-            const estimate = currentRecent ? getReadingEstimate(currentRecent.novel, currentRecent.record) : null;
 
-            return (
-              <section
-                id="recent-reading-section"
-                className="relative isolate mb-10 sm:mb-14 select-none"
-              >
-                {/* Lớp xếp chồng đáy thứ 2 (Dưới cùng nhất, thụt vào hai bên nhiều nhất) */}
-                <div
-                  className={`absolute -bottom-3 sm:-bottom-3.5 inset-x-6 sm:inset-x-8 h-9 sm:h-11 rounded-[22px] sm:rounded-[26px] border -z-20 transition-all duration-300 pointer-events-none ${recentCardTheme.stackedBottom}`}
-                  aria-hidden="true"
-                />
-
-                {/* Lớp xếp chồng đáy thứ 1 (Ở giữa, ngay dưới thẻ chính, thụt vào vừa phải) */}
-                <div
-                  className={`absolute -bottom-1.5 sm:-bottom-2 inset-x-3 sm:inset-x-4 h-9 sm:h-11 rounded-[25px] sm:rounded-[29px] border -z-10 transition-all duration-300 pointer-events-none ${recentCardTheme.stackedMiddle}`}
-                  aria-hidden="true"
-                />
-
-                {/* Thẻ chính với họa tiết Letterpress Lines và màu sắc theo từng theme */}
-                <div
-                  className={`relative z-0 rounded-[26px] sm:rounded-[32px] p-4 sm:p-6 md:p-7 border transition-all overflow-hidden ${recentCardTheme.cardBg} ${recentCardTheme.cardBorder} ${recentCardTheme.cardShadow}`}
-                  style={{
-                    backgroundImage: recentCardTheme.letterpressLines,
-                    backgroundSize: '100% 25px',
-                    backgroundRepeat: 'repeat-y',
-                  }}
-                >
-                  {/* Hàng trên cùng: Đang đọc > và Chỉ số trang + Nút điều hướng */}
-                  <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
-                    {/* Bên trái: Đang đọc */}
-                    <div
-                      onClick={() => {
-                        if (currentRecent) {
-                          handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber);
-                        }
-                      }}
-                      className={`flex items-center gap-1.5 select-none ${currentRecent ? 'cursor-pointer group' : ''}`}
-                      title={currentRecent ? 'Xem chi tiết truyện đang đọc' : 'Đang đọc'}
-                    >
-                      <h3 className={`font-bold text-base sm:text-lg md:text-xl transition-opacity ${currentRecent ? 'group-hover:opacity-80' : ''} ${recentCardTheme.titleText}`}>
-                        Đang đọc
-                      </h3>
-                      {currentRecent && (
-                        <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${recentCardTheme.chevronColor}`} />
-                      )}
-                    </div>
-
-                    {/* Bên phải: 1/5 và Nút điều hướng < > (Chỉ hiện khi có truyện đang đọc) */}
-                    {hasRecentReads && (
-                      <div className="flex items-center gap-2 select-none">
-                        {/* Badge chỉ số trang (tối đa 10 bộ) */}
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-medium border ${recentCardTheme.badge}`}>
-                          {recentIndex + 1}/{activeRecentReads.length}
-                        </span>
-
-                        {/* Nút lùi truyện < */}
-                        <button
-                          onClick={handlePrevRecent}
-                          disabled={activeRecentReads.length <= 1}
-                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${recentCardTheme.navBtn}`}
-                          title="Truyện trước"
-                          aria-label="Truyện trước"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                        </button>
-
-                        {/* Nút tiến truyện > */}
-                        <button
-                          onClick={handleNextRecent}
-                          disabled={activeRecentReads.length <= 1}
-                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${recentCardTheme.navBtn}`}
-                          title="Truyện tiếp theo"
-                          aria-label="Truyện tiếp theo"
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* NỘI DUNG MỤC ĐANG ĐỌC */}
-                  {!hasRecentReads || !currentRecent || !estimate ? (
-                    /* Dành cho ai lần đầu tiên bấm vào trang web thì mục sẽ để trống, không hiện truyện */
-                    <div className="py-7 sm:py-9 flex flex-col items-center justify-center text-center px-4">
-                      <div
-                        className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl mb-3 flex items-center justify-center border shadow-2xs ${
-                          isDarkEffective ? 'bg-white/5 border-white/10 text-zinc-400' : 'bg-black/5 border-black/10 text-stone-500'
-                        }`}
-                      >
-                        <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 opacity-60" />
-                      </div>
-                      <p className={`text-sm sm:text-base font-medium ${recentCardTheme.novelTitle}`}>
-                        Chưa có tiến độ đọc truyện trên trình duyệt
-                      </p>
-                    </div>
-                  ) : (
-                    /* Hiển thị truyện khi đã có tiến độ đọc */
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.div
-                        key={currentRecent.novel.id || `recent-${recentIndex}`}
-                        initial={{ opacity: 0, y: 7 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -7 }}
-                        transition={{ duration: 0.22, ease: [0.25, 1, 0.5, 1] }}
-                      >
-                        {/* Phần thân: Ảnh bìa bên trái + Tiêu đề, Thời gian còn lại, Thanh tiến độ bên phải */}
-                        <div className="flex items-center gap-4 sm:gap-6">
-                          {/* Bìa truyện bo tròn thanh lịch */}
-                          <div
-                            onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                            className={`w-20 h-28 sm:w-24 sm:h-32 md:w-28 md:h-38 shrink-0 rounded-[18px] sm:rounded-[22px] overflow-hidden shadow-md border cursor-pointer group/cover relative ${recentCardTheme.coverBorder} ${recentCardTheme.coverBg}`}
-                            title={`Đọc tiếp: ${currentRecent.novel.title}`}
-                          >
-                            <img
-                              src={getDirectImageUrl(currentRecent.novel.coverImage, currentRecent.novel.id || currentRecent.novel.title)}
-                              onError={(e) => handleCoverImageError(e, currentRecent.novel.id || currentRecent.novel.title)}
-                              alt={currentRecent.novel.title}
-                              className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-
-                          {/* Khung thông tin truyện */}
-                          <div className="flex-1 min-w-0 flex flex-col justify-center space-y-2 sm:space-y-3">
-                            {/* Tiêu đề truyện */}
-                            <h4
-                              onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                              className={`text-base sm:text-lg md:text-xl font-bold font-lora line-clamp-1 cursor-pointer hover:opacity-80 transition-opacity leading-snug ${recentCardTheme.novelTitle}`}
-                              title={currentRecent.novel.title}
-                            >
-                              {currentRecent.novel.title}
-                            </h4>
-
-                            {/* Thời gian còn lại và Tỷ lệ phần trăm % */}
-                            <div className={`flex items-center justify-between text-xs sm:text-sm font-medium ${recentCardTheme.timeSubtext}`}>
-                              <span>{estimate.remainingStr}</span>
-                              <span className={`font-semibold ${recentCardTheme.pctText}`}>{estimate.pct}%</span>
-                            </div>
-
-                            {/* Thanh tiến độ có núm tròn định vị */}
-                            <div
-                              onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                              className={`relative w-full h-2 sm:h-2.5 rounded-full cursor-pointer select-none ${recentCardTheme.progressTrack}`}
-                              title={`Tiến độ: ${estimate.pct}% (Chương ${currentRecent.record.chapterNumber})`}
-                            >
-                              {/* Phần trăm đã đi qua */}
-                              <div
-                                className={`h-full rounded-full transition-all duration-300 ${recentCardTheme.progressBar}`}
-                                style={{ width: `${estimate.pct}%` }}
-                              />
-                              {/* Nốt chấm tròn thanh trượt */}
-                              <div
-                                className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full shadow-md border-2 transition-all pointer-events-none ${recentCardTheme.progressThumb}`}
-                                style={{ left: `calc(${estimate.pct}% - 7px)` }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Hàng dưới cùng: Đã đọc X giờ Y phút (bên trái) và Tiếp tục đọc → (bên phải) */}
-                        <div className={`pt-3.5 sm:pt-4 mt-4 sm:mt-5 border-t flex items-center justify-between ${recentCardTheme.divider}`}>
-                          {/* Đã đọc ... */}
-                          <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium ${recentCardTheme.timeSubtext}`}>
-                            <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${recentCardTheme.timeIcon}`} />
-                            <span>{estimate.readStr}</span>
-                          </div>
-
-                          {/* Nút bấm Tiếp tục đọc → */}
-                          <button
-                            onClick={() => handleOpenReading(currentRecent.novel, currentRecent.record.chapterNumber)}
-                            className={`flex items-center gap-1.5 text-xs sm:text-sm font-semibold group/btn cursor-pointer transition-colors ${recentCardTheme.continueBtn}`}
-                          >
-                            <span>Tiếp tục đọc</span>
-                            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:translate-x-1 transition-transform" />
-                          </button>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-                  )}
-                </div>
-              </section>
-            );
-          })()}
 
           {/* Section Header with Status Filters */}
           <div id="completed-novels-section" className="space-y-3 scroll-mt-24">
@@ -4523,10 +5220,20 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-4 md:gap-5">
-                {displayedNovels.map((novel) => (
-                  <div
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.05 }}
+                transition={{ duration: 0.6 }}
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-4 md:gap-5"
+              >
+                {displayedNovels.map((novel, idx) => (
+                  <motion.div
                     key={novel.id}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: (idx % 6) * 0.06, duration: 0.45 }}
                     onClick={() => {
                       onSelectNovel(novel);
                       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -4606,9 +5313,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         </button>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Nút Xem Thêm / Thu Gọn với cơ chế vật lý 3D chân thực (.hv-11__btn--stack) */}
               {filteredNovels.length > maxNovelsFor5Rows && (
@@ -4956,7 +5663,13 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         </div>
 
         {/* Right Sidebar: Thanh bên chứa Bảng truyện (trên Desktop lg), Chọn truyện ngẫu nhiên & Truyện vừa mới đăng (29%) */}
-        <div className="min-w-0 space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="min-w-0 space-y-6"
+        >
 
           {/* ========================================================================= */}
           {/* MỤC BẢNG TRUYỆN TRÊN THANH BÊN (HIỂN THỊ TRÊN MÁY TÍNH lg:block) */}
@@ -5477,7 +6190,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             );
           })()}
 
-        </div>
+        </motion.div>
 
       </div>
       </main>

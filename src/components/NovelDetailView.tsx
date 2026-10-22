@@ -2461,7 +2461,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       
       {/* Top Floating Navigation with Theme Controls */}
       <header
-        className={`sticky top-0 z-40 glass-header border-b px-3 sm:px-8 py-3 flex items-center justify-between transition-[transform,opacity] duration-300 transform ${
+        className={`fixed top-0 left-0 right-0 z-40 glass-header border-b px-3 sm:px-8 py-3 flex items-center justify-between transition-[transform,opacity] duration-300 transform ${
           shouldShowHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
         } ${tStyles.headerBg} ${tStyles.headerBorder}`}
       >
@@ -2526,7 +2526,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
             {isThemeMenuOpen && (
               <div
-                className={`absolute right-0 mt-2 w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                className={`absolute right-0 mt-2 w-56 sm:w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
                   isDarkEffective
                     ? 'bg-[#181a20] border-zinc-700 text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
                     : 'bg-white border-zinc-200 text-zinc-900 shadow-[0_10px_30px_rgba(0,0,0,0.15)]'
@@ -2706,6 +2706,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Spacer div to prevent content jump under fixed header */}
+      <div className="h-[57px] shrink-0" aria-hidden="true" />
 
       {/* MÁI VÒM SỌC TRẢI DÀI TỐI ĐA HẾT ĐỘ RỘNG TRANG WEB & BẢNG TÊN TRUYỆN */}
       {isSpiralStyle && (
