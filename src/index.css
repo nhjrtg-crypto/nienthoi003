@@ -2987,9 +2987,9 @@ mark.book-marker-streak,
     ) padding-box,
     /* Lớp 2 - Đường viền chuyển sắc bao quanh (border-box) */
     linear-gradient(to bottom, 
-      rgba(215, 230, 245, 0.70) 0%,   /* Mép trên: xanh xám rất nhạt */
-      rgba(198, 220, 238, 0.78) 40%,  /* Đoạn giữa: chuyển sắc êm dịu */
-      rgba(182, 205, 226, 0.88) 100%  /* Mép dưới: xanh xám đậm hơn */
+      rgba(215, 230, 245, 0.65) 0%,   /* Mép trên: xanh xám rất nhạt */
+      rgba(198, 220, 238, 0.45) 40%,  /* Đoạn giữa: chuyển sắc êm dịu */
+      rgba(215, 230, 245, 0.65) 100%  /* Mép dưới: màu sắc giống mép trên */
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(165, 185, 210, 0.22),    /* Bóng nổi mềm góc dưới-phải (xanh pastel) */
@@ -3071,7 +3071,7 @@ mark.book-marker-streak,
 
 /* C. Đường gạch ngăn cách chân thẻ */
 .frost-light-novel-divider {
-  border-top: 1px solid rgba(186, 230, 254, 0.6) !important; /* xanh ngọc siêu mảnh mờ */
+  border-top: 1px solid rgba(186, 230, 254, 0.16) !important; /* xanh ngọc siêu mảnh mờ nhạt */
 }
 
 /* ========================================================================= */
@@ -3093,8 +3093,8 @@ mark.book-marker-streak,
     ) padding-box,
     linear-gradient(to bottom, 
       rgba(224, 238, 227, 0.55) 0%, 
-      rgba(210, 230, 214, 0.60) 40%, 
-      rgba(195, 220, 200, 0.68) 100%
+      rgba(210, 230, 214, 0.40) 40%, 
+      rgba(224, 238, 227, 0.55) 100%
     ) border-box !important;
   box-shadow: 
     4px 4px 14px rgba(160, 190, 168, 0.15), 
@@ -3167,7 +3167,7 @@ mark.book-marker-streak,
 }
 
 .sage-light-novel-divider {
-  border-top: 1px solid rgba(165, 225, 185, 0.6) !important;
+  border-top: 1px solid rgba(165, 225, 185, 0.16) !important;
 }
 
 /* ========================================================================= */
@@ -3189,8 +3189,8 @@ mark.book-marker-streak,
     ) padding-box,
     linear-gradient(to bottom, 
       rgba(236, 220, 202, 0.70) 0%, 
-      rgba(224, 204, 182, 0.78) 40%, 
-      rgba(210, 186, 162, 0.88) 100%
+      rgba(224, 204, 182, 0.45) 40%, 
+      rgba(236, 220, 202, 0.70) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(190, 165, 140, 0.22), 
@@ -3263,7 +3263,7 @@ mark.book-marker-streak,
 }
 
 .mocha-light-novel-divider {
-  border-top: 1px solid rgba(235, 195, 165, 0.6) !important;
+  border-top: 1px solid rgba(235, 195, 165, 0.16) !important;
 }
 
 /* ========================================================================= */
@@ -3285,8 +3285,8 @@ mark.book-marker-streak,
     ) padding-box,
     linear-gradient(to bottom, 
       rgba(226, 215, 238, 0.70) 0%, 
-      rgba(212, 198, 228, 0.78) 40%, 
-      rgba(196, 178, 216, 0.88) 100%
+      rgba(212, 198, 228, 0.45) 40%, 
+      rgba(226, 215, 238, 0.70) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(175, 155, 198, 0.22), 
@@ -3360,7 +3360,7 @@ mark.book-marker-streak,
 }
 
 .amethyst-light-novel-divider {
-  border-top: 1px solid rgba(215, 185, 245, 0.6) !important;
+  border-top: 1px solid rgba(215, 185, 245, 0.16) !important;
 }
 
 /* ========================================================================= */
@@ -3382,8 +3382,8 @@ mark.book-marker-streak,
     ) padding-box,
     linear-gradient(to bottom, 
       rgba(228, 228, 228, 0.70) 0%, 
-      rgba(214, 214, 214, 0.78) 40%, 
-      rgba(198, 198, 198, 0.88) 100%
+      rgba(214, 214, 214, 0.45) 40%, 
+      rgba(228, 228, 228, 0.70) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(170, 170, 170, 0.18), 
@@ -3456,7 +3456,7 @@ mark.book-marker-streak,
 }
 
 .notebook-light-novel-divider {
-  border-top: 1px solid rgba(210, 210, 210, 0.6) !important;
+  border-top: 1px solid rgba(210, 210, 210, 0.16) !important;
 }
 
 /* ========================================================================= */
@@ -3480,8 +3480,8 @@ mark.book-marker-streak,
     ) padding-box,
     linear-gradient(to bottom, 
       rgba(238, 211, 220, 0.65) 0%,   /* Đường viền trên: #eed3dc nhạt nhẹ thanh lịch */
-      rgba(222, 159, 176, 0.40) 40%,  /* Đoạn giữa: #de9fb0 mờ ảo */
-      rgba(204, 123, 143, 0.42) 100%  /* Đường viền dưới: tone hồng mận sương #cc7b8f nhạt hơn nhưng đảm bảo đậm hơn viền trên */
+      rgba(222, 159, 176, 0.35) 40%,  /* Đoạn giữa: #de9fb0 mờ ảo */
+      rgba(238, 211, 220, 0.65) 100%  /* Đường viền dưới: cùng màu với viền trên */
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(204, 123, 143, 0.08),
@@ -3558,7 +3558,7 @@ mark.book-marker-streak,
 
 /* Gạch chân thẻ */
 .lulu-light-novel-divider {
-  border-top: 1px solid rgba(222, 159, 176, 0.50) !important;
+  border-top: 1px solid rgba(222, 159, 176, 0.28) !important;
 }
 
 /* Chặn in ấn và lưu file PDF/EPUB từ trình duyệt */
@@ -4384,44 +4384,41 @@ mark.book-marker-streak,
    THEME FROST - SUGAR MENU DROPDOWN & BUTTONS (LIGHT & DARK MODE)
    ========================================================================== */
 
-/* 1. Nền Dropdown Frost Chế Độ Sáng (Light Mode) */
+/* 1. Nền Dropdown Frost Chế Độ Sáng (Light Mode) - Màu nền và đường viền của Truyện Vừa Mới Đăng */
 .sugar-dropdown-frost,
 .sugar-column-frost,
 .sugar-column-1 {
-  background: linear-gradient(
-    135deg, 
-    rgba(255, 255, 255, 0.98) 0%, 
-    rgba(244, 250, 255, 0.96) 45%, 
-    rgba(228, 243, 255, 0.94) 100%
-  );
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.94) 45%, rgba(230, 242, 255, 0.92) 100%) padding-box,
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(186, 220, 250, 0.75) 45%, rgba(135, 185, 235, 0.55) 100%) border-box;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1.5px solid transparent;
   border-radius: 1.35rem;
-  box-shadow: 
+  box-shadow:
+    0 12px 36px rgba(70, 130, 190, 0.12),
     -4px -4px 16px rgba(255, 255, 255, 0.95),
-    4px 6px 18px rgba(165, 195, 225, 0.18);
+    4px 6px 20px rgba(160, 195, 235, 0.18);
   padding: 1.25rem;
 }
 
-/* Nền Dropdown Frost Chế Độ Tối (Dark Mode) - Nền lớn kính tối */
+/* Nền Dropdown Frost Chế Độ Tối (Dark Mode) - Giảm độ trong suốt */
 .sugar-column-frost-dark,
 .dark .sugar-dropdown-frost,
 .dark .sugar-column-frost,
 .dark .sugar-column-1 {
   background: linear-gradient(
     135deg,
-    rgba(20, 32, 49, 0.97) 0%,
-    rgba(14, 23, 36, 0.95) 50%,
-    rgba(10, 16, 26, 0.98) 100%
+    rgba(28, 40, 54, 0.96) 0%,
+    rgba(18, 28, 38, 0.98) 45%,
+    rgba(11, 17, 24, 0.99) 100%
   ) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(147, 197, 253, 0.18) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 1.35rem;
   box-shadow:
-    -4px -4px 16px rgba(255, 255, 255, 0.03),
-    4px 6px 24px rgba(0, 0, 0, 0.65),
+    0 20px 48px rgba(0, 0, 0, 0.65),
     inset 0 1px 1px rgba(255, 255, 255, 0.10) !important;
   padding: 1.25rem;
 }
@@ -4480,19 +4477,17 @@ mark.book-marker-streak,
    ========================================================================== */
 .sugar-dropdown-amethyst,
 .sugar-column-amethyst {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(250, 246, 255, 0.96) 45%,
-    rgba(242, 233, 254, 0.94) 100%
-  );
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 242, 255, 0.94) 45%, rgba(240, 228, 255, 0.92) 100%) padding-box,
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(220, 195, 245, 0.75) 45%, rgba(185, 145, 225, 0.55) 100%) border-box;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1.5px solid transparent;
   border-radius: 1.35rem;
   box-shadow:
+    0 12px 36px rgba(130, 80, 180, 0.12),
     -4px -4px 16px rgba(255, 255, 255, 0.95),
-    4px 6px 18px rgba(195, 168, 225, 0.22);
+    4px 6px 20px rgba(190, 160, 230, 0.18);
   padding: 1.25rem;
 }
 
@@ -4501,16 +4496,17 @@ mark.book-marker-streak,
 .dark .sugar-column-amethyst {
   background: linear-gradient(
     135deg,
-    rgba(24, 18, 38, 0.96) 0%,
-    rgba(18, 13, 30, 0.94) 100%
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    rgba(38, 26, 56, 0.96) 0%,
+    rgba(26, 17, 40, 0.98) 45%,
+    rgba(16, 10, 26, 0.99) 100%
+  ) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 1.35rem;
   box-shadow:
-    -4px -4px 16px rgba(255, 255, 255, 0.02),
-    4px 6px 22px rgba(0, 0, 0, 0.60);
+    0 20px 48px rgba(0, 0, 0, 0.65),
+    -4px -4px 16px rgba(255, 255, 255, 0.02) !important;
   padding: 1.25rem;
 }
 
@@ -4562,19 +4558,17 @@ mark.book-marker-streak,
    ========================================================================== */
 .sugar-dropdown-notebook,
 .sugar-column-notebook {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(252, 252, 254, 0.97) 45%,
-    rgba(246, 247, 249, 0.95) 100%
-  );
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 250, 250, 0.95) 45%, rgba(245, 245, 245, 0.92) 100%) padding-box,
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(215, 215, 215, 0.75) 45%, rgba(180, 180, 180, 0.55) 100%) border-box;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.80);
+  border: 1.5px solid transparent;
   border-radius: 1.35rem;
   box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.08),
     -4px -4px 16px rgba(255, 255, 255, 0.95),
-    4px 6px 18px rgba(180, 185, 195, 0.18);
+    4px 6px 20px rgba(0, 0, 0, 0.06);
   padding: 1.25rem;
 }
 
@@ -4583,16 +4577,17 @@ mark.book-marker-streak,
 .dark .sugar-column-notebook {
   background: linear-gradient(
     135deg,
-    rgba(26, 28, 33, 0.96) 0%,
-    rgba(18, 19, 23, 0.94) 100%
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    rgba(38, 34, 32, 0.96) 0%,
+    rgba(26, 23, 21, 0.98) 45%,
+    rgba(16, 14, 12, 0.99) 100%
+  ) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 1.35rem;
   box-shadow:
-    -4px -4px 16px rgba(255, 255, 255, 0.02),
-    4px 6px 22px rgba(0, 0, 0, 0.60);
+    0 20px 48px rgba(0, 0, 0, 0.65),
+    -4px -4px 16px rgba(255, 255, 255, 0.02) !important;
   padding: 1.25rem;
 }
 

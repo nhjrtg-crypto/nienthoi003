@@ -79,6 +79,7 @@ import {
   NovelThemeId,
   NOVEL_THEME_OPTIONS,
   getNovelThemeStyles,
+  getRecentUpdatesCardStyles,
   getExtraChapterBadgeStyle,
   isExtraChapter,
   getChapterDisplayParts,
@@ -1157,6 +1158,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const isDarkEffective = isSpiralStyle ? false : (isCosmic || isDarkMode);
   const currentBinderTheme = useMemo(() => getBinderTheme(theme), [theme]);
   const tStyles = useMemo(() => getNovelThemeStyles(theme, isDarkEffective), [theme, isDarkEffective]);
+  const recentUpdatesStyles = useMemo(() => getRecentUpdatesCardStyles(theme, isDarkEffective), [theme, isDarkEffective]);
   const currentThemeOption = NOVEL_THEME_OPTIONS.find((t) => t.id === theme) || NOVEL_THEME_OPTIONS[0];
 
   // Đồng bộ class dark trên document.documentElement:
@@ -2525,104 +2527,164 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             </button>
 
             {isThemeMenuOpen && (
-              <div
-                className={`absolute right-0 mt-2 w-56 sm:w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
-                  isDarkEffective
-                    ? 'bg-[#181a20] border-zinc-700 text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
-                    : 'bg-white border-zinc-200 text-zinc-900 shadow-[0_10px_30px_rgba(0,0,0,0.15)]'
-                }`}
-              >
-                <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                  <span>Màu Giao Diện</span>
-                  <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
-                </div>
-                <div className="mt-1 space-y-0.5">
-                  {NOVEL_THEME_OPTIONS.map((opt) => {
-                    const isSelected = theme === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        onClick={() => {
-                          setTheme(opt.id);
-                          safeStorage.setItem('cosmo_novel_theme', opt.id);
-                          setIsThemeMenuOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
-                          isSelected
-                            ? isDarkEffective
-                              ? 'bg-zinc-800 text-white font-bold'
-                              : 'bg-zinc-100 text-zinc-900 font-bold ring-1 ring-zinc-300'
-                            : isDarkEffective
-                            ? 'hover:bg-zinc-800/60 text-zinc-300'
-                            : 'hover:bg-zinc-50 text-zinc-700'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center -space-x-1 shrink-0">
-                            {opt.dots.map((d, i) => (
-                              <span
-                                key={i}
-                                className="w-3 h-3 rounded-full border border-black/20 shadow-xs"
-                                style={{ backgroundColor: d }}
-                              />
-                            ))}
-                          </div>
-                          <div className="font-semibold text-[11px] sm:text-xs">
-                            <span>{opt.name}</span>
-                          </div>
-                        </div>
-                        {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme (Mặc định tắt khi lần đầu vào trang) */}
-                {isDarkEffective && !isSpiralStyle && (
-                  <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
-                    <button
-                      id="btn-detail-toggle-purple-bg"
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        togglePurpleBgEffects();
-                      }}
-                      className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
-                        isDarkEffective
-                          ? 'hover:bg-zinc-800/60 text-zinc-200'
-                          : 'hover:bg-zinc-100 text-zinc-800'
-                      }`}
-                      title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+              <div className="absolute right-0 mt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                {!isDarkEffective ? (
+                  <div
+                    className="p-[2.5px] rounded-2xl transition-all duration-300 shadow-2xl"
+                    style={recentUpdatesStyles.outerStyle}
+                  >
+                    <div
+                      className="w-56 sm:w-64 p-2.5 rounded-[13.5px] backdrop-blur-xl text-zinc-900"
+                      style={recentUpdatesStyles.innerStyle}
                     >
-                      <div className="flex items-center">
-                        <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
+                      <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                        <span>Màu Giao Diện</span>
+                        <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
                       </div>
-                      <span
-                        className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-all select-none ${
-                          purpleBgEffectsEnabled
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
-                            : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
-                        }`}
-                      >
-                        {purpleBgEffectsEnabled ? 'Bật' : 'Tắt'}
-                      </span>
-                    </button>
-                  </div>
-                )}
+                      <div className="mt-1 space-y-0.5">
+                        {NOVEL_THEME_OPTIONS.map((opt) => {
+                          const isSelected = theme === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              onClick={() => {
+                                setTheme(opt.id);
+                                safeStorage.setItem('cosmo_novel_theme', opt.id);
+                                setIsThemeMenuOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-zinc-100 text-zinc-900 font-bold ring-1 ring-zinc-300'
+                                  : 'hover:bg-zinc-50/80 text-zinc-700'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center -space-x-1 shrink-0">
+                                  {opt.dots.map((d, i) => (
+                                    <span
+                                      key={i}
+                                      className="w-3 h-3 rounded-full border border-black/20 shadow-xs"
+                                      style={{ backgroundColor: d }}
+                                    />
+                                  ))}
+                                </div>
+                                <div className="font-semibold text-[11px] sm:text-xs">
+                                  <span>{opt.name}</span>
+                                </div>
+                              </div>
+                              {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />}
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Ẩn hoàn toàn ở trang thông tin truyện kiểu cuốn sổ) */}
-                {!isSpiralStyle && (
-                  <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
-                    <span className="text-xs font-semibold select-none">
-                      Chế độ tối
-                    </span>
-                    <ClayThemeToggle
-                      id="clay-toggle-detail"
-                      isOn={isDarkEffective}
-                      onToggle={toggleDarkMode}
-                      theme={theme}
-                      title={isDarkEffective ? 'Gạt để chuyển sang chế độ sáng' : 'Gạt để chuyển sang chế độ tối'}
-                    />
+                      {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Ẩn hoàn toàn ở trang thông tin truyện kiểu cuốn sổ) */}
+                      {!isSpiralStyle && (
+                        <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
+                          <span className="text-xs font-semibold select-none">
+                            Chế độ tối
+                          </span>
+                          <ClayThemeToggle
+                            id="clay-toggle-detail"
+                            isOn={isDarkEffective}
+                            onToggle={toggleDarkMode}
+                            theme={theme}
+                            title="Gạt để chuyển sang chế độ tối"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="w-56 sm:w-64 p-2.5 rounded-2xl backdrop-blur-2xl text-zinc-100"
+                    style={recentUpdatesStyles.outerStyle}
+                  >
+                    <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                      <span>Màu Giao Diện</span>
+                      <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
+                    </div>
+                    <div className="mt-1 space-y-0.5">
+                      {NOVEL_THEME_OPTIONS.map((opt) => {
+                        const isSelected = theme === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            onClick={() => {
+                              setTheme(opt.id);
+                              safeStorage.setItem('cosmo_novel_theme', opt.id);
+                              setIsThemeMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-zinc-800 text-white font-bold'
+                                : 'hover:bg-zinc-800/60 text-zinc-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center -space-x-1 shrink-0">
+                                {opt.dots.map((d, i) => (
+                                  <span
+                                    key={i}
+                                    className="w-3 h-3 rounded-full border border-black/20 shadow-xs"
+                                    style={{ backgroundColor: d }}
+                                  />
+                                ))}
+                              </div>
+                              <div className="font-semibold text-[11px] sm:text-xs">
+                                <span>{opt.name}</span>
+                              </div>
+                            </div>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme (Mặc định tắt khi lần đầu vào trang) */}
+                    {!isSpiralStyle && (
+                      <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
+                        <button
+                          id="btn-detail-toggle-purple-bg"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePurpleBgEffects();
+                          }}
+                          className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer hover:bg-zinc-800/60 text-zinc-200"
+                          title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+                        >
+                          <div className="flex items-center">
+                            <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
+                          </div>
+                          <span
+                            className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-all select-none ${
+                              purpleBgEffectsEnabled
+                                ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
+                                : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
+                            }`}
+                          >
+                            {purpleBgEffectsEnabled ? 'Bật' : 'Tắt'}
+                          </span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG (Ẩn hoàn toàn ở trang thông tin truyện kiểu cuốn sổ) */}
+                    {!isSpiralStyle && (
+                      <div className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1">
+                        <span className="text-xs font-semibold select-none">
+                          Chế độ tối
+                        </span>
+                        <ClayThemeToggle
+                          id="clay-toggle-detail"
+                          isOn={isDarkEffective}
+                          onToggle={toggleDarkMode}
+                          theme={theme}
+                          title="Gạt để chuyển sang chế độ sáng"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

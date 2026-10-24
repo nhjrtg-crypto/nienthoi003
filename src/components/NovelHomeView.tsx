@@ -44,7 +44,7 @@ import { Novel, NovelGenre, DarkBackgroundOption, DARK_BG_OPTIONS } from '../typ
 import { AdminUserLike } from '../services/firebase';
 import { cosmicAudio } from '../utils/audioSynth';
 import { NOVEL_GENRES } from '../data/novelData';
-import { NovelThemeId, NOVEL_THEME_OPTIONS, getNovelThemeStyles } from '../utils/themeStyles';
+import { NovelThemeId, NOVEL_THEME_OPTIONS, getNovelThemeStyles, getRecentUpdatesCardStyles } from '../utils/themeStyles';
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { WebLogo } from './WebLogo';
 import { RandomNovelPicker } from './RandomNovelPicker';
@@ -465,17 +465,15 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       try { window.dispatchEvent(new Event('storage')); } catch {}
       return;
     }
-    setIsDarkMode((prev) => {
-      const next = !prev;
-      safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-      if (next) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      try { window.dispatchEvent(new Event('storage')); } catch {}
-      return next;
-    });
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+    if (next) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    try { window.dispatchEvent(new Event('storage')); } catch {}
   };
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
     try {
@@ -501,8 +499,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   );
   const [recentIndex, setRecentIndex] = useState(0);
 
-  // Trang hiện tại cho mục "TRUYỆN VỪA MỚI ĐĂNG" (hiển thị 3 truyện theo phong cách Polaroid)
-  const [polaroidPage, setPolaroidPage] = useState(0);
   const [isRealtimeUpdatesOpen, setIsRealtimeUpdatesOpen] = useState(true);
 
   const activeRecentReads = useMemo(() => recentReads.slice(0, 10), [recentReads]);
@@ -2455,172 +2451,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   };
 
-  // Helper styling cho Đinh ghim & Dây thừng bện tam giác treo bảng truyện (Màu sắc trùng khớp hoàn toàn với màu ngôi sao trong bảng truyện)
-  const getHangingCordTriangleStyles = (th: NovelThemeId, isDark: boolean) => {
-    if (isDark) {
-      switch (th) {
-        case 'notebook':
-          // Ngôi sao notebook dark: #d4d4d8 (text-zinc-300/90)
-          return {
-            pinBg: 'bg-gradient-to-b from-zinc-200 via-[#d4d4d8] to-zinc-500',
-            pinBorder: 'border-zinc-300/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#d4d4d8',
-            ropeAccent: '#a1a1aa',
-            ringStroke: '#d4d4d8',
-            ringFill: '#18181b',
-          };
-        case 'slate-haze':
-          // Ngôi sao slate-haze dark: #7a9bb8 (text-[#7a9bb8]/75)
-          return {
-            pinBg: 'bg-gradient-to-b from-[#a4bfd6] via-[#7a9bb8] to-[#557896]',
-            pinBorder: 'border-[#7a9bb8]/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#7a9bb8',
-            ropeAccent: '#5c7d9b',
-            ringStroke: '#7a9bb8',
-            ringFill: '#0f1926',
-          };
-        case 'mocha':
-          // Ngôi sao mocha dark: #d4a38c (text-[#d4a38c])
-          return {
-            pinBg: 'bg-gradient-to-b from-[#edd2c4] via-[#d4a38c] to-[#b37f66]',
-            pinBorder: 'border-[#d4a38c]/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#d4a38c',
-            ropeAccent: '#b5826b',
-            ringStroke: '#d4a38c',
-            ringFill: '#1c1713',
-          };
-        case 'sage':
-          // Ngôi sao sage dark: #8cb391 (text-[#8cb391])
-          return {
-            pinBg: 'bg-gradient-to-b from-[#bfe0c3] via-[#8cb391] to-[#608765]',
-            pinBorder: 'border-[#8cb391]/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#8cb391',
-            ropeAccent: '#658d6a',
-            ringStroke: '#8cb391',
-            ringFill: '#111c15',
-          };
-        case 'cosmic':
-          // Ngôi sao cosmic dark: #818cf8 (text-indigo-400/85)
-          return {
-            pinBg: 'bg-gradient-to-b from-[#c7d2fe] via-[#818cf8] to-[#4f46e5]',
-            pinBorder: 'border-indigo-400/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#818cf8',
-            ropeAccent: '#6366f1',
-            ringStroke: '#818cf8',
-            ringFill: '#101229',
-          };
-        case 'lululemon':
-          // Lululemon dark: Rượu mận & sương hồng
-          return {
-            pinBg: 'bg-gradient-to-b from-[#f2e2e5] via-[#d4a3af] to-[#84334b]',
-            pinBorder: 'border-[#d4a3af]/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#d4a3af',
-            ropeAccent: '#ead4d7',
-            ringStroke: '#d4a3af',
-            ringFill: '#150d10',
-          };
-        case 'amethyst-haze':
-        default:
-          // Ngôi sao amethyst-haze dark: #a795be (text-[#a795be]/75)
-          return {
-            pinBg: 'bg-gradient-to-b from-[#d5c7e7] via-[#a795be] to-[#7f6c96]',
-            pinBorder: 'border-[#a795be]/80',
-            pinInner: 'bg-white/80',
-            ropeBase: '#a795be',
-            ropeAccent: '#83719b',
-            ringStroke: '#a795be',
-            ringFill: '#161322',
-          };
-      }
-    }
-    // Chế độ sáng (Màu sắc trùng khớp hoàn toàn với màu ngôi sao trong bảng truyện)
-    switch (th) {
-      case 'notebook':
-        // Ngôi sao notebook light: #a1a1aa (text-[#a1a1aa])
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#d4d4d8] to-[#a1a1aa]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#a1a1aa',
-          ropeAccent: '#c4c4cc',
-          ringStroke: '#a1a1aa',
-          ringFill: '#ffffff',
-        };
-      case 'slate-haze':
-        // Ngôi sao slate-haze light: #879bb0 (text-[#879bb0])
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#c8d6e3] to-[#879bb0]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#879bb0',
-          ropeAccent: '#b2c4d6',
-          ringStroke: '#879bb0',
-          ringFill: '#ffffff',
-        };
-      case 'mocha':
-        // Ngôi sao mocha light: #b09787 (text-[#b09787])
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#ded0c7] to-[#b09787]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#b09787',
-          ropeAccent: '#cfbeaf',
-          ringStroke: '#b09787',
-          ringFill: '#ffffff',
-        };
-      case 'sage':
-        // Ngôi sao sage light: #7e9e7b (text-[#7e9e7b])
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#c7dec5] to-[#7e9e7b]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#7e9e7b',
-          ropeAccent: '#a9c4a6',
-          ringStroke: '#7e9e7b',
-          ringFill: '#ffffff',
-        };
-      case 'cosmic':
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#c7d2fe] to-[#818cf8]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#818cf8',
-          ropeAccent: '#a5b4fc',
-          ringStroke: '#818cf8',
-          ringFill: '#ffffff',
-        };
-      case 'lululemon':
-        // Lululemon light: Rượu mận & sương hồng
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#de9fb0] to-[#cc7b8f]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#cc7b8f',
-          ropeAccent: '#eed3dc',
-          ringStroke: '#cc7b8f',
-          ringFill: '#ffffff',
-        };
-      case 'amethyst-haze':
-      default:
-        // Ngôi sao amethyst-haze light: #9d8bbd (text-[#9d8bbd])
-        return {
-          pinBg: 'bg-gradient-to-b from-white via-[#d8caee] to-[#9d8bbd]',
-          pinBorder: 'border-white shadow-xs',
-          pinInner: 'bg-white/85',
-          ropeBase: '#9d8bbd',
-          ropeAccent: '#beafd9',
-          ringStroke: '#9d8bbd',
-          ringFill: '#ffffff',
-        };
-    }
-  };
-
   const featuredNovels = useMemo(() => {
     // Mục hero chỉ dành cho những bộ truyện có lượt xem cao nhất web (tối đa 5 truyện)
     const sorted = [...novels].sort((a, b) => {
@@ -3682,43 +3512,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   }, [theme, isDarkEffective]);
 
-  // Màu sắc cho 3 nút chuyển trang & đổi bìa của mục "TRUYỆN VỪA MỚI ĐĂNG" đồng bộ theo theme
-  const getPolaroidNavBtnClass = (th: NovelThemeId, isDark: boolean) => {
-    if (isDark) {
-      switch (th) {
-        case 'slate-haze':
-          return 'bg-[#1e2f42] text-[#dce7f0] border border-[#4d6a85]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#283e56] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-        case 'sage':
-          return 'bg-[#1e3325] text-[#eaf2eb] border border-[#4d6f53]/55 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#274230] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-        case 'mocha':
-          return 'bg-[#2d211b] text-[#f5ece6] border border-[#8c6150]/55 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#3d2c24] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-        case 'notebook':
-          return 'bg-[#28282e] text-zinc-100 border border-zinc-500/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#34343d] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-        case 'cosmic':
-          return 'bg-[#251b42] text-indigo-100 border border-indigo-500/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#322459] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-        case 'lululemon':
-          return 'bg-[#24151a] text-[#f4ebee] border border-[#84334b]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#341b25] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-        case 'amethyst-haze':
-        default:
-          return 'bg-[#2a1e3b] text-[#ded6e8] border border-[#6e5585]/50 shadow-[0_3px_8px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.12),inset_0_-1px_1px_rgba(0,0,0,0.25)] hover:bg-[#37274e] hover:text-white hover:shadow-[0_5px_12px_rgba(0,0,0,0.50)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.70),inset_0_-1px_1px_rgba(255,255,255,0.06)] active:border-black/40';
-      }
-    }
-    switch (th) {
-      case 'lululemon':
-        return 'lulu-light-btn hover:!text-[#ad4862]';
-      case 'slate-haze':
-        return 'frost-light-btn hover:!text-[#0284c7]';
-      case 'sage':
-        return 'sage-light-btn hover:!text-[#274225]';
-      case 'mocha':
-        return 'mocha-light-btn hover:!text-[#a37764]';
-      case 'notebook':
-        return 'notebook-light-btn hover:!text-[#171717]';
-      case 'amethyst-haze':
-      default:
-        return 'amethyst-light-btn hover:!text-[#7e58a6]';
-    }
-  };
+
 
   // Kiểu nút Neumorphism + Glassmorphism cho chế độ sáng theo phong cách theme Frost áp dụng cho tất cả các theme
   const getLightModeNeumorphicBtnStyles = (th: NovelThemeId) => {
@@ -4041,6 +3835,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   }, [theme, isDarkEffective]);
 
+  // Màu nền & đường viền của Truyện Vừa Mới Đăng dùng cho các Dropdown Menu
+  const recentUpdatesStyles = useMemo(
+    () => getRecentUpdatesCardStyles(theme, isDarkEffective),
+    [theme, isDarkEffective]
+  );
+
   return (
     <div
       className={`min-h-screen flex flex-col transition-colors duration-300 ${tStyles.pageBg} relative overflow-x-clip`}
@@ -4146,57 +3946,123 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
               {/* Quick Suggestions Dropdown */}
               {isSearchFocused && searchQuery.trim().length > 0 && (
-                <div className={`absolute left-0 right-0 top-full mt-2 rounded-2xl border z-50 overflow-hidden backdrop-blur-xl transition-all ${
-                  searchDropdownStyles.container
-                }`}>
-                  <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
-                    <span>Gợi ý ({searchSuggestions.length})</span>
-                    <span>Nhấn Enter để tìm</span>
-                  </div>
-                  {searchSuggestions.length === 0 ? (
-                    <div className="p-4 text-center text-xs opacity-75">
-                      Không tìm thấy truyện nào khớp với "{searchQuery}"
+                <div className="absolute left-0 right-0 top-full mt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  {!isDarkEffective ? (
+                    <div
+                      className="p-[2.5px] rounded-2xl transition-all duration-300 shadow-2xl"
+                      style={recentUpdatesStyles.outerStyle}
+                    >
+                      <div
+                        className="rounded-[13.5px] overflow-hidden backdrop-blur-xl"
+                        style={recentUpdatesStyles.innerStyle}
+                      >
+                        <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
+                          <span>Gợi ý ({searchSuggestions.length})</span>
+                          <span>Nhấn Enter để tìm</span>
+                        </div>
+                        {searchSuggestions.length === 0 ? (
+                          <div className="p-4 text-center text-xs opacity-75">
+                            Không tìm thấy truyện nào khớp với "{searchQuery}"
+                          </div>
+                        ) : (
+                          <div className="max-h-72 overflow-y-auto py-1">
+                            {searchSuggestions.map((item) => (
+                              <div
+                                key={item.id}
+                                onClick={() => {
+                                  setIsSearchFocused(false);
+                                  onSelectNovel(item);
+                                  window.scrollTo({ top: 0, behavior: 'instant' });
+                                }}
+                                className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
+                                  searchDropdownStyles.itemHover
+                                }`}
+                              >
+                                <img
+                                  src={getDirectImageUrl(item.coverImage, item.id || item.title)}
+                                  alt={item.title}
+                                  onError={(e) => handleCoverImageError(e, item.id || item.title)}
+                                  className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
+                                  <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
+                                  <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
+                                    <span>{item.totalChaptersCount || item.chapters.length} chương</span>
+                                    <span>•</span>
+                                    <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            <button
+                              type="button"
+                              onClick={handleSearchSubmit}
+                              className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
+                                searchDropdownStyles.viewAllBtn
+                              }`}
+                            >
+                              Xem tất cả kết quả cho "{searchQuery}" →
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ) : (
-                    <div className="max-h-72 overflow-y-auto py-1">
-                      {searchSuggestions.map((item) => (
-                        <div
-                          key={item.id}
-                          onClick={() => {
-                            setIsSearchFocused(false);
-                            onSelectNovel(item);
-                            window.scrollTo({ top: 0, behavior: 'instant' });
-                          }}
-                          className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
-                            searchDropdownStyles.itemHover
-                          }`}
-                        >
-                          <img
-                            src={getDirectImageUrl(item.coverImage, item.id || item.title)}
-                            alt={item.title}
-                            onError={(e) => handleCoverImageError(e, item.id || item.title)}
-                            className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
-                            <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
-                            <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
-                              <span>{item.totalChaptersCount || item.chapters.length} chương</span>
-                              <span>•</span>
-                              <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
-                            </div>
-                          </div>
+                    <div
+                      className="rounded-2xl overflow-hidden backdrop-blur-2xl shadow-2xl"
+                      style={recentUpdatesStyles.outerStyle}
+                    >
+                      <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
+                        <span>Gợi ý ({searchSuggestions.length})</span>
+                        <span>Nhấn Enter để tìm</span>
+                      </div>
+                      {searchSuggestions.length === 0 ? (
+                        <div className="p-4 text-center text-xs opacity-75">
+                          Không tìm thấy truyện nào khớp với "{searchQuery}"
                         </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={handleSearchSubmit}
-                        className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
-                          searchDropdownStyles.viewAllBtn
-                        }`}
-                      >
-                        Xem tất cả kết quả cho "{searchQuery}" →
-                      </button>
+                      ) : (
+                        <div className="max-h-72 overflow-y-auto py-1">
+                          {searchSuggestions.map((item) => (
+                            <div
+                              key={item.id}
+                              onClick={() => {
+                                setIsSearchFocused(false);
+                                onSelectNovel(item);
+                                window.scrollTo({ top: 0, behavior: 'instant' });
+                              }}
+                              className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
+                                searchDropdownStyles.itemHover
+                              }`}
+                            >
+                              <img
+                                src={getDirectImageUrl(item.coverImage, item.id || item.title)}
+                                alt={item.title}
+                                onError={(e) => handleCoverImageError(e, item.id || item.title)}
+                                className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
+                                <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
+                                <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
+                                  <span>{item.totalChaptersCount || item.chapters.length} chương</span>
+                                  <span>•</span>
+                                  <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={handleSearchSubmit}
+                            className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
+                              searchDropdownStyles.viewAllBtn
+                            }`}
+                          >
+                            Xem tất cả kết quả cho "{searchQuery}" →
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -4219,119 +4085,191 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               </button>
 
               {isThemeMenuOpen && (
-                <div
-                  className={`absolute right-0 mt-2 w-56 sm:w-64 rounded-2xl p-2.5 shadow-2xl border z-50 animate-in fade-in zoom-in-95 duration-150 ${
-                    isDarkEffective
-                      ? 'bg-[#181a20] border-zinc-700 text-zinc-100 shadow-[0_10px_35px_rgba(0,0,0,0.6)]'
-                      : 'bg-white border-zinc-200 text-zinc-900 shadow-[0_10px_30px_rgba(0,0,0,0.15)]'
-                  }`}
-                >
-                  <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                    <span>Màu Giao Diện</span>
-                    <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
-                  </div>
-                  <div className="mt-1 space-y-0.5">
-                    {NOVEL_THEME_OPTIONS.map((opt) => {
-                      const isSelected = theme === opt.id;
-                      return (
-                        <button
-                          key={opt.id}
-                          onClick={() => {
-                            setTheme(opt.id);
-                            safeStorage.setItem('cosmo_novel_theme', opt.id);
-                            setIsThemeMenuOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
-                            isSelected
-                              ? isDarkEffective
-                                ? 'bg-zinc-800 text-white font-bold'
-                                : 'bg-zinc-100 text-zinc-900 font-bold ring-1 ring-zinc-300'
-                              : isDarkEffective
-                              ? 'hover:bg-zinc-800/60 text-zinc-300'
-                              : 'hover:bg-zinc-50 text-zinc-700'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center -space-x-1 shrink-0">
-                              {opt.dots.map((d, i) => (
-                                <span
-                                  key={i}
-                                  className="w-3 h-3 rounded-full border border-black/20 shadow-xs"
-                                  style={{ backgroundColor: d }}
-                                />
-                              ))}
-                            </div>
-                            <div className="font-semibold text-[11px] sm:text-xs">
-                              <span>{opt.name}</span>
-                            </div>
-                          </div>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme (Mặc định tắt khi lần đầu vào trang) */}
-                  {isDarkEffective && (
-                    <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          togglePurpleBgEffects();
-                        }}
-                        className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
-                          isDarkEffective
-                            ? 'hover:bg-zinc-800/60 text-zinc-200'
-                            : 'hover:bg-zinc-100 text-zinc-800'
-                        }`}
-                        title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+                <div className="absolute right-0 mt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  {!isDarkEffective ? (
+                    <div
+                      className="p-[2.5px] rounded-2xl transition-all duration-300"
+                      style={recentUpdatesStyles.outerStyle}
+                    >
+                      <div
+                        className="w-56 sm:w-64 p-2.5 rounded-[13.5px] backdrop-blur-xl text-zinc-900"
+                        style={recentUpdatesStyles.innerStyle}
                       >
-                        <div className="flex items-center">
-                          <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
+                        <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                          <span>Màu Giao Diện</span>
+                          <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
                         </div>
-                        <span
-                          className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-all select-none ${
-                            purpleBgEffectsEnabled
-                              ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
-                              : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
-                          }`}
+                        <div className="mt-1 space-y-0.5">
+                          {NOVEL_THEME_OPTIONS.map((opt) => {
+                            const isSelected = theme === opt.id;
+                            return (
+                              <button
+                                key={opt.id}
+                                onClick={() => {
+                                  setTheme(opt.id);
+                                  safeStorage.setItem('cosmo_novel_theme', opt.id);
+                                  setIsThemeMenuOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-zinc-100 text-zinc-900 font-bold ring-1 ring-zinc-300'
+                                    : 'hover:bg-zinc-50/80 text-zinc-700'
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="flex items-center -space-x-1 shrink-0">
+                                    {opt.dots.map((d, i) => (
+                                      <span
+                                        key={i}
+                                        className="w-3 h-3 rounded-full border border-black/20 shadow-xs"
+                                        style={{ backgroundColor: d }}
+                                      />
+                                    ))}
+                                  </div>
+                                  <div className="font-semibold text-[11px] sm:text-xs">
+                                    <span>{opt.name}</span>
+                                  </div>
+                                </div>
+                                {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG */}
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            toggleDarkMode();
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault();
+                              cosmicAudio.playChime('sparkle');
+                              toggleDarkMode();
+                            }
+                          }}
+                          className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1.5 cursor-pointer hover:bg-black/5 rounded-lg transition-colors select-none"
+                          title="Nhấp để chuyển sang chế độ tối"
                         >
-                          {purpleBgEffectsEnabled ? 'Bật' : 'Tắt'}
+                          <span className="text-xs font-semibold select-none cursor-pointer">
+                            Chế độ tối
+                          </span>
+                          <ClayThemeToggle
+                            id="clay-toggle-home"
+                            isOn={isDarkEffective}
+                            onToggle={toggleDarkMode}
+                            theme={theme}
+                            title="Gạt để chuyển sang chế độ tối"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="w-56 sm:w-64 p-2.5 rounded-2xl text-zinc-100 shadow-2xl border border-white/20 opacity-100"
+                      style={{ backgroundColor: '#0a0d14', background: '#0a0d14', backdropFilter: 'none', WebkitBackdropFilter: 'none' }}
+                    >
+                      <div className="px-2 py-1 border-b border-zinc-500/20 flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                        <span>Màu Giao Diện</span>
+                        <span className="text-[9px] font-normal normal-case opacity-70">5 Gam Màu</span>
+                      </div>
+                      <div className="mt-1 space-y-0.5">
+                        {NOVEL_THEME_OPTIONS.map((opt) => {
+                          const isSelected = theme === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              onClick={() => {
+                                setTheme(opt.id);
+                                safeStorage.setItem('cosmo_novel_theme', opt.id);
+                                setIsThemeMenuOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-zinc-800 text-white font-bold'
+                                  : 'hover:bg-zinc-800/60 text-zinc-300'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center -space-x-1 shrink-0">
+                                  {opt.dots.map((d, i) => (
+                                    <span
+                                      key={i}
+                                      className="w-3 h-3 rounded-full border border-black/20 shadow-xs"
+                                      style={{ backgroundColor: d }}
+                                    />
+                                  ))}
+                                </div>
+                                <div className="font-semibold text-[11px] sm:text-xs">
+                                  <span>{opt.name}</span>
+                                </div>
+                              </div>
+                              {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Tắt/bật Hiệu ứng nền tuyết rơi của chế độ tối cho tất cả các theme */}
+                      <div className="mt-1.5 pt-1.5 border-t border-zinc-500/20">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePurpleBgEffects();
+                          }}
+                          className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer hover:bg-zinc-800/60 text-zinc-200"
+                          title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+                        >
+                          <div className="flex items-center">
+                            <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
+                          </div>
+                          <span
+                            className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-all select-none ${
+                              purpleBgEffectsEnabled
+                                ? 'bg-purple-500/20 text-purple-300 border border-purple-400/40'
+                                : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
+                            }`}
+                          >
+                            {purpleBgEffectsEnabled ? 'Bật' : 'Tắt'}
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG */}
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          cosmicAudio.playChime('sparkle');
+                          toggleDarkMode();
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === ' ' || e.key === 'Enter') {
+                            e.preventDefault();
+                            cosmicAudio.playChime('sparkle');
+                            toggleDarkMode();
+                          }
+                        }}
+                        className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1.5 cursor-pointer hover:bg-white/5 rounded-lg transition-colors select-none"
+                        title="Nhấp để chuyển sang chế độ sáng"
+                      >
+                        <span className="text-xs font-semibold select-none cursor-pointer">
+                          Chế độ tối
                         </span>
-                      </button>
+                        <ClayThemeToggle
+                          id="clay-toggle-home"
+                          isOn={isDarkEffective}
+                          onToggle={toggleDarkMode}
+                          theme={theme}
+                          title="Gạt để chuyển sang chế độ sáng"
+                        />
+                      </div>
                     </div>
                   )}
-
-                  {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG */}
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      cosmicAudio.playChime('sparkle');
-                      toggleDarkMode();
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === ' ' || e.key === 'Enter') {
-                        e.preventDefault();
-                        cosmicAudio.playChime('sparkle');
-                        toggleDarkMode();
-                      }
-                    }}
-                    className="mt-2 pt-2 border-t border-zinc-500/20 flex items-center justify-between px-2 py-1.5 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors select-none"
-                    title={isDarkEffective ? 'Nhấp để chuyển sang chế độ sáng' : 'Nhấp để chuyển sang chế độ tối'}
-                  >
-                    <span className="text-xs font-semibold select-none cursor-pointer">
-                      Chế độ tối
-                    </span>
-                    <ClayThemeToggle
-                      id="clay-toggle-home"
-                      isOn={isDarkEffective}
-                      onToggle={toggleDarkMode}
-                      theme={theme}
-                      title={isDarkEffective ? 'Gạt để chuyển sang chế độ sáng' : 'Gạt để chuyển sang chế độ tối'}
-                    />
-                  </div>
                 </div>
               )}
             </div>
@@ -4352,138 +4290,272 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
               </button>
 
               {isMainMenuOpen && (
-                <div className="absolute right-0 mt-2 z-50">
+                <div className="absolute right-0 mt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   {/* Lớp mây màu loang nhạt chỉ bao gọn sau khung menu dropdown, không phủ lan ra ngoài web */}
                   <div
                     aria-hidden="true"
                     className={`absolute inset-0 rounded-[1.35rem] bg-gradient-to-br ${menuThemeStyles.cloudGradient} blur-xl pointer-events-none -z-10`}
                   />
 
-                  {/* Khung Menu với hiệu ứng Kính Mờ & Neumorphism theo từng Theme */}
-                  <div
-                    className={`${menuThemeStyles.columnClass} flex flex-col justify-between w-60 sm:w-64 animate-in fade-in zoom-in-95 duration-150 relative z-10 !rounded-[1.35rem]`}
-                  >
-                    <div className="space-y-2">
-                      {/* 1. Trang chủ */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          cosmicAudio.playChime('sparkle');
-                          setIsMainMenuOpen(false);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                          !showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
-                        }`}
+                  {/* Khung Menu với màu nền và đường viền của Truyện Vừa Mới Đăng */}
+                  {!isDarkEffective ? (
+                    <div
+                      className="p-[2.5px] rounded-[1.35rem] transition-all duration-300 shadow-2xl"
+                      style={recentUpdatesStyles.outerStyle}
+                    >
+                      <div
+                        className="flex flex-col justify-between w-52 sm:w-64 p-3 sm:p-4 rounded-[1.2rem] backdrop-blur-xl relative z-10"
+                        style={recentUpdatesStyles.innerStyle}
                       >
-                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
-                          <span>Trang chủ</span>
-                        </div>
-                        {!showSearchBar && (
-                          <Heart
-                            className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
-                            style={{
-                              color: menuThemeStyles.heartColor,
-                              fill: menuThemeStyles.heartColor,
+                        <div className="space-y-1.5 sm:space-y-2">
+                          {/* 1. Trang chủ */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              cosmicAudio.playChime('sparkle');
+                              setIsMainMenuOpen(false);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                          />
-                        )}
-                      </button>
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                              !showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                              <span>Trang chủ</span>
+                            </div>
+                            {!showSearchBar && (
+                              <Heart
+                                className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
+                                style={{
+                                  color: menuThemeStyles.heartColor,
+                                  fill: menuThemeStyles.heartColor,
+                                }}
+                              />
+                            )}
+                          </button>
 
-                      {/* 2. Thư viện */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          cosmicAudio.playChime('sparkle');
-                          setIsMainMenuOpen(false);
-                          onOpenInternalBeyond?.();
-                        }}
-                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                          menuThemeStyles.btnConvex
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
-                          <span>Thư viện</span>
-                          <span className={`text-[8px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
-                            Lịch sử đọc
-                          </span>
-                        </div>
-                      </button>
-
-                      {/* 3. Tìm kiếm */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          cosmicAudio.playChime('sparkle');
-                          setIsMainMenuOpen(false);
-                          setShowSearchBar(true);
-                          setTimeout(() => {
-                            desktopSearchInputRef.current?.focus();
-                            mobileSearchInputRef.current?.focus();
-                          }, 120);
-                        }}
-                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                          showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
-                          <span>Tìm kiếm</span>
-                        </div>
-                        {showSearchBar && (
-                          <Heart
-                            className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
-                            style={{
-                              color: menuThemeStyles.heartColor,
-                              fill: menuThemeStyles.heartColor,
+                          {/* 2. Thư viện */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              cosmicAudio.playChime('sparkle');
+                              setIsMainMenuOpen(false);
+                              onOpenInternalBeyond?.();
                             }}
-                          />
-                        )}
-                      </button>
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                              menuThemeStyles.btnConvex
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                              <span>Thư viện</span>
+                              <span className={`text-[7.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
+                                Lịch sử đọc
+                              </span>
+                            </div>
+                          </button>
 
-                      {/* 4. Giới thiệu về web */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          cosmicAudio.playChime('sparkle');
-                          setIsMainMenuOpen(false);
-                          if (onOpenLightIntro) {
-                            onOpenLightIntro();
-                          } else {
-                            window.dispatchEvent(new CustomEvent('open-novel-intro'));
-                          }
-                        }}
-                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                          menuThemeStyles.btnConvex
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
-                          <span>Giới thiệu về web</span>
-                        </div>
-                      </button>
+                          {/* 3. Tìm kiếm */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              cosmicAudio.playChime('sparkle');
+                              setIsMainMenuOpen(false);
+                              setShowSearchBar(true);
+                              setTimeout(() => {
+                                desktopSearchInputRef.current?.focus();
+                                mobileSearchInputRef.current?.focus();
+                              }, 120);
+                            }}
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                              showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                              <span>Tìm kiếm</span>
+                            </div>
+                            {showSearchBar && (
+                              <Heart
+                                className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
+                                style={{
+                                  color: menuThemeStyles.heartColor,
+                                  fill: menuThemeStyles.heartColor,
+                                }}
+                              />
+                            )}
+                          </button>
 
-                      {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu) */}
-                      <button
-                        type="button"
-                        id="btn-admin-auth-menu"
-                        onClick={() => {
-                          cosmicAudio.playChime('sparkle');
-                          setIsMainMenuOpen(false);
-                          onOpenAdminAuth();
-                        }}
-                        className={`w-full px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                          menuThemeStyles.btnConvex
-                        }`}
-                        title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}
-                      >
-                        <div className="flex items-center gap-2 sm:gap-2.5 text-[11.5px] sm:text-[13px] font-serif tracking-wider">
-                          <span>{isAdmin ? 'Quản trị (Admin)' : 'Quản trị'}</span>
+                          {/* 4. Giới thiệu về web */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              cosmicAudio.playChime('sparkle');
+                              setIsMainMenuOpen(false);
+                              if (onOpenLightIntro) {
+                                onOpenLightIntro();
+                              } else {
+                                window.dispatchEvent(new CustomEvent('open-novel-intro'));
+                              }
+                            }}
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                              menuThemeStyles.btnConvex
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                              <span>Giới thiệu về web</span>
+                            </div>
+                          </button>
+
+                          {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu) */}
+                          <button
+                            type="button"
+                            id="btn-admin-auth-menu"
+                            onClick={() => {
+                              cosmicAudio.playChime('sparkle');
+                              setIsMainMenuOpen(false);
+                              onOpenAdminAuth();
+                            }}
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                              menuThemeStyles.btnConvex
+                            }`}
+                            title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                              <span>{isAdmin ? 'Quản trị (Admin)' : 'Quản trị'}</span>
+                            </div>
+                            {isAdmin && (
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                            )}
+                          </button>
                         </div>
-                        {isAdmin && (
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                        )}
-                      </button>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div
+                      className="flex flex-col justify-between w-52 sm:w-64 p-3 sm:p-4 rounded-[1.35rem] relative z-10 shadow-2xl border border-white/20 opacity-100"
+                      style={{ backgroundColor: '#0a0d14', background: '#0a0d14', backdropFilter: 'none', WebkitBackdropFilter: 'none' }}
+                    >
+                      <div className="space-y-1.5 sm:space-y-2">
+                        {/* 1. Trang chủ */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            setIsMainMenuOpen(false);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            !showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                            <span>Trang chủ</span>
+                          </div>
+                          {!showSearchBar && (
+                            <Heart
+                              className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
+                              style={{
+                                color: menuThemeStyles.heartColor,
+                                fill: menuThemeStyles.heartColor,
+                              }}
+                            />
+                          )}
+                        </button>
+
+                        {/* 2. Thư viện */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            setIsMainMenuOpen(false);
+                            onOpenInternalBeyond?.();
+                          }}
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            menuThemeStyles.btnConvex
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                            <span>Thư viện</span>
+                            <span className={`text-[7.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
+                              Lịch sử đọc
+                            </span>
+                          </div>
+                        </button>
+
+                        {/* 3. Tìm kiếm */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            setIsMainMenuOpen(false);
+                            setShowSearchBar(true);
+                            setTimeout(() => {
+                              desktopSearchInputRef.current?.focus();
+                              mobileSearchInputRef.current?.focus();
+                            }, 120);
+                          }}
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            showSearchBar ? menuThemeStyles.btnInset : menuThemeStyles.btnConvex
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                            <span>Tìm kiếm</span>
+                          </div>
+                          {showSearchBar && (
+                            <Heart
+                              className="w-3.5 h-3.5 animate-pulse drop-shadow-xs shrink-0 pointer-events-none"
+                              style={{
+                                color: menuThemeStyles.heartColor,
+                                fill: menuThemeStyles.heartColor,
+                              }}
+                            />
+                          )}
+                        </button>
+
+                        {/* 4. Giới thiệu về web */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            setIsMainMenuOpen(false);
+                            if (onOpenLightIntro) {
+                              onOpenLightIntro();
+                            } else {
+                              window.dispatchEvent(new CustomEvent('open-novel-intro'));
+                            }
+                          }}
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            menuThemeStyles.btnConvex
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                            <span>Giới thiệu về web</span>
+                          </div>
+                        </button>
+
+                        {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu) */}
+                        <button
+                          type="button"
+                          id="btn-admin-auth-menu"
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            setIsMainMenuOpen(false);
+                            onOpenAdminAuth();
+                          }}
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            menuThemeStyles.btnConvex
+                          }`}
+                          title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}
+                        >
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                            <span>{isAdmin ? 'Quản trị (Admin)' : 'Quản trị'}</span>
+                          </div>
+                          {isAdmin && (
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -4566,57 +4638,123 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
             {/* Quick Suggestions Dropdown on Mobile */}
             {isSearchFocused && searchQuery.trim().length > 0 && (
-              <div className={`absolute left-4 right-4 top-full mt-1.5 rounded-2xl border z-50 overflow-hidden backdrop-blur-xl transition-all ${
-                searchDropdownStyles.container
-              }`}>
-                <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
-                  <span>Gợi ý ({searchSuggestions.length})</span>
-                  <span>Bấm Enter để xem</span>
-                </div>
-                {searchSuggestions.length === 0 ? (
-                  <div className="p-4 text-center text-xs opacity-75">
-                    Không tìm thấy truyện nào khớp với "{searchQuery}"
+              <div className="absolute left-4 right-4 top-full mt-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                {!isDarkEffective ? (
+                  <div
+                    className="p-[2.5px] rounded-2xl transition-all duration-300 shadow-2xl"
+                    style={recentUpdatesStyles.outerStyle}
+                  >
+                    <div
+                      className="rounded-[13.5px] overflow-hidden backdrop-blur-xl"
+                      style={recentUpdatesStyles.innerStyle}
+                    >
+                      <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
+                        <span>Gợi ý ({searchSuggestions.length})</span>
+                        <span>Bấm Enter để xem</span>
+                      </div>
+                      {searchSuggestions.length === 0 ? (
+                        <div className="p-4 text-center text-xs opacity-75">
+                          Không tìm thấy truyện nào khớp với "{searchQuery}"
+                        </div>
+                      ) : (
+                        <div className="max-h-64 overflow-y-auto py-1">
+                          {searchSuggestions.map((item) => (
+                            <div
+                              key={item.id}
+                              onClick={() => {
+                                setIsSearchFocused(false);
+                                onSelectNovel(item);
+                                window.scrollTo({ top: 0, behavior: 'instant' });
+                              }}
+                              className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
+                                searchDropdownStyles.itemHover
+                              }`}
+                            >
+                              <img
+                                src={getDirectImageUrl(item.coverImage, item.id || item.title)}
+                                alt={item.title}
+                                onError={(e) => handleCoverImageError(e, item.id || item.title)}
+                                className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
+                                <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
+                                <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
+                                  <span>{item.totalChaptersCount || item.chapters.length} chương</span>
+                                  <span>•</span>
+                                  <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={handleSearchSubmit}
+                            className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
+                              searchDropdownStyles.viewAllBtn
+                            }`}
+                          >
+                            Xem tất cả kết quả cho "{searchQuery}" →
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <div className="max-h-64 overflow-y-auto py-1">
-                    {searchSuggestions.map((item) => (
-                      <div
-                        key={item.id}
-                        onClick={() => {
-                          setIsSearchFocused(false);
-                          onSelectNovel(item);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
-                          searchDropdownStyles.itemHover
-                        }`}
-                      >
-                        <img
-                          src={getDirectImageUrl(item.coverImage, item.id || item.title)}
-                          alt={item.title}
-                          onError={(e) => handleCoverImageError(e, item.id || item.title)}
-                          className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
-                          <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
-                          <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
-                            <span>{item.totalChaptersCount || item.chapters.length} chương</span>
-                            <span>•</span>
-                            <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
-                          </div>
-                        </div>
+                  <div
+                    className="rounded-2xl overflow-hidden backdrop-blur-2xl shadow-2xl"
+                    style={recentUpdatesStyles.outerStyle}
+                  >
+                    <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] font-medium opacity-75 ${searchDropdownStyles.header}`}>
+                      <span>Gợi ý ({searchSuggestions.length})</span>
+                      <span>Bấm Enter để xem</span>
+                    </div>
+                    {searchSuggestions.length === 0 ? (
+                      <div className="p-4 text-center text-xs opacity-75">
+                        Không tìm thấy truyện nào khớp với "{searchQuery}"
                       </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={handleSearchSubmit}
-                      className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
-                        searchDropdownStyles.viewAllBtn
-                      }`}
-                    >
-                      Xem tất cả kết quả cho "{searchQuery}" →
-                    </button>
+                    ) : (
+                      <div className="max-h-64 overflow-y-auto py-1">
+                        {searchSuggestions.map((item) => (
+                          <div
+                            key={item.id}
+                            onClick={() => {
+                              setIsSearchFocused(false);
+                              onSelectNovel(item);
+                              window.scrollTo({ top: 0, behavior: 'instant' });
+                            }}
+                            className={`px-3 py-2 flex items-center gap-3 cursor-pointer transition-colors ${
+                              searchDropdownStyles.itemHover
+                            }`}
+                          >
+                            <img
+                              src={getDirectImageUrl(item.coverImage, item.id || item.title)}
+                              alt={item.title}
+                              onError={(e) => handleCoverImageError(e, item.id || item.title)}
+                              className="w-8 h-11 rounded object-cover shrink-0 border border-black/10"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h5 className={`text-xs font-bold truncate ${searchDropdownStyles.titleText}`}>{item.title}</h5>
+                              <p className={`text-[11px] opacity-75 truncate ${searchDropdownStyles.subText}`}>{item.author.name}</p>
+                              <div className="flex items-center gap-1.5 mt-0.5 text-[10px] opacity-70">
+                                <span>{item.totalChaptersCount || item.chapters.length} chương</span>
+                                <span>•</span>
+                                <span className={`font-semibold ${searchDropdownStyles.badge}`}>Hoàn thành</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={handleSearchSubmit}
+                          className={`w-full p-2.5 text-center text-xs font-bold border-t cursor-pointer transition-colors ${
+                            searchDropdownStyles.viewAllBtn
+                          }`}
+                        >
+                          Xem tất cả kết quả cho "{searchQuery}" →
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -4899,7 +5037,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             </div>
           </div>
 
-          <div className="max-w-4xl lg:max-w-5xl mx-auto px-4">
+          <div className="max-w-4xl lg:max-w-5xl mx-auto px-4 mt-16 sm:mt-0">
             {/* KHUNG BAO NGOÀI PHONG CÁCH VÉ LÊN MÁY BAY / TÀU HỎA */}
             <div className={`relative p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 ${ticketTheme.outer}`}>
               
@@ -5362,313 +5500,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             </div>
           )}
 
-          {/* ========================================================================= */}
-          {/* MỤC BẢNG TRUYỆN: TRÊN ĐIỆN THOẠI (MOBILE/TABLET < lg) GIỮ NGUYÊN VỊ TRÍ NÀY */}
-          {/* ========================================================================= */}
-          {novels && novels.length > 0 && (() => {
-            const sorted = [...novels].sort((a, b) => {
-              const timeA = a.latestChapter?.updatedAt ? new Date(a.latestChapter.updatedAt).getTime() : 0;
-              const timeB = b.latestChapter?.updatedAt ? new Date(b.latestChapter.updatedAt).getTime() : 0;
-              return timeB - timeA;
-            });
-            const totalPages = Math.max(1, Math.ceil(sorted.length / 3));
-            const safePage = polaroidPage % totalPages;
-            const startIndex = safePage * 3;
-            const novelCol1 = sorted[startIndex] || sorted[0];
-            const novelCol2 = sorted[startIndex + 1] || sorted[1] || sorted[0];
-            const novelCol3 = sorted[startIndex + 2] || sorted[2] || sorted[1] || sorted[0];
-
-            return (
-              <div className="block lg:hidden relative mt-10 sm:mt-14 pt-7 sm:pt-9">
-                {/* 2. ĐINH GHIM & DÂY THỪNG BỆN TAM GIÁC TREO BẢNG TRUYỆN */}
-                {(() => {
-                  const triangleCord = getHangingCordTriangleStyles(theme, isDarkEffective);
-                  return (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 sm:w-80 md:w-96 h-7 sm:h-9 pointer-events-none z-20 flex items-center justify-center">
-                      {/* Đinh ghim tròn mạ ở đỉnh chóp */}
-                      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${triangleCord.pinBg} border ${triangleCord.pinBorder} shadow-sm z-30 flex items-center justify-center`}>
-                        <span className={`w-1 h-1 rounded-full ${triangleCord.pinInner}`} />
-                      </div>
-
-                      {/* SVG 2 cọng dây thừng đan chéo */}
-                      <svg className="w-full h-full" viewBox="0 0 240 28" fill="none" preserveAspectRatio="none">
-                        <path
-                          d="M120 2 L22 28"
-                          stroke={triangleCord.ropeBase}
-                          strokeWidth="2.0"
-                          strokeLinecap="round"
-                          strokeDasharray="3.5 1.8"
-                        />
-                        <path d="M120 2 L22 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
-
-                        <path
-                          d="M120 2 L218 28"
-                          stroke={triangleCord.ropeBase}
-                          strokeWidth="2.0"
-                          strokeLinecap="round"
-                          strokeDasharray="3.5 1.8"
-                        />
-                        <path d="M120 2 L218 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
-
-                        <circle cx="22" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
-                        <circle cx="218" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
-                      </svg>
-                    </div>
-                  );
-                })()}
-
-                <section
-                  id="showcase-polaroid-section-mobile"
-                  className={`relative rounded-[28px] sm:rounded-[36px] p-4 sm:p-7 md:p-9 border overflow-hidden transition-all duration-300 ${
-                  getThemePastelPalette(theme, isDarkEffective).cardBg
-                } ${
-                  isDarkEffective
-                    ? 'border-white/[0.07]'
-                    : 'border-black/[0.04]'
-                }`}
-                style={{
-                  backgroundImage: `radial-gradient(${getThemePastelPalette(theme, isDarkEffective).dotColor} 1.2px, transparent 1.2px)`,
-                  backgroundSize: '18px 18px',
-                  boxShadow: isDarkEffective
-                    ? '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)'
-                    : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
-                }}
-              >
-                {/* 4 Ngôi sao ở 4 góc */}
-                <div
-                  className={`absolute top-3 left-3 sm:top-4 sm:left-4 select-none pointer-events-none rotate-[18deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5.5 h-5.5 sm:w-7 sm:h-7"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                <div
-                  className={`absolute top-3 right-3 sm:top-4 sm:right-4 select-none pointer-events-none -rotate-[26deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                <div
-                  className={`absolute bottom-3 left-3 sm:bottom-4 sm:left-4 select-none pointer-events-none -rotate-[16deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                <div
-                  className={`absolute bottom-3 right-3 sm:bottom-4 sm:right-4 select-none pointer-events-none rotate-[34deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5.5 h-5.5 sm:w-7 sm:h-7"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                {/* Tiêu đề mục: BẢNG TRUYỆN kèm nút Đổi bìa icon nhỏ gọn nằm ngay kế bên */}
-                <div className="flex items-center justify-center gap-2 mb-5 sm:mb-8 relative z-10">
-                  <h3 className={`font-lora italic !font-normal text-xs sm:text-[13px] md:text-sm tracking-[0.18em] uppercase ${tStyles.cardTitle}`}>
-                    BẢNG TRUYỆN
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
-                    className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:scale-90 ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
-                    title="Đổi bìa truyện"
-                    aria-label="Đổi bìa truyện"
-                  >
-                    <Shuffle className="w-3 h-3 sm:w-3.5 sm:h-3.5 opacity-80" />
-                  </button>
-                </div>
-
-                {/* 3 Khung ảnh hiển thị 3 cột ngang hàng */}
-                <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 relative z-10 items-end max-w-2xl sm:max-w-3xl mx-auto pt-2 pb-1">
-                  
-                  {/* Khung 1 */}
-                  {novelCol1 && (
-                    <div className="relative group/p1 -rotate-2 sm:-rotate-3 hover:rotate-0 hover:-translate-y-1.5 transition-all duration-300">
-                      <div
-                        className={`absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-12 sm:w-20 h-4 sm:h-6 rounded-xs shadow-2xs -rotate-2 select-none z-20 pointer-events-none ${
-                          isDarkEffective
-                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
-                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
-                        }`}
-                      />
-                      <div
-                        onClick={() => {
-                          onSelectNovel(novelCol1);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`rounded-2xl sm:rounded-3xl p-1.5 sm:p-3 pb-2.5 sm:pb-4 border transition-all duration-300 cursor-pointer ${
-                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
-                        } ${
-                          isDarkEffective
-                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.38),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p1:shadow-[0_8px_20px_rgba(0,0,0,0.52),inset_0_1px_1px_rgba(255,255,255,0.12)]'
-                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] group-hover/p1:shadow-[0_8px_20px_rgba(0,0,0,0.11),0_2px_6px_rgba(0,0,0,0.04)]'
-                        }`}
-                        title={novelCol1.title}
-                      >
-                        <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-2.5 bg-neutral-100 dark:bg-zinc-800">
-                          <img
-                            src={getDirectImageUrl(novelCol1.coverImage, novelCol1.id || novelCol1.title)}
-                            onError={(e) => handleCoverImageError(e, novelCol1.id || novelCol1.title)}
-                            alt={novelCol1.title}
-                            className="w-full h-full object-cover group-hover/p1:scale-105 transition-transform duration-300"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none rounded-xl sm:rounded-2xl border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.14)]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h4 className={`font-lora italic !font-normal text-center text-[10px] sm:text-xs md:text-sm line-clamp-2 leading-snug px-0.5 mt-1 sm:mt-1.5 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
-                          {novelCol1.title}
-                        </h4>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Khung 2 */}
-                  {novelCol2 && (
-                    <div className="relative group/p2 rotate-0 sm:-translate-y-2 hover:-translate-y-3.5 hover:scale-[1.02] transition-all duration-300">
-                      <div
-                        className={`absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-4.5 h-4.5 sm:w-6 sm:h-6 rounded-full border border-white/95 select-none z-20 flex items-center justify-center pointer-events-none ${
-                          isDarkEffective
-                            ? 'shadow-[0_3px_8px_rgba(0,0,0,0.45),0_1px_3px_rgba(0,0,0,0.25)]'
-                            : 'shadow-[0_3px_6px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.10)]'
-                        }`}
-                        style={{
-                          background: isDarkEffective
-                            ? 'radial-gradient(circle at 35% 30%, #f6f5fa 0%, #e1deec 42%, #9e97af 75%, #665e7a 100%)'
-                            : 'radial-gradient(circle at 35% 30%, #ffffff 0%, #ffffff 42%, #f0f2f6 72%, #d6dbe4 100%)',
-                        }}
-                      >
-                        <div className="absolute top-0.5 left-1 w-1.5 h-0.5 sm:w-2 sm:h-0.8 rounded-full bg-white/95 blur-[0.15px] -rotate-45 shadow-[0_0_2px_rgba(255,255,255,0.85)]" />
-                      </div>
-                      <div
-                        onClick={() => {
-                          onSelectNovel(novelCol2);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`rounded-t-[32px] sm:rounded-t-[46px] rounded-b-2xl sm:rounded-b-3xl p-1.5 sm:p-3 pb-2.5 sm:pb-4 border transition-all duration-300 cursor-pointer ${
-                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
-                        } ${
-                          isDarkEffective
-                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p2:shadow-[0_8px_20px_rgba(0,0,0,0.56),inset_0_1px_1px_rgba(255,255,255,0.12)]'
-                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] group-hover/p2:shadow-[0_8px_20px_rgba(0,0,0,0.12),0_2px_6px_rgba(0,0,0,0.04)]'
-                        }`}
-                        title={novelCol2.title}
-                      >
-                        <div className="relative aspect-square w-full rounded-t-[26px] sm:rounded-t-[38px] rounded-b-xl sm:rounded-b-2xl overflow-hidden mb-1.5 sm:mb-2.5 bg-neutral-100 dark:bg-zinc-800">
-                          <img
-                            src={getDirectImageUrl(novelCol2.coverImage, novelCol2.id || novelCol2.title)}
-                            onError={(e) => handleCoverImageError(e, novelCol2.id || novelCol2.title)}
-                            alt={novelCol2.title}
-                            className="w-full h-full object-cover group-hover/p2:scale-105 transition-transform duration-300"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none rounded-t-[26px] sm:rounded-t-[38px] rounded-b-xl sm:rounded-b-2xl border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.14)]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h4 className={`font-lora italic !font-normal text-center text-[10px] sm:text-xs md:text-sm line-clamp-2 leading-snug px-0.5 mt-1 sm:mt-1.5 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
-                          {novelCol2.title}
-                        </h4>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Khung 3 */}
-                  {novelCol3 && (
-                    <div className="relative group/p3 rotate-2 sm:rotate-3 hover:rotate-0 hover:-translate-y-1.5 transition-all duration-300">
-                      <div
-                        className={`absolute -top-2.5 sm:-top-3.5 left-1/2 -translate-x-1/2 w-12 sm:w-20 h-4 sm:h-6 rounded-xs shadow-2xs rotate-2 select-none z-20 pointer-events-none ${
-                          isDarkEffective
-                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
-                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
-                        }`}
-                      />
-                      <div
-                        onClick={() => {
-                          onSelectNovel(novelCol3);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`rounded-2xl sm:rounded-3xl p-1.5 sm:p-3 pb-2.5 sm:pb-4 border transition-all duration-300 cursor-pointer ${
-                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
-                        } ${
-                          isDarkEffective
-                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.38),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p3:shadow-[0_8px_20px_rgba(0,0,0,0.52),inset_0_1px_1px_rgba(255,255,255,0.12)]'
-                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] group-hover/p3:shadow-[0_8px_20px_rgba(0,0,0,0.11),0_2px_6px_rgba(0,0,0,0.04)]'
-                        }`}
-                        title={novelCol3.title}
-                      >
-                        <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl overflow-hidden mb-1.5 sm:mb-2.5 bg-neutral-100 dark:bg-zinc-800">
-                          <img
-                            src={getDirectImageUrl(novelCol3.coverImage, novelCol3.id || novelCol3.title)}
-                            onError={(e) => handleCoverImageError(e, novelCol3.id || novelCol3.title)}
-                            alt={novelCol3.title}
-                            className="w-full h-full object-cover group-hover/p3:scale-105 transition-transform duration-300"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none rounded-xl sm:rounded-2xl border border-black/10 dark:border-white/10 shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.22),inset_0_-1px_2px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2.5px_6px_rgba(0,0,0,0.65),inset_0_-1px_1.5px_rgba(255,255,255,0.14)]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h4 className={`font-lora italic !font-normal text-center text-[10px] sm:text-xs md:text-sm line-clamp-2 leading-snug px-0.5 mt-1 sm:mt-1.5 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
-                          {novelCol3.title}
-                        </h4>
-                      </div>
-                    </div>
-                  )}
-
-                </div>
-              </section>
-              </div>
-            );
-          })()}
-
-
-
         </div>
 
-        {/* Right Sidebar: Thanh bên chứa Bảng truyện (trên Desktop lg), Chọn truyện ngẫu nhiên & Truyện vừa mới đăng (29%) */}
+        {/* Right Sidebar: Thanh bên chứa Chọn truyện ngẫu nhiên & Truyện vừa mới đăng (29%) */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -5676,306 +5510,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
           transition={{ duration: 0.6, delay: 0.1 }}
           className="min-w-0 space-y-6"
         >
-
-          {/* ========================================================================= */}
-          {/* MỤC BẢNG TRUYỆN TRÊN THANH BÊN (HIỂN THỊ TRÊN MÁY TÍNH lg:block) */}
-          {/* ========================================================================= */}
-          {novels && novels.length > 0 && (() => {
-            const sorted = [...novels].sort((a, b) => {
-              const timeA = a.latestChapter?.updatedAt ? new Date(a.latestChapter.updatedAt).getTime() : 0;
-              const timeB = b.latestChapter?.updatedAt ? new Date(b.latestChapter.updatedAt).getTime() : 0;
-              return timeB - timeA;
-            });
-            const totalPages = Math.max(1, Math.ceil(sorted.length / 3));
-            const safePage = polaroidPage % totalPages;
-            const startIndex = safePage * 3;
-            const novelCol1 = sorted[startIndex] || sorted[0];
-            const novelCol2 = sorted[startIndex + 1] || sorted[1] || sorted[0];
-            const novelCol3 = sorted[startIndex + 2] || sorted[2] || sorted[1] || sorted[0];
-
-            return (
-              <div className="hidden lg:block relative pt-7">
-                {/* ĐINH GHIM & DÂY THỪNG BỆN TAM GIÁC TREO BẢNG TRUYỆN Ở THANH BÊN */}
-                {(() => {
-                  const triangleCord = getHangingCordTriangleStyles(theme, isDarkEffective);
-                  return (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-7 pointer-events-none z-20 flex items-center justify-center">
-                      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full ${triangleCord.pinBg} border ${triangleCord.pinBorder} shadow-sm z-30 flex items-center justify-center`}>
-                        <span className={`w-1 h-1 rounded-full ${triangleCord.pinInner}`} />
-                      </div>
-
-                      <svg className="w-full h-full" viewBox="0 0 240 28" fill="none" preserveAspectRatio="none">
-                        <path
-                          d="M120 2 L22 28"
-                          stroke={triangleCord.ropeBase}
-                          strokeWidth="2.0"
-                          strokeLinecap="round"
-                          strokeDasharray="3.5 1.8"
-                        />
-                        <path d="M120 2 L22 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
-
-                        <path
-                          d="M120 2 L218 28"
-                          stroke={triangleCord.ropeBase}
-                          strokeWidth="2.0"
-                          strokeLinecap="round"
-                          strokeDasharray="3.5 1.8"
-                        />
-                        <path d="M120 2 L218 28" stroke={triangleCord.ropeAccent} strokeWidth="1.2" strokeLinecap="round" />
-
-                        <circle cx="22" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
-                        <circle cx="218" cy="27" r="3" fill={triangleCord.ringFill} stroke={triangleCord.ringStroke} strokeWidth="1.4" />
-                      </svg>
-                    </div>
-                  );
-                })()}
-
-                <section
-                  id="showcase-polaroid-section-sidebar"
-                  className={`relative rounded-[28px] p-4 border overflow-hidden transition-all duration-300 ${
-                  getThemePastelPalette(theme, isDarkEffective).cardBg
-                } ${
-                  isDarkEffective
-                    ? 'border-white/[0.07]'
-                    : 'border-black/[0.04]'
-                }`}
-                style={{
-                  backgroundImage: `radial-gradient(${getThemePastelPalette(theme, isDarkEffective).dotColor} 1.2px, transparent 1.2px)`,
-                  backgroundSize: '18px 18px',
-                  boxShadow: isDarkEffective
-                    ? '0 6px 20px rgba(0, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.12), inset 0 -1px 2px rgba(0, 0, 0, 0.22)'
-                    : '0 6px 20px rgba(0, 0, 0, 0.045), inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(0, 0, 0, 0.02)',
-                }}
-              >
-                {/* 4 Ngôi sao ở 4 góc */}
-                <div
-                  className={`absolute top-2.5 left-2.5 select-none pointer-events-none rotate-[18deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5 h-5"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                <div
-                  className={`absolute top-2.5 right-2.5 select-none pointer-events-none -rotate-[26deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-3.5 h-3.5"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                <div
-                  className={`absolute bottom-2.5 left-2.5 select-none pointer-events-none -rotate-[16deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-3.5 h-3.5"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                <div
-                  className={`absolute bottom-2.5 right-2.5 select-none pointer-events-none rotate-[34deg] ${getThemePastelPalette(theme, isDarkEffective).starColor}`}
-                  aria-hidden="true"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5 h-5"
-                  >
-                    <polygon points="12 2.8 14.8 8.8 21.4 9.4 16.4 13.9 17.9 20.3 12 16.8 6.1 20.3 7.6 13.9 2.6 9.4 9.2 8.8" />
-                  </svg>
-                </div>
-
-                {/* Tiêu đề BẢNG TRUYỆN kèm nút Đổi bìa icon nhỏ gọn */}
-                <div className="flex items-center justify-center gap-2 mb-4 relative z-10">
-                  <h3 className={`font-lora italic !font-normal text-xs tracking-[0.18em] uppercase ${tStyles.cardTitle}`}>
-                    BẢNG TRUYỆN
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => setPolaroidPage((prev) => (prev + 1) % totalPages)}
-                    className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer select-none active:scale-90 ${getPolaroidNavBtnClass(theme, isDarkEffective)}`}
-                    title="Đổi bìa truyện"
-                    aria-label="Đổi bìa truyện"
-                  >
-                    <Shuffle className="w-3 h-3 opacity-80" />
-                  </button>
-                </div>
-
-                {/* 3 Khung ảnh hiển thị 3 cột ngang hàng trong sidebar */}
-                <div className="grid grid-cols-3 gap-2 relative z-10 items-end pt-1 pb-1">
-                  
-                  {/* Khung 1 */}
-                  {novelCol1 && (
-                    <div className="relative group/p1 -rotate-2 hover:rotate-0 hover:-translate-y-1 transition-all duration-300">
-                      <div
-                        className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-3.5 rounded-xs shadow-2xs -rotate-2 select-none z-20 pointer-events-none ${
-                          isDarkEffective
-                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
-                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
-                        }`}
-                      />
-                      <div
-                        onClick={() => {
-                          onSelectNovel(novelCol1);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`rounded-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
-                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
-                        } ${
-                          isDarkEffective
-                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.38),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p1:shadow-[0_8px_20px_rgba(0,0,0,0.52),inset_0_1px_1px_rgba(255,255,255,0.12)]'
-                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] group-hover/p1:shadow-[0_8px_20px_rgba(0,0,0,0.11),0_2px_6px_rgba(0,0,0,0.04)]'
-                        }`}
-                        title={novelCol1.title}
-                      >
-                        <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-1 bg-neutral-100 dark:bg-zinc-800">
-                          <img
-                            src={getDirectImageUrl(novelCol1.coverImage, novelCol1.id || novelCol1.title)}
-                            onError={(e) => handleCoverImageError(e, novelCol1.id || novelCol1.title)}
-                            alt={novelCol1.title}
-                            className="w-full h-full object-cover group-hover/p1:scale-105 transition-transform duration-300"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none rounded-xl border border-black/10 dark:border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22),inset_0_-1px_1.5px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_-1px_1px_rgba(255,255,255,0.14)]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h4 className={`font-lora italic !font-normal text-center text-[10px] line-clamp-2 leading-tight px-0.5 mt-1 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
-                          {novelCol1.title}
-                        </h4>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Khung 2 */}
-                  {novelCol2 && (
-                    <div className="relative group/p2 rotate-0 hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300">
-                      <div
-                        className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-4.5 h-4.5 rounded-full border border-white/95 select-none z-20 flex items-center justify-center pointer-events-none ${
-                          isDarkEffective
-                            ? 'shadow-[0_3px_8px_rgba(0,0,0,0.45),0_1px_3px_rgba(0,0,0,0.25)]'
-                            : 'shadow-[0_3px_6px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.10)]'
-                        }`}
-                        style={{
-                          background: isDarkEffective
-                            ? 'radial-gradient(circle at 35% 30%, #f6f5fa 0%, #e1deec 42%, #9e97af 75%, #665e7a 100%)'
-                            : 'radial-gradient(circle at 35% 30%, #ffffff 0%, #ffffff 42%, #f0f2f6 72%, #d6dbe4 100%)',
-                        }}
-                      >
-                        <div className="absolute top-0.5 left-1 w-1.5 h-0.5 rounded-full bg-white/95 blur-[0.15px] -rotate-45 shadow-[0_0_2px_rgba(255,255,255,0.85)]" />
-                      </div>
-                      <div
-                        onClick={() => {
-                          onSelectNovel(novelCol2);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`rounded-t-[30px] rounded-b-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
-                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
-                        } ${
-                          isDarkEffective
-                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.40),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p2:shadow-[0_8px_20px_rgba(0,0,0,0.56),inset_0_1px_1px_rgba(255,255,255,0.12)]'
-                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)] group-hover/p2:shadow-[0_8px_20px_rgba(0,0,0,0.12),0_2px_6px_rgba(0,0,0,0.04)]'
-                        }`}
-                        title={novelCol2.title}
-                      >
-                        <div className="relative aspect-square w-full rounded-t-[24px] rounded-b-xl overflow-hidden mb-1 bg-neutral-100 dark:bg-zinc-800">
-                          <img
-                            src={getDirectImageUrl(novelCol2.coverImage, novelCol2.id || novelCol2.title)}
-                            onError={(e) => handleCoverImageError(e, novelCol2.id || novelCol2.title)}
-                            alt={novelCol2.title}
-                            className="w-full h-full object-cover group-hover/p2:scale-105 transition-transform duration-300"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none rounded-t-[24px] rounded-b-xl border border-black/10 dark:border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22),inset_0_-1px_1.5px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_-1px_1px_rgba(255,255,255,0.14)]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h4 className={`font-lora italic !font-normal text-center text-[10px] line-clamp-2 leading-tight px-0.5 mt-1 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
-                          {novelCol2.title}
-                        </h4>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Khung 3 */}
-                  {novelCol3 && (
-                    <div className="relative group/p3 rotate-2 hover:rotate-0 hover:-translate-y-1 transition-all duration-300">
-                      <div
-                        className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-3.5 rounded-xs shadow-2xs rotate-2 select-none z-20 pointer-events-none ${
-                          isDarkEffective
-                            ? 'bg-neutral-200/40 border border-white/20 backdrop-blur-xs'
-                            : 'bg-[#e8eaed]/90 border border-[#d1d5db]/70'
-                        }`}
-                      />
-                      <div
-                        onClick={() => {
-                          onSelectNovel(novelCol3);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
-                        className={`rounded-2xl p-1.5 pb-2 border transition-all duration-300 cursor-pointer ${
-                          getThemePastelPalette(theme, isDarkEffective).polaroidBg
-                        } ${
-                          isDarkEffective
-                            ? 'border-white/[0.07] shadow-[0_4px_14px_rgba(0,0,0,0.38),inset_0_1px_1px_rgba(255,255,255,0.07)] group-hover/p3:shadow-[0_8px_20px_rgba(0,0,0,0.52),inset_0_1px_1px_rgba(255,255,255,0.12)]'
-                            : 'border-black/[0.03] shadow-[0_4px_14px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.03)] group-hover/p3:shadow-[0_8px_20px_rgba(0,0,0,0.11),0_2px_6px_rgba(0,0,0,0.04)]'
-                        }`}
-                        title={novelCol3.title}
-                      >
-                        <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-1 bg-neutral-100 dark:bg-zinc-800">
-                          <img
-                            src={getDirectImageUrl(novelCol3.coverImage, novelCol3.id || novelCol3.title)}
-                            onError={(e) => handleCoverImageError(e, novelCol3.id || novelCol3.title)}
-                            alt={novelCol3.title}
-                            className="w-full h-full object-cover group-hover/p3:scale-105 transition-transform duration-300"
-                          />
-                          <div
-                            className="absolute inset-0 pointer-events-none rounded-xl border border-black/10 dark:border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22),inset_0_-1px_1.5px_rgba(255,255,255,0.55)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.65),inset_0_-1px_1px_rgba(255,255,255,0.14)]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h4 className={`font-lora italic !font-normal text-center text-[10px] line-clamp-2 leading-tight px-0.5 mt-1 ${getThemePastelPalette(theme, isDarkEffective).heroTitleColor}`}>
-                          {novelCol3.title}
-                        </h4>
-                      </div>
-                    </div>
-                  )}
-
-                </div>
-              </section>
-              </div>
-            );
-          })()}
 
           {/* Widget Ngày Mới & Kỷ Niệm (Hiển thị cho tất cả theme chế độ sáng & tối, đổi màu theo theme) */}
           <div className="w-full">

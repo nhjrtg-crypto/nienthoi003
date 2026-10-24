@@ -685,12 +685,14 @@ export default function App() {
   });
 
   const toggleDarkMode = () => {
-    setIsDarkMode((prev) => {
-      const next = !prev;
+    const next = !isDarkMode;
+    setIsDarkMode(next);
+    try {
       safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-      try { window.dispatchEvent(new Event('storage')); } catch {}
-      return next;
-    });
+    } catch {}
+    try {
+      window.dispatchEvent(new Event('storage'));
+    } catch {}
   };
 
   // Đồng bộ class dark trên document.documentElement theo trạng thái isDarkMode
@@ -1463,10 +1465,18 @@ export default function App() {
             onSelectNovel={handleSelectNovel}
             onOpenNovelToReadingPosition={handleOpenNovelToReadingPosition}
             isAdmin={isAdmin}
+            theme={safeStorage.getItem('cosmo_novel_theme') || 'amethyst-haze'}
             isDarkMode={isDarkMode}
             onToggleDarkMode={toggleDarkMode}
             onOpenAdminAuth={() => setIsAdminAuthModalOpen(true)}
             onOpenLightIntro={() => {
+              setSelectedNovel(null);
+              setReadingChapterNumber(null);
+              setLightIntroOption('style1');
+              setViewMode('about-light');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onNavigateToGarden={() => {
               setSelectedNovel(null);
               setReadingChapterNumber(null);
               setLightIntroOption('style1');

@@ -353,7 +353,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
       cardTitle: 'text-[#0f172a]',
       cardTitleHover: 'group-hover:text-[#0284c7]',
       cardSynopsis: 'text-[#475569]',
-      cardFooterBorder: 'frost-light-novel-divider border-[#bae6fe]/60',
+      cardFooterBorder: 'frost-light-novel-divider border-[#bae6fe]/15',
       cardAuthor: 'text-[#475569]',
       cardChapterBtn: 'text-[#0284c7]',
       recruitmentBanner: 'bg-[#f9fcff] border border-[#d8dfe9]',
@@ -520,7 +520,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
       cardTitle: 'text-[#211c2f]',
       cardTitleHover: 'group-hover:text-[#7e739f]',
       cardSynopsis: 'text-[#544a6b]',
-      cardFooterBorder: 'amethyst-light-novel-divider border-[#dfdae8]',
+      cardFooterBorder: 'amethyst-light-novel-divider border-[#dfdae8]/15',
       cardAuthor: 'text-[#756e87]',
       cardChapterBtn: 'text-[#7e739f]',
       recruitmentBanner: 'bg-white border border-[#ded8ea]',
@@ -687,7 +687,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
       cardTitle: 'text-[#171717]',
       cardTitleHover: 'group-hover:text-[#737373]',
       cardSynopsis: 'text-[#525252]',
-      cardFooterBorder: 'notebook-light-novel-divider border-[#e5e5e5]',
+      cardFooterBorder: 'notebook-light-novel-divider border-[#e5e5e5]/15',
       cardAuthor: 'text-[#737373]',
       cardChapterBtn: 'text-[#737373]',
       recruitmentBanner: 'bg-white border border-[#e5e5e5]',
@@ -854,7 +854,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
       cardTitle: 'text-[#3A2A2A]',
       cardTitleHover: 'group-hover:text-[#A37764]',
       cardSynopsis: 'text-[#8C7A6E]',
-      cardFooterBorder: 'mocha-light-novel-divider border-[#E4D9BC]',
+      cardFooterBorder: 'mocha-light-novel-divider border-[#E4D9BC]/15',
       cardAuthor: 'text-[#8C7A6E]',
       cardChapterBtn: 'text-[#A37764]',
       recruitmentBanner: 'bg-[#F8F4EE] border border-[#E4D9BC]',
@@ -1021,7 +1021,7 @@ export function getNovelThemeStyles(theme: NovelThemeId, isDarkMode: boolean): N
     cardTitle: 'text-[#1c2b1e]',
     cardTitleHover: 'group-hover:text-[#436240]',
     cardSynopsis: 'text-[#485b4b]',
-    cardFooterBorder: 'sage-light-novel-divider border-[#cad8c6]',
+    cardFooterBorder: 'sage-light-novel-divider border-[#cad8c6]/15',
     cardAuthor: 'text-[#586c5a]',
     cardChapterBtn: 'text-[#3f5a3d]',
     recruitmentBanner: 'bg-white border border-[#d6e2d4]',
@@ -1199,3 +1199,409 @@ export function getCommentChapterBadgeStyle(theme: NovelThemeId, isDarkMode: boo
     }
   }
 }
+
+export interface RecentUpdatesCardStyles {
+  outerStyle: React.CSSProperties;
+  innerStyle: React.CSSProperties;
+  iconBtnStyle: React.CSSProperties;
+  iconColor: string;
+  titleColor: string;
+  subtitleColor: string;
+  chevronColor: string;
+  dividerClass: string;
+  itemHoverClass: string;
+  itemTitleHoverClass: string;
+  itemDateClass: string;
+}
+
+export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): RecentUpdatesCardStyles {
+  if (!isDark) {
+    switch (th) {
+      case 'sage':
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 242, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(162, 198, 172, 0.92) 0%, rgba(182, 215, 192, 0.58) 7%, rgba(205, 230, 212, 0.22) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(140, 180, 155, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 252, 248, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(180, 226, 196, 0.6) 0%, rgba(165, 214, 184, 0.5) 45%, rgba(150, 204, 172, 0.55) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(160, 200, 175, 0.15)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(243,251,246,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(205,236,216,0.6) 45%, rgba(158,206,174,0.8) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(150,190,165,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#3b6848]',
+          titleColor: 'text-[#223929]',
+          subtitleColor: 'text-[#74907d]',
+          chevronColor: 'text-[#556953]',
+          dividerClass: 'border-[#e3efe6]',
+          itemHoverClass: 'hover:bg-emerald-50/60',
+          itemTitleHoverClass: 'group-hover:text-emerald-700',
+          itemDateClass: 'text-emerald-600',
+        };
+      case 'mocha':
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(254, 247, 240, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(215, 185, 165, 0.92) 0%, rgba(230, 205, 188, 0.58) 7%, rgba(242, 225, 212, 0.22) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(195, 160, 135, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 251, 247, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(240, 208, 185, 0.6) 0%, rgba(232, 195, 170, 0.5) 45%, rgba(224, 182, 155, 0.55) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(210, 175, 150, 0.15)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,248,242,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(245,220,200,0.6) 45%, rgba(220,185,160,0.8) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(190,155,130,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#8c5e47]',
+          titleColor: 'text-[#3d271e]',
+          subtitleColor: 'text-[#9d7d6f]',
+          chevronColor: 'text-[#7d675e]',
+          dividerClass: 'border-[#f2e4dc]',
+          itemHoverClass: 'hover:bg-amber-50/60',
+          itemTitleHoverClass: 'group-hover:text-amber-700',
+          itemDateClass: 'text-amber-600',
+        };
+      case 'amethyst-haze':
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 245, 253, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(200, 185, 220, 0.92) 0%, rgba(215, 202, 232, 0.58) 7%, rgba(232, 222, 245, 0.22) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(180, 160, 205, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(252, 250, 255, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(225, 205, 245, 0.6) 0%, rgba(215, 192, 238, 0.5) 45%, rgba(205, 180, 232, 0.55) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(195, 175, 218, 0.15)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,246,255,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(235,220,250,0.6) 45%, rgba(205,185,230,0.8) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(175,150,205,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#6b5887]',
+          titleColor: 'text-[#322345]',
+          subtitleColor: 'text-[#9382ab]',
+          chevronColor: 'text-[#6b5e7d]',
+          dividerClass: 'border-[#ede5f7]',
+          itemHoverClass: 'hover:bg-purple-50/60',
+          itemTitleHoverClass: 'group-hover:text-purple-700',
+          itemDateClass: 'text-purple-400',
+        };
+      case 'cosmic':
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(246, 247, 255, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(190, 195, 230, 0.92) 0%, rgba(205, 210, 240, 0.58) 7%, rgba(225, 230, 248, 0.22) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(170, 175, 220, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 251, 255, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(210, 218, 252, 0.6) 0%, rgba(198, 208, 248, 0.5) 45%, rgba(188, 198, 245, 0.55) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(185, 192, 230, 0.15)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(247,248,255,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(220,228,255,0.6) 45%, rgba(190,200,245,0.8) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(165,175,220,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#5b589e]',
+          titleColor: 'text-[#282548]',
+          subtitleColor: 'text-[#8a87b5]',
+          chevronColor: 'text-[#65538e]',
+          dividerClass: 'border-[#e8eaf7]',
+          itemHoverClass: 'hover:bg-indigo-50/60',
+          itemTitleHoverClass: 'group-hover:text-indigo-700',
+          itemDateClass: 'text-indigo-600',
+        };
+      case 'notebook':
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.4) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(212, 212, 216, 0.9) 0%, rgba(228, 228, 231, 0.6) 7%, rgba(244, 244, 245, 0.25) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 252, 252, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(228, 228, 231, 0.7) 0%, rgba(212, 212, 216, 0.5) 45%, rgba(228, 228, 231, 0.6) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.98), inset 0 -1px 2px rgba(200, 200, 205, 0.12)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(250,250,250,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(228,228,231,0.6) 45%, rgba(212,212,216,0.8) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#525252]',
+          titleColor: 'text-[#171717]',
+          subtitleColor: 'text-[#737373]',
+          chevronColor: 'text-[#525252]',
+          dividerClass: 'border-[#e5e5e5]',
+          itemHoverClass: 'hover:bg-zinc-100/70',
+          itemTitleHoverClass: 'group-hover:text-[#171717]',
+          itemDateClass: 'text-[#737373]',
+        };
+      case 'lululemon':
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(249, 246, 247, 0.95) 0%, rgba(255, 255, 255, 0.88) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.4) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(132, 51, 75, 0.75) 0%, rgba(228, 201, 205, 0.55) 7%, rgba(234, 212, 215, 0.22) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(132, 51, 75, 0.12), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 249, 250, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(234, 212, 215, 0.7) 0%, rgba(228, 201, 205, 0.5) 45%, rgba(132, 51, 75, 0.6) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.98), inset 0 -1px 2px rgba(228, 201, 205, 0.2)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(249,246,247,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(234,212,215,0.6) 45%, rgba(132,51,75,0.7) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(132, 51, 75, 0.12), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#84334b]',
+          titleColor: 'text-[#382329]',
+          subtitleColor: 'text-[#8c5a67]',
+          chevronColor: 'text-[#84334b]',
+          dividerClass: 'border-[#e4d7db]',
+          itemHoverClass: 'hover:bg-rose-50/60',
+          itemTitleHoverClass: 'group-hover:text-[#84334b]',
+          itemDateClass: 'text-[#84334b]',
+        };
+      case 'slate-haze':
+      default:
+        return {
+          outerStyle: {
+            border: '1.5px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(238, 246, 255, 0.75) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(155, 180, 208, 0.92) 0%, rgba(175, 200, 224, 0.58) 7%, rgba(195, 218, 238, 0.22) 15%, transparent 24%) border-box',
+            boxShadow: '0 12px 32px rgba(160, 185, 215, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+          },
+          innerStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(175deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 252, 255, 0.92) 100%) padding-box, linear-gradient(to bottom, rgba(195, 225, 252, 0.6) 0%, rgba(182, 216, 248, 0.5) 45%, rgba(172, 210, 246, 0.55) 100%) border-box',
+            boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(180, 204, 228, 0.12)',
+          },
+          iconBtnStyle: {
+            border: '1px solid transparent',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(246,250,255,0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(225,238,250,0.6) 45%, rgba(175,198,222,0.8) 100%) border-box',
+            boxShadow: '0 2px 5px rgba(165,188,212,0.18), inset 0 1px 1px rgba(255,255,255,0.95)',
+          },
+          iconColor: 'text-[#526982]',
+          titleColor: 'text-[#2b3a4a]',
+          subtitleColor: 'text-[#8798ac]',
+          chevronColor: 'text-slate-500',
+          dividerClass: 'border-[#e5eff8]',
+          itemHoverClass: 'hover:bg-sky-50/60',
+          itemTitleHoverClass: 'group-hover:text-sky-600',
+          itemDateClass: 'text-sky-600',
+        };
+    }
+  }
+
+  // Theme tối (isDark === true) - Giảm độ trong suốt cho các dropdown menu & card
+  switch (th) {
+    case 'sage':
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#0d1710',
+          background: '#0d1710',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-[#8cb391]',
+        titleColor: 'text-[#eaf2eb]',
+        subtitleColor: 'text-[#8cb391]',
+        chevronColor: 'text-[#8cb391]',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
+        itemTitleHoverClass: 'group-hover:text-[#8cb391]',
+        itemDateClass: 'text-[#8cb391]',
+      };
+    case 'mocha':
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#17110d',
+          background: '#17110d',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-[#c49f8f]',
+        titleColor: 'text-[#f5ece6]',
+        subtitleColor: 'text-[#c49f8f]',
+        chevronColor: 'text-[#c49f8f]',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
+        itemTitleHoverClass: 'group-hover:text-[#c49f8f]',
+        itemDateClass: 'text-[#c49f8f]',
+      };
+    case 'amethyst-haze':
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#100b1a',
+          background: '#100b1a',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-purple-300',
+        titleColor: 'text-purple-100',
+        subtitleColor: 'text-purple-300',
+        chevronColor: 'text-purple-300',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
+        itemTitleHoverClass: 'group-hover:text-purple-300',
+        itemDateClass: 'text-purple-300',
+      };
+    case 'cosmic':
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#0d0d22',
+          background: '#0d0d22',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-pink-400',
+        titleColor: 'text-purple-100',
+        subtitleColor: 'text-pink-300',
+        chevronColor: 'text-pink-300',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
+        itemTitleHoverClass: 'group-hover:text-pink-300',
+        itemDateClass: 'text-pink-400',
+      };
+    case 'notebook':
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#121214',
+          background: '#121214',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-zinc-300',
+        titleColor: 'text-zinc-100',
+        subtitleColor: 'text-zinc-400',
+        chevronColor: 'text-zinc-400',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
+        itemTitleHoverClass: 'group-hover:text-zinc-100',
+        itemDateClass: 'text-zinc-400',
+      };
+    case 'lululemon':
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#170e12',
+          background: '#170e12',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-[#d4a3af]',
+        titleColor: 'text-[#faf2f4]',
+        subtitleColor: 'text-[#c296a2]',
+        chevronColor: 'text-[#d4a3af]',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-[#84334b]/20 transition-colors',
+        itemTitleHoverClass: 'group-hover:text-[#faf2f4]',
+        itemDateClass: 'text-[#d4a3af]',
+      };
+    case 'slate-haze':
+    default:
+      return {
+        outerStyle: {
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          backgroundColor: '#0d1319',
+          background: '#0d1319',
+          boxShadow: '0 20px 48px rgba(0, 0, 0, 0.95)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+        },
+        innerStyle: {
+          border: 'none',
+          background: 'transparent',
+        },
+        iconBtnStyle: {
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.08)',
+          boxShadow: 'none',
+        },
+        iconColor: 'text-slate-300',
+        titleColor: 'text-slate-100',
+        subtitleColor: 'text-slate-400',
+        chevronColor: 'text-slate-400',
+        dividerClass: 'border-white/[0.08]',
+        itemHoverClass: 'bg-white/[0.04] hover:bg-white/[0.08] transition-colors',
+        itemTitleHoverClass: 'group-hover:text-slate-100',
+        itemDateClass: 'text-slate-400',
+      };
+  }
+}
+
