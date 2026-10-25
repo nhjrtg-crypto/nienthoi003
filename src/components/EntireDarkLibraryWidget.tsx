@@ -902,8 +902,16 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
 }) => {
   const c = getDarkThemeConfig(themeId);
 
-  const [selectedDay, setSelectedDay] = useState<number>(24);
-  const [activePoetIdx, setActivePoetIdx] = useState<number>(23); // Mặc định ngày 24 (24 / 31)
+  const now = useMemo(() => new Date(), []);
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentMonthName = now.toLocaleString('en-US', { month: 'long' }).toUpperCase();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+  const todayDate = now.getDate();
+
+  const [selectedDay, setSelectedDay] = useState<number>(todayDate);
+  const [activePoetIdx, setActivePoetIdx] = useState<number>((todayDate - 1) % poetList.length);
   const [readingProgress, setReadingProgress] = useState<number>(78);
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [timeStr, setTimeStr] = useState<string>('04:06:36 PM');
@@ -942,14 +950,8 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
           C. HỆ THỐNG TRANG TRÍ VI HÌNH HỌC RẢI RÁC TRONG KHỐI LỚN
           ------------------------------------------------------------------- */}
       <div className={`absolute inset-0 pointer-events-none select-none z-20 ${c.glyphColor}`}>
-        <div className="absolute top-4 sm:top-5 left-4 sm:left-7 opacity-40"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
-        <div className="absolute top-4 sm:top-5 right-4 sm:right-7 opacity-35"><MicroDot className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
-        <div className="absolute top-[30%] left-3 sm:left-6 opacity-35"><MicroSquareFilled className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
-        <div className="absolute top-[34%] right-3 sm:right-6 opacity-35"><MicroDiamond className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
-        <div className="absolute top-[56%] left-3 sm:left-6 opacity-35"><MicroCircle className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
-        <div className="absolute top-[58%] right-3 sm:right-6 opacity-35"><MicroStar4 className="w-1.5 sm:w-2 h-1.5 sm:h-2" /></div>
-        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-7 opacity-35"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
-        <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-7 opacity-40"><MicroDot className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
+        <div className="absolute top-4 sm:top-5 left-4 sm:left-7 opacity-30"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
+        <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-7 opacity-30"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
       </div>
 
       {/* -------------------------------------------------------------------
@@ -1045,7 +1047,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
             {/* Dòng Memo */}
             <div className={`flex items-center justify-between font-mono text-[6.5px] xs:text-[7.5px] sm:text-[9px] ${c.memoTextColor} px-0.5`}>
               <div>
-                <p>MEMO · OCT {selectedDay}</p>
+                <p>MEMO · {currentMonthName.slice(0, 3)} {selectedDay}</p>
                 <p className="opacity-75">FLORAL ANTHESIS</p>
               </div>
               <div className="text-right opacity-75">
@@ -1255,7 +1257,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
                 <CalendarIcon className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3" />
                 <span>DATE</span>
               </span>
-              <span className="font-medium truncate">Oct 25, 2026</span>
+              <span className="font-medium truncate">{now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
             </div>
 
             <div className="flex items-center justify-between text-stone-300">
