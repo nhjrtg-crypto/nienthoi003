@@ -814,7 +814,7 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
 
   return (
     /* THẺ CHÍNH MINI WIDGET: BO GÓC 2XL/3XL, TỰ ĐỘNG CHUYỂN BẢNG MÀU CHO CẢ 5 THEME */
-    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.outerBorder} bg-white ${c.outerShadow} relative select-none overflow-hidden transition-all duration-500 font-sans antialiased text-slate-800`}>
+    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.outerBorder} bg-white ${c.outerShadow} relative select-none overflow-visible transition-all duration-500 font-sans antialiased text-slate-800`}>
       
       {/* -----------------------------------------------------------------
           A. NỀN QUẦNG SÁNG TỰ NHIÊN (AMBIENT BACKGROUND GLOW)

@@ -104,6 +104,19 @@ export const CelestialDiamondMoonCanvas: React.FC<{
     }));
   }, []);
 
+  // Các ngôi sao tròn nhỏ và sao 4 cánh nhấp nháy quanh thiên thể
+  const surroundingStars = useMemo(() => {
+    return Array.from({ length: 28 }).map((_, i) => ({
+      r: 65 + Math.random() * 70,
+      angle: Math.random() * Math.PI * 2,
+      speed: (Math.random() - 0.5) * 0.003,
+      size: Math.random() * 1.6 + 1.0,
+      isStar4: i % 3 === 0,
+      blinkSpeed: Math.random() * 0.05 + 0.025,
+      blinkPhase: Math.random() * Math.PI * 2,
+    }));
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -111,7 +124,7 @@ export const CelestialDiamondMoonCanvas: React.FC<{
     if (!ctx) return;
 
     const dpr = Math.max(window.devicePixelRatio || 1, 2);
-    const size = 300;
+    const size = 520; // Tăng kích thước canvas để hoàn toàn chống cắt xén
     canvas.width = size * dpr;
     canvas.height = size * dpr;
 
@@ -120,11 +133,11 @@ export const CelestialDiamondMoonCanvas: React.FC<{
     let gearAngleInner = 0;
     let gearAngleMid = 0;
 
-    // 4 hạt mưa thanh mảnh rơi êm đềm
+    // Hạt mưa rơi với tốc độ hơi chậm lại một chút
     const raindrops = Array.from({ length: 4 }).map((_, i) => ({
-      x: (Math.random() - 0.5) * 200,
-      y: -140 + (i * 260) / 4,
-      speedY: Math.random() * 1.2 + 3.2,
+      x: (Math.random() - 0.5) * 240,
+      y: -180 + (i * 320) / 4,
+      speedY: Math.random() * 0.8 + 2.0, // Chậm lại một chút theo yêu cầu
       length: Math.random() * 20 + 35,
       alpha: Math.random() * 0.3 + 0.4,
     }));
@@ -156,10 +169,10 @@ export const CelestialDiamondMoonCanvas: React.FC<{
         ctx.lineTo(drop.x, drop.y);
         ctx.stroke();
 
-        if (drop.y > 100) {
-          ripples.push({ x: drop.x, y: 95, rx: 4, maxRx: 55, alpha: drop.alpha });
-          drop.y = -140 - Math.random() * 30;
-          drop.x = (Math.random() - 0.5) * 200;
+        if (drop.y > 120) {
+          ripples.push({ x: drop.x, y: 110, rx: 4, maxRx: 60, alpha: drop.alpha });
+          drop.y = -180 - Math.random() * 30;
+          drop.x = (Math.random() - 0.5) * 240;
         }
       });
 
@@ -187,24 +200,39 @@ export const CelestialDiamondMoonCanvas: React.FC<{
       ctx.setLineDash([4, 6]);
       ctx.lineDashOffset = -tick * 0.6;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 130, 70, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, 175, 95, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
 
-      // 16 hạt bụi sao chuyển động dọc theo vành elip
+      // 20 hạt bụi sao chuyển động tuần hoàn dọc theo vành đai
+      const stardustCount = 20;
       const cosT = Math.cos(tilt);
       const sinT = Math.sin(tilt);
-      for (let k = 0; k < 16; k++) {
-        const pAng = k * ((Math.PI * 2) / 16) + tick * 0.003;
-        const ex = 130 * Math.cos(pAng);
-        const ey = 70 * Math.sin(pAng);
+      for (let k = 0; k < stardustCount; k++) {
+        const orbitRx = 175;
+        const orbitRy = 95;
+        const orbitSpeed = 0.0032;
+        const pAngle = k * ((Math.PI * 2) / stardustCount) + tick * orbitSpeed;
+
+        const ex = orbitRx * Math.cos(pAngle);
+        const ey = orbitRy * Math.sin(pAngle);
         const px = ex * cosT - ey * sinT;
         const py = ex * sinT + ey * cosT;
-        const alpha = 0.4 + 0.35 * Math.sin(tick * 0.04 + k);
+
+        const alpha = 0.45 + 0.4 * Math.sin(tick * 0.04 + k);
         ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         ctx.beginPath();
-        ctx.arc(px, py, k % 3 === 0 ? 1.5 : 1, 0, Math.PI * 2);
+        ctx.arc(px, py, k % 3 === 0 ? 1.6 : 1.1, 0, Math.PI * 2);
         ctx.fill();
+
+        if (k % 4 === 0) {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.85})`;
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.moveTo(px - 3.5, py); ctx.lineTo(px + 3.5, py);
+          ctx.moveTo(px, py - 3.5); ctx.lineTo(px, py + 3.5);
+          ctx.stroke();
+        }
       }
 
       // --- C. HỆ THỐNG BÁNH RĂNG THIÊN VĂN ĐỐI XỨNG ---
@@ -265,7 +293,34 @@ export const CelestialDiamondMoonCanvas: React.FC<{
         ctx.stroke();
       }
 
-      // --- D. VẦNG TRĂNG KIM CƯƠNG LƯỠI LIỀM PHÁT SÁNG Ở TÂM ---
+      // --- D. CÁC NGÔI SAO TRÒN NHỎ & SAO 4 CÁNH NHẤP NHÁY QUANH THIÊN THỂ ---
+      surroundingStars.forEach((star) => {
+        star.angle += star.speed;
+        const sx = star.r * Math.cos(star.angle);
+        const sy = star.r * Math.sin(star.angle);
+        const alpha = 0.35 + 0.55 * Math.sin(tick * star.blinkSpeed + star.blinkPhase);
+
+        if (star.isStar4) {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(sx - 5.5, sy); ctx.lineTo(sx + 5.5, sy);
+          ctx.moveTo(sx, sy - 5.5); ctx.lineTo(sx, sy + 5.5);
+          ctx.stroke();
+
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1.3, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, star.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // --- E. VẦNG TRĂNG KIM CƯƠNG LƯỠI LIỀM PHÁT SÁNG Ở TÂM ---
       const cx1 = 9;
       const r1 = 44;
       const cx2 = 22;
@@ -341,9 +396,9 @@ export const CelestialDiamondMoonCanvas: React.FC<{
 
     render();
     return () => cancelAnimationFrame(animId);
-  }, [moonParticles, ringColor]);
+  }, [moonParticles, surroundingStars, ringColor]);
 
-  return <canvas ref={canvasRef} className={`select-none pointer-events-none w-28 h-28 xs:w-36 xs:h-36 sm:w-48 sm:h-48 md:w-60 md:h-60 ${className}`} />;
+  return <canvas ref={canvasRef} className={`select-none pointer-events-none w-36 h-36 xs:w-42 xs:h-42 sm:w-52 sm:h-52 md:w-64 md:h-64 ${className}`} />;
 };
 
 // =========================================================================
@@ -438,11 +493,11 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
     case 'amethyst-haze':
       return {
         themeId,
-        auroraOrb1: 'from-purple-900/35 via-fuchsia-950/25 to-transparent',
-        auroraOrb2: 'from-indigo-950/40 via-purple-950/25 to-transparent',
-        auroraOrb3: 'bg-purple-900/25',
-        innerGlowOrb1: 'bg-purple-500/25',
-        innerGlowOrb2: 'bg-fuchsia-500/20',
+        auroraOrb1: 'from-purple-900/20 via-fuchsia-950/15 to-transparent',
+        auroraOrb2: 'from-indigo-950/25 via-purple-950/15 to-transparent',
+        auroraOrb3: 'bg-purple-900/15',
+        innerGlowOrb1: 'bg-purple-500/15',
+        innerGlowOrb2: 'bg-fuchsia-500/10',
         canvasRingColor: 'rgba(216, 180, 254, 0.5)',
         cardBorder: 'border-white/15',
         cardBg: 'bg-stone-950/65',
@@ -516,11 +571,11 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
     case 'sage':
       return {
         themeId,
-        auroraOrb1: 'from-emerald-950/35 via-teal-950/25 to-transparent',
-        auroraOrb2: 'from-teal-950/40 via-emerald-950/25 to-transparent',
-        auroraOrb3: 'bg-emerald-950/25',
-        innerGlowOrb1: 'bg-emerald-500/25',
-        innerGlowOrb2: 'bg-teal-500/20',
+        auroraOrb1: 'from-emerald-950/20 via-teal-950/15 to-transparent',
+        auroraOrb2: 'from-teal-950/25 via-emerald-950/15 to-transparent',
+        auroraOrb3: 'bg-emerald-950/15',
+        innerGlowOrb1: 'bg-emerald-500/15',
+        innerGlowOrb2: 'bg-teal-500/10',
         canvasRingColor: 'rgba(110, 231, 183, 0.5)',
         cardBorder: 'border-white/15',
         cardBg: 'bg-stone-950/65',
@@ -674,14 +729,14 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
         themeId,
         isWhiteCard: false,
         linedPaperColor: 'rgba(255, 255, 255, 0.08)',
-        auroraOrb1: 'from-zinc-900/25 via-stone-900/15 to-transparent',
-        auroraOrb2: 'from-stone-900/25 via-zinc-950/15 to-transparent',
-        auroraOrb3: 'bg-zinc-900/20',
+        auroraOrb1: 'from-zinc-900/15 via-stone-900/10 to-transparent',
+        auroraOrb2: 'from-stone-900/15 via-zinc-950/10 to-transparent',
+        auroraOrb3: 'bg-zinc-900/12',
         cardBorder: 'border-white/15',
         cardBg: 'bg-zinc-950/75',
         cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
-        innerGlowOrb1: 'bg-white/10',
-        innerGlowOrb2: 'bg-stone-500/10',
+        innerGlowOrb1: 'bg-white/6',
+        innerGlowOrb2: 'bg-stone-500/5',
         glyphColor: 'text-zinc-400',
         barcodeColor: 'bg-white',
         miniWidgetTitle: 'text-zinc-300',
@@ -874,7 +929,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
 
   return (
     /* THẺ CHÍNH MINI WIDGET: KÍNH HUN KHÓI (FROSTED SMOKED GLASS) */
-    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.cardBorder} ${c.cardBg} backdrop-blur-2xl ${c.cardShadow} relative select-none overflow-hidden transition-all duration-500 z-10 font-sans antialiased ${c.isWhiteCard ? 'text-stone-900' : 'text-stone-100'}`}>
+    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.cardBorder} ${c.cardBg} backdrop-blur-2xl ${c.cardShadow} relative select-none overflow-visible transition-all duration-500 z-10 font-sans antialiased ${c.isWhiteCard ? 'text-stone-900' : 'text-stone-100'}`}>
       
       {/* Quầng sáng nội tại của tấm kính */}
       <div className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden">
