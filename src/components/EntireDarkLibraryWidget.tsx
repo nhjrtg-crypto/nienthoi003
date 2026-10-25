@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Calendar as CalendarIcon, Clock, Play, Pause } from 'lucide-react';
 import { Novel } from '../types';
+import { MetallicPaperClip } from './MetallicPaperClip';
 
 // =========================================================================
 // 1. CÁC HỌA TIẾT VI HÌNH HỌC (MICRO-DECORATION GLYPHS)
@@ -348,287 +349,8 @@ export const CelestialDiamondMoonCanvas: React.FC<{
 // =========================================================================
 // 4. BỘ DỮ LIỆU 31 BÀI THƠ KINH ĐIỂN CHO 31 NGÀY (POETRY LIST)
 // =========================================================================
-export const poetList = [
-  {
-    author: 'JOHN KEATS',
-    lines: [
-      'I see a lily on thy brow,',
-      'With anguish moist and fever-dew;',
-      'And on thy cheeks a fading rose',
-      'Fast withereth too.',
-    ],
-  },
-  {
-    author: 'CHRISTINA ROSSETTI',
-    lines: [
-      'Consider the lilies of the field, whose bloom',
-      'Is briefer than the sunflower;',
-      'Yet Solomon in all his glory',
-      'Was not arrayed like one of these.',
-    ],
-  },
-  {
-    author: 'WILLIAM BLAKE',
-    lines: [
-      'The modest Rose puts forth a thorn,',
-      'The humble Sheep a threat’ning horn;',
-      'While the Lily white shall in love delight,',
-      'Nor a thorn nor a threat stain her beauty bright.',
-    ],
-  },
-  {
-    author: 'ALFRED TENNYSON',
-    lines: [
-      'And the sound of a voice that is still,',
-      'Break, break, break, at the foot of thy crags, O Sea!',
-      'But the tender grace of a day that is dead',
-      'Will never come back to me.',
-    ],
-  },
-  {
-    author: 'PERCY B. SHELLEY',
-    lines: [
-      'The cold earth slept below;',
-      'Above the cold sky shone;',
-      'And all around, with a chilling sound,',
-      'From caves of ice and fields of snow.',
-    ],
-  },
-  {
-    author: 'EMILY DICKINSON',
-    lines: [
-      'Hope is the thing with feathers',
-      'That perches in the soul,',
-      'And sings the tune without the words,',
-      'And never stops at all.',
-    ],
-  },
-  {
-    author: 'LORD BYRON',
-    lines: [
-      'She walks in beauty, like the night',
-      'Of cloudless climes and starry skies;',
-      'And all that’s best of dark and bright',
-      'Meet in her aspect and her eyes.',
-    ],
-  },
-  {
-    author: 'WILLIAM WORDSWORTH',
-    lines: [
-      'I wandered lonely as a cloud',
-      'That floats on high o’er vales and hills,',
-      'When all at once I saw a crowd,',
-      'A host, of golden daffodils.',
-    ],
-  },
-  {
-    author: 'ROBERT BROWNING',
-    lines: [
-      'Grow old along with me!',
-      'The best is yet to be,',
-      'The last of life, for which the first was made:',
-      'Our times are in His hand.',
-    ],
-  },
-  {
-    author: 'WILLIAM SHAKESPEARE',
-    lines: [
-      'Shall I compare thee to a summer’s day?',
-      'Thou art more lovely and more temperate:',
-      'Rough winds do shake the darling buds of May,',
-      'And summer’s lease hath all too short a date.',
-    ],
-  },
-  {
-    author: 'EDGAR ALLAN POE',
-    lines: [
-      'For the moon never beams without bringing me dreams',
-      'Of the beautiful Annabel Lee;',
-      'And the stars never rise but I feel the bright eyes',
-      'Of the beautiful Annabel Lee.',
-    ],
-  },
-  {
-    author: 'W. B. YEATS',
-    lines: [
-      'I will arise and go now, and go to Innisfree,',
-      'And a small cabin build there, of clay and wattles made;',
-      'Nine bean-rows will I have there, a hive for the honey-bee,',
-      'And live alone in the bee-loud glade.',
-    ],
-  },
-  {
-    author: 'ROBERT FROST',
-    lines: [
-      'The woods are lovely, dark and deep,',
-      'But I have promises to keep,',
-      'And miles to go before I sleep,',
-      'And miles to go before I sleep.',
-    ],
-  },
-  {
-    author: 'WALT WHITMAN',
-    lines: [
-      'O Captain! my Captain! our fearful trip is done,',
-      'The ship has weather’d every rack, the prize we sought is won,',
-      'The port is near, the bells I hear, the people all exulting,',
-      'While follow eyes the steady keel, the vessel grim and daring.',
-    ],
-  },
-  {
-    author: 'RAINER MARIA RILKE',
-    lines: [
-      'Let everything happen to you: beauty and terror.',
-      'Just keep going. No feeling is final.',
-      'Don’t lose yourself to regret;',
-      'Nearby is the land they call life.',
-    ],
-  },
-  {
-    author: 'ROBERT BURNS',
-    lines: [
-      'O my Luve is like a red, red rose',
-      'That’s newly sprung in June;',
-      'O my Luve is like the melody',
-      'That’s sweetly played in tune.',
-    ],
-  },
-  {
-    author: 'JOHN DONNE',
-    lines: [
-      'No man is an island, entire of itself;',
-      'Every man is a piece of the continent,',
-      'A part of the main.',
-      'Any man’s death diminishes me, because I am involved in mankind.',
-    ],
-  },
-  {
-    author: 'ELIZABETH BARRETT BROWNING',
-    lines: [
-      'How do I love thee? Let me count the ways.',
-      'I love thee to the depth and breadth and height',
-      'My soul can reach, when feeling out of sight',
-      'For the ends of being and ideal grace.',
-    ],
-  },
-  {
-    author: 'SAMUEL TAYLOR COLERIDGE',
-    lines: [
-      'He prayeth best, who loveth best',
-      'All things both great and small;',
-      'For the dear God who loveth us,',
-      'He made and loveth all.',
-    ],
-  },
-  {
-    author: 'THOMAS HARDY',
-    lines: [
-      'Wintertime has come again,',
-      'With frost upon the hill and plain;',
-      'Yet in this silence cold and still,',
-      'A quiet light shines on the sill.',
-    ],
-  },
-  {
-    author: 'MATTHEW ARNOLD',
-    lines: [
-      'The sea is calm tonight.',
-      'The tide is full, the moon lies fair',
-      'Upon the straits; on the French coast the light',
-      'Gleams and is gone; the cliffs of England stand.',
-    ],
-  },
-  {
-    author: 'HENRY WADSWORTH LONGFELLOW',
-    lines: [
-      'The night shall be filled with music,',
-      'And the cares, that infest the day,',
-      'Shall fold their tents, like the Arabs,',
-      'And as silently steal away.',
-    ],
-  },
-  {
-    author: 'JOHN MILTON',
-    lines: [
-      'They also serve who only stand and wait;',
-      'Peace hath her victories no less renowned than war,',
-      'Though darkness veil the earthly light,',
-      'Faith shines like an immortal star.',
-    ],
-  },
-  {
-    author: 'ANDREW MARVELL',
-    lines: [
-      'Had we but world enough and time,',
-      'This coyness, lady, were no crime.',
-      'We would sit down, and think which way',
-      'To walk, and pass our long love’s day.',
-    ],
-  },
-  {
-    author: 'ROBERT HERRICK',
-    lines: [
-      'Gather ye rosebuds while ye may,',
-      'Old Time is still a-flying;',
-      'And this same flower that smiles today',
-      'Tomorrow will be dying.',
-    ],
-  },
-  {
-    author: 'JOHN CLARE',
-    lines: [
-      'I am—yet what I am none cares or knows,',
-      'My friends forsake me like a memory lost;',
-      'I am the self-consumer of my woes,',
-      'They rise and vanish in oblivious host.',
-    ],
-  },
-  {
-    author: 'ALGERNON CHARLES SWINBURNE',
-    lines: [
-      'From too much love of living,',
-      'From hope and fear set free,',
-      'We thank with brief thanksgiving',
-      'Whatever gods may be.',
-    ],
-  },
-  {
-    author: 'A. E. HOUSMAN',
-    lines: [
-      'Loveliest of trees, the cherry now',
-      'Is hung with bloom along the bough,',
-      'And stands about the woodland ride',
-      'Wearing white for Eastertide.',
-    ],
-  },
-  {
-    author: 'RUPERT BROOKE',
-    lines: [
-      'If I should die, think only this of me:',
-      'That there’s some corner of a foreign field',
-      'That is for ever England. There shall be',
-      'In that rich earth a richer dust concealed.',
-    ],
-  },
-  {
-    author: 'GERARD MANLEY HOPKINS',
-    lines: [
-      'The world is charged with the grandeur of God.',
-      'It will flame out, like shining from shook foil;',
-      'It gathers to a greatness, like the ooze of oil',
-      'Crushed. Why do men then now not reck his rod?',
-    ],
-  },
-  {
-    author: 'RABINDRANATH TAGORE',
-    lines: [
-      'Let your life lightly dance on the edges of Time',
-      'Like dew on the tip of a leaf;',
-      'Do not dread the setting of the sun,',
-      'For starlight shall bring you peace.',
-    ],
-  },
-];
+import { poetList, getSeasonDisplay, getSeasonName, PoetItem } from '../utils/libraryPoetry';
+export { poetList, getSeasonDisplay, getSeasonName, type PoetItem };
 
 // =========================================================================
 // 5. CẤU HÌNH MÀU SẮC CHẾ ĐỘ TỐI CHO CẢ 5 THEME
@@ -707,6 +429,8 @@ export interface DarkWidgetThemeConfig {
   audioProgressBarBg: string;
   audioSpeedBorder: string;
   audioSpeedBg: string;
+  isWhiteCard?: boolean;
+  linedPaperColor?: string;
 }
 
 export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetThemeConfig => {
@@ -714,234 +438,242 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
     case 'amethyst-haze':
       return {
         themeId,
-        auroraOrb1: 'from-purple-900/25 via-fuchsia-950/20 to-transparent',
-        auroraOrb2: 'from-indigo-950/30 via-purple-950/20 to-transparent',
-        auroraOrb3: 'bg-purple-950/20',
-        cardBorder: 'border-purple-400/20',
-        cardBg: 'bg-[#0e0a16]/75',
-        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(216,180,254,0.15)]',
-        innerGlowOrb1: 'bg-purple-500/15',
-        innerGlowOrb2: 'bg-fuchsia-500/12',
-        glyphColor: 'text-purple-300',
-        barcodeColor: 'bg-purple-100',
-        miniWidgetTitle: 'text-purple-200',
-        followText: 'text-purple-400',
-        borderDivider: 'border-purple-500/20',
-        calContainerBorder: 'border-purple-500/20',
-        calContainerBg: 'bg-purple-950/[0.15]',
-        calHeaderTitle: 'text-purple-200',
-        calCardBorder: 'border-purple-400/25',
-        calCardBg: 'bg-purple-950/[0.25]',
-        ringBorder: 'border-purple-300/80',
-        ringGradient: 'from-purple-100 via-purple-300 to-stone-500',
-        calSelectedDayBg: 'bg-[#d8b4fe]',
-        calSelectedDayText: 'text-purple-950',
-        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(216,180,254,0.9)]',
-        calDayHoverText: 'hover:text-purple-100',
-        calDayHoverBg: 'hover:bg-purple-500/20',
-        memoTextColor: 'text-purple-300',
-        poetContainerBorder: 'border-purple-400/20',
-        poetContainerBg: 'bg-purple-950/[0.2]',
-        poetHeaderColor: 'text-purple-200',
-        poetTextColor: 'text-purple-100',
-        poetAuthorColor: 'text-purple-300',
-        poetActiveDot: 'bg-purple-200 shadow-[0_0_6px_#d8b4fe]',
-        poetNextBtnBorder: 'border-purple-400/30',
-        poetNextBtnBg: 'bg-purple-500/15',
-        poetNextBtnHoverBg: 'hover:bg-purple-500/25',
-        poetNextBtnText: 'text-purple-100',
-        anthesisSubtitle: 'text-purple-300',
+        auroraOrb1: 'from-purple-900/35 via-fuchsia-950/25 to-transparent',
+        auroraOrb2: 'from-indigo-950/40 via-purple-950/25 to-transparent',
+        auroraOrb3: 'bg-purple-900/25',
+        innerGlowOrb1: 'bg-purple-500/25',
+        innerGlowOrb2: 'bg-fuchsia-500/20',
+        canvasRingColor: 'rgba(216, 180, 254, 0.5)',
+        cardBorder: 'border-white/15',
+        cardBg: 'bg-stone-950/65',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
+        glyphColor: 'text-stone-400',
+        barcodeColor: 'bg-white',
+        miniWidgetTitle: 'text-stone-300',
+        followText: 'text-stone-500',
+        borderDivider: 'border-white/10',
+        calContainerBorder: 'border-white/10',
+        calContainerBg: 'bg-white/[0.03]',
+        calHeaderTitle: 'text-stone-300',
+        calCardBorder: 'border-white/15',
+        calCardBg: 'bg-white/[0.04]',
+        ringBorder: 'border-stone-300/80',
+        ringGradient: 'from-stone-100 via-stone-300 to-stone-500',
+        calSelectedDayBg: 'bg-white',
+        calSelectedDayText: 'text-black',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(255,255,255,0.9)]',
+        calDayHoverText: 'hover:text-white',
+        calDayHoverBg: 'hover:bg-white/10',
+        memoTextColor: 'text-stone-400',
+        poetContainerBorder: 'border-white/15',
+        poetContainerBg: 'bg-white/[0.03]',
+        poetHeaderColor: 'text-stone-300',
+        poetTextColor: 'text-stone-200',
+        poetAuthorColor: 'text-stone-400',
+        poetActiveDot: 'bg-white shadow-[0_0_6px_white]',
+        poetNextBtnBorder: 'border-white/20',
+        poetNextBtnBg: 'bg-white/10',
+        poetNextBtnHoverBg: 'hover:bg-white/20',
+        poetNextBtnText: 'text-stone-100',
+        anthesisSubtitle: 'text-stone-300',
         libraryTitleColor: 'text-white',
-        libraryGlow: 'drop-shadow-[0_0_12px_rgba(216,180,254,0.7)]',
-        starColor: 'text-purple-300',
-        bookCardBorder: 'border-purple-400/20',
-        bookCardBg: 'bg-purple-950/[0.25]',
-        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.6),inset_0_1px_1px_0_rgba(216,180,254,0.12)]',
-        washiTapeBg: 'rgba(216, 180, 254, 0.2)',
-        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(216, 180, 254, 0.3)',
-        gridLineColor: 'rgba(216, 180, 254, 0.3)',
-        bookTagColor: 'text-purple-300',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]',
+        starColor: 'text-stone-300',
+        bookCardBorder: 'border-white/15',
+        bookCardBg: 'bg-white/[0.04]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.1)]',
+        washiTapeBg: 'rgba(255, 255, 255, 0.15)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
+        gridLineColor: 'rgba(255, 255, 255, 0.3)',
+        bookTagColor: 'text-stone-300',
         bookTitleColor: 'text-white',
-        bookSubtitleColor: 'text-purple-300/80',
-        progressTrackBg: 'bg-purple-950/40',
-        progressBarBg: 'bg-gradient-to-r from-purple-300 to-fuchsia-300',
-        readMoreBtnColor: 'text-purple-200 hover:text-white',
-        quoteColor: 'text-purple-200/90',
-        nienthoiText: 'text-purple-300',
-        axisDotBg: 'bg-purple-300',
-        axisLineBg: 'bg-purple-400/30',
-        axisText: 'text-purple-200',
-        canvasRingColor: 'rgba(216, 180, 254, 0.45)',
+        bookSubtitleColor: 'text-stone-400',
+        progressTrackBg: 'bg-white/10',
+        progressBarBg: 'bg-white',
+        readMoreBtnColor: 'text-stone-300 hover:text-white',
+        quoteColor: 'text-stone-300',
+        nienthoiText: 'text-stone-400',
+        axisDotBg: 'bg-white/70',
+        axisLineBg: 'bg-white/20',
+        axisText: 'text-stone-300',
         canvasParticleColor: '#ffffff',
-        astroBorder: 'border-purple-500/20',
-        astroLabel: 'text-purple-300',
-        astroTime: 'text-purple-100',
-        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(216,180,254,0.8)]',
-        audioDivider: 'border-purple-500/20',
-        audioPlayBtnBg: 'bg-purple-500/20',
-        audioPlayBtnHoverBg: 'hover:bg-purple-500/35',
-        audioPlayBtnBorder: 'border-purple-400/35',
-        audioProgressTrackBg: 'bg-purple-950/40',
-        audioProgressBarBg: 'bg-gradient-to-r from-purple-300 to-fuchsia-300',
-        audioSpeedBorder: 'border-purple-400/30',
-        audioSpeedBg: 'bg-purple-500/15',
+        astroBorder: 'border-white/10',
+        astroLabel: 'text-stone-400',
+        astroTime: 'text-white',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]',
+        audioDivider: 'border-white/10',
+        audioPlayBtnBg: 'bg-white/10',
+        audioPlayBtnHoverBg: 'hover:bg-white/20',
+        audioPlayBtnBorder: 'border-white/25',
+        audioProgressTrackBg: 'bg-white/10',
+        audioProgressBarBg: 'bg-white',
+        audioSpeedBorder: 'border-white/20',
+        audioSpeedBg: 'bg-white/[0.06]',
+        isWhiteCard: false,
+        linedPaperColor: 'rgba(255, 255, 255, 0.08)',
       };
 
     case 'sage':
       return {
         themeId,
-        auroraOrb1: 'from-emerald-950/30 via-teal-950/20 to-transparent',
-        auroraOrb2: 'from-teal-950/30 via-emerald-950/20 to-transparent',
-        auroraOrb3: 'bg-emerald-950/20',
-        cardBorder: 'border-emerald-400/20',
-        cardBg: 'bg-[#070e0a]/75',
-        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(167,243,208,0.15)]',
-        innerGlowOrb1: 'bg-emerald-500/15',
-        innerGlowOrb2: 'bg-teal-500/12',
-        glyphColor: 'text-emerald-300',
-        barcodeColor: 'bg-emerald-100',
-        miniWidgetTitle: 'text-emerald-200',
-        followText: 'text-emerald-400',
-        borderDivider: 'border-emerald-500/20',
-        calContainerBorder: 'border-emerald-500/20',
-        calContainerBg: 'bg-emerald-950/[0.15]',
-        calHeaderTitle: 'text-emerald-200',
-        calCardBorder: 'border-emerald-400/25',
-        calCardBg: 'bg-emerald-950/[0.25]',
-        ringBorder: 'border-emerald-300/80',
-        ringGradient: 'from-emerald-100 via-emerald-300 to-stone-500',
-        calSelectedDayBg: 'bg-[#6ee7b7]',
-        calSelectedDayText: 'text-emerald-950',
-        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(110,231,183,0.9)]',
-        calDayHoverText: 'hover:text-emerald-100',
-        calDayHoverBg: 'hover:bg-emerald-500/20',
-        memoTextColor: 'text-emerald-300',
-        poetContainerBorder: 'border-emerald-400/20',
-        poetContainerBg: 'bg-emerald-950/[0.2]',
-        poetHeaderColor: 'text-emerald-200',
-        poetTextColor: 'text-emerald-100',
-        poetAuthorColor: 'text-emerald-300',
-        poetActiveDot: 'bg-emerald-200 shadow-[0_0_6px_#6ee7b7]',
-        poetNextBtnBorder: 'border-emerald-400/30',
-        poetNextBtnBg: 'bg-emerald-500/15',
-        poetNextBtnHoverBg: 'hover:bg-emerald-500/25',
-        poetNextBtnText: 'text-emerald-100',
-        anthesisSubtitle: 'text-emerald-300',
+        auroraOrb1: 'from-emerald-950/35 via-teal-950/25 to-transparent',
+        auroraOrb2: 'from-teal-950/40 via-emerald-950/25 to-transparent',
+        auroraOrb3: 'bg-emerald-950/25',
+        innerGlowOrb1: 'bg-emerald-500/25',
+        innerGlowOrb2: 'bg-teal-500/20',
+        canvasRingColor: 'rgba(110, 231, 183, 0.5)',
+        cardBorder: 'border-white/15',
+        cardBg: 'bg-stone-950/65',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
+        glyphColor: 'text-stone-400',
+        barcodeColor: 'bg-white',
+        miniWidgetTitle: 'text-stone-300',
+        followText: 'text-stone-500',
+        borderDivider: 'border-white/10',
+        calContainerBorder: 'border-white/10',
+        calContainerBg: 'bg-white/[0.03]',
+        calHeaderTitle: 'text-stone-300',
+        calCardBorder: 'border-white/15',
+        calCardBg: 'bg-white/[0.04]',
+        ringBorder: 'border-stone-300/80',
+        ringGradient: 'from-stone-100 via-stone-300 to-stone-500',
+        calSelectedDayBg: 'bg-white',
+        calSelectedDayText: 'text-black',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(255,255,255,0.9)]',
+        calDayHoverText: 'hover:text-white',
+        calDayHoverBg: 'hover:bg-white/10',
+        memoTextColor: 'text-stone-400',
+        poetContainerBorder: 'border-white/15',
+        poetContainerBg: 'bg-white/[0.03]',
+        poetHeaderColor: 'text-stone-300',
+        poetTextColor: 'text-stone-200',
+        poetAuthorColor: 'text-stone-400',
+        poetActiveDot: 'bg-white shadow-[0_0_6px_white]',
+        poetNextBtnBorder: 'border-white/20',
+        poetNextBtnBg: 'bg-white/10',
+        poetNextBtnHoverBg: 'hover:bg-white/20',
+        poetNextBtnText: 'text-stone-100',
+        anthesisSubtitle: 'text-stone-300',
         libraryTitleColor: 'text-white',
-        libraryGlow: 'drop-shadow-[0_0_12px_rgba(110,231,183,0.7)]',
-        starColor: 'text-emerald-300',
-        bookCardBorder: 'border-emerald-400/20',
-        bookCardBg: 'bg-emerald-950/[0.25]',
-        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.6),inset_0_1px_1px_0_rgba(167,243,208,0.12)]',
-        washiTapeBg: 'rgba(167, 243, 208, 0.2)',
-        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(167, 243, 208, 0.3)',
-        gridLineColor: 'rgba(167, 243, 208, 0.3)',
-        bookTagColor: 'text-emerald-300',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]',
+        starColor: 'text-stone-300',
+        bookCardBorder: 'border-white/15',
+        bookCardBg: 'bg-white/[0.04]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.1)]',
+        washiTapeBg: 'rgba(255, 255, 255, 0.15)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
+        gridLineColor: 'rgba(255, 255, 255, 0.3)',
+        bookTagColor: 'text-stone-300',
         bookTitleColor: 'text-white',
-        bookSubtitleColor: 'text-emerald-300/80',
-        progressTrackBg: 'bg-emerald-950/40',
-        progressBarBg: 'bg-gradient-to-r from-emerald-300 to-teal-300',
-        readMoreBtnColor: 'text-emerald-200 hover:text-white',
-        quoteColor: 'text-emerald-200/90',
-        nienthoiText: 'text-emerald-300',
-        axisDotBg: 'bg-emerald-300',
-        axisLineBg: 'bg-emerald-400/30',
-        axisText: 'text-emerald-200',
-        canvasRingColor: 'rgba(167, 243, 208, 0.45)',
+        bookSubtitleColor: 'text-stone-400',
+        progressTrackBg: 'bg-white/10',
+        progressBarBg: 'bg-white',
+        readMoreBtnColor: 'text-stone-300 hover:text-white',
+        quoteColor: 'text-stone-300',
+        nienthoiText: 'text-stone-400',
+        axisDotBg: 'bg-white/70',
+        axisLineBg: 'bg-white/20',
+        axisText: 'text-stone-300',
         canvasParticleColor: '#ffffff',
-        astroBorder: 'border-emerald-500/20',
-        astroLabel: 'text-emerald-300',
-        astroTime: 'text-emerald-100',
-        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(110,231,183,0.8)]',
-        audioDivider: 'border-emerald-500/20',
-        audioPlayBtnBg: 'bg-emerald-500/20',
-        audioPlayBtnHoverBg: 'hover:bg-emerald-500/35',
-        audioPlayBtnBorder: 'border-emerald-400/35',
-        audioProgressTrackBg: 'bg-emerald-950/40',
-        audioProgressBarBg: 'bg-gradient-to-r from-emerald-300 to-teal-300',
-        audioSpeedBorder: 'border-emerald-400/30',
-        audioSpeedBg: 'bg-emerald-500/15',
+        astroBorder: 'border-white/10',
+        astroLabel: 'text-stone-400',
+        astroTime: 'text-white',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]',
+        audioDivider: 'border-white/10',
+        audioPlayBtnBg: 'bg-white/10',
+        audioPlayBtnHoverBg: 'hover:bg-white/20',
+        audioPlayBtnBorder: 'border-white/25',
+        audioProgressTrackBg: 'bg-white/10',
+        audioProgressBarBg: 'bg-white',
+        audioSpeedBorder: 'border-white/20',
+        audioSpeedBg: 'bg-white/[0.06]',
+        isWhiteCard: false,
+        linedPaperColor: 'rgba(255, 255, 255, 0.08)',
       };
 
     case 'mocha':
       return {
         themeId,
-        auroraOrb1: 'from-amber-950/30 via-orange-950/20 to-transparent',
-        auroraOrb2: 'from-orange-950/30 via-amber-950/20 to-transparent',
-        auroraOrb3: 'bg-amber-950/20',
-        cardBorder: 'border-amber-400/20',
-        cardBg: 'bg-[#100b07]/75',
-        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(253,230,138,0.15)]',
-        innerGlowOrb1: 'bg-amber-500/15',
-        innerGlowOrb2: 'bg-orange-500/12',
-        glyphColor: 'text-amber-300',
-        barcodeColor: 'bg-amber-100',
-        miniWidgetTitle: 'text-amber-200',
-        followText: 'text-amber-400',
-        borderDivider: 'border-amber-500/20',
-        calContainerBorder: 'border-amber-500/20',
-        calContainerBg: 'bg-amber-950/[0.15]',
-        calHeaderTitle: 'text-amber-200',
-        calCardBorder: 'border-amber-400/25',
-        calCardBg: 'bg-amber-950/[0.25]',
-        ringBorder: 'border-amber-300/80',
-        ringGradient: 'from-amber-100 via-amber-300 to-stone-500',
-        calSelectedDayBg: 'bg-[#fcd34d]',
-        calSelectedDayText: 'text-amber-950',
-        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(252,211,77,0.9)]',
-        calDayHoverText: 'hover:text-amber-100',
-        calDayHoverBg: 'hover:bg-amber-500/20',
-        memoTextColor: 'text-amber-300',
-        poetContainerBorder: 'border-amber-400/20',
-        poetContainerBg: 'bg-amber-950/[0.2]',
-        poetHeaderColor: 'text-amber-200',
-        poetTextColor: 'text-amber-100',
-        poetAuthorColor: 'text-amber-300',
-        poetActiveDot: 'bg-amber-200 shadow-[0_0_6px_#fcd34d]',
-        poetNextBtnBorder: 'border-amber-400/30',
-        poetNextBtnBg: 'bg-amber-500/15',
-        poetNextBtnHoverBg: 'hover:bg-amber-500/25',
-        poetNextBtnText: 'text-amber-100',
-        anthesisSubtitle: 'text-amber-300',
+        auroraOrb1: 'from-amber-950/35 via-orange-950/25 to-transparent',
+        auroraOrb2: 'from-orange-950/40 via-amber-950/25 to-transparent',
+        auroraOrb3: 'bg-amber-950/25',
+        innerGlowOrb1: 'bg-amber-500/25',
+        innerGlowOrb2: 'bg-orange-500/20',
+        canvasRingColor: 'rgba(252, 211, 77, 0.5)',
+        cardBorder: 'border-white/15',
+        cardBg: 'bg-stone-950/65',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
+        glyphColor: 'text-stone-400',
+        barcodeColor: 'bg-white',
+        miniWidgetTitle: 'text-stone-300',
+        followText: 'text-stone-500',
+        borderDivider: 'border-white/10',
+        calContainerBorder: 'border-white/10',
+        calContainerBg: 'bg-white/[0.03]',
+        calHeaderTitle: 'text-stone-300',
+        calCardBorder: 'border-white/15',
+        calCardBg: 'bg-white/[0.04]',
+        ringBorder: 'border-stone-300/80',
+        ringGradient: 'from-stone-100 via-stone-300 to-stone-500',
+        calSelectedDayBg: 'bg-white',
+        calSelectedDayText: 'text-black',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(255,255,255,0.9)]',
+        calDayHoverText: 'hover:text-white',
+        calDayHoverBg: 'hover:bg-white/10',
+        memoTextColor: 'text-stone-400',
+        poetContainerBorder: 'border-white/15',
+        poetContainerBg: 'bg-white/[0.03]',
+        poetHeaderColor: 'text-stone-300',
+        poetTextColor: 'text-stone-200',
+        poetAuthorColor: 'text-stone-400',
+        poetActiveDot: 'bg-white shadow-[0_0_6px_white]',
+        poetNextBtnBorder: 'border-white/20',
+        poetNextBtnBg: 'bg-white/10',
+        poetNextBtnHoverBg: 'hover:bg-white/20',
+        poetNextBtnText: 'text-stone-100',
+        anthesisSubtitle: 'text-stone-300',
         libraryTitleColor: 'text-white',
-        libraryGlow: 'drop-shadow-[0_0_12px_rgba(252,211,77,0.7)]',
-        starColor: 'text-amber-300',
-        bookCardBorder: 'border-amber-400/20',
-        bookCardBg: 'bg-amber-950/[0.25]',
-        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.6),inset_0_1px_1px_0_rgba(253,230,138,0.12)]',
-        washiTapeBg: 'rgba(253, 230, 138, 0.2)',
-        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(253, 230, 138, 0.3)',
-        gridLineColor: 'rgba(253, 230, 138, 0.3)',
-        bookTagColor: 'text-amber-300',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]',
+        starColor: 'text-stone-300',
+        bookCardBorder: 'border-white/15',
+        bookCardBg: 'bg-white/[0.04]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.1)]',
+        washiTapeBg: 'rgba(255, 255, 255, 0.15)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
+        gridLineColor: 'rgba(255, 255, 255, 0.3)',
+        bookTagColor: 'text-stone-300',
         bookTitleColor: 'text-white',
-        bookSubtitleColor: 'text-amber-300/80',
-        progressTrackBg: 'bg-amber-950/40',
-        progressBarBg: 'bg-gradient-to-r from-amber-300 to-orange-300',
-        readMoreBtnColor: 'text-amber-200 hover:text-white',
-        quoteColor: 'text-amber-200/90',
-        nienthoiText: 'text-amber-300',
-        axisDotBg: 'bg-amber-300',
-        axisLineBg: 'bg-amber-400/30',
-        axisText: 'text-amber-200',
-        canvasRingColor: 'rgba(253, 230, 138, 0.45)',
+        bookSubtitleColor: 'text-stone-400',
+        progressTrackBg: 'bg-white/10',
+        progressBarBg: 'bg-white',
+        readMoreBtnColor: 'text-stone-300 hover:text-white',
+        quoteColor: 'text-stone-300',
+        nienthoiText: 'text-stone-400',
+        axisDotBg: 'bg-white/70',
+        axisLineBg: 'bg-white/20',
+        axisText: 'text-stone-300',
         canvasParticleColor: '#ffffff',
-        astroBorder: 'border-amber-500/20',
-        astroLabel: 'text-amber-300',
-        astroTime: 'text-amber-100',
-        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(252,211,77,0.8)]',
-        audioDivider: 'border-amber-500/20',
-        audioPlayBtnBg: 'bg-amber-500/20',
-        audioPlayBtnHoverBg: 'hover:bg-amber-500/35',
-        audioPlayBtnBorder: 'border-amber-400/35',
-        audioProgressTrackBg: 'bg-amber-950/40',
-        audioProgressBarBg: 'bg-gradient-to-r from-amber-300 to-orange-300',
-        audioSpeedBorder: 'border-amber-400/30',
-        audioSpeedBg: 'bg-amber-500/15',
+        astroBorder: 'border-white/10',
+        astroLabel: 'text-stone-400',
+        astroTime: 'text-white',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]',
+        audioDivider: 'border-white/10',
+        audioPlayBtnBg: 'bg-white/10',
+        audioPlayBtnHoverBg: 'hover:bg-white/20',
+        audioPlayBtnBorder: 'border-white/25',
+        audioProgressTrackBg: 'bg-white/10',
+        audioProgressBarBg: 'bg-white',
+        audioSpeedBorder: 'border-white/20',
+        audioSpeedBg: 'bg-white/[0.06]',
+        isWhiteCard: false,
+        linedPaperColor: 'rgba(255, 255, 255, 0.08)',
       };
 
     case 'notebook':
       return {
         themeId,
+        isWhiteCard: false,
+        linedPaperColor: 'rgba(255, 255, 255, 0.08)',
         auroraOrb1: 'from-zinc-900/25 via-stone-900/15 to-transparent',
         auroraOrb2: 'from-stone-900/25 via-zinc-950/15 to-transparent',
         auroraOrb3: 'bg-zinc-900/20',
@@ -1020,6 +752,8 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
       // THEME FROST CHẾ ĐỘ TỐI: GIỮ NGUYÊN 100% THEO CODE GỐC CỦA NGƯỜI DÙNG
       return {
         themeId: 'slate-haze',
+        isWhiteCard: false,
+        linedPaperColor: 'rgba(255, 255, 255, 0.08)',
         auroraOrb1: 'from-indigo-900/20 via-purple-900/15 to-transparent',
         auroraOrb2: 'from-cyan-950/25 via-blue-950/15 to-transparent',
         auroraOrb3: 'bg-stone-900/20',
@@ -1140,11 +874,11 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
 
   return (
     /* THẺ CHÍNH MINI WIDGET: KÍNH HUN KHÓI (FROSTED SMOKED GLASS) */
-    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.cardBorder} ${c.cardBg} backdrop-blur-2xl ${c.cardShadow} relative select-none overflow-hidden transition-all duration-500 z-10 font-sans antialiased text-stone-100`}>
+    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.cardBorder} ${c.cardBg} backdrop-blur-2xl ${c.cardShadow} relative select-none overflow-hidden transition-all duration-500 z-10 font-sans antialiased ${c.isWhiteCard ? 'text-stone-900' : 'text-stone-100'}`}>
       
       {/* Quầng sáng nội tại của tấm kính */}
       <div className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0.85)_100%)]" />
+        <div className={`absolute inset-0 ${c.isWhiteCard ? 'bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.92)_0%,rgba(245,245,245,0.85)_100%)]' : 'bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0.85)_100%)]'}`} />
         <div className={`absolute top-1/4 right-1/4 w-80 h-80 ${c.innerGlowOrb1} rounded-full blur-3xl`} />
         <div className={`absolute bottom-1/4 left-1/4 w-80 h-80 ${c.innerGlowOrb2} rounded-full blur-3xl`} />
       </div>
@@ -1265,22 +999,31 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
             </div>
           </div>
 
-          {/* Khung thơ POETS (31 bài thơ) */}
-          <div className={`flex flex-col justify-between h-full rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 border ${c.poetContainerBorder} ${c.poetContainerBg} backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.08)] min-w-0`}>
+          {/* CỘT 2: KHUNG QUOTATIONS VỚI GHIM PAPER CLIP VÀ HỌA TIẾT LINED PAPER */}
+          <div
+            className={`relative overflow-visible flex flex-col justify-between h-full rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 border ${c.poetContainerBorder} ${c.poetContainerBg} backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.08)] min-w-0`}
+            style={{
+              backgroundImage: `repeating-linear-gradient(to bottom, transparent, transparent 19px, ${c.linedPaperColor || 'rgba(255, 255, 255, 0.08)'} 19px, ${c.linedPaperColor || 'rgba(255, 255, 255, 0.08)'} 20px)`,
+              backgroundPosition: '0 8px',
+            }}
+          >
+            {/* CHIẾC GHIM PAPER CLIP NẰM Ở GÓC TRÊN BÊN PHẢI */}
+            <MetallicPaperClip
+              isDarkMode={true}
+              themeId={c.themeId}
+              className="absolute -top-3.5 sm:-top-4.5 right-3 sm:right-5 z-20 pointer-events-none"
+            />
+
             <div>
               <div className={`flex items-center justify-between text-[7px] xs:text-[8px] sm:text-xs font-mono tracking-wider pb-1.5 sm:pb-2 border-b ${c.borderDivider} ${c.poetHeaderColor}`}>
-                <span className="font-semibold">POETS</span>
-                <span className="font-semibold">{String(activePoetIdx + 1).padStart(2, '0')} / {String(poetList.length).padStart(2, '0')}</span>
+                <span className="font-semibold">Quotations</span>
               </div>
 
-              {/* 4 dòng thơ cổ điển */}
+              {/* 4 dòng trích dẫn lãng mạn trên giấy kẻ dòng */}
               <div className={`py-1.5 sm:py-3 space-y-0.5 sm:space-y-1 font-serif text-[7.5px] xs:text-[9px] sm:text-xs md:text-sm italic ${c.poetTextColor} leading-relaxed overflow-hidden`}>
                 {currentPoet.lines.map((line, idx) => (
                   <p key={idx} className="line-clamp-1">{line}</p>
                 ))}
-                <p className={`text-[7px] xs:text-[8px] sm:text-xs font-mono not-italic mt-1.5 ${c.poetAuthorColor} font-semibold uppercase truncate`}>
-                  — {currentPoet.author}
-                </p>
               </div>
             </div>
 
@@ -1291,7 +1034,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
                   <span
                     key={i}
                     className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full transition-transform shrink-0 ${
-                      i === (activePoetIdx % 10) ? `${c.poetActiveDot} scale-125` : 'bg-white/20'
+                      i === (activePoetIdx % 10) ? `${c.poetActiveDot} scale-125` : (c.isWhiteCard ? 'bg-stone-300' : 'bg-white/20')
                     }`}
                   />
                 ))}
@@ -1472,7 +1215,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
 
             <div className="flex items-center justify-between text-stone-300">
               <span className={c.astroLabel}>SEASON</span>
-              <span className="font-medium text-stone-400 truncate">Autumn · 2026</span>
+              <span className="font-medium text-stone-400 truncate">{getSeasonDisplay()}</span>
             </div>
           </div>
         </div>

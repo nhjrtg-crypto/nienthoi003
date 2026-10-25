@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Calendar as CalendarIcon, Clock, Play, Pause } from 'lucide-react';
 import { Novel } from '../types';
+import { MetallicPaperClip } from './MetallicPaperClip';
 
 // =========================================================================
 // 1. CÁC HỌA TIẾT VI HÌNH HỌC (MICRO-DECORATION GLYPHS)
@@ -281,287 +282,8 @@ export const SnowflakePedestal: React.FC<{
 // =========================================================================
 // 5. BÀI THƠ 31 BÀI CHO 31 NGÀY TRONG THÁNG (POETRY LIST)
 // =========================================================================
-export const poetList = [
-  {
-    author: 'JOHN KEATS',
-    lines: [
-      'I see a lily on thy brow,',
-      'With anguish moist and fever-dew;',
-      'And on thy cheeks a fading rose',
-      'Fast withereth too.',
-    ],
-  },
-  {
-    author: 'CHRISTINA ROSSETTI',
-    lines: [
-      'Consider the lilies of the field, whose bloom',
-      'Is briefer than the sunflower;',
-      'Yet Solomon in all his glory',
-      'Was not arrayed like one of these.',
-    ],
-  },
-  {
-    author: 'WILLIAM BLAKE',
-    lines: [
-      'The modest Rose puts forth a thorn,',
-      'The humble Sheep a threat’ning horn;',
-      'While the Lily white shall in love delight,',
-      'Nor a thorn nor a threat stain her beauty bright.',
-    ],
-  },
-  {
-    author: 'ALFRED TENNYSON',
-    lines: [
-      'And the sound of a voice that is still,',
-      'Break, break, break, at the foot of thy crags, O Sea!',
-      'But the tender grace of a day that is dead',
-      'Will never come back to me.',
-    ],
-  },
-  {
-    author: 'PERCY B. SHELLEY',
-    lines: [
-      'The cold earth slept below;',
-      'Above the cold sky shone;',
-      'And all around, with a chilling sound,',
-      'From caves of ice and fields of snow.',
-    ],
-  },
-  {
-    author: 'EMILY DICKINSON',
-    lines: [
-      'Hope is the thing with feathers',
-      'That perches in the soul,',
-      'And sings the tune without the words,',
-      'And never stops at all.',
-    ],
-  },
-  {
-    author: 'LORD BYRON',
-    lines: [
-      'She walks in beauty, like the night',
-      'Of cloudless climes and starry skies;',
-      'And all that’s best of dark and bright',
-      'Meet in her aspect and her eyes.',
-    ],
-  },
-  {
-    author: 'WILLIAM WORDSWORTH',
-    lines: [
-      'I wandered lonely as a cloud',
-      'That floats on high o’er vales and hills,',
-      'When all at once I saw a crowd,',
-      'A host, of golden daffodils.',
-    ],
-  },
-  {
-    author: 'ROBERT BROWNING',
-    lines: [
-      'Grow old along with me!',
-      'The best is yet to be,',
-      'The last of life, for which the first was made:',
-      'Our times are in His hand.',
-    ],
-  },
-  {
-    author: 'WILLIAM SHAKESPEARE',
-    lines: [
-      'Shall I compare thee to a summer’s day?',
-      'Thou art more lovely and more temperate:',
-      'Rough winds do shake the darling buds of May,',
-      'And summer’s lease hath all too short a date.',
-    ],
-  },
-  {
-    author: 'EDGAR ALLAN POE',
-    lines: [
-      'For the moon never beams without bringing me dreams',
-      'Of the beautiful Annabel Lee;',
-      'And the stars never rise but I feel the bright eyes',
-      'Of the beautiful Annabel Lee.',
-    ],
-  },
-  {
-    author: 'W. B. YEATS',
-    lines: [
-      'I will arise and go now, and go to Innisfree,',
-      'And a small cabin build there, of clay and wattles made;',
-      'Nine bean-rows will I have there, a hive for the honey-bee,',
-      'And live alone in the bee-loud glade.',
-    ],
-  },
-  {
-    author: 'ROBERT FROST',
-    lines: [
-      'The woods are lovely, dark and deep,',
-      'But I have promises to keep,',
-      'And miles to go before I sleep,',
-      'And miles to go before I sleep.',
-    ],
-  },
-  {
-    author: 'WALT WHITMAN',
-    lines: [
-      'O Captain! my Captain! our fearful trip is done,',
-      'The ship has weather’d every rack, the prize we sought is won,',
-      'The port is near, the bells I hear, the people all exulting,',
-      'While follow eyes the steady keel, the vessel grim and daring.',
-    ],
-  },
-  {
-    author: 'RAINER MARIA RILKE',
-    lines: [
-      'Let everything happen to you: beauty and terror.',
-      'Just keep going. No feeling is final.',
-      'Don’t lose yourself to regret;',
-      'Nearby is the land they call life.',
-    ],
-  },
-  {
-    author: 'ROBERT BURNS',
-    lines: [
-      'O my Luve is like a red, red rose',
-      'That’s newly sprung in June;',
-      'O my Luve is like the melody',
-      'That’s sweetly played in tune.',
-    ],
-  },
-  {
-    author: 'JOHN DONNE',
-    lines: [
-      'No man is an island, entire of itself;',
-      'Every man is a piece of the continent,',
-      'A part of the main.',
-      'Any man’s death diminishes me, because I am involved in mankind.',
-    ],
-  },
-  {
-    author: 'ELIZABETH BARRETT BROWNING',
-    lines: [
-      'How do I love thee? Let me count the ways.',
-      'I love thee to the depth and breadth and height',
-      'My soul can reach, when feeling out of sight',
-      'For the ends of being and ideal grace.',
-    ],
-  },
-  {
-    author: 'SAMUEL TAYLOR COLERIDGE',
-    lines: [
-      'He prayeth best, who loveth best',
-      'All things both great and small;',
-      'For the dear God who loveth us,',
-      'He made and loveth all.',
-    ],
-  },
-  {
-    author: 'THOMAS HARDY',
-    lines: [
-      'Wintertime has come again,',
-      'With frost upon the hill and plain;',
-      'Yet in this silence cold and still,',
-      'A quiet light shines on the sill.',
-    ],
-  },
-  {
-    author: 'MATTHEW ARNOLD',
-    lines: [
-      'The sea is calm tonight.',
-      'The tide is full, the moon lies fair',
-      'Upon the straits; on the French coast the light',
-      'Gleams and is gone; the cliffs of England stand.',
-    ],
-  },
-  {
-    author: 'HENRY WADSWORTH LONGFELLOW',
-    lines: [
-      'The night shall be filled with music,',
-      'And the cares, that infest the day,',
-      'Shall fold their tents, like the Arabs,',
-      'And as silently steal away.',
-    ],
-  },
-  {
-    author: 'JOHN MILTON',
-    lines: [
-      'They also serve who only stand and wait;',
-      'Peace hath her victories no less renowned than war,',
-      'Though darkness veil the earthly light,',
-      'Faith shines like an immortal star.',
-    ],
-  },
-  {
-    author: 'ANDREW MARVELL',
-    lines: [
-      'Had we but world enough and time,',
-      'This coyness, lady, were no crime.',
-      'We would sit down, and think which way',
-      'To walk, and pass our long love’s day.',
-    ],
-  },
-  {
-    author: 'ROBERT HERRICK',
-    lines: [
-      'Gather ye rosebuds while ye may,',
-      'Old Time is still a-flying;',
-      'And this same flower that smiles today',
-      'Tomorrow will be dying.',
-    ],
-  },
-  {
-    author: 'JOHN CLARE',
-    lines: [
-      'I am—yet what I am none cares or knows,',
-      'My friends forsake me like a memory lost;',
-      'I am the self-consumer of my woes,',
-      'They rise and vanish in oblivious host.',
-    ],
-  },
-  {
-    author: 'ALGERNON CHARLES SWINBURNE',
-    lines: [
-      'From too much love of living,',
-      'From hope and fear set free,',
-      'We thank with brief thanksgiving',
-      'Whatever gods may be.',
-    ],
-  },
-  {
-    author: 'A. E. HOUSMAN',
-    lines: [
-      'Loveliest of trees, the cherry now',
-      'Is hung with bloom along the bough,',
-      'And stands about the woodland ride',
-      'Wearing white for Eastertide.',
-    ],
-  },
-  {
-    author: 'RUPERT BROOKE',
-    lines: [
-      'If I should die, think only this of me:',
-      'That there’s some corner of a foreign field',
-      'That is for ever England. There shall be',
-      'In that rich earth a richer dust concealed.',
-    ],
-  },
-  {
-    author: 'GERARD MANLEY HOPKINS',
-    lines: [
-      'The world is charged with the grandeur of God.',
-      'It will flame out, like shining from shook foil;',
-      'It gathers to a greatness, like the ooze of oil',
-      'Crushed. Why do men then now not reck his rod?',
-    ],
-  },
-  {
-    author: 'RABINDRANATH TAGORE',
-    lines: [
-      'Let your life lightly dance on the edges of Time',
-      'Like dew on the tip of a leaf;',
-      'Do not dread the setting of the sun,',
-      'For starlight shall bring you peace.',
-    ],
-  },
-];
+import { poetList, getSeasonDisplay, getSeasonName, PoetItem } from '../utils/libraryPoetry';
+export { poetList, getSeasonDisplay, getSeasonName, type PoetItem };
 
 // =========================================================================
 // 6. CẤU HÌNH MÀU SẮC ĐỒNG BỘ 5 THEME Ở CHẾ ĐỘ SÁNG (THEME COLOR SCHEMES)
@@ -798,10 +520,10 @@ export const getThemeConfig = (themeId: string = 'slate-haze'): WidgetThemeConfi
     case 'mocha':
       return {
         themeId,
-        outerBorder: 'border-amber-200',
-        outerShadow: 'shadow-[0_20px_50px_rgba(253,230,138,0.4)]',
-        radialGradient: 'bg-[radial-gradient(circle_at_30%_20%,rgba(254,243,199,0.6)_0%,rgba(255,255,255,0.98)_100%)]',
-        ambientOrbBg: 'bg-amber-200/40',
+        outerBorder: 'border-[#e6dbcb]',
+        outerShadow: 'shadow-[0_20px_50px_rgba(220,205,180,0.28)]',
+        radialGradient: 'bg-[radial-gradient(circle_at_30%_20%,rgba(247,241,228,0.75)_0%,rgba(255,253,249,0.98)_100%)]',
+        ambientOrbBg: 'bg-[#ece2cb]/35',
         glyphColor: 'text-amber-700',
         barcodeColor: 'bg-amber-800',
         miniWidgetTitle: 'text-amber-800',
@@ -1217,22 +939,31 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
             </div>
           </div>
 
-          {/* Khung thơ POETS (31 bài thơ - có nút NEXT và phân trang) */}
-          <div className={`flex flex-col justify-between h-full rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 border ${c.poetContainerBorder} bg-white shadow-sm min-w-0`}>
+          {/* CỘT 2: KHUNG QUOTATIONS VỚI GHIM PAPER CLIP VÀ HỌA TIẾT LINED PAPER */}
+          <div
+            className={`relative overflow-visible flex flex-col justify-between h-full rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 border ${c.poetContainerBorder} bg-white shadow-sm min-w-0`}
+            style={{
+              backgroundImage: 'repeating-linear-gradient(to bottom, transparent, transparent 19px, rgba(148, 163, 184, 0.16) 19px, rgba(148, 163, 184, 0.16) 20px)',
+              backgroundPosition: '0 8px',
+            }}
+          >
+            {/* CHIẾC GHIM PAPER CLIP NẰM Ở GÓC TRÊN BÊN PHẢI */}
+            <MetallicPaperClip
+              isDarkMode={false}
+              themeId={c.themeId}
+              className="absolute -top-3.5 sm:-top-4.5 right-3 sm:right-5 z-20 pointer-events-none"
+            />
+
             <div>
               <div className={`flex items-center justify-between text-[7px] xs:text-[8px] sm:text-xs font-mono tracking-wider pb-1.5 sm:pb-2 border-b ${c.calDivider} ${c.poetHeaderColor}`}>
-                <span className="font-semibold">POETS</span>
-                <span className="text-slate-900 font-semibold">{String(activePoetIdx + 1).padStart(2, '0')} / {String(poetList.length).padStart(2, '0')}</span>
+                <span className="font-semibold">Quotations</span>
               </div>
 
-              {/* 4 dòng thơ cổ điển */}
+              {/* 4 dòng trích dẫn lãng mạn trên giấy kẻ dòng */}
               <div className="py-1.5 sm:py-3 space-y-0.5 sm:space-y-1 font-serif text-[7.5px] xs:text-[9px] sm:text-xs md:text-sm italic text-slate-800 leading-relaxed overflow-hidden">
                 {currentPoet.lines.map((line, idx) => (
                   <p key={idx} className="line-clamp-1">{line}</p>
                 ))}
-                <p className={`text-[7px] xs:text-[8px] sm:text-xs font-mono not-italic mt-1.5 ${c.poetAuthorColor} font-semibold uppercase truncate`}>
-                  — {currentPoet.author}
-                </p>
               </div>
             </div>
 
@@ -1759,7 +1490,7 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
 
             <div className="flex items-center justify-between text-slate-800">
               <span className={c.astroLabel}>SEASON</span>
-              <span className="font-medium text-slate-600 truncate">Autumn · 2026</span>
+              <span className="font-medium text-slate-600 truncate">{getSeasonDisplay()}</span>
             </div>
           </div>
         </div>

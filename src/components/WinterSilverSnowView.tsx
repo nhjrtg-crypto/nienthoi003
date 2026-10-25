@@ -185,7 +185,7 @@ const ROMANTIC_POEMS: DailyRomanticPoem[] = [
       'We loved with a love that was more than love—',
       'I and my dearest soul, my heart’s delight;',
       'With a love that the winged seraphs of Heaven',
-      'Coveted her and me through the silver night.',
+      'Coveted both of us through the silver night.',
     ],
   },
   {
