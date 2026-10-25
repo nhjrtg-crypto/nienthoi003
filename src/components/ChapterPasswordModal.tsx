@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { KeyRound, Check, ArrowLeft, X, Lock } from 'lucide-react';
 import { safeStorage } from '../utils/safeStorage';
+import { cosmicAudio } from '../utils/audioSynth';
 import { Novel } from '../types';
 
 export const GLOBAL_CHAPTER_PASS_KEY = 'cosmo_chapter_pass_unlocked_18';
@@ -26,7 +27,6 @@ export interface NovelPasswordConfig {
  *        Tôi thích đọc truyện công ngoại tình
  *        Tôi phân biệt được giữa truyện và đời thực
  *        Tôi sẽ không bình luận chê bai
- *    - Placeholder: Tôi thích đọc truyện công ngoại tình
  *
  * 2. (Q1) CHIẾM HỮU CỰC ĐỘ & THÁI HẬU XINH ĐẸP ĐANG MANG THAI
  *    - 3 dòng:
@@ -37,9 +37,9 @@ export interface NovelPasswordConfig {
  *        Tôi thích thể loại này
  *        Tôi phân biệt được giữa truyện và đời thực
  *        Tôi sẽ không bình luận chê bai
- *    - Placeholder: Tôi thích thể loại này
  *
- * 3. Các truyện khác: Mặc định NIENTHOIDOCTRUYEN
+ * 3. (Q2) CHIẾM HỮU CỰC ĐỘ và các truyện khác:
+ *    - Mặc định: NIENTHOIDOCTRUYEN (không dùng 3 dòng, không có nút Hint)
  */
 export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfig => {
   if (!novel) {
@@ -55,9 +55,27 @@ export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfi
   const rawTitle = (novel.title || '').trim().toLowerCase();
   const rawId = (novel.id || '').trim();
 
+  // 0. (Q2) CHIẾM HỮU CỰC ĐỘ: dùng pass NIENTHOIDOCTRUYEN như các bộ thông thường
+  const isQ2ChiemHuu =
+    rawId === 'LSr9MU5kkq5tuy3UABio' ||
+    rawId === 'chiem-huu-cuc-do-q2' ||
+    ((rawTitle.includes('chiếm hữu cực độ') || rawTitle.includes('chiem huu cuc do')) &&
+      (rawTitle.includes('q2') || rawTitle.includes('quyển 2') || rawTitle.includes('tập 2') || rawTitle.includes('quyen 2') || rawTitle.includes('tap 2')));
+
+  if (isQ2ChiemHuu) {
+    return {
+      instructions: 'Truyện dành cho người trên 18 tuổi. Bằng việc tiếp tục nhập pass, bạn xác nhận đã đủ 18 tuổi trở lên và chấp nhận xem nội dung này.',
+      hintLines: [],
+      cleanPassword: DEFAULT_CORRECT_CHAPTER_PASS,
+      isSpecial: false,
+      placeholder: 'Nhập pass...',
+    };
+  }
+
   // 1. Dành riêng cho truyện Series NTR: Cám Dỗ Vụng Trộm
   const isSeriesNTR =
     rawId === 'JyjZxRaIxFvvZ2Ijyxef' ||
+    rawId === 'series-ntr-cam-do' ||
     rawTitle.includes('series ntr') ||
     rawTitle.includes('cám dỗ vụng trộm') ||
     rawTitle.includes('cam do vung trom');
@@ -78,15 +96,19 @@ export const getNovelPasswordConfig = (novel?: Novel | null): NovelPasswordConfi
   }
 
   // 2. Dành riêng cho truyện: (Q1) CHIẾM HỮU CỰC ĐỘ & THÁI HẬU XINH ĐẸP ĐANG MANG THAI
-  const isChiemHuuQ1OrThaiHau =
-    rawId === 'EKfvFMUwotIWRM4SAu3d' || // Q1 Chiếm Hữu Cực Độ
+  const isThaiHau =
     rawId === 'evpaORA3LE9lhj1qmvt1' || // Thái Hậu Xinh Đẹp Đang Mang Thai
+    rawId === 'thai-hau-xinh-dep' ||
     rawTitle.includes('thái hậu xinh đẹp') ||
-    rawTitle.includes('thai hau xinh dep') ||
-    rawTitle.includes('chiếm hữu cực độ') ||
-    rawTitle.includes('chiem huu cuc do');
+    rawTitle.includes('thai hau xinh dep');
 
-  if (isChiemHuuQ1OrThaiHau) {
+  const isQ1ChiemHuu =
+    rawId === 'EKfvFMUwotIWRM4SAu3d' || // Q1 Chiếm Hữu Cực Độ
+    rawId === 'chiem-huu-cuc-do-q1' ||
+    ((rawTitle.includes('chiếm hữu cực độ') || rawTitle.includes('chiem huu cuc do')) &&
+      !rawTitle.includes('q2') && !rawTitle.includes('quyển 2') && !rawTitle.includes('tập 2'));
+
+  if (isQ1ChiemHuu || isThaiHau) {
     return {
       instructions: '',
       hintLines: [
@@ -142,23 +164,6 @@ export const setChapterPasswordUnlocked = (novel?: Novel | null): void => {
   }
 };
 
-/**
- * Chuẩn hóa chuỗi mật khẩu để so sánh chính xác:
- * - Giữ nguyên dấu gạch ngang (không tự động thay thế bằng dấu cách) để bắt buộc người dùng nhập đúng mật khẩu có dấu cách
- * - Bỏ khoảng trắng dư thừa ở đầu/cuối mỗi dòng và chuẩn hóa dấu cách
- * - Chuẩn hóa unicode tiếng Việt (NFC)
- */
-const normalizeMultilinePassword = (str: string): string => {
-  if (!str) return '';
-  const nfc = str.normalize('NFC');
-  const lines = nfc
-    .split(/\r?\n/)
-    .map((l) => l.trim().replace(/\s+/g, ' '))
-    .filter((l) => l.length > 0);
-
-  return lines.join('\n').toLowerCase();
-};
-
 const normalizeSinglePass = (str: string): string => {
   if (!str) return '';
   return str.normalize('NFC').trim().toUpperCase();
@@ -182,6 +187,7 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
   const [passwordInput, setPasswordInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isSuccessAnim, setIsSuccessAnim] = useState(false);
+  const [showCorrectPassHint, setShowCorrectPassHint] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -193,6 +199,7 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
       setPasswordInput('');
       setErrorMsg('');
       setIsSuccessAnim(false);
+      setShowCorrectPassHint(false);
       const timer = setTimeout(() => {
         if (config.isSpecial) {
           textareaRef.current?.focus();
@@ -209,16 +216,34 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
 
     if (!passwordInput.trim()) {
       setErrorMsg('Vui lòng nhập mật khẩu.');
-      if (config.isSpecial) textareaRef.current?.focus();
-      else inputRef.current?.focus();
+      if (config.isSpecial) {
+        setShowCorrectPassHint(true);
+        textareaRef.current?.focus();
+      } else {
+        inputRef.current?.focus();
+      }
       return;
     }
 
     if (config.isSpecial) {
-      const userNorm = normalizeMultilinePassword(passwordInput);
-      const targetNorm = normalizeMultilinePassword(config.cleanPassword);
+      // Yêu cầu ghi đúng từng chữ, từng dấu, từng khoảng cách (không tự động gỡ gạch ngang)
+      const userLines = passwordInput
+        .normalize('NFC')
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
 
-      const isMatch = userNorm === targetNorm;
+      const targetLines = config.cleanPassword
+        .normalize('NFC')
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+
+      const isMatch =
+        userLines.length === targetLines.length &&
+        userLines.every(
+          (line, idx) => line.toLowerCase() === targetLines[idx].toLowerCase()
+        );
 
       if (isMatch) {
         setErrorMsg('');
@@ -228,7 +253,8 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
           onSuccess();
         }, 350);
       } else {
-        setErrorMsg('Mật khẩu chưa chính xác.');
+        setErrorMsg('Mật khẩu chưa chính xác. Gợi ý pass đúng đã tự động hiển thị bên dưới.');
+        setShowCorrectPassHint(true);
         textareaRef.current?.focus();
       }
     } else {
@@ -243,7 +269,7 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
           onSuccess();
         }, 350);
       } else {
-        setErrorMsg('Mật khẩu không chính xác. Vui lòng kiểm tra lại!');
+        setErrorMsg('Mật khẩu không chính xác.');
         inputRef.current?.focus();
       }
     }
@@ -354,6 +380,66 @@ export const ChapterPasswordModal: React.FC<ChapterPasswordModalProps> = ({
           {/* Form nhập pass */}
           <form onSubmit={handleSubmit} className="mt-4 sm:mt-5 space-y-3.5">
             <div>
+              {/* Header chỗ nhập pass có nhãn và nút Hint */}
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                  <KeyRound className="w-3.5 h-3.5 text-[#822a33] dark:text-[#e89098]" />
+                  <span>{config.isSpecial ? 'Khung nhập pass (3 dòng):' : 'Khung nhập pass:'}</span>
+                </label>
+
+                {/* Nút Hint: chỉ áp dụng cho (Q1) Chiếm Hữu Cực Độ, Series NTR, Thái Hậu Xinh Đẹp Đang Mang Thai */}
+                {config.isSpecial && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCorrectPassHint((prev) => !prev);
+                      cosmicAudio.playChime('sparkle');
+                    }}
+                    className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all border ${
+                      showCorrectPassHint
+                        ? isDarkMode
+                          ? 'bg-zinc-700/80 border-zinc-600 text-zinc-100 shadow-xs'
+                          : 'bg-amber-500/15 border-amber-500/40 text-amber-800 shadow-xs'
+                        : isDarkMode
+                        ? 'bg-zinc-800/90 border-zinc-700 text-zinc-300 hover:bg-zinc-700 hover:text-white hover:border-zinc-500'
+                        : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-amber-700 hover:border-amber-300'
+                    }`}
+                    title="Bấm để xem hoặc đóng gợi ý pass đúng"
+                  >
+                    <span>{showCorrectPassHint ? 'Đóng' : 'Hint'}</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Bảng gợi ý pass đúng tự động hiện khi người dùng nhập sai hoặc bấm nút Hint */}
+              <AnimatePresence>
+                {config.isSpecial && showCorrectPassHint && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, y: -6 }}
+                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -6 }}
+                    className="overflow-hidden mb-3"
+                  >
+                    <div
+                      className={`p-3.5 rounded-xl border text-left text-xs ${
+                        isDarkMode
+                          ? 'bg-amber-950/20 border-amber-500/30 text-amber-200'
+                          : 'bg-amber-50 border-amber-300/70 text-amber-950'
+                      }`}
+                    >
+                      <div className="mb-2 font-bold text-amber-700 dark:text-amber-300">
+                        <span>Pass đúng:</span>
+                      </div>
+
+                      {/* Khối hiển thị mật khẩu đúng */}
+                      <pre className="font-mono text-xs whitespace-pre-wrap select-all p-2.5 rounded-lg bg-black/5 dark:bg-black/30 border border-amber-500/25 leading-relaxed font-semibold">
+                        {config.cleanPassword}
+                      </pre>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {config.isSpecial ? (
                 /* Khung nhập mật khẩu cho phép ghi nhiều dòng và xuống dòng thoải mái */
                 <div className="relative">

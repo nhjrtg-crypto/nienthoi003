@@ -461,7 +461,9 @@ export function parseRouteFromLocation(): {
     raw = window.location.pathname.replace(/^\/+|\/+$/g, '').trim();
   }
 
-  if (!raw) return {};
+  if (!raw) {
+    return { viewMode: 'novel-home' };
+  }
 
   // Khớp định dạng: read/:novelId/:chapterNumber hoặc novel/:novelId/chapter/:chapterNumber
   const readMatch = raw.match(/^(?:read|novel)\/([^/]+)\/(?:chapter\/|ch\/)?(\d+)$/i);
@@ -517,7 +519,7 @@ export function parseRouteFromLocation(): {
     return { viewMode: 'internal-beyond' };
   }
 
-  return {};
+  return { viewMode: 'novel-home' };
 }
 
 function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
@@ -645,6 +647,8 @@ export default function App() {
   const [readingChapterNumber, setReadingChapterNumber] = useState<number | null>(initialView.readingChapterNumber);
   const [pendingNovelId, setPendingNovelId] = useState<string | null>(initialView.targetNovelId || null);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const isPopStateRef = useRef(false);
+  const isFirstRenderRef = useRef(true);
 
   // Trạng thái màn hình tải trang hiện đại (ModernLoadingScreen)
   const [isPageLoading, setIsPageLoading] = useState(true);
@@ -971,6 +975,12 @@ export default function App() {
 
     // Synchronize clean URL (Không dùng dấu # trên tên miền)
     if (typeof window !== 'undefined') {
+      // Nếu sự kiện xuất phát từ popstate (người dùng bấm Back/Forward của trình duyệt/điện thoại), không push thêm vào history!
+      if (isPopStateRef.current) {
+        isPopStateRef.current = false;
+        return;
+      }
+
       // Đang chờ nạp truyện từ Firestore, không ghi đè làm mất URL của người dùng
       if (pendingNovelId && !selectedNovel) return;
 
@@ -994,15 +1004,47 @@ export default function App() {
       const currentPath = window.location.pathname;
       const currentHash = window.location.hash;
 
-      // Cập nhật đường dẫn sạch, xóa bỏ hash cũ nếu có
+      // Lần nạp trang đầu tiên (F5 hoặc mở link trực tiếp): dùng replaceState để không tạo lịch sử trùng lặp
+      if (isFirstRenderRef.current) {
+        isFirstRenderRef.current = false;
+        if (currentPath !== desiredPath || currentHash) {
+          try {
+            window.history.replaceState(
+              {
+                viewMode,
+                novelId: selectedNovel?.id,
+                readingChapterNumber,
+              },
+              '',
+              desiredPath
+            );
+          } catch {}
+        }
+        return;
+      }
+
+      // Các điều hướng tiếp theo do người dùng bấm trên web: dùng pushState để tạo ngăn xếp lịch sử
+      // Nhờ đó khi bấm nút Back trên máy tính hoặc vuốt Back trên điện thoại sẽ quay lại trang trước thay vì thoát web
       if (currentPath !== desiredPath || currentHash) {
         try {
-          window.history.replaceState(null, '', desiredPath);
+          window.history.pushState(
+            {
+              viewMode,
+              novelId: selectedNovel?.id,
+              readingChapterNumber,
+            },
+            '',
+            desiredPath
+          );
         } catch {
           try {
-            window.location.hash = desiredPath === '/' ? '' : desiredPath.replace(/^\//, '#');
+            window.history.replaceState(null, '', desiredPath);
           } catch {
-            // Ignored in sandboxed iframes
+            try {
+              window.location.hash = desiredPath === '/' ? '' : desiredPath.replace(/^\//, '#');
+            } catch {
+              // Ignored in sandboxed iframes
+            }
           }
         }
       }
@@ -1021,15 +1063,51 @@ export default function App() {
     }
   }, [viewMode, selectedNovel?.id, readingChapterNumber]);
 
-  // Phản hồi nút Back/Forward của trình duyệt (hỗ trợ cả popstate và hashchange)
+  // Phản hồi nút Back/Forward của trình duyệt và điện thoại (hỗ trợ cả popstate và hashchange)
   useEffect(() => {
-    const handleLocationChange = () => {
+    const handleLocationChange = (e?: PopStateEvent) => {
+      isPopStateRef.current = true;
+      const state = (e && e.state) || (typeof window !== 'undefined' ? window.history.state : null);
+
+      // 1. Ưu tiên state từ History API (khi người dùng bấm Back/Forward của trình duyệt/điện thoại)
+      if (state && state.viewMode) {
+        setViewMode(state.viewMode);
+        if (state.novelId) {
+          const found = findNovelByIdOrAlias(allMergedNovels, state.novelId);
+          setSelectedNovel(found || null);
+          if (!found) {
+            setPendingNovelId(state.novelId);
+          } else {
+            setPendingNovelId(null);
+          }
+        } else {
+          setSelectedNovel(null);
+          setPendingNovelId(null);
+        }
+        const chapNum = typeof state.readingChapterNumber === 'number' ? state.readingChapterNumber : null;
+        setReadingChapterNumber(chapNum);
+
+        try {
+          const s = JSON.stringify({
+            viewMode: state.viewMode,
+            novelId: state.novelId || null,
+            readingChapterNumber: chapNum,
+          });
+          safeStorage.setItem('cosmo_active_view', s);
+          safeStorage.setSessionItem('cosmo_active_view', s);
+        } catch {}
+        return;
+      }
+
+      // 2. Nếu không có state, phân tích theo URL (pathname / hash)
       const parsed = parseSavedViewState(allMergedNovels);
       setViewMode(parsed.viewMode);
       setSelectedNovel(parsed.selectedNovel);
       setReadingChapterNumber(parsed.readingChapterNumber);
       if (parsed.targetNovelId) {
         setPendingNovelId(parsed.targetNovelId);
+      } else {
+        setPendingNovelId(null);
       }
     };
 
@@ -1506,8 +1584,14 @@ export default function App() {
             onBack={() => {
               setSelectedNovel(null);
               setReadingChapterNumber(null);
+              setPendingNovelId(null);
               setViewMode('novel-home');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              try {
+                const s = JSON.stringify({ viewMode: 'novel-home', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'instant' });
             }}
             onReadChapter={(chapterNum) => {
               setReadingChapterNumber(chapterNum);
@@ -1540,8 +1624,14 @@ export default function App() {
               onBackToNovels={() => {
                 setSelectedNovel(null);
                 setReadingChapterNumber(null);
+                setPendingNovelId(null);
                 setViewMode('novel-home');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                try {
+                  const s = JSON.stringify({ viewMode: 'novel-home', novelId: null, readingChapterNumber: null });
+                  safeStorage.setItem('cosmo_active_view', s);
+                  safeStorage.setSessionItem('cosmo_active_view', s);
+                } catch {}
+                window.scrollTo({ top: 0, behavior: 'instant' });
               }}
               currentOption={lightIntroOption}
               onChangeOption={(opt) => {
@@ -1557,8 +1647,14 @@ export default function App() {
               onBackToNovels={() => {
                 setSelectedNovel(null);
                 setReadingChapterNumber(null);
+                setPendingNovelId(null);
                 setViewMode('novel-home');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                try {
+                  const s = JSON.stringify({ viewMode: 'novel-home', novelId: null, readingChapterNumber: null });
+                  safeStorage.setItem('cosmo_active_view', s);
+                  safeStorage.setSessionItem('cosmo_active_view', s);
+                } catch {}
+                window.scrollTo({ top: 0, behavior: 'instant' });
               }}
               currentOption={lightIntroOption}
               onChangeOption={(opt) => {
@@ -1582,7 +1678,16 @@ export default function App() {
             isAdmin={isAdmin}
             onClose={() => {
               setReadingChapterNumber(null);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              try {
+                const s = JSON.stringify({
+                  viewMode: 'novel-detail',
+                  novelId: selectedNovel?.id || null,
+                  readingChapterNumber: null,
+                });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'instant' });
             }}
             onSelectChapter={(num) => setReadingChapterNumber(num)}
             onUpdateChapters={handleUpdateNovelChapters}

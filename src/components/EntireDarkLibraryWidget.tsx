@@ -1,0 +1,1532 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { motion } from 'motion/react';
+import { Calendar as CalendarIcon, Clock, Play, Pause } from 'lucide-react';
+import { Novel } from '../types';
+
+// =========================================================================
+// 1. CÁC HỌA TIẾT VI HÌNH HỌC (MICRO-DECORATION GLYPHS)
+// =========================================================================
+
+/** Ngôi sao 4 cánh (4-pointed Star) phát quang */
+export const MicroStar4: React.FC<{ className?: string; style?: React.CSSProperties }> = ({
+  className = 'w-2.5 h-2.5',
+  style,
+}) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={`inline-block shrink-0 ${className}`} style={style} aria-hidden="true">
+    <path d="M12 2 Q12 12 22 12 Q12 12 12 22 Q12 12 12 2 12 Q12 12 2 Z" />
+  </svg>
+);
+
+/** Chấm tròn đặc */
+export const MicroDot: React.FC<{ className?: string; style?: React.CSSProperties }> = ({
+  className = 'w-1.5 h-1.5',
+  style,
+}) => <span className={`inline-block rounded-full bg-current shrink-0 ${className}`} style={style} aria-hidden="true" />;
+
+/** Hình vuông đổ màu đặc */
+export const MicroSquareFilled: React.FC<{ className?: string; style?: React.CSSProperties }> = ({
+  className = 'w-1.5 h-1.5',
+  style,
+}) => <span className={`inline-block bg-current shrink-0 ${className}`} style={style} aria-hidden="true" />;
+
+/** Hình thoi rỗng xoay 45 độ */
+export const MicroDiamond: React.FC<{ className?: string; style?: React.CSSProperties }> = ({
+  className = 'w-1.5 h-1.5',
+  style,
+}) => <span className={`inline-block border border-current rotate-45 shrink-0 ${className}`} style={style} aria-hidden="true" />;
+
+/** Hình tròn rỗng */
+export const MicroCircle: React.FC<{ className?: string; style?: React.CSSProperties }> = ({
+  className = 'w-1.5 h-1.5',
+  style,
+}) => <span className={`inline-block rounded-full border border-current shrink-0 ${className}`} style={style} aria-hidden="true" />;
+
+// =========================================================================
+// 2. BỘ TẠO ÂM THANH XÚC GIÁC WEB AUDIO SYNTHESIZER
+// =========================================================================
+const playTap = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(260, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+  } catch {}
+};
+
+const playChime = (freq = 523.25) => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.7);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.7);
+  } catch {}
+};
+
+// =========================================================================
+// 3. RADAR THIÊN VĂN MẶT TRĂNG KIM CƯƠNG 60FPS (CELESTIAL DIAMOND MOON CANVAS)
+// =========================================================================
+export const CelestialDiamondMoonCanvas: React.FC<{
+  className?: string;
+  particleColor?: string;
+  ringColor?: string;
+}> = ({ className = '', particleColor = 'rgba(255, 255, 255, 1)', ringColor = 'rgba(255, 255, 255, 0.45)' }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // 160 hạt sao kim cương lấp lánh bên trong vầng trăng
+  const moonParticles = useMemo(() => {
+    return Array.from({ length: 160 }).map((_, i) => ({
+      r: Math.sqrt(Math.random()) * 48,
+      angle: Math.random() * Math.PI * 2,
+      baseAlpha: Math.random() * 0.6 + 0.35,
+      isOcta: i % 10 === 0,
+      twinkleSpeed: Math.random() * 0.04 + 0.02,
+      twinklePhase: Math.random() * Math.PI * 2,
+    }));
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    const size = 300;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+
+    let animId: number;
+    let tick = 0;
+    let gearAngleInner = 0;
+    let gearAngleMid = 0;
+
+    // 4 hạt mưa thanh mảnh rơi êm đềm
+    const raindrops = Array.from({ length: 4 }).map((_, i) => ({
+      x: (Math.random() - 0.5) * 200,
+      y: -140 + (i * 260) / 4,
+      speedY: Math.random() * 1.2 + 3.2,
+      length: Math.random() * 20 + 35,
+      alpha: Math.random() * 0.3 + 0.4,
+    }));
+
+    // Gợn sóng hoa sen dưới chân trăng
+    let ripples: Array<{ x: number; y: number; rx: number; maxRx: number; alpha: number }> = [];
+
+    const render = () => {
+      tick++;
+      gearAngleInner += 0.0022; // Bánh răng trong quay thuận chiều
+      gearAngleMid -= 0.0012;   // Bánh răng giữa quay ngược chiều
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.translate(size / 2, size / 2);
+
+      // --- A. HẠT MƯA RƠI & GỢN SÓNG HOA SEN DƯỚI ĐÁY ---
+      raindrops.forEach((drop) => {
+        drop.y += drop.speedY;
+        const rainGrad = ctx.createLinearGradient(drop.x, drop.y - drop.length, drop.x, drop.y);
+        rainGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        rainGrad.addColorStop(1, `rgba(255, 255, 255, ${drop.alpha})`);
+
+        ctx.strokeStyle = rainGrad;
+        ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(drop.x, drop.y - drop.length);
+        ctx.lineTo(drop.x, drop.y);
+        ctx.stroke();
+
+        if (drop.y > 100) {
+          ripples.push({ x: drop.x, y: 95, rx: 4, maxRx: 55, alpha: drop.alpha });
+          drop.y = -140 - Math.random() * 30;
+          drop.x = (Math.random() - 0.5) * 200;
+        }
+      });
+
+      // Vẽ gợn sóng elip dưới chân trăng
+      ripples = ripples.filter((rip) => {
+        rip.rx += 0.7;
+        const curA = rip.alpha * (1 - rip.rx / rip.maxRx);
+        if (curA > 0.02 && rip.rx < rip.maxRx) {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${curA * 0.8})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.ellipse(rip.x, rip.y, rip.rx, rip.rx * 0.25, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          return true;
+        }
+        return false;
+      });
+
+      // --- B. VÀNH ĐAI ELIP NGHIÊNG & DÒNG CHẢY HẠT BỤI SAO ---
+      const tilt = -0.34;
+      ctx.save();
+      ctx.rotate(tilt);
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = 0.9;
+      ctx.setLineDash([4, 6]);
+      ctx.lineDashOffset = -tick * 0.6;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 130, 70, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // 16 hạt bụi sao chuyển động dọc theo vành elip
+      const cosT = Math.cos(tilt);
+      const sinT = Math.sin(tilt);
+      for (let k = 0; k < 16; k++) {
+        const pAng = k * ((Math.PI * 2) / 16) + tick * 0.003;
+        const ex = 130 * Math.cos(pAng);
+        const ey = 70 * Math.sin(pAng);
+        const px = ex * cosT - ey * sinT;
+        const py = ex * sinT + ey * cosT;
+        const alpha = 0.4 + 0.35 * Math.sin(tick * 0.04 + k);
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(px, py, k % 3 === 0 ? 1.5 : 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // --- C. HỆ THỐNG BÁNH RĂNG THIÊN VĂN ĐỐI XỨNG ---
+      // 1. Vòng trong nét đứt (quay thuận chiều)
+      ctx.save();
+      ctx.rotate(gearAngleInner);
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([2, 5]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 68, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // 2. Vòng giữa với 4 ngôi sao 4 phương chính (quay ngược chiều)
+      ctx.save();
+      ctx.rotate(gearAngleMid);
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.arc(0, 0, 86, 0, Math.PI * 2);
+      ctx.stroke();
+
+      for (let j = 0; j < 4; j++) {
+        const ca = (j * Math.PI) / 2;
+        const cxp = 86 * Math.cos(ca);
+        const cyp = 86 * Math.sin(ca);
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cxp, cyp, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.beginPath();
+        ctx.moveTo(cxp - 6, cyp); ctx.lineTo(cxp + 6, cyp);
+        ctx.moveTo(cxp, cyp - 6); ctx.lineTo(cxp, cyp + 6);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 3. Vòng ngoài cố định với 48 vạch chia độ chữ T (-|-)
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.arc(0, 0, 104, 0, Math.PI * 2);
+      ctx.stroke();
+
+      for (let i = 0; i < 48; i++) {
+        const a = (i * Math.PI * 2) / 48;
+        const isMajor = i % 4 === 0;
+        const r1 = isMajor ? 96 : 99;
+        const r2 = isMajor ? 112 : 109;
+        ctx.strokeStyle = isMajor ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.35)';
+        ctx.lineWidth = isMajor ? 1 : 0.7;
+        ctx.beginPath();
+        ctx.moveTo(r1 * Math.cos(a), r1 * Math.sin(a));
+        ctx.lineTo(r2 * Math.cos(a), r2 * Math.sin(a));
+        ctx.stroke();
+      }
+
+      // --- D. VẦNG TRĂNG KIM CƯƠNG LƯỠI LIỀM PHÁT SÁNG Ở TÂM ---
+      const cx1 = 9;
+      const r1 = 44;
+      const cx2 = 22;
+      const r2 = 39;
+      const cuspX = 31;
+      const cuspYTop = -37;
+      const cuspYBottom = 37;
+
+      ctx.save();
+      // Quầng sáng trắng tỏa ra từ mặt trăng
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+      ctx.shadowBlur = 20;
+
+      // Đường bao lưỡi liềm toán học chuẩn xác
+      ctx.beginPath();
+      const angleTopOuter = Math.atan2(cuspYTop, cuspX - cx1);
+      const angleBottomOuter = Math.atan2(cuspYBottom, cuspX - cx1);
+      ctx.arc(cx1, 0, r1, angleTopOuter, angleBottomOuter, true);
+
+      const angleBottomInner = Math.atan2(cuspYBottom, cuspX - cx2);
+      const angleTopInner = Math.atan2(cuspYTop, cuspX - cx2);
+      ctx.arc(cx2, 0, r2, angleBottomInner, angleTopInner, false);
+      ctx.closePath();
+
+      // Đổ màu thân trăng trắng tuyết sáng chói
+      const moonGrad = ctx.createLinearGradient(-35, -40, 35, 40);
+      moonGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      moonGrad.addColorStop(0.5, 'rgba(245, 248, 255, 0.96)');
+      moonGrad.addColorStop(1, 'rgba(255, 255, 255, 0.98)');
+      ctx.fillStyle = moonGrad;
+      ctx.fill();
+
+      // Cắt mặt nạ clip để hạt sao kim cương nằm trọn vẹn trong trăng
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = 'transparent';
+      ctx.clip();
+
+      // Vệt sáng quét khúc xạ lấp lánh (Diamond Shimmer Sweep)
+      const shimmerPhase = (Math.sin(tick * 0.02) + 1) / 2;
+      const shimmerX = -45 + shimmerPhase * 90;
+      const shimmerGrad = ctx.createLinearGradient(shimmerX - 20, -45, shimmerX + 20, 45);
+      shimmerGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      shimmerGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.45)');
+      shimmerGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = shimmerGrad;
+      ctx.fillRect(-50, -50, 100, 100);
+
+      // Các hạt sao kim cương lấp lánh bên trong vầng trăng
+      moonParticles.forEach((p) => {
+        const alpha = p.baseAlpha + 0.25 * Math.sin(tick * p.twinkleSpeed + p.twinklePhase);
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.r * Math.cos(p.angle), p.r * Math.sin(p.angle), 1, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (p.isOcta) {
+          const px = p.r * Math.cos(p.angle);
+          const py = p.r * Math.sin(p.angle);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(px - 4, py); ctx.lineTo(px + 4, py);
+          ctx.moveTo(px, py - 4); ctx.lineTo(px, py + 4);
+          ctx.stroke();
+        }
+      });
+
+      ctx.restore();
+      ctx.restore();
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animId);
+  }, [moonParticles, ringColor]);
+
+  return <canvas ref={canvasRef} className={`select-none pointer-events-none w-28 h-28 xs:w-36 xs:h-36 sm:w-48 sm:h-48 md:w-60 md:h-60 ${className}`} />;
+};
+
+// =========================================================================
+// 4. BỘ DỮ LIỆU 31 BÀI THƠ KINH ĐIỂN CHO 31 NGÀY (POETRY LIST)
+// =========================================================================
+export const poetList = [
+  {
+    author: 'JOHN KEATS',
+    lines: [
+      'I see a lily on thy brow,',
+      'With anguish moist and fever-dew;',
+      'And on thy cheeks a fading rose',
+      'Fast withereth too.',
+    ],
+  },
+  {
+    author: 'CHRISTINA ROSSETTI',
+    lines: [
+      'Consider the lilies of the field, whose bloom',
+      'Is briefer than the sunflower;',
+      'Yet Solomon in all his glory',
+      'Was not arrayed like one of these.',
+    ],
+  },
+  {
+    author: 'WILLIAM BLAKE',
+    lines: [
+      'The modest Rose puts forth a thorn,',
+      'The humble Sheep a threat’ning horn;',
+      'While the Lily white shall in love delight,',
+      'Nor a thorn nor a threat stain her beauty bright.',
+    ],
+  },
+  {
+    author: 'ALFRED TENNYSON',
+    lines: [
+      'And the sound of a voice that is still,',
+      'Break, break, break, at the foot of thy crags, O Sea!',
+      'But the tender grace of a day that is dead',
+      'Will never come back to me.',
+    ],
+  },
+  {
+    author: 'PERCY B. SHELLEY',
+    lines: [
+      'The cold earth slept below;',
+      'Above the cold sky shone;',
+      'And all around, with a chilling sound,',
+      'From caves of ice and fields of snow.',
+    ],
+  },
+  {
+    author: 'EMILY DICKINSON',
+    lines: [
+      'Hope is the thing with feathers',
+      'That perches in the soul,',
+      'And sings the tune without the words,',
+      'And never stops at all.',
+    ],
+  },
+  {
+    author: 'LORD BYRON',
+    lines: [
+      'She walks in beauty, like the night',
+      'Of cloudless climes and starry skies;',
+      'And all that’s best of dark and bright',
+      'Meet in her aspect and her eyes.',
+    ],
+  },
+  {
+    author: 'WILLIAM WORDSWORTH',
+    lines: [
+      'I wandered lonely as a cloud',
+      'That floats on high o’er vales and hills,',
+      'When all at once I saw a crowd,',
+      'A host, of golden daffodils.',
+    ],
+  },
+  {
+    author: 'ROBERT BROWNING',
+    lines: [
+      'Grow old along with me!',
+      'The best is yet to be,',
+      'The last of life, for which the first was made:',
+      'Our times are in His hand.',
+    ],
+  },
+  {
+    author: 'WILLIAM SHAKESPEARE',
+    lines: [
+      'Shall I compare thee to a summer’s day?',
+      'Thou art more lovely and more temperate:',
+      'Rough winds do shake the darling buds of May,',
+      'And summer’s lease hath all too short a date.',
+    ],
+  },
+  {
+    author: 'EDGAR ALLAN POE',
+    lines: [
+      'For the moon never beams without bringing me dreams',
+      'Of the beautiful Annabel Lee;',
+      'And the stars never rise but I feel the bright eyes',
+      'Of the beautiful Annabel Lee.',
+    ],
+  },
+  {
+    author: 'W. B. YEATS',
+    lines: [
+      'I will arise and go now, and go to Innisfree,',
+      'And a small cabin build there, of clay and wattles made;',
+      'Nine bean-rows will I have there, a hive for the honey-bee,',
+      'And live alone in the bee-loud glade.',
+    ],
+  },
+  {
+    author: 'ROBERT FROST',
+    lines: [
+      'The woods are lovely, dark and deep,',
+      'But I have promises to keep,',
+      'And miles to go before I sleep,',
+      'And miles to go before I sleep.',
+    ],
+  },
+  {
+    author: 'WALT WHITMAN',
+    lines: [
+      'O Captain! my Captain! our fearful trip is done,',
+      'The ship has weather’d every rack, the prize we sought is won,',
+      'The port is near, the bells I hear, the people all exulting,',
+      'While follow eyes the steady keel, the vessel grim and daring.',
+    ],
+  },
+  {
+    author: 'RAINER MARIA RILKE',
+    lines: [
+      'Let everything happen to you: beauty and terror.',
+      'Just keep going. No feeling is final.',
+      'Don’t lose yourself to regret;',
+      'Nearby is the land they call life.',
+    ],
+  },
+  {
+    author: 'ROBERT BURNS',
+    lines: [
+      'O my Luve is like a red, red rose',
+      'That’s newly sprung in June;',
+      'O my Luve is like the melody',
+      'That’s sweetly played in tune.',
+    ],
+  },
+  {
+    author: 'JOHN DONNE',
+    lines: [
+      'No man is an island, entire of itself;',
+      'Every man is a piece of the continent,',
+      'A part of the main.',
+      'Any man’s death diminishes me, because I am involved in mankind.',
+    ],
+  },
+  {
+    author: 'ELIZABETH BARRETT BROWNING',
+    lines: [
+      'How do I love thee? Let me count the ways.',
+      'I love thee to the depth and breadth and height',
+      'My soul can reach, when feeling out of sight',
+      'For the ends of being and ideal grace.',
+    ],
+  },
+  {
+    author: 'SAMUEL TAYLOR COLERIDGE',
+    lines: [
+      'He prayeth best, who loveth best',
+      'All things both great and small;',
+      'For the dear God who loveth us,',
+      'He made and loveth all.',
+    ],
+  },
+  {
+    author: 'THOMAS HARDY',
+    lines: [
+      'Wintertime has come again,',
+      'With frost upon the hill and plain;',
+      'Yet in this silence cold and still,',
+      'A quiet light shines on the sill.',
+    ],
+  },
+  {
+    author: 'MATTHEW ARNOLD',
+    lines: [
+      'The sea is calm tonight.',
+      'The tide is full, the moon lies fair',
+      'Upon the straits; on the French coast the light',
+      'Gleams and is gone; the cliffs of England stand.',
+    ],
+  },
+  {
+    author: 'HENRY WADSWORTH LONGFELLOW',
+    lines: [
+      'The night shall be filled with music,',
+      'And the cares, that infest the day,',
+      'Shall fold their tents, like the Arabs,',
+      'And as silently steal away.',
+    ],
+  },
+  {
+    author: 'JOHN MILTON',
+    lines: [
+      'They also serve who only stand and wait;',
+      'Peace hath her victories no less renowned than war,',
+      'Though darkness veil the earthly light,',
+      'Faith shines like an immortal star.',
+    ],
+  },
+  {
+    author: 'ANDREW MARVELL',
+    lines: [
+      'Had we but world enough and time,',
+      'This coyness, lady, were no crime.',
+      'We would sit down, and think which way',
+      'To walk, and pass our long love’s day.',
+    ],
+  },
+  {
+    author: 'ROBERT HERRICK',
+    lines: [
+      'Gather ye rosebuds while ye may,',
+      'Old Time is still a-flying;',
+      'And this same flower that smiles today',
+      'Tomorrow will be dying.',
+    ],
+  },
+  {
+    author: 'JOHN CLARE',
+    lines: [
+      'I am—yet what I am none cares or knows,',
+      'My friends forsake me like a memory lost;',
+      'I am the self-consumer of my woes,',
+      'They rise and vanish in oblivious host.',
+    ],
+  },
+  {
+    author: 'ALGERNON CHARLES SWINBURNE',
+    lines: [
+      'From too much love of living,',
+      'From hope and fear set free,',
+      'We thank with brief thanksgiving',
+      'Whatever gods may be.',
+    ],
+  },
+  {
+    author: 'A. E. HOUSMAN',
+    lines: [
+      'Loveliest of trees, the cherry now',
+      'Is hung with bloom along the bough,',
+      'And stands about the woodland ride',
+      'Wearing white for Eastertide.',
+    ],
+  },
+  {
+    author: 'RUPERT BROOKE',
+    lines: [
+      'If I should die, think only this of me:',
+      'That there’s some corner of a foreign field',
+      'That is for ever England. There shall be',
+      'In that rich earth a richer dust concealed.',
+    ],
+  },
+  {
+    author: 'GERARD MANLEY HOPKINS',
+    lines: [
+      'The world is charged with the grandeur of God.',
+      'It will flame out, like shining from shook foil;',
+      'It gathers to a greatness, like the ooze of oil',
+      'Crushed. Why do men then now not reck his rod?',
+    ],
+  },
+  {
+    author: 'RABINDRANATH TAGORE',
+    lines: [
+      'Let your life lightly dance on the edges of Time',
+      'Like dew on the tip of a leaf;',
+      'Do not dread the setting of the sun,',
+      'For starlight shall bring you peace.',
+    ],
+  },
+];
+
+// =========================================================================
+// 5. CẤU HÌNH MÀU SẮC CHẾ ĐỘ TỐI CHO CẢ 5 THEME
+// Theme frost giữ nguyên như code cung cấp, các theme khác đổi màu đồng bộ
+// =========================================================================
+export interface DarkWidgetThemeConfig {
+  themeId: string;
+  auroraOrb1: string;
+  auroraOrb2: string;
+  auroraOrb3: string;
+  cardBorder: string;
+  cardBg: string;
+  cardShadow: string;
+  innerGlowOrb1: string;
+  innerGlowOrb2: string;
+  glyphColor: string;
+  barcodeColor: string;
+  miniWidgetTitle: string;
+  followText: string;
+  borderDivider: string;
+  calContainerBorder: string;
+  calContainerBg: string;
+  calHeaderTitle: string;
+  calCardBorder: string;
+  calCardBg: string;
+  ringBorder: string;
+  ringGradient: string;
+  calSelectedDayBg: string;
+  calSelectedDayText: string;
+  calSelectedDayShadow: string;
+  calDayHoverText: string;
+  calDayHoverBg: string;
+  memoTextColor: string;
+  poetContainerBorder: string;
+  poetContainerBg: string;
+  poetHeaderColor: string;
+  poetTextColor: string;
+  poetAuthorColor: string;
+  poetActiveDot: string;
+  poetNextBtnBorder: string;
+  poetNextBtnBg: string;
+  poetNextBtnHoverBg: string;
+  poetNextBtnText: string;
+  anthesisSubtitle: string;
+  libraryTitleColor: string;
+  libraryGlow: string;
+  starColor: string;
+  bookCardBorder: string;
+  bookCardBg: string;
+  bookCardShadow: string;
+  washiTapeBg: string;
+  washiTapeShadow: string;
+  gridLineColor: string;
+  bookTagColor: string;
+  bookTitleColor: string;
+  bookSubtitleColor: string;
+  progressTrackBg: string;
+  progressBarBg: string;
+  readMoreBtnColor: string;
+  quoteColor: string;
+  nienthoiText: string;
+  axisDotBg: string;
+  axisLineBg: string;
+  axisText: string;
+  canvasRingColor: string;
+  canvasParticleColor: string;
+  astroBorder: string;
+  astroLabel: string;
+  astroTime: string;
+  astroTimeGlow: string;
+  audioDivider: string;
+  audioPlayBtnBg: string;
+  audioPlayBtnHoverBg: string;
+  audioPlayBtnBorder: string;
+  audioProgressTrackBg: string;
+  audioProgressBarBg: string;
+  audioSpeedBorder: string;
+  audioSpeedBg: string;
+}
+
+export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetThemeConfig => {
+  switch (themeId) {
+    case 'amethyst-haze':
+      return {
+        themeId,
+        auroraOrb1: 'from-purple-900/25 via-fuchsia-950/20 to-transparent',
+        auroraOrb2: 'from-indigo-950/30 via-purple-950/20 to-transparent',
+        auroraOrb3: 'bg-purple-950/20',
+        cardBorder: 'border-purple-400/20',
+        cardBg: 'bg-[#0e0a16]/75',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(216,180,254,0.15)]',
+        innerGlowOrb1: 'bg-purple-500/15',
+        innerGlowOrb2: 'bg-fuchsia-500/12',
+        glyphColor: 'text-purple-300',
+        barcodeColor: 'bg-purple-100',
+        miniWidgetTitle: 'text-purple-200',
+        followText: 'text-purple-400',
+        borderDivider: 'border-purple-500/20',
+        calContainerBorder: 'border-purple-500/20',
+        calContainerBg: 'bg-purple-950/[0.15]',
+        calHeaderTitle: 'text-purple-200',
+        calCardBorder: 'border-purple-400/25',
+        calCardBg: 'bg-purple-950/[0.25]',
+        ringBorder: 'border-purple-300/80',
+        ringGradient: 'from-purple-100 via-purple-300 to-stone-500',
+        calSelectedDayBg: 'bg-[#d8b4fe]',
+        calSelectedDayText: 'text-purple-950',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(216,180,254,0.9)]',
+        calDayHoverText: 'hover:text-purple-100',
+        calDayHoverBg: 'hover:bg-purple-500/20',
+        memoTextColor: 'text-purple-300',
+        poetContainerBorder: 'border-purple-400/20',
+        poetContainerBg: 'bg-purple-950/[0.2]',
+        poetHeaderColor: 'text-purple-200',
+        poetTextColor: 'text-purple-100',
+        poetAuthorColor: 'text-purple-300',
+        poetActiveDot: 'bg-purple-200 shadow-[0_0_6px_#d8b4fe]',
+        poetNextBtnBorder: 'border-purple-400/30',
+        poetNextBtnBg: 'bg-purple-500/15',
+        poetNextBtnHoverBg: 'hover:bg-purple-500/25',
+        poetNextBtnText: 'text-purple-100',
+        anthesisSubtitle: 'text-purple-300',
+        libraryTitleColor: 'text-white',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(216,180,254,0.7)]',
+        starColor: 'text-purple-300',
+        bookCardBorder: 'border-purple-400/20',
+        bookCardBg: 'bg-purple-950/[0.25]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.6),inset_0_1px_1px_0_rgba(216,180,254,0.12)]',
+        washiTapeBg: 'rgba(216, 180, 254, 0.2)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(216, 180, 254, 0.3)',
+        gridLineColor: 'rgba(216, 180, 254, 0.3)',
+        bookTagColor: 'text-purple-300',
+        bookTitleColor: 'text-white',
+        bookSubtitleColor: 'text-purple-300/80',
+        progressTrackBg: 'bg-purple-950/40',
+        progressBarBg: 'bg-gradient-to-r from-purple-300 to-fuchsia-300',
+        readMoreBtnColor: 'text-purple-200 hover:text-white',
+        quoteColor: 'text-purple-200/90',
+        nienthoiText: 'text-purple-300',
+        axisDotBg: 'bg-purple-300',
+        axisLineBg: 'bg-purple-400/30',
+        axisText: 'text-purple-200',
+        canvasRingColor: 'rgba(216, 180, 254, 0.45)',
+        canvasParticleColor: '#ffffff',
+        astroBorder: 'border-purple-500/20',
+        astroLabel: 'text-purple-300',
+        astroTime: 'text-purple-100',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(216,180,254,0.8)]',
+        audioDivider: 'border-purple-500/20',
+        audioPlayBtnBg: 'bg-purple-500/20',
+        audioPlayBtnHoverBg: 'hover:bg-purple-500/35',
+        audioPlayBtnBorder: 'border-purple-400/35',
+        audioProgressTrackBg: 'bg-purple-950/40',
+        audioProgressBarBg: 'bg-gradient-to-r from-purple-300 to-fuchsia-300',
+        audioSpeedBorder: 'border-purple-400/30',
+        audioSpeedBg: 'bg-purple-500/15',
+      };
+
+    case 'sage':
+      return {
+        themeId,
+        auroraOrb1: 'from-emerald-950/30 via-teal-950/20 to-transparent',
+        auroraOrb2: 'from-teal-950/30 via-emerald-950/20 to-transparent',
+        auroraOrb3: 'bg-emerald-950/20',
+        cardBorder: 'border-emerald-400/20',
+        cardBg: 'bg-[#070e0a]/75',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(167,243,208,0.15)]',
+        innerGlowOrb1: 'bg-emerald-500/15',
+        innerGlowOrb2: 'bg-teal-500/12',
+        glyphColor: 'text-emerald-300',
+        barcodeColor: 'bg-emerald-100',
+        miniWidgetTitle: 'text-emerald-200',
+        followText: 'text-emerald-400',
+        borderDivider: 'border-emerald-500/20',
+        calContainerBorder: 'border-emerald-500/20',
+        calContainerBg: 'bg-emerald-950/[0.15]',
+        calHeaderTitle: 'text-emerald-200',
+        calCardBorder: 'border-emerald-400/25',
+        calCardBg: 'bg-emerald-950/[0.25]',
+        ringBorder: 'border-emerald-300/80',
+        ringGradient: 'from-emerald-100 via-emerald-300 to-stone-500',
+        calSelectedDayBg: 'bg-[#6ee7b7]',
+        calSelectedDayText: 'text-emerald-950',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(110,231,183,0.9)]',
+        calDayHoverText: 'hover:text-emerald-100',
+        calDayHoverBg: 'hover:bg-emerald-500/20',
+        memoTextColor: 'text-emerald-300',
+        poetContainerBorder: 'border-emerald-400/20',
+        poetContainerBg: 'bg-emerald-950/[0.2]',
+        poetHeaderColor: 'text-emerald-200',
+        poetTextColor: 'text-emerald-100',
+        poetAuthorColor: 'text-emerald-300',
+        poetActiveDot: 'bg-emerald-200 shadow-[0_0_6px_#6ee7b7]',
+        poetNextBtnBorder: 'border-emerald-400/30',
+        poetNextBtnBg: 'bg-emerald-500/15',
+        poetNextBtnHoverBg: 'hover:bg-emerald-500/25',
+        poetNextBtnText: 'text-emerald-100',
+        anthesisSubtitle: 'text-emerald-300',
+        libraryTitleColor: 'text-white',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(110,231,183,0.7)]',
+        starColor: 'text-emerald-300',
+        bookCardBorder: 'border-emerald-400/20',
+        bookCardBg: 'bg-emerald-950/[0.25]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.6),inset_0_1px_1px_0_rgba(167,243,208,0.12)]',
+        washiTapeBg: 'rgba(167, 243, 208, 0.2)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(167, 243, 208, 0.3)',
+        gridLineColor: 'rgba(167, 243, 208, 0.3)',
+        bookTagColor: 'text-emerald-300',
+        bookTitleColor: 'text-white',
+        bookSubtitleColor: 'text-emerald-300/80',
+        progressTrackBg: 'bg-emerald-950/40',
+        progressBarBg: 'bg-gradient-to-r from-emerald-300 to-teal-300',
+        readMoreBtnColor: 'text-emerald-200 hover:text-white',
+        quoteColor: 'text-emerald-200/90',
+        nienthoiText: 'text-emerald-300',
+        axisDotBg: 'bg-emerald-300',
+        axisLineBg: 'bg-emerald-400/30',
+        axisText: 'text-emerald-200',
+        canvasRingColor: 'rgba(167, 243, 208, 0.45)',
+        canvasParticleColor: '#ffffff',
+        astroBorder: 'border-emerald-500/20',
+        astroLabel: 'text-emerald-300',
+        astroTime: 'text-emerald-100',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(110,231,183,0.8)]',
+        audioDivider: 'border-emerald-500/20',
+        audioPlayBtnBg: 'bg-emerald-500/20',
+        audioPlayBtnHoverBg: 'hover:bg-emerald-500/35',
+        audioPlayBtnBorder: 'border-emerald-400/35',
+        audioProgressTrackBg: 'bg-emerald-950/40',
+        audioProgressBarBg: 'bg-gradient-to-r from-emerald-300 to-teal-300',
+        audioSpeedBorder: 'border-emerald-400/30',
+        audioSpeedBg: 'bg-emerald-500/15',
+      };
+
+    case 'mocha':
+      return {
+        themeId,
+        auroraOrb1: 'from-amber-950/30 via-orange-950/20 to-transparent',
+        auroraOrb2: 'from-orange-950/30 via-amber-950/20 to-transparent',
+        auroraOrb3: 'bg-amber-950/20',
+        cardBorder: 'border-amber-400/20',
+        cardBg: 'bg-[#100b07]/75',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(253,230,138,0.15)]',
+        innerGlowOrb1: 'bg-amber-500/15',
+        innerGlowOrb2: 'bg-orange-500/12',
+        glyphColor: 'text-amber-300',
+        barcodeColor: 'bg-amber-100',
+        miniWidgetTitle: 'text-amber-200',
+        followText: 'text-amber-400',
+        borderDivider: 'border-amber-500/20',
+        calContainerBorder: 'border-amber-500/20',
+        calContainerBg: 'bg-amber-950/[0.15]',
+        calHeaderTitle: 'text-amber-200',
+        calCardBorder: 'border-amber-400/25',
+        calCardBg: 'bg-amber-950/[0.25]',
+        ringBorder: 'border-amber-300/80',
+        ringGradient: 'from-amber-100 via-amber-300 to-stone-500',
+        calSelectedDayBg: 'bg-[#fcd34d]',
+        calSelectedDayText: 'text-amber-950',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(252,211,77,0.9)]',
+        calDayHoverText: 'hover:text-amber-100',
+        calDayHoverBg: 'hover:bg-amber-500/20',
+        memoTextColor: 'text-amber-300',
+        poetContainerBorder: 'border-amber-400/20',
+        poetContainerBg: 'bg-amber-950/[0.2]',
+        poetHeaderColor: 'text-amber-200',
+        poetTextColor: 'text-amber-100',
+        poetAuthorColor: 'text-amber-300',
+        poetActiveDot: 'bg-amber-200 shadow-[0_0_6px_#fcd34d]',
+        poetNextBtnBorder: 'border-amber-400/30',
+        poetNextBtnBg: 'bg-amber-500/15',
+        poetNextBtnHoverBg: 'hover:bg-amber-500/25',
+        poetNextBtnText: 'text-amber-100',
+        anthesisSubtitle: 'text-amber-300',
+        libraryTitleColor: 'text-white',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(252,211,77,0.7)]',
+        starColor: 'text-amber-300',
+        bookCardBorder: 'border-amber-400/20',
+        bookCardBg: 'bg-amber-950/[0.25]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.6),inset_0_1px_1px_0_rgba(253,230,138,0.12)]',
+        washiTapeBg: 'rgba(253, 230, 138, 0.2)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(253, 230, 138, 0.3)',
+        gridLineColor: 'rgba(253, 230, 138, 0.3)',
+        bookTagColor: 'text-amber-300',
+        bookTitleColor: 'text-white',
+        bookSubtitleColor: 'text-amber-300/80',
+        progressTrackBg: 'bg-amber-950/40',
+        progressBarBg: 'bg-gradient-to-r from-amber-300 to-orange-300',
+        readMoreBtnColor: 'text-amber-200 hover:text-white',
+        quoteColor: 'text-amber-200/90',
+        nienthoiText: 'text-amber-300',
+        axisDotBg: 'bg-amber-300',
+        axisLineBg: 'bg-amber-400/30',
+        axisText: 'text-amber-200',
+        canvasRingColor: 'rgba(253, 230, 138, 0.45)',
+        canvasParticleColor: '#ffffff',
+        astroBorder: 'border-amber-500/20',
+        astroLabel: 'text-amber-300',
+        astroTime: 'text-amber-100',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(252,211,77,0.8)]',
+        audioDivider: 'border-amber-500/20',
+        audioPlayBtnBg: 'bg-amber-500/20',
+        audioPlayBtnHoverBg: 'hover:bg-amber-500/35',
+        audioPlayBtnBorder: 'border-amber-400/35',
+        audioProgressTrackBg: 'bg-amber-950/40',
+        audioProgressBarBg: 'bg-gradient-to-r from-amber-300 to-orange-300',
+        audioSpeedBorder: 'border-amber-400/30',
+        audioSpeedBg: 'bg-amber-500/15',
+      };
+
+    case 'notebook':
+      return {
+        themeId,
+        auroraOrb1: 'from-zinc-900/25 via-stone-900/15 to-transparent',
+        auroraOrb2: 'from-stone-900/25 via-zinc-950/15 to-transparent',
+        auroraOrb3: 'bg-zinc-900/20',
+        cardBorder: 'border-white/15',
+        cardBg: 'bg-zinc-950/75',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
+        innerGlowOrb1: 'bg-white/10',
+        innerGlowOrb2: 'bg-stone-500/10',
+        glyphColor: 'text-zinc-400',
+        barcodeColor: 'bg-white',
+        miniWidgetTitle: 'text-zinc-300',
+        followText: 'text-zinc-500',
+        borderDivider: 'border-white/10',
+        calContainerBorder: 'border-white/10',
+        calContainerBg: 'bg-white/[0.03]',
+        calHeaderTitle: 'text-zinc-300',
+        calCardBorder: 'border-white/15',
+        calCardBg: 'bg-white/[0.04]',
+        ringBorder: 'border-zinc-300/80',
+        ringGradient: 'from-zinc-100 via-zinc-300 to-zinc-500',
+        calSelectedDayBg: 'bg-white',
+        calSelectedDayText: 'text-black',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(255,255,255,0.9)]',
+        calDayHoverText: 'hover:text-white',
+        calDayHoverBg: 'hover:bg-white/10',
+        memoTextColor: 'text-zinc-400',
+        poetContainerBorder: 'border-white/15',
+        poetContainerBg: 'bg-white/[0.03]',
+        poetHeaderColor: 'text-zinc-300',
+        poetTextColor: 'text-zinc-200',
+        poetAuthorColor: 'text-zinc-400',
+        poetActiveDot: 'bg-white shadow-[0_0_6px_white]',
+        poetNextBtnBorder: 'border-white/20',
+        poetNextBtnBg: 'bg-white/10',
+        poetNextBtnHoverBg: 'hover:bg-white/20',
+        poetNextBtnText: 'text-zinc-100',
+        anthesisSubtitle: 'text-zinc-300',
+        libraryTitleColor: 'text-white',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]',
+        starColor: 'text-zinc-300',
+        bookCardBorder: 'border-white/15',
+        bookCardBg: 'bg-white/[0.04]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.1)]',
+        washiTapeBg: 'rgba(255, 255, 255, 0.15)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
+        gridLineColor: 'rgba(255, 255, 255, 0.3)',
+        bookTagColor: 'text-zinc-300',
+        bookTitleColor: 'text-white',
+        bookSubtitleColor: 'text-zinc-400',
+        progressTrackBg: 'bg-white/10',
+        progressBarBg: 'bg-white',
+        readMoreBtnColor: 'text-zinc-300 hover:text-white',
+        quoteColor: 'text-zinc-300',
+        nienthoiText: 'text-zinc-400',
+        axisDotBg: 'bg-white/70',
+        axisLineBg: 'bg-white/20',
+        axisText: 'text-zinc-300',
+        canvasRingColor: 'rgba(255, 255, 255, 0.45)',
+        canvasParticleColor: '#ffffff',
+        astroBorder: 'border-white/10',
+        astroLabel: 'text-zinc-400',
+        astroTime: 'text-white',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]',
+        audioDivider: 'border-white/10',
+        audioPlayBtnBg: 'bg-white/10',
+        audioPlayBtnHoverBg: 'hover:bg-white/20',
+        audioPlayBtnBorder: 'border-white/25',
+        audioProgressTrackBg: 'bg-white/10',
+        audioProgressBarBg: 'bg-white',
+        audioSpeedBorder: 'border-white/20',
+        audioSpeedBg: 'bg-white/[0.06]',
+      };
+
+    case 'slate-haze':
+    default:
+      // THEME FROST CHẾ ĐỘ TỐI: GIỮ NGUYÊN 100% THEO CODE GỐC CỦA NGƯỜI DÙNG
+      return {
+        themeId: 'slate-haze',
+        auroraOrb1: 'from-indigo-900/20 via-purple-900/15 to-transparent',
+        auroraOrb2: 'from-cyan-950/25 via-blue-950/15 to-transparent',
+        auroraOrb3: 'bg-stone-900/20',
+        cardBorder: 'border-white/15',
+        cardBg: 'bg-stone-950/65',
+        cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
+        innerGlowOrb1: 'bg-indigo-500/10',
+        innerGlowOrb2: 'bg-cyan-500/10',
+        glyphColor: 'text-stone-400',
+        barcodeColor: 'bg-white',
+        miniWidgetTitle: 'text-stone-300',
+        followText: 'text-stone-500',
+        borderDivider: 'border-white/10',
+        calContainerBorder: 'border-white/10',
+        calContainerBg: 'bg-white/[0.03]',
+        calHeaderTitle: 'text-stone-300',
+        calCardBorder: 'border-white/15',
+        calCardBg: 'bg-white/[0.04]',
+        ringBorder: 'border-stone-300/80',
+        ringGradient: 'from-stone-100 via-stone-300 to-stone-500',
+        calSelectedDayBg: 'bg-white',
+        calSelectedDayText: 'text-black',
+        calSelectedDayShadow: 'shadow-[0_0_14px_rgba(255,255,255,0.9)]',
+        calDayHoverText: 'hover:text-white',
+        calDayHoverBg: 'hover:bg-white/10',
+        memoTextColor: 'text-stone-400',
+        poetContainerBorder: 'border-white/15',
+        poetContainerBg: 'bg-white/[0.03]',
+        poetHeaderColor: 'text-stone-300',
+        poetTextColor: 'text-stone-200',
+        poetAuthorColor: 'text-stone-400',
+        poetActiveDot: 'bg-white shadow-[0_0_6px_white]',
+        poetNextBtnBorder: 'border-white/20',
+        poetNextBtnBg: 'bg-white/10',
+        poetNextBtnHoverBg: 'hover:bg-white/20',
+        poetNextBtnText: 'text-stone-100',
+        anthesisSubtitle: 'text-stone-300',
+        libraryTitleColor: 'text-white',
+        libraryGlow: 'drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]',
+        starColor: 'text-stone-300',
+        bookCardBorder: 'border-white/15',
+        bookCardBg: 'bg-white/[0.04]',
+        bookCardShadow: 'shadow-[0_12px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.1)]',
+        washiTapeBg: 'rgba(255, 255, 255, 0.15)',
+        washiTapeShadow: '0 1px 4px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
+        gridLineColor: 'rgba(255, 255, 255, 0.3)',
+        bookTagColor: 'text-stone-300',
+        bookTitleColor: 'text-white',
+        bookSubtitleColor: 'text-stone-400',
+        progressTrackBg: 'bg-white/10',
+        progressBarBg: 'bg-white',
+        readMoreBtnColor: 'text-stone-300 hover:text-white',
+        quoteColor: 'text-stone-300',
+        nienthoiText: 'text-stone-400',
+        axisDotBg: 'bg-white/70',
+        axisLineBg: 'bg-white/20',
+        axisText: 'text-stone-300',
+        canvasRingColor: 'rgba(255, 255, 255, 0.45)',
+        canvasParticleColor: '#ffffff',
+        astroBorder: 'border-white/10',
+        astroLabel: 'text-stone-400',
+        astroTime: 'text-white',
+        astroTimeGlow: 'drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]',
+        audioDivider: 'border-white/10',
+        audioPlayBtnBg: 'bg-white/10',
+        audioPlayBtnHoverBg: 'hover:bg-white/20',
+        audioPlayBtnBorder: 'border-white/25',
+        audioProgressTrackBg: 'bg-white/10',
+        audioProgressBarBg: 'bg-white',
+        audioSpeedBorder: 'border-white/20',
+        audioSpeedBg: 'bg-white/[0.06]',
+      };
+  }
+};
+
+// =========================================================================
+// 6. TOÀN BỘ KHỐI MINI WIDGET CHẾ ĐỘ TỐI (NOIR GLASSMORPHISM Y NHƯ ẢNH)
+// =========================================================================
+export interface EntireDarkLibraryWidgetProps {
+  themeId?: string;
+  recentNovel?: Novel | null;
+  onSelectNovel?: (novel: Novel) => void;
+  onOpenReading?: () => void;
+}
+
+export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = ({
+  themeId = 'slate-haze',
+  recentNovel,
+  onSelectNovel,
+  onOpenReading,
+}) => {
+  const c = getDarkThemeConfig(themeId);
+
+  const [selectedDay, setSelectedDay] = useState<number>(24);
+  const [activePoetIdx, setActivePoetIdx] = useState<number>(23); // Mặc định ngày 24 (24 / 31)
+  const [readingProgress, setReadingProgress] = useState<number>(78);
+  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
+  const [timeStr, setTimeStr] = useState<string>('04:06:36 PM');
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      const strHours = String(hours).padStart(2, '0');
+      setTimeStr(`${strHours}:${minutes}:${seconds} ${ampm}`);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const barcodePattern = [2, 1, 3, 1, 2, 4, 1, 3, 2, 1, 3, 2, 4, 1, 2];
+  const currentPoet = poetList[activePoetIdx % poetList.length];
+
+  return (
+    /* THẺ CHÍNH MINI WIDGET: KÍNH HUN KHÓI (FROSTED SMOKED GLASS) */
+    <div className={`w-full max-w-4xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-10 border ${c.cardBorder} ${c.cardBg} backdrop-blur-2xl ${c.cardShadow} relative select-none overflow-hidden transition-all duration-500 z-10 font-sans antialiased text-stone-100`}>
+      
+      {/* Quầng sáng nội tại của tấm kính */}
+      <div className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0.85)_100%)]" />
+        <div className={`absolute top-1/4 right-1/4 w-80 h-80 ${c.innerGlowOrb1} rounded-full blur-3xl`} />
+        <div className={`absolute bottom-1/4 left-1/4 w-80 h-80 ${c.innerGlowOrb2} rounded-full blur-3xl`} />
+      </div>
+
+      {/* -------------------------------------------------------------------
+          C. HỆ THỐNG TRANG TRÍ VI HÌNH HỌC RẢI RÁC TRONG KHỐI LỚN
+          ------------------------------------------------------------------- */}
+      <div className={`absolute inset-0 pointer-events-none select-none z-20 ${c.glyphColor}`}>
+        <div className="absolute top-4 sm:top-5 left-4 sm:left-7 opacity-40"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
+        <div className="absolute top-4 sm:top-5 right-4 sm:right-7 opacity-35"><MicroDot className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
+        <div className="absolute top-[30%] left-3 sm:left-6 opacity-35"><MicroSquareFilled className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
+        <div className="absolute top-[34%] right-3 sm:right-6 opacity-35"><MicroDiamond className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
+        <div className="absolute top-[56%] left-3 sm:left-6 opacity-35"><MicroCircle className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
+        <div className="absolute top-[58%] right-3 sm:right-6 opacity-35"><MicroStar4 className="w-1.5 sm:w-2 h-1.5 sm:h-2" /></div>
+        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-7 opacity-35"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
+        <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-7 opacity-40"><MicroDot className="w-1 sm:w-1.5 h-1 sm:h-1.5" /></div>
+      </div>
+
+      {/* -------------------------------------------------------------------
+          D. THANH TIÊU ĐỀ ĐỈNH: MÃ VẠCH + MINI WIDGET + FOLLOW
+          ------------------------------------------------------------------- */}
+      <div className={`relative z-10 flex items-center justify-between border-b ${c.borderDivider} pb-2 sm:pb-3 mb-4 sm:mb-6`}>
+        {/* Mã vạch trắng bạc */}
+        <div className="flex items-center gap-[1.5px] sm:gap-[2px] h-3.5 sm:h-4 opacity-50">
+          {barcodePattern.map((width, idx) => (
+            <span key={idx} style={{ width: `${width}px` }} className={`h-full inline-block ${c.barcodeColor}`} />
+          ))}
+        </div>
+
+        {/* Tiêu đề MINI WIDGET */}
+        <span className={`text-[9px] sm:text-[11px] font-mono tracking-[0.25em] sm:tracking-[0.4em] uppercase ${c.miniWidgetTitle} font-semibold`}>
+          M I N I &nbsp; W I D G E T
+        </span>
+
+        {/* Ký hiệu + FOLLOW */}
+        <span className={`text-[8.5px] sm:text-[10px] font-mono ${c.followText}`}>+ FOLLOW</span>
+      </div>
+
+      {/* -------------------------------------------------------------------
+          E. KHU VỰC 1: CALENDAR (LỊCH THÁNG 10 VÀ TUYỂN THƠ POETS)
+          TRÊN ĐIỆN THOẠI CŨNG NẰM TRÊN CÙNG 1 DÒNG (grid-cols-2)
+          ------------------------------------------------------------------- */}
+      <div className={`relative z-10 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 md:p-6 border ${c.calContainerBorder} ${c.calContainerBg} backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.08)] mb-4 sm:mb-6 md:mb-8`}>
+        <div className={`text-[8px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.25em] uppercase border-b ${c.borderDivider} pb-1.5 sm:pb-2 mb-2 sm:mb-4 ${c.calHeaderTitle}`}>
+          <span>CALENDAR</span>
+        </div>
+
+        {/* NẰM TRÊN CÙNG 1 DÒNG CẢ TRÊN ĐIỆN THOẠI: grid-cols-2 */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 items-stretch">
+          {/* Lịch tháng 10/2026 với 6 khuyên lò xo bạc nổi */}
+          <div className="flex flex-col justify-between gap-1 sm:gap-2 min-w-0">
+            <div className={`relative w-full rounded-lg sm:rounded-xl border ${c.calCardBorder} ${c.calCardBg} backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_0_rgba(255,255,255,0.1)] pt-3 sm:pt-4 pb-2 sm:pb-3 px-1.5 sm:px-3`}>
+              {/* Dãy 6 khuyên lò xo kim loại ánh bạc */}
+              <div className="absolute -top-1.5 sm:-top-2 left-0 right-0 flex justify-between px-2 sm:px-6 pointer-events-none z-20">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-1 sm:w-2 h-3 sm:h-4 rounded-full border ${c.ringBorder} bg-gradient-to-b ${c.ringGradient} shadow-[0_1px_4px_rgba(0,0,0,0.5)]`}
+                  />
+                ))}
+              </div>
+
+              {/* Tiêu đề tháng */}
+              <div className={`flex items-center justify-between border-b ${c.borderDivider} pb-1 mb-1 sm:pb-1.5 sm:mb-1.5`}>
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <CalendarIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-stone-300" />
+                  <span className="font-mono text-[7px] xs:text-[8.5px] sm:text-xs font-semibold tracking-wider text-white truncate">
+                    OCTOBER // 2026
+                  </span>
+                </div>
+              </div>
+
+              {/* Thứ trong tuần */}
+              <div className={`grid grid-cols-7 gap-0.5 text-center text-[5.5px] xs:text-[6.5px] sm:text-[9px] font-mono pb-0.5 sm:pb-1 border-b ${c.borderDivider} text-stone-400`}>
+                <span>SU</span><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span>
+              </div>
+
+              {/* Lưới 31 ngày (Ngày được chọn phát sáng rực rỡ) */}
+              <div className="grid grid-cols-7 gap-0.5 sm:gap-1 text-center font-mono text-[5.5px] xs:text-[7px] sm:text-[9px] pt-1">
+                <span className="p-0.5 opacity-20">27</span>
+                <span className="p-0.5 opacity-20">28</span>
+                <span className="p-0.5 opacity-20">29</span>
+                <span className="p-0.5 opacity-20">30</span>
+                {Array.from({ length: 31 }, (_, idx) => {
+                  const dayNum = idx + 1;
+                  const isSelected = selectedDay === dayNum;
+                  return (
+                    <button
+                      key={dayNum}
+                      type="button"
+                      onClick={() => {
+                        playTap();
+                        setSelectedDay(dayNum);
+                        setActivePoetIdx((dayNum - 1) % poetList.length);
+                      }}
+                      className={`p-0.5 sm:p-1 rounded-xs cursor-pointer transition-all aspect-square flex items-center justify-center ${
+                        isSelected
+                          ? `${c.calSelectedDayBg} ${c.calSelectedDayText} font-bold ${c.calSelectedDayShadow} scale-105 z-10`
+                          : `text-stone-300 ${c.calDayHoverText} ${c.calDayHoverBg}`
+                      }`}
+                    >
+                      {dayNum}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Dòng Memo */}
+            <div className={`flex items-center justify-between font-mono text-[6.5px] xs:text-[7.5px] sm:text-[9px] ${c.memoTextColor} px-0.5`}>
+              <div>
+                <p>MEMO · OCT {selectedDay}</p>
+                <p className="opacity-75">FLORAL ANTHESIS</p>
+              </div>
+              <div className="text-right opacity-75">
+                <p>MONTHLY CALENDAR</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Khung thơ POETS (31 bài thơ) */}
+          <div className={`flex flex-col justify-between h-full rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 border ${c.poetContainerBorder} ${c.poetContainerBg} backdrop-blur-xl shadow-[0_12px_32px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.08)] min-w-0`}>
+            <div>
+              <div className={`flex items-center justify-between text-[7px] xs:text-[8px] sm:text-xs font-mono tracking-wider pb-1.5 sm:pb-2 border-b ${c.borderDivider} ${c.poetHeaderColor}`}>
+                <span className="font-semibold">POETS</span>
+                <span className="font-semibold">{String(activePoetIdx + 1).padStart(2, '0')} / {String(poetList.length).padStart(2, '0')}</span>
+              </div>
+
+              {/* 4 dòng thơ cổ điển */}
+              <div className={`py-1.5 sm:py-3 space-y-0.5 sm:space-y-1 font-serif text-[7.5px] xs:text-[9px] sm:text-xs md:text-sm italic ${c.poetTextColor} leading-relaxed overflow-hidden`}>
+                {currentPoet.lines.map((line, idx) => (
+                  <p key={idx} className="line-clamp-1">{line}</p>
+                ))}
+                <p className={`text-[7px] xs:text-[8px] sm:text-xs font-mono not-italic mt-1.5 ${c.poetAuthorColor} font-semibold uppercase truncate`}>
+                  — {currentPoet.author}
+                </p>
+              </div>
+            </div>
+
+            {/* Chấm phân trang & Nút NEXT ○ */}
+            <div className={`pt-1.5 sm:pt-2 border-t ${c.borderDivider} flex items-center justify-between`}>
+              <div className="flex items-center gap-1 sm:gap-1.5 overflow-hidden max-w-[50%]">
+                {poetList.slice(0, 10).map((_, i) => (
+                  <span
+                    key={i}
+                    className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full transition-transform shrink-0 ${
+                      i === (activePoetIdx % 10) ? `${c.poetActiveDot} scale-125` : 'bg-white/20'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playChime(659.25);
+                  const nextIdx = (activePoetIdx + 1) % poetList.length;
+                  setActivePoetIdx(nextIdx);
+                  setSelectedDay(nextIdx + 1);
+                }}
+                className={`inline-flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border ${c.poetNextBtnBorder} ${c.poetNextBtnBg} ${c.poetNextBtnHoverBg} backdrop-blur-md ${c.poetNextBtnText} text-[8px] sm:text-xs font-mono font-medium transition-all cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] shrink-0`}
+              >
+                <span>NEXT</span>
+                <span className="text-[6.5px] sm:text-[8px]">○</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* -----------------------------------------------------------------
+          F. KHU VỰC 3: ANTHESIS // THREE-DAY CYCLE & L I B R A R Y
+          ----------------------------------------------------------------- */}
+      <div className={`relative z-10 pt-2 mb-2 sm:mb-4 border-t ${c.borderDivider}`}>
+        <div className={`text-[8px] sm:text-[10px] font-mono tracking-widest uppercase ${c.anthesisSubtitle} mb-1 sm:mb-2`}>
+          ANTHESIS // THREE-DAY CYCLE
+        </div>
+
+        {/* Chữ LIBRARY phát sáng với 4 ngôi sao 4 cánh quanh chữ */}
+        <div className="relative inline-block my-1 sm:my-2 py-0.5 sm:py-1 pr-4 sm:pr-6">
+          <span className={`font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-light tracking-[0.25em] sm:tracking-[0.4em] uppercase ${c.libraryTitleColor} ${c.libraryGlow} select-none`}>
+            L I B R A R Y
+          </span>
+
+          {/* 4 Ngôi sao 4 cánh trang trí */}
+          <div className={`pointer-events-none select-none ${c.starColor}`}>
+            <div className="absolute top-1/2 -translate-y-1/2 -left-3 sm:-left-4 opacity-60"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
+            <div className="absolute -top-1 left-[25%] opacity-65"><MicroStar4 className="w-2 sm:w-2.5 h-2 sm:h-2.5" /></div>
+            <div className="absolute top-1 right-[-6px] sm:right-[-10px] opacity-70"><MicroStar4 className="w-2.5 sm:w-3 h-2.5 sm:h-3" /></div>
+            <div className="absolute -bottom-1 left-[65%] opacity-55"><MicroStar4 className="w-1.5 sm:w-2 h-1.5 sm:h-2" /></div>
+          </div>
+        </div>
+      </div>
+
+      {/* -----------------------------------------------------------------
+          G. KHU VỰC 2: 3 CỘT (TRÊN ĐIỆN THOẠI CŨNG NẰM TRÊN CÙNG 1 DÒNG: COL-5, COL-2, COL-5)
+          ----------------------------------------------------------------- */}
+      <div className="relative z-10 grid grid-cols-12 gap-1.5 xs:gap-2 sm:gap-4 md:gap-6 items-center my-2 sm:my-4 py-1 sm:py-2">
+        
+        {/* CỘT TRÁI (col-span-5): THẺ SÁCH ĐỌC GẦN ĐÂY #GEOMETRY_03 */}
+        <div className="col-span-5 flex flex-col gap-1.5 sm:gap-2.5 min-w-0">
+          <motion.div
+            whileHover={{ scale: 1.015 }}
+            className={`relative rounded-sm p-2 xs:p-2.5 sm:p-4 border ${c.bookCardBorder} ${c.bookCardBg} backdrop-blur-xl ${c.bookSubtitleColor} ${c.bookCardShadow} select-none transition-transform`}
+          >
+            {/* Băng keo Washi trong suốt sương đêm dán đỉnh thẻ */}
+            <div
+              className="absolute -top-2.5 sm:-top-3 left-1/2 -translate-x-1/2 w-14 xs:w-18 sm:w-24 h-3.5 sm:h-5 rounded-xs z-30 pointer-events-none"
+              style={{
+                background: c.washiTapeBg,
+                backdropFilter: 'blur(6px)',
+                boxShadow: c.washiTapeShadow,
+              }}
+            />
+
+            {/* Họa tiết ô ly chìm mờ trên nền đen kính */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none rounded-sm"
+              style={{
+                backgroundSize: '16px 16px',
+                backgroundImage: `linear-gradient(to right, ${c.gridLineColor} 1px, transparent 1px), linear-gradient(to bottom, ${c.gridLineColor} 1px, transparent 1px)`,
+              }}
+            />
+
+            <div className="relative z-10 space-y-0.5 sm:space-y-1">
+              <div className={`text-[6.5px] xs:text-[7.5px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] uppercase ${c.bookTagColor} font-medium truncate`}>
+                ĐỌC GẦN ĐÂY
+              </div>
+
+              <div>
+                <h4 className={`font-serif text-[8.5px] xs:text-[10px] sm:text-sm font-medium tracking-wider ${c.bookTitleColor} truncate`}>
+                  {recentNovel?.title || 'Dạ Khúc Bạch Hợp'}
+                </h4>
+                <p className={`font-serif italic text-[6.5px] xs:text-[7.5px] sm:text-[10px] ${c.bookSubtitleColor} truncate`}>
+                  {recentNovel ? `Tác giả: ${typeof recentNovel.author === 'string' ? recentNovel.author : recentNovel.author?.name || 'Jouriee65'}` : 'Chương 42: Nở Rộ Trong Tĩnh Lặng'}
+                </p>
+              </div>
+
+              {/* Thanh tiến độ đọc truyện */}
+              <div className={`space-y-0.5 sm:space-y-1 pt-1 sm:pt-1.5 border-t ${c.borderDivider}`}>
+                <div className={`flex items-center justify-between text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-mono ${c.bookSubtitleColor}`}>
+                  <span>Tiến độ</span>
+                  <span className="font-medium text-stone-300">{readingProgress}%</span>
+                </div>
+                <div className={`w-full h-1 rounded-full overflow-hidden ${c.progressTrackBg}`}>
+                  <div
+                    className={`h-full rounded-full ${c.progressBarBg} transition-all duration-300`}
+                    style={{ width: `${readingProgress}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-mono pt-0.5 text-stone-500">
+                  <span className="truncate">12p trước</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTap();
+                      if (onOpenReading) {
+                        onOpenReading();
+                      } else {
+                        setReadingProgress((p) => (p >= 98 ? 15 : p + 7));
+                      }
+                    }}
+                    className={`underline cursor-pointer ${c.readMoreBtnColor} shrink-0`}
+                  >
+                    Đọc tiếp →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Câu trích dẫn & Tiêu đề phụ NIÊN THỜI */}
+          <div>
+            <p className={`font-serif italic text-[6px] xs:text-[7px] sm:text-xs tracking-wider leading-relaxed ${c.quoteColor} line-clamp-2`}>
+              May the little things in life bring you the kind of happiness that stays.
+            </p>
+            <p className={`text-[5.5px] xs:text-[6.5px] sm:text-[9px] font-mono tracking-[0.2em] sm:tracking-[0.25em] uppercase mt-0.5 sm:mt-1 ${c.nienthoiText} truncate`}>
+              N I Ê N &nbsp; T H Ờ I
+            </p>
+          </div>
+        </div>
+
+        {/* CỘT GIỮA (col-span-2): TRỤC ĐỐI XỨNG THREE / DAYS / BLOOM - NẰM TRÊN CÙNG 1 DÒNG */}
+        <div className={`col-span-2 flex flex-col items-center justify-center gap-1 sm:gap-2 font-mono text-[6px] xs:text-[7px] sm:text-[10px] ${c.axisText}`}>
+          <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${c.axisDotBg}`} />
+          <div className={`w-[1px] h-5 xs:h-6 sm:h-8 ${c.axisLineBg}`} />
+          <div className={`flex flex-col items-center gap-0.5 tracking-widest font-medium uppercase text-[5.5px] xs:text-[6.5px] sm:text-[9px] ${c.axisText}`}>
+            <span>THREE</span>
+            <span>DAYS</span>
+            <span>BLOOM</span>
+          </div>
+          <div className={`w-[1px] h-5 xs:h-6 sm:h-8 ${c.axisLineBg}`} />
+          <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${c.axisDotBg}`} />
+        </div>
+
+        {/* CỘT PHẢI (col-span-5): RADAR THIÊN VĂN MẶT TRĂNG KIM CƯƠNG 60FPS + BẢNG THÔNG SỐ */}
+        <div className="col-span-5 flex flex-col justify-center items-center overflow-visible relative min-w-0">
+          
+          {/* CANVAS 2D: VẦNG TRĂNG LƯỠI LIỀM PHÁT SÁNG & BÁNH RĂNG THIÊN VĂN QUAY MƯỢT MÀ */}
+          <CelestialDiamondMoonCanvas
+            ringColor={c.canvasRingColor}
+            particleColor={c.canvasParticleColor}
+            className="my-0.5 sm:my-1"
+          />
+
+          {/* BẢNG THÔNG SỐ THIÊN VĂN (DATE / TIME / SEASON) */}
+          <div className={`w-full mt-1 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[6px] xs:text-[7.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
+            <div className="flex items-center justify-between text-stone-300">
+              <span className={`flex items-center gap-0.5 sm:gap-1 ${c.astroLabel}`}>
+                <CalendarIcon className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3" />
+                <span>DATE</span>
+              </span>
+              <span className="font-medium truncate">Oct 25, 2026</span>
+            </div>
+
+            <div className="flex items-center justify-between text-stone-300">
+              <span className={`flex items-center gap-0.5 sm:gap-1 ${c.astroLabel}`}>
+                <Clock className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3" />
+                <span>TIME</span>
+              </span>
+              <span className={`font-bold ${c.astroTime} tabular-nums ${c.astroTimeGlow} truncate`}>
+                {timeStr}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-stone-300">
+              <span className={c.astroLabel}>SEASON</span>
+              <span className="font-medium text-stone-400 truncate">Autumn · 2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* -----------------------------------------------------------------
+          H. THANH PHÁT ÂM THANH Ở ĐÁY: NÚT PLAY KÍNH MỜ + TIẾN TRÌNH TRẮNG + 1X
+          ----------------------------------------------------------------- */}
+      <div className={`relative z-10 mt-3 sm:mt-6 pt-2 flex items-center justify-between gap-2 sm:gap-4 border-t ${c.audioDivider}`}>
+        {/* Nút Play tròn viền kính mờ */}
+        <button
+          type="button"
+          onClick={() => {
+            playChime(isPlayingAudio ? 392 : 784);
+            setIsPlayingAudio(!isPlayingAudio);
+          }}
+          className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full border ${c.audioPlayBtnBorder} ${c.audioPlayBtnBg} ${c.audioPlayBtnHoverBg} backdrop-blur-md text-white shadow-[0_4px_16px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.2)] flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 shrink-0`}
+        >
+          {isPlayingAudio ? (
+            <Pause className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
+          ) : (
+            <Play className="w-3 h-3 sm:w-4 sm:h-4 fill-current ml-0.5" />
+          )}
+        </button>
+
+        {/* Dải tiến trình phát nhạc */}
+        <div className="flex-1 flex flex-col gap-0.5 sm:gap-1 min-w-0">
+          <div className="flex justify-between text-[6.5px] xs:text-[7.5px] sm:text-[10px] font-mono text-stone-300">
+            <span>01:42</span>
+            <span className="truncate mx-1">WHITE LILY // NOCTURNE</span>
+            <span>03:00</span>
+          </div>
+          <div className={`w-full h-1 rounded-full overflow-hidden ${c.audioProgressTrackBg}`}>
+            <div
+              className={`h-full rounded-full ${c.audioProgressBarBg} ${isPlayingAudio ? 'animate-pulse w-3/5' : 'w-2/5'}`}
+            />
+          </div>
+        </div>
+
+        {/* Hộp nút tốc độ phát 1x */}
+        <div className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded border ${c.audioSpeedBorder} ${c.audioSpeedBg} backdrop-blur-md text-stone-200 text-[8px] sm:text-xs font-mono shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]`}>
+          1x
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ScreenshotExactDarkRecreation: React.FC = () => {
+  return (
+    <div className="relative min-h-screen bg-[#060709] text-stone-100 p-2 sm:p-6 md:p-12 flex items-center justify-center font-sans antialiased selection:bg-white/20 overflow-hidden">
+      <EntireDarkLibraryWidget themeId="slate-haze" />
+    </div>
+  );
+};
+
+export default EntireDarkLibraryWidget;
