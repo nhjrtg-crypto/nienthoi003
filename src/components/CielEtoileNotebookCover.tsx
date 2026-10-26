@@ -406,8 +406,7 @@ export const CielEtoileNotebookCover: React.FC<CielEtoileNotebookCoverProps> = (
           2.3 KHUNG BÌA SỔ CHÍNH (Chiều dài trên máy tính lớn hơn, dáng sổ dài thanh thoát)
           ------------------------------------------------------------- */}
       <div
-        className={`relative z-10 w-full rounded-xl xs:rounded-2xl sm:rounded-[22px] transition-all duration-500 overflow-hidden flex flex-row backdrop-blur-2xl border-[1.5px] ${t.coverBg} ${t.coverBorder} ${t.coverShadow}`}
-        style={{ minHeight: 'clamp(460px, 72vh, 640px)' }}
+        className={`relative z-10 w-full rounded-xl xs:rounded-2xl sm:rounded-[22px] transition-all duration-500 overflow-hidden flex flex-row backdrop-blur-2xl border-[1.5px] ${t.coverBg} ${t.coverBorder} ${t.coverShadow} min-h-[380px] sm:min-h-[420px] md:min-h-[clamp(460px,72vh,640px)]`}
       >
         {/* Viền giấy trắng lót bên trong bìa */}
         <div

@@ -1570,11 +1570,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   }, [readerTheme, isDarkEffective]);
 
   const readerRootBgClass = useMemo(() => {
-    if (readerTheme === 'slate-haze' && !isDarkEffective) {
-      return 'bg-[#ffffff] text-[#334e68]';
-    }
     return tStyles.pageBg;
-  }, [readerTheme, isDarkEffective, tStyles.pageBg]);
+  }, [tStyles.pageBg]);
 
   return (
     <div className={`min-h-screen w-full ${readerRootBgClass} transition-colors duration-300 relative flex flex-col`}>
