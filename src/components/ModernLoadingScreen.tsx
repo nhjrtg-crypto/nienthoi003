@@ -475,7 +475,7 @@ export const ModernLoadingScreen: React.FC<ModernLoadingScreenProps> = ({
         </div>
 
         {/* Số % */}
-        <p className="la-01__pct">{progress}%</p>
+        <p className="la-01__pct">{isReady ? '100%' : ''}</p>
       </section>
     </div>
   );

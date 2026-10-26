@@ -78,6 +78,8 @@ interface NovelReaderModalProps {
   onSelectChapter: (num: number) => void;
   onUpdateChapters?: (novelId: string, chapters: NovelChapter[]) => void;
   onUpdateNovel?: (novel: Novel) => void;
+  isDarkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 type ReaderFontFamily = 'open-sans' | 'source-sans' | 'times' | 'roboto' | 'lora' | 'alegreya';
@@ -92,6 +94,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   onSelectChapter,
   onUpdateChapters,
   onUpdateNovel,
+  isDarkMode: propIsDarkMode,
+  onToggleDarkMode: propOnToggleDarkMode,
 }) => {
   // 1. Font Size
   const [fontSize, setFontSize] = useState<number>(() => {
@@ -262,7 +266,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
   });
 
   // Sync dark mode
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+  const [localIsDarkMode, setLocalIsDarkMode] = useState<boolean>(() => {
     try {
       const saved = safeStorage.getItem('cosmo_darkmode');
       return saved !== null ? JSON.parse(saved) : false;
@@ -270,6 +274,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       return false;
     }
   });
+  const isDarkMode = propIsDarkMode !== undefined ? propIsDarkMode : localIsDarkMode;
 
   // Header visibility using window scroll
   const isHeaderVisible = useHeaderScroll({ threshold: 40, delta: 6 });
@@ -515,11 +520,19 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     if (readerTheme === 'cosmic') {
       return;
     }
-    setIsDarkMode((prev) => {
-      const next = !prev;
-      safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-      return next;
-    });
+    if (propOnToggleDarkMode) {
+      propOnToggleDarkMode();
+    } else {
+      setLocalIsDarkMode((prev) => {
+        const next = !prev;
+        safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+        window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
+        try {
+          window.dispatchEvent(new Event('storage'));
+        } catch {}
+        return next;
+      });
+    }
   };
 
   const handleSelectTheme = (newTheme: NovelThemeId) => {

@@ -1694,6 +1694,8 @@ export default function App() {
             novel={selectedNovel}
             chapterNumber={readingChapterNumber}
             isAdmin={isAdmin}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
             onClose={() => {
               setReadingChapterNumber(null);
               try {
