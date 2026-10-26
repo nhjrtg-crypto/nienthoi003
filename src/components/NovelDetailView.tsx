@@ -1063,7 +1063,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         return saved as NovelThemeId;
       }
     } catch {}
-    return 'amethyst-haze';
+    return 'slate-haze';
   });
 
   // Dark Mode support with bidirectional synchronization
@@ -1203,15 +1203,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   }, []);
 
   const toggleDarkMode = () => {
-    // Nếu đang ở theme cosmic thì chuyển sang amethyst-haze sáng
+    // Nếu đang ở theme cosmic thì chuyển sang slate-haze sáng
     if (theme === 'cosmic') {
-      setTheme('amethyst-haze');
-      safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
+      setTheme('slate-haze');
+      safeStorage.setItem('cosmo_novel_theme', 'slate-haze');
       safeStorage.setItem('cosmo_darkmode', 'false');
       setLocalIsDarkMode(false);
       document.documentElement.classList.remove('dark');
       window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
-      window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'amethyst-haze' }));
+      window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'slate-haze' }));
       try { window.dispatchEvent(new Event('storage')); } catch {}
       propOnToggleDarkMode?.();
       return;

@@ -649,6 +649,18 @@ export default function App() {
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const isPopStateRef = useRef(false);
   const isFirstRenderRef = useRef(true);
+  const homeScrollYRef = useRef<number>(0);
+
+  // Restore scroll position when returning to home view
+  useEffect(() => {
+    if (viewMode === 'novel-home' && selectedNovel === null) {
+      if (homeScrollYRef.current > 0) {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: homeScrollYRef.current, behavior: 'instant' });
+        });
+      }
+    }
+  }, [viewMode, selectedNovel]);
 
   // Trạng thái màn hình tải trang hiện đại (ModernLoadingScreen)
   const [isPageLoading, setIsPageLoading] = useState(true);
@@ -675,7 +687,7 @@ export default function App() {
         safeStorage.setItem('cosmo_home_light_default_v1', 'true');
         safeStorage.setItem('cosmo_darkmode', 'false');
         if (safeStorage.getItem('cosmo_novel_theme') === 'cosmic') {
-          safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
+          safeStorage.setItem('cosmo_novel_theme', 'slate-haze');
         }
         return false;
       }
@@ -1134,6 +1146,7 @@ export default function App() {
   }, [allMergedNovels]);
 
   const handleOpenNovelPlatform = () => {
+    homeScrollYRef.current = 0;
     setSelectedNovel(null);
     setReadingChapterNumber(null);
     setViewMode('novel-home');
@@ -1141,6 +1154,7 @@ export default function App() {
   };
 
   const handleSelectNovel = (novel: Novel) => {
+    homeScrollYRef.current = window.scrollY;
     const custom = getCustomCoverFromStorage(novel.id) || getCustomCoverFromStorage(novel.title);
     const resolvedCover = custom || novel.coverImage;
     const freshNovel: Novel = {
@@ -1559,7 +1573,7 @@ export default function App() {
             onSelectNovel={handleSelectNovel}
             onOpenNovelToReadingPosition={handleOpenNovelToReadingPosition}
             isAdmin={isAdmin}
-            theme={safeStorage.getItem('cosmo_novel_theme') || 'amethyst-haze'}
+            theme={safeStorage.getItem('cosmo_novel_theme') || 'slate-haze'}
             isDarkMode={isDarkMode}
             onToggleDarkMode={toggleDarkMode}
             onOpenAdminAuth={() => setIsAdminAuthModalOpen(true)}

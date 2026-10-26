@@ -333,9 +333,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     try {
       const saved = safeStorage.getItem('cosmo_novel_theme');
       if (saved === 'cosmic') {
-        safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
+        safeStorage.setItem('cosmo_novel_theme', 'slate-haze');
         safeStorage.setItem('cosmo_darkmode', 'false');
-        return 'amethyst-haze';
+        return 'slate-haze';
       }
       if (saved === 'lululemon') {
         safeStorage.setItem('cosmo_novel_theme', 'lululemon');
@@ -345,7 +345,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         return saved as NovelThemeId;
       }
     } catch {}
-    return 'amethyst-haze';
+    return 'slate-haze';
   });
 
   // Dark Mode: Đồng bộ và ghi nhớ chế độ tối theo lựa chọn của người dùng

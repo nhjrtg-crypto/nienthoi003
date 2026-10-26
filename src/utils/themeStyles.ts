@@ -10,9 +10,16 @@ export interface ThemeOption {
 
 export const NOVEL_THEME_OPTIONS: ThemeOption[] = [
   {
+    id: 'slate-haze',
+    name: 'Frost',
+    badge: 'Mặc định',
+    fontHint: 'Font Cổ Phong (Serif)',
+    dots: ['#87909d', '#d8dfe9', '#f9fcff'],
+  },
+  {
     id: 'amethyst-haze',
     name: 'Purple',
-    badge: 'Mặc định',
+    badge: 'Purple',
     fontHint: 'Font Cổ Phong (Serif)',
     dots: ['#6e5d8a', '#baa4db', '#dfd2f2'],
   },
@@ -22,13 +29,6 @@ export const NOVEL_THEME_OPTIONS: ThemeOption[] = [
     badge: 'White',
     fontHint: 'Font Cổ Phong (Serif)',
     dots: ['#737373', '#e5e5e5', '#ffffff'],
-  },
-  {
-    id: 'slate-haze',
-    name: 'Frost',
-    badge: 'Frost',
-    fontHint: 'Font Cổ Phong (Serif)',
-    dots: ['#87909d', '#d8dfe9', '#f9fcff'],
   },
   {
     id: 'sage',

@@ -262,7 +262,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
         return saved as NovelThemeId;
       }
     } catch {}
-    return 'amethyst-haze';
+    return 'slate-haze';
   });
 
   // Sync dark mode
