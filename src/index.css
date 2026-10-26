@@ -2987,9 +2987,10 @@ mark.book-marker-streak,
     ) padding-box,
     /* Lớp 2 - Đường viền chuyển sắc bao quanh (border-box) */
     linear-gradient(to bottom, 
-      rgba(215, 230, 245, 0.65) 0%,   /* Mép trên */
-      rgba(198, 220, 238, 0.45) 45%,  /* Đoạn giữa */
-      rgba(160, 195, 230, 0.85) 100%  /* Mép dưới đậm hơn một chút */
+      rgba(215, 230, 245, 0.70) 0%,   /* Nửa trên: nhẹ nhàng */
+      rgba(215, 230, 245, 0.65) 48%,
+      rgba(160, 200, 240, 0.35) 52%,  /* Nửa dưới: nhạt hơn */
+      rgba(150, 190, 235, 0.40) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(165, 185, 210, 0.22),    /* Bóng nổi mềm góc dưới-phải (xanh pastel) */
@@ -3071,7 +3072,7 @@ mark.book-marker-streak,
 
 /* C. Đường gạch ngăn cách chân thẻ */
 .frost-light-novel-divider {
-  border-top: 1px solid rgba(160, 200, 240, 0.4) !important;
+  border-top: 1px solid rgba(160, 200, 240, 0.35) !important;
 }
 
 /* ========================================================================= */
@@ -3092,9 +3093,10 @@ mark.book-marker-streak,
       rgba(244, 250, 245, 0.90) 100%
     ) padding-box,
     linear-gradient(to bottom, 
-      rgba(224, 238, 227, 0.55) 0%, 
-      rgba(210, 230, 214, 0.40) 45%, 
-      rgba(175, 210, 180, 0.82) 100%
+      rgba(224, 238, 227, 0.65) 0%,   /* Nửa trên: nhẹ nhàng */
+      rgba(224, 238, 227, 0.55) 48%,
+      rgba(160, 200, 165, 0.35) 52%,  /* Nửa dưới: nhạt hơn */
+      rgba(150, 192, 155, 0.40) 100%
     ) border-box !important;
   box-shadow: 
     4px 4px 14px rgba(160, 190, 168, 0.15), 
@@ -3167,7 +3169,7 @@ mark.book-marker-streak,
 }
 
 .sage-light-novel-divider {
-  border-top: 1px solid rgba(170, 210, 175, 0.4) !important;
+  border-top: 1px solid rgba(160, 200, 165, 0.35) !important;
 }
 
 /* ========================================================================= */
@@ -3188,9 +3190,10 @@ mark.book-marker-streak,
       rgba(252, 246, 238, 0.85) 100%
     ) padding-box,
     linear-gradient(to bottom, 
-      rgba(236, 220, 202, 0.70) 0%, 
-      rgba(224, 204, 182, 0.45) 45%, 
-      rgba(205, 175, 145, 0.82) 100%
+      rgba(236, 220, 202, 0.75) 0%,   /* Nửa trên: nhẹ nhàng */
+      rgba(236, 220, 202, 0.65) 48%,
+      rgba(210, 180, 155, 0.35) 52%,  /* Nửa dưới: nhạt hơn */
+      rgba(200, 170, 145, 0.40) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(190, 165, 140, 0.22), 
@@ -3263,7 +3266,7 @@ mark.book-marker-streak,
 }
 
 .mocha-light-novel-divider {
-  border-top: 1px solid rgba(200, 170, 140, 0.4) !important;
+  border-top: 1px solid rgba(210, 180, 155, 0.35) !important;
 }
 
 /* ========================================================================= */
@@ -3284,9 +3287,10 @@ mark.book-marker-streak,
       rgba(247, 242, 253, 0.85) 100%
     ) padding-box,
     linear-gradient(to bottom, 
-      rgba(226, 215, 238, 0.70) 0%, 
-      rgba(212, 198, 228, 0.45) 45%, 
-      rgba(195, 170, 225, 0.82) 100%
+      rgba(226, 215, 238, 0.75) 0%,   /* Nửa trên: nhẹ nhàng */
+      rgba(226, 215, 238, 0.65) 48%,
+      rgba(195, 170, 220, 0.35) 52%,  /* Nửa dưới: nhạt hơn */
+      rgba(185, 160, 210, 0.40) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(175, 155, 198, 0.22), 
@@ -3360,7 +3364,7 @@ mark.book-marker-streak,
 }
 
 .amethyst-light-novel-divider {
-  border-top: 1px solid rgba(190, 165, 220, 0.4) !important;
+  border-top: 1px solid rgba(195, 170, 220, 0.35) !important;
 }
 
 /* ========================================================================= */
@@ -3381,9 +3385,10 @@ mark.book-marker-streak,
       rgba(248, 248, 248, 0.85) 100%
     ) padding-box,
     linear-gradient(to bottom, 
-      rgba(228, 228, 228, 0.70) 0%, 
-      rgba(214, 214, 214, 0.45) 45%, 
-      rgba(180, 180, 180, 0.85) 100%
+      rgba(228, 228, 228, 0.75) 0%,   /* Nửa trên: nhẹ nhàng */
+      rgba(228, 228, 228, 0.65) 48%,
+      rgba(190, 190, 190, 0.35) 52%,  /* Nửa dưới: nhạt hơn */
+      rgba(180, 180, 180, 0.40) 100%
     ) border-box !important;
   box-shadow: 
     5px 5px 15px rgba(170, 170, 170, 0.18), 
@@ -3456,7 +3461,7 @@ mark.book-marker-streak,
 }
 
 .notebook-light-novel-divider {
-  border-top: 1px solid rgba(185, 185, 185, 0.4) !important;
+  border-top: 1px solid rgba(190, 190, 190, 0.35) !important;
 }
 
 /* ========================================================================= */
