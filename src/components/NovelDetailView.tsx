@@ -2859,23 +2859,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       {/* Spacer div to prevent content jump under fixed header */}
       <div className="h-[57px] shrink-0" aria-hidden="true" />
 
-      {/* MÁI VÒM SỌC TRẢI DÀI TỐI ĐA HẾT ĐỘ RỘNG TRANG WEB & BẢNG TÊN TRUYỆN */}
-      {isSpiralStyle && (
-        <div className="w-full min-w-full overflow-visible relative z-20">
-          <NovelAwningHeader
-            novel={{ id: novel.id, title: novel.title }}
-            allNovels={allNovels.map((n) => ({ id: n.id, title: n.title }))}
-            onSelectNovel={(nSimple) => {
-              const target = allNovels.find((n) => n.id === nSimple.id);
-              if (target) onSelectNovel?.(target);
-            }}
-            onBack={onBack}
-            onReadChapter={onReadChapter}
-            isDarkMode={false}
-            theme={theme}
-          />
-        </div>
-      )}
+
 
       {/* Main Content Frame - Kiểu chuẩn trên máy tính thu gọn độ rộng vừa vặn hơn (max-w-5xl) */}
       <main className={`flex-1 w-full ${isSpiralStyle ? 'max-w-6xl lg:max-w-7xl' : 'max-w-5xl'} mx-auto ${isSpiralStyle ? 'px-1 sm:px-6' : 'px-3 sm:px-6'} ${isSpiralStyle ? 'pt-4 sm:pt-6' : 'pt-6 sm:pt-8'} pb-16 relative z-10`}>

@@ -1102,10 +1102,10 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
       <style>{footerLightButtonStyles}</style>
       {/* BỎ KHUNG VIỀN & NỀN CỦA KHUNG CUỐNG VÉ: CÁC NÚT VÀ MÃ VẠCH VẪN GIỮ NGUYÊN NỀN BÊN TRONG */}
       <div className="relative overflow-hidden transition-all">
-        {/* NỘI DUNG CUỐNG VÉ CHIA 3 PHẦN */}
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-2 sm:p-3 px-3 sm:px-6 gap-3.5">
+        {/* NỘI DUNG CUỐNG VÉ */}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center p-2 sm:p-3 px-3 sm:px-6 gap-6 sm:gap-12">
           {/* PHẦN 1 (TRÁI): MÃ VẠCH BARCODE VINTAGE */}
-          <div className="flex items-center gap-3.5 shrink-0 w-full md:w-auto justify-center md:justify-start">
+          <div className="flex items-center gap-3.5 shrink-0 justify-center">
             <div
               className={`hidden xs:flex flex-col items-center justify-center ${themeStyles.barcodeBoxBg} px-2.5 py-1 rounded-lg border ${themeStyles.barcodeBoxBorder} shrink-0 shadow-2xs`}
             >
@@ -1127,7 +1127,7 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
             </div>
           </div>
 
-          {/* PHẦN 2 (GIỮA): MÁY QUAY BẢNG LẬT VIEWS */}
+          {/* PHẦN 2: MÁY QUAY BẢNG LẬT VIEWS */}
           <div className="shrink-0 flex items-center justify-center">
             <LuckySlotReelsButton
               count={views}
@@ -1135,105 +1135,6 @@ export const MovieTicketPlainFooter: React.FC<MovieTicketPlainFooterProps> = ({
               onRefreshViews={onRefreshViews}
               themeStyles={themeStyles}
             />
-          </div>
-
-          {/* Đường rãnh xé vé đứt đoạn: Đã bỏ hoàn toàn trên cả điện thoại và máy tính */}
-
-          {/* PHẦN 3 (PHẢI): CỤM NÚT LIÊN KẾT CUỐNG VÉ */}
-          <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-center">
-            {(() => {
-              // Ở chế độ sáng: Áp dụng nền mục truyện, bỏ đổ bóng ngoài, 1/2 viền trên trắng, viền dưới giữ nguyên
-              const getLightBtnThemeClass = () => {
-                switch (theme) {
-                  case 'lululemon':
-                    return 'footer-btn-light-lululemon !px-3 !py-2 !text-xs !font-bold';
-                  case 'notebook':
-                    return 'footer-btn-light-notebook !px-3 !py-2 !text-xs !font-bold';
-                  case 'sage':
-                    return 'footer-btn-light-sage !px-3 !py-2 !text-xs !font-bold';
-                  case 'mocha':
-                    return 'footer-btn-light-mocha !px-3 !py-2 !text-xs !font-bold';
-                  case 'amethyst-haze':
-                  case 'cosmic':
-                    return 'footer-btn-light-amethyst !px-3 !py-2 !text-xs !font-bold';
-                  case 'slate-haze':
-                  default:
-                    return 'footer-btn-light-frost !px-3 !py-2 !text-xs !font-bold';
-                }
-              };
-
-              // Ở chế độ tối: Đổ màu nền nút, bỏ đường viền (border-0 border-transparent)
-              const getDarkBtnThemeClass = () => {
-                switch (theme) {
-                  case 'lululemon':
-                    return 'bg-[#24151a] hover:bg-[#331c24] text-[#f4ebee] border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
-                  case 'notebook':
-                    return 'bg-[#2b2722] hover:bg-[#38332c] text-zinc-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
-                  case 'sage':
-                    return 'bg-[#1b2e20] hover:bg-[#253f2c] text-emerald-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
-                  case 'mocha':
-                    return 'bg-[#2f2018] hover:bg-[#3f2b20] text-amber-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
-                  case 'slate-haze':
-                    return 'bg-[#18283a] hover:bg-[#20364e] text-slate-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
-                  case 'amethyst-haze':
-                  case 'cosmic':
-                  default:
-                    return 'bg-[#25173d] hover:bg-[#341f54] text-purple-100 border-0 border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.35)]';
-                }
-              };
-
-              const btnBaseClass = !isDarkMode
-                ? `group flex items-center justify-center gap-1.5 cursor-pointer select-none active:translate-y-0.5 transition-all ${getLightBtnThemeClass()}`
-                : `group flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold active:translate-y-0.5 cursor-pointer transition-all ${getDarkBtnThemeClass()}`;
-
-              return (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (onOpenIntro) {
-                        onOpenIntro();
-                      } else {
-                        window.dispatchEvent(new CustomEvent('open-novel-intro'));
-                      }
-                    }}
-                    className={btnBaseClass}
-                    title="Giới thiệu"
-                  >
-                    <Cat
-                      className={`w-3.5 h-3.5 ${themeStyles.catIcon} ${themeStyles.catIconHover} transition-colors duration-300 stroke-[2.2]`}
-                    />
-                    <span>Giới Thiệu</span>
-                  </button>
-
-                  <a
-                    href="https://nienthoi003.wordpress.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={btnBaseClass}
-                    title="WordPress"
-                  >
-                    <Cherry
-                      className={`w-3.5 h-3.5 ${themeStyles.cherryIcon} ${themeStyles.cherryIconHover} transition-colors duration-300 stroke-[2.2]`}
-                    />
-                    <span>WordPress</span>
-                  </a>
-
-                  <a
-                    href="https://www.wattpad.com/user/Qingxiya52"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={btnBaseClass}
-                    title="Wattpad"
-                  >
-                    <BookHeart
-                      className={`w-3.5 h-3.5 ${themeStyles.bookIcon} ${themeStyles.bookIconHover} transition-colors duration-300 stroke-[2.2]`}
-                    />
-                    <span>Wattpad</span>
-                  </a>
-                </>
-              );
-            })()}
           </div>
         </div>
       </div>
