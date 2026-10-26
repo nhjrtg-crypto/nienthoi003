@@ -93,7 +93,8 @@ const CosmicStarsBackgroundComponent: React.FC<CosmicStarsBackgroundProps> = ({
 
   const palette = useMemo(() => getSnowThemePalette(theme), [theme]);
 
-  if (!isDarkEffective || !purpleBgEffectsEnabled) {
+  // Chế độ sáng hoàn toàn không có hiệu ứng nền theo yêu cầu của người dùng
+  if (!isDarkMode || !purpleBgEffectsEnabled) {
     return null;
   }
 

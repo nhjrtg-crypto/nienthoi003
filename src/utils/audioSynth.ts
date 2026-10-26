@@ -27,6 +27,14 @@ class CosmicAudioEngine {
   public playSnowCrunch() {
     // Sound effects disabled
   }
+
+  public playTap() {
+    // Disabled
+  }
+
+  public playPageFlip() {
+    // Disabled
+  }
 }
 
 export const cosmicAudio = new CosmicAudioEngine();

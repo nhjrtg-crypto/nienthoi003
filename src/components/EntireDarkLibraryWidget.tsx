@@ -13,8 +13,8 @@ export const MicroStar4: React.FC<{ className?: string; style?: React.CSSPropert
   className = 'w-2.5 h-2.5',
   style,
 }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={`inline-block shrink-0 ${className}`} style={style} aria-hidden="true">
-    <path d="M12 2 Q12 12 22 12 Q12 12 12 22 Q12 12 12 2 12 Q12 12 2 Z" />
+  <svg viewBox="-1 -1 26 26" fill="currentColor" className={`inline-block shrink-0 overflow-visible ${className}`} style={style} aria-hidden="true">
+    <path d="M12 0 Q12 12 24 12 Q12 12 12 24 Q12 12 0 12 Q12 12 12 0 Z" />
   </svg>
 );
 
@@ -265,11 +265,16 @@ export const CelestialDiamondMoonCanvas: React.FC<{
         ctx.arc(cxp, cyp, 1.8, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        const gRay = 5.5;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
         ctx.beginPath();
-        ctx.moveTo(cxp - 6, cyp); ctx.lineTo(cxp + 6, cyp);
-        ctx.moveTo(cxp, cyp - 6); ctx.lineTo(cxp, cyp + 6);
-        ctx.stroke();
+        ctx.moveTo(cxp, cyp - gRay);
+        ctx.quadraticCurveTo(cxp, cyp, cxp + gRay, cyp);
+        ctx.quadraticCurveTo(cxp, cyp, cxp, cyp + gRay);
+        ctx.quadraticCurveTo(cxp, cyp, cxp - gRay, cyp);
+        ctx.quadraticCurveTo(cxp, cyp, cxp, cyp - gRay);
+        ctx.closePath();
+        ctx.fill();
       }
       ctx.restore();
 
@@ -301,16 +306,20 @@ export const CelestialDiamondMoonCanvas: React.FC<{
         const alpha = 0.35 + 0.55 * Math.sin(tick * star.blinkSpeed + star.blinkPhase);
 
         if (star.isStar4) {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
-          ctx.lineWidth = 0.8;
+          const ray = 6;
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
           ctx.beginPath();
-          ctx.moveTo(sx - 5.5, sy); ctx.lineTo(sx + 5.5, sy);
-          ctx.moveTo(sx, sy - 5.5); ctx.lineTo(sx, sy + 5.5);
-          ctx.stroke();
+          ctx.moveTo(sx, sy - ray);
+          ctx.quadraticCurveTo(sx, sy, sx + ray, sy);
+          ctx.quadraticCurveTo(sx, sy, sx, sy + ray);
+          ctx.quadraticCurveTo(sx, sy, sx - ray, sy);
+          ctx.quadraticCurveTo(sx, sy, sx, sy - ray);
+          ctx.closePath();
+          ctx.fill();
 
           ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
           ctx.beginPath();
-          ctx.arc(sx, sy, 1.3, 0, Math.PI * 2);
+          ctx.arc(sx, sy, 1.2, 0, Math.PI * 2);
           ctx.fill();
         } else {
           ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
@@ -379,12 +388,10 @@ export const CelestialDiamondMoonCanvas: React.FC<{
         if (p.isOcta) {
           const px = p.r * Math.cos(p.angle);
           const py = p.r * Math.sin(p.angle);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
-          ctx.lineWidth = 0.8;
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
           ctx.beginPath();
-          ctx.moveTo(px - 4, py); ctx.lineTo(px + 4, py);
-          ctx.moveTo(px, py - 4); ctx.lineTo(px, py + 4);
-          ctx.stroke();
+          ctx.arc(px, py, 1.6, 0, Math.PI * 2);
+          ctx.fill();
         }
       });
 
@@ -398,7 +405,7 @@ export const CelestialDiamondMoonCanvas: React.FC<{
     return () => cancelAnimationFrame(animId);
   }, [moonParticles, surroundingStars, ringColor]);
 
-  return <canvas ref={canvasRef} className={`select-none pointer-events-none w-36 h-36 xs:w-42 xs:h-42 sm:w-52 sm:h-52 md:w-64 md:h-64 ${className}`} />;
+  return <canvas ref={canvasRef} className={`select-none pointer-events-none w-48 h-48 xs:w-52 xs:h-52 sm:w-60 sm:h-60 md:w-84 md:h-84 lg:w-96 lg:h-96 ${className}`} />;
 };
 
 // =========================================================================
@@ -419,6 +426,7 @@ export interface DarkWidgetThemeConfig {
   cardBorder: string;
   cardBg: string;
   cardShadow: string;
+  radialGradient?: string;
   innerGlowOrb1: string;
   innerGlowOrb2: string;
   glyphColor: string;
@@ -493,14 +501,15 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
     case 'amethyst-haze':
       return {
         themeId,
-        auroraOrb1: 'from-purple-900/20 via-fuchsia-950/15 to-transparent',
-        auroraOrb2: 'from-indigo-950/25 via-purple-950/15 to-transparent',
-        auroraOrb3: 'bg-purple-900/15',
-        innerGlowOrb1: 'bg-purple-500/15',
-        innerGlowOrb2: 'bg-fuchsia-500/10',
+        auroraOrb1: 'from-purple-900/18 via-fuchsia-950/12 to-transparent',
+        auroraOrb2: 'from-indigo-950/20 via-purple-950/12 to-transparent',
+        auroraOrb3: 'bg-purple-900/12',
+        innerGlowOrb1: 'bg-purple-500/12',
+        innerGlowOrb2: 'bg-fuchsia-500/8',
         canvasRingColor: 'rgba(216, 180, 254, 0.5)',
-        cardBorder: 'border-white/15',
-        cardBg: 'bg-stone-950/65',
+        cardBorder: 'border-purple-300/20',
+        cardBg: 'bg-[#1c1226]/90',
+        radialGradient: 'bg-[radial-gradient(circle_at_30%_20%,rgba(216,180,254,0.10)_0%,rgba(20,12,30,0.92)_100%)]',
         cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
         glyphColor: 'text-stone-400',
         barcodeColor: 'bg-white',
@@ -571,14 +580,15 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
     case 'sage':
       return {
         themeId,
-        auroraOrb1: 'from-emerald-950/20 via-teal-950/15 to-transparent',
-        auroraOrb2: 'from-teal-950/25 via-emerald-950/15 to-transparent',
-        auroraOrb3: 'bg-emerald-950/15',
-        innerGlowOrb1: 'bg-emerald-500/15',
-        innerGlowOrb2: 'bg-teal-500/10',
+        auroraOrb1: 'from-emerald-950/12 via-teal-950/10 to-transparent',
+        auroraOrb2: 'from-teal-950/15 via-emerald-950/10 to-transparent',
+        auroraOrb3: 'bg-emerald-950/10',
+        innerGlowOrb1: 'bg-emerald-500/7',
+        innerGlowOrb2: 'bg-teal-500/5',
         canvasRingColor: 'rgba(110, 231, 183, 0.5)',
-        cardBorder: 'border-white/15',
-        cardBg: 'bg-stone-950/65',
+        cardBorder: 'border-emerald-300/20',
+        cardBg: 'bg-[#141e17]/90',
+        radialGradient: 'bg-[radial-gradient(circle_at_30%_20%,rgba(110,231,183,0.10)_0%,rgba(15,24,18,0.92)_100%)]',
         cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
         glyphColor: 'text-stone-400',
         barcodeColor: 'bg-white',
@@ -649,14 +659,15 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
     case 'mocha':
       return {
         themeId,
-        auroraOrb1: 'from-amber-950/35 via-orange-950/25 to-transparent',
-        auroraOrb2: 'from-orange-950/40 via-amber-950/25 to-transparent',
-        auroraOrb3: 'bg-amber-950/25',
-        innerGlowOrb1: 'bg-amber-500/25',
-        innerGlowOrb2: 'bg-orange-500/20',
+        auroraOrb1: 'from-amber-950/15 via-orange-950/10 to-transparent',
+        auroraOrb2: 'from-orange-950/15 via-amber-950/10 to-transparent',
+        auroraOrb3: 'bg-amber-950/10',
+        innerGlowOrb1: 'bg-amber-500/8',
+        innerGlowOrb2: 'bg-orange-500/6',
         canvasRingColor: 'rgba(252, 211, 77, 0.5)',
-        cardBorder: 'border-white/15',
-        cardBg: 'bg-stone-950/65',
+        cardBorder: 'border-amber-300/20',
+        cardBg: 'bg-[#211612]/90',
+        radialGradient: 'bg-[radial-gradient(circle_at_30%_20%,rgba(253,230,138,0.10)_0%,rgba(26,17,13,0.92)_100%)]',
         cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
         glyphColor: 'text-stone-400',
         barcodeColor: 'bg-white',
@@ -812,8 +823,9 @@ export const getDarkThemeConfig = (themeId: string = 'slate-haze'): DarkWidgetTh
         auroraOrb1: 'from-indigo-900/20 via-purple-900/15 to-transparent',
         auroraOrb2: 'from-cyan-950/25 via-blue-950/15 to-transparent',
         auroraOrb3: 'bg-stone-900/20',
-        cardBorder: 'border-white/15',
-        cardBg: 'bg-stone-950/65',
+        cardBorder: 'border-cyan-300/20',
+        cardBg: 'bg-[#121922]/90',
+        radialGradient: 'bg-[radial-gradient(circle_at_30%_20%,rgba(186,230,253,0.10)_0%,rgba(12,18,26,0.92)_100%)]',
         cardShadow: 'shadow-[0_30px_80px_rgba(0,0,0,0.9),inset_0_1px_1px_0_rgba(255,255,255,0.12)]',
         innerGlowOrb1: 'bg-indigo-500/10',
         innerGlowOrb2: 'bg-cyan-500/10',
@@ -941,7 +953,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
       
       {/* Quầng sáng nội tại của tấm kính */}
       <div className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden">
-        <div className={`absolute inset-0 ${c.isWhiteCard ? 'bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.92)_0%,rgba(245,245,245,0.85)_100%)]' : 'bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0.85)_100%)]'}`} />
+        <div className={`absolute inset-0 ${c.isWhiteCard ? 'bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.92)_0%,rgba(245,245,245,0.85)_100%)]' : (c.radialGradient || 'bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.06)_0%,rgba(0,0,0,0.85)_100%)]')}`} />
         <div className={`absolute top-1/4 right-1/4 w-80 h-80 ${c.innerGlowOrb1} rounded-full blur-3xl`} />
         <div className={`absolute bottom-1/4 left-1/4 w-80 h-80 ${c.innerGlowOrb2} rounded-full blur-3xl`} />
       </div>
@@ -1116,15 +1128,15 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
       </div>
 
       {/* -----------------------------------------------------------------
-          F. KHU VỰC 3: ANTHESIS // THREE-DAY CYCLE & L I B R A R Y
+          F. KHU VỰC 3: READING HISTORY & L I B R A R Y
           ----------------------------------------------------------------- */}
-      <div className={`relative z-10 pt-2 mb-2 sm:mb-4 border-t ${c.borderDivider}`}>
-        <div className={`text-[8px] sm:text-[10px] font-mono tracking-widest uppercase ${c.anthesisSubtitle} mb-1 sm:mb-2`}>
-          ANTHESIS // THREE-DAY CYCLE
+      <div className={`relative z-10 pt-1.5 mb-1 sm:mb-2 border-t ${c.borderDivider}`}>
+        <div className={`text-[8px] sm:text-[10px] font-mono tracking-widest uppercase ${c.anthesisSubtitle} mb-0.5 sm:mb-1`}>
+          READING HISTORY
         </div>
 
         {/* Chữ LIBRARY phát sáng với 4 ngôi sao 4 cánh quanh chữ */}
-        <div className="relative inline-block my-1 sm:my-2 py-0.5 sm:py-1 pr-4 sm:pr-6">
+        <div className="relative inline-block my-0.5 sm:my-1 py-0 sm:py-0.5 pr-4 sm:pr-6">
           <span className={`font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-light tracking-[0.25em] sm:tracking-[0.4em] uppercase ${c.libraryTitleColor} ${c.libraryGlow} select-none`}>
             L I B R A R Y
           </span>
@@ -1142,13 +1154,13 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
       {/* -----------------------------------------------------------------
           G. KHU VỰC 2: 3 CỘT (TRÊN ĐIỆN THOẠI CŨNG NẰM TRÊN CÙNG 1 DÒNG: COL-5, COL-2, COL-5)
           ----------------------------------------------------------------- */}
-      <div className="relative z-10 grid grid-cols-12 gap-1.5 xs:gap-2 sm:gap-4 md:gap-6 items-center my-2 sm:my-4 py-1 sm:py-2">
+      <div className="relative z-10 grid grid-cols-12 gap-1.5 xs:gap-2 sm:gap-4 md:gap-6 items-center mt-3 sm:mt-4 mb-1 sm:mb-2 py-0.5 sm:py-1">
         
         {/* CỘT TRÁI (col-span-5): THẺ SÁCH ĐỌC GẦN ĐÂY #GEOMETRY_03 */}
         <div className="col-span-5 flex flex-col gap-1.5 sm:gap-2.5 min-w-0">
           <motion.div
             whileHover={{ scale: 1.015 }}
-            className={`relative rounded-sm p-2 xs:p-2.5 sm:p-4 border ${c.bookCardBorder} ${c.bookCardBg} backdrop-blur-xl ${c.bookSubtitleColor} ${c.bookCardShadow} select-none transition-transform`}
+            className={`relative rounded-sm p-2 xs:p-2.5 sm:p-4 min-h-[126px] xs:min-h-[136px] sm:min-h-[175px] flex flex-col justify-between border ${c.bookCardBorder} ${c.bookCardBg} backdrop-blur-xl ${c.bookSubtitleColor} ${c.bookCardShadow} select-none transition-transform`}
           >
             {/* Băng keo Washi trong suốt sương đêm dán đỉnh thẻ */}
             <div
@@ -1169,23 +1181,25 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
               }}
             />
 
-            <div className="relative z-10 space-y-0.5 sm:space-y-1">
-              <div className={`text-[6.5px] xs:text-[7.5px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] uppercase ${c.bookTagColor} font-medium truncate`}>
-                ĐỌC GẦN ĐÂY
-              </div>
+            <div className="relative z-10 flex flex-col justify-between h-full space-y-1 sm:space-y-1.5">
+              <div className="space-y-0.5 sm:space-y-1">
+                <div className={`text-[7px] xs:text-[8px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] uppercase ${c.bookTagColor} font-medium truncate`}>
+                  ĐỌC GẦN ĐÂY
+                </div>
 
-              <div>
-                <h4 className={`font-serif text-[8.5px] xs:text-[10px] sm:text-sm font-medium tracking-wider ${c.bookTitleColor} truncate`}>
-                  {recentNovel?.title || 'Dạ Khúc Bạch Hợp'}
-                </h4>
-                <p className={`font-serif italic text-[6.5px] xs:text-[7.5px] sm:text-[10px] ${c.bookSubtitleColor} truncate`}>
-                  {recentNovel ? `Tác giả: ${typeof recentNovel.author === 'string' ? recentNovel.author : recentNovel.author?.name || 'Jouriee65'}` : 'Chương 42: Nở Rộ Trong Tĩnh Lặng'}
-                </p>
+                <div>
+                  <h4 className={`font-serif text-[9px] xs:text-[10.5px] sm:text-sm font-medium tracking-wider ${c.bookTitleColor} line-clamp-1`}>
+                    {recentNovel?.title || 'Dạ Khúc Bạch Hợp'}
+                  </h4>
+                  <p className={`font-serif italic text-[7px] xs:text-[8px] sm:text-[10px] ${c.bookSubtitleColor} truncate`}>
+                    {recentNovel ? `Tác giả: ${typeof recentNovel.author === 'string' ? recentNovel.author : recentNovel.author?.name || 'Jouriee65'}` : 'Chương 42: Nở Rộ Trong Tĩnh Lặng'}
+                  </p>
+                </div>
               </div>
 
               {/* Thanh tiến độ đọc truyện */}
               <div className={`space-y-0.5 sm:space-y-1 pt-1 sm:pt-1.5 border-t ${c.borderDivider}`}>
-                <div className={`flex items-center justify-between text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-mono ${c.bookSubtitleColor}`}>
+                <div className={`flex items-center justify-between text-[6px] xs:text-[7px] sm:text-[8px] font-mono ${c.bookSubtitleColor}`}>
                   <span>Tiến độ</span>
                   <span className="font-medium text-stone-300">{readingProgress}%</span>
                 </div>
@@ -1195,7 +1209,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
                     style={{ width: `${readingProgress}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-mono pt-0.5 text-stone-500">
+                <div className="flex items-center justify-between text-[6px] xs:text-[7px] sm:text-[8px] font-mono pt-0.5 text-stone-500">
                   <span className="truncate">12p trước</span>
                   <button
                     type="button"
@@ -1241,7 +1255,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
         </div>
 
         {/* CỘT PHẢI (col-span-5): RADAR THIÊN VĂN MẶT TRĂNG KIM CƯƠNG 60FPS + BẢNG THÔNG SỐ */}
-        <div className="col-span-5 flex flex-col justify-center items-center overflow-visible relative min-w-0">
+        <div className="col-span-5 flex flex-col justify-center items-center overflow-visible relative min-w-0 md:scale-115 lg:scale-130 transform-gpu origin-center transition-transform">
           
           {/* CANVAS 2D: VẦNG TRĂNG LƯỠI LIỀM PHÁT SÁNG & BÁNH RĂNG THIÊN VĂN QUAY MƯỢT MÀ */}
           <CelestialDiamondMoonCanvas
@@ -1250,11 +1264,11 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
             className="my-0.5 sm:my-1"
           />
 
-          {/* BẢNG THÔNG SỐ THIÊN VĂN (DATE / TIME / SEASON) */}
-          <div className={`w-full mt-1 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[6px] xs:text-[7.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
+          {/* BẢNG THÔNG SỐ THIÊN VĂN (DATE / TIME / SEASON) - Trên điện thoại đưa lên trên một chút */}
+          <div className={`w-full -mt-2.5 xs:-mt-2 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[7px] xs:text-[8.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
             <div className="flex items-center justify-between text-stone-300">
               <span className={`flex items-center gap-0.5 sm:gap-1 ${c.astroLabel}`}>
-                <CalendarIcon className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3" />
+                <CalendarIcon className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3 sm:h-3" />
                 <span>DATE</span>
               </span>
               <span className="font-medium truncate">{now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
@@ -1262,7 +1276,7 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
 
             <div className="flex items-center justify-between text-stone-300">
               <span className={`flex items-center gap-0.5 sm:gap-1 ${c.astroLabel}`}>
-                <Clock className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3" />
+                <Clock className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3 sm:h-3" />
                 <span>TIME</span>
               </span>
               <span className={`font-bold ${c.astroTime} tabular-nums ${c.astroTimeGlow} truncate`}>

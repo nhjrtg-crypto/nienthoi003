@@ -31,6 +31,7 @@ import {
   Check,
   Copy,
   Clock,
+  Lock,
   Heart,
   Wallpaper,
   Shuffle,
@@ -91,6 +92,7 @@ import { CosmicStarsBackground } from './CosmicStarsBackground';
 import { SpiralNotebookView, getSpiralPlannerCaroGridStyle } from './SpiralNotebookView';
 import { NovelAwningHeader } from './NovelAwningHeader';
 import { NovelDiaryBinderView } from './NovelDiaryBinderView';
+import { CielEtoileNotebookCover } from './CielEtoileNotebookCover';
 import { getBinderTheme } from '../utils/binderThemeConfig';
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { safeStorage } from '../utils/safeStorage';
@@ -560,6 +562,8 @@ interface NovelDetailViewProps {
   onToggleStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteNovel?: (novelId: string) => void;
   onOpenIntro?: () => void;
+  isDarkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
@@ -577,6 +581,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   currentUser = null,
   onToggleStatus,
   onDeleteNovel,
+  isDarkMode: propIsDarkMode,
+  onToggleDarkMode: propOnToggleDarkMode,
 }) => {
   const [activeTab, setActiveTab] = useState<'synopsis' | 'chapters' | 'comments' | 'author'>('synopsis');
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -698,6 +704,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   // Global toast message state for NovelDetailView (Synopsis, Cover, Table of Contents)
   const [toastMessage, setToastMessage] = useState<{ title: string; desc: string } | null>(null);
+
+  // Trạng thái mở bìa sổ tay (CielEtoileNotebookCover): ban đầu luôn hiển thị bìa sổ, khi bấm mở sổ thì chuyển sang true
+  const [isNotebookCoverOpen, setIsNotebookCoverOpen] = useState(false);
+
+  useEffect(() => {
+    setIsNotebookCoverOpen(false);
+  }, [novel.id]);
 
   const triggerToast = (title: string, desc: string) => {
     setToastMessage({ title, desc });
@@ -1053,15 +1066,45 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     return 'amethyst-haze';
   });
 
-  // Dark Mode support
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+  // Dark Mode support with bidirectional synchronization
+  const [localIsDarkMode, setLocalIsDarkMode] = useState<boolean>(() => {
+    if (propIsDarkMode !== undefined) return propIsDarkMode;
     try {
       const saved = safeStorage.getItem('cosmo_darkmode');
-      return saved !== null ? JSON.parse(saved) : false;
+      return saved !== null ? (saved === 'true' || JSON.parse(saved) === true) : false;
     } catch {
       return false;
     }
   });
+
+  const isDarkMode = propIsDarkMode !== undefined ? propIsDarkMode : localIsDarkMode;
+
+  useEffect(() => {
+    if (propIsDarkMode !== undefined) {
+      setLocalIsDarkMode(propIsDarkMode);
+    }
+  }, [propIsDarkMode]);
+
+  useEffect(() => {
+    const handleDarkChange = (e: any) => {
+      if (e.detail !== undefined) {
+        setLocalIsDarkMode(Boolean(e.detail));
+      } else {
+        try {
+          const saved = safeStorage.getItem('cosmo_darkmode');
+          if (saved !== null) {
+            setLocalIsDarkMode(saved === 'true' || JSON.parse(saved) === true);
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('cosmo_darkmode_changed', handleDarkChange);
+    window.addEventListener('storage', handleDarkChange);
+    return () => {
+      window.removeEventListener('cosmo_darkmode_changed', handleDarkChange);
+      window.removeEventListener('storage', handleDarkChange);
+    };
+  }, []);
 
   // Dark Background Option for non-white, non-cosmic dark themes
   const [darkBgOption, setDarkBgOption] = useState<DarkBackgroundOption>(() => {
@@ -1099,13 +1142,43 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     }
   });
 
-  const togglePurpleBgEffects = () => {
-    setPurpleBgEffectsEnabled((prev) => {
-      const next = !prev;
+  const togglePurpleBgEffects = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const next = !purpleBgEffectsEnabled;
+    setPurpleBgEffectsEnabled(next);
+    try {
       safeStorage.setItem('cosmo_purple_bg_effects', JSON.stringify(next));
-      return next;
-    });
+    } catch {}
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('cosmo_bg_effects_changed', { detail: next }));
+    }, 10);
   };
+
+  useEffect(() => {
+    const handleBgChange = (e: any) => {
+      if (e.detail !== undefined) {
+        const val = Boolean(e.detail);
+        setPurpleBgEffectsEnabled((curr) => (curr !== val ? val : curr));
+      } else {
+        try {
+          const saved = safeStorage.getItem('cosmo_purple_bg_effects');
+          if (saved !== null) {
+            const parsed = JSON.parse(saved);
+            setPurpleBgEffectsEnabled((curr) => (curr !== parsed ? parsed : curr));
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('cosmo_bg_effects_changed', handleBgChange);
+    window.addEventListener('storage', handleBgChange);
+    return () => {
+      window.removeEventListener('cosmo_bg_effects_changed', handleBgChange);
+      window.removeEventListener('storage', handleBgChange);
+    };
+  }, []);
 
   const [isBgMenuOpen, setIsBgMenuOpen] = useState(false);
   const bgMenuRef = useRef<HTMLDivElement>(null);
@@ -1133,16 +1206,27 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     // Nếu đang ở theme cosmic thì chuyển sang amethyst-haze sáng
     if (theme === 'cosmic') {
       setTheme('amethyst-haze');
-      setIsDarkMode(false);
       safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
-      safeStorage.setItem('cosmo_darkmode', JSON.stringify(false));
+      safeStorage.setItem('cosmo_darkmode', 'false');
+      setLocalIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
+      window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'amethyst-haze' }));
+      try { window.dispatchEvent(new Event('storage')); } catch {}
+      propOnToggleDarkMode?.();
       return;
     }
-    setIsDarkMode((prev) => {
-      const next = !prev;
-      safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-      return next;
-    });
+    const next = !isDarkMode;
+    setLocalIsDarkMode(next);
+    safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+    if (next) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
+    try { window.dispatchEvent(new Event('storage')); } catch {}
+    propOnToggleDarkMode?.();
   };
 
   const handleSelectTheme = (newTheme: NovelThemeId) => {
@@ -2648,11 +2732,14 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                           id="btn-detail-toggle-purple-bg"
                           type="button"
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
-                            togglePurpleBgEffects();
+                            togglePurpleBgEffects(e);
                           }}
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => e.stopPropagation()}
                           className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer hover:bg-zinc-800/60 text-zinc-200"
-                          title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+                          title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
                         >
                           <div className="flex items-center">
                             <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
@@ -2795,76 +2882,138 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         {/* LỰA CHỌN HIỂN THỊ THÔNG TIN CHI TIẾT TRUYỆN: KIỂU SỔ CÒNG HOẶC KIỂU CHUẨN */}
         {isSpiralStyle ? (
           <div className="w-full flex flex-col items-center">
-            <NovelDiaryBinderView
-              novel={{
-                id: novel.id,
-                title: novel.title,
-                author: novel.author,
-                translator: novel.translator || 'Jouriee65',
-                coverImage: novel.coverImage,
-                genres: novel.genres,
-                status: novel.status,
-                synopsis: novel.synopsis,
-                worldLore: effectiveWorldLore,
-                uploaderNote: novel.uploaderNote,
-                chapters: effectiveChapters.map((c) => ({
-                  id: c.id,
-                  chapterNumber: c.chapterNumber,
-                  title: c.title,
-                  publishedAt: c.publishedAt,
-                  isExtra: c.isExtra,
-                })),
-              }}
-              onReadChapter={onReadChapter}
-              isDarkMode={false}
-              theme={theme}
-              comments={comments.map((c) => ({
-                id: c.id,
-                userName: c.author,
-                content: c.content,
-                createdAt: c.createdAt,
-                likes: c.likes || 0,
-              }))}
-              onPostComment={(author, content) => {
-                if (author.trim()) {
-                  try {
-                    safeStorage.setItem('cosmo_comment_author_name', author.trim());
-                  } catch {}
-                }
-                const formattedDate = formatCommentDate();
-                const tempComment: NovelComment = {
-                  id: `cm-${Date.now()}`,
-                  truyenId: novel.id,
-                  author: author.trim() || 'Bạn Độc Giả',
-                  avatar: '',
-                  content: content.trim(),
-                  createdAt: formattedDate,
-                  ngayTao: new Date().toISOString(),
-                  likes: 0,
-                  badge: 'Độc Giả',
-                  rating: 5,
-                };
-                const updated = [tempComment, ...comments.filter((c) => c.id !== tempComment.id)];
-                setComments(updated);
-                try {
-                  safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
-                } catch {}
-                onUpdateNovel?.({ ...novel, comments: updated });
-                try {
-                  addD1Comment({
-                    id: tempComment.id,
-                    truyenId: novel.id,
-                    author: tempComment.author,
-                    content: tempComment.content,
-                    rating: 5,
-                    badge: 'Độc Giả',
-                  }).catch(() => {});
-                } catch (err) {
-                  console.warn('Could not post comment to Cloudflare D1:', err);
-                }
-                triggerToast('Đã lưu bình luận!', 'Cảm nghĩ của bạn đã được ghi chép vào trang sổ.');
-              }}
-            />
+            <AnimatePresence mode="wait">
+              {!isNotebookCoverOpen ? (
+                <motion.div
+                  key="notebook-cover-view"
+                  initial={{ opacity: 0, y: 18, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.96,
+                    y: -15,
+                    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full flex flex-col items-center"
+                >
+                  <CielEtoileNotebookCover
+                    theme={theme}
+                    isDark={isDarkEffective}
+                    novel={{
+                      id: novel.id,
+                      title: novel.title,
+                      author: novel.author,
+                      genres: novel.genres,
+                      coverImage: novel.coverImage,
+                      totalChaptersCount: effectiveChapters.length,
+                      chapters: effectiveChapters,
+                    }}
+                    onOpenNotebook={() => {
+                      setIsNotebookCoverOpen(true);
+                    }}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="notebook-content-view"
+                  initial={{ opacity: 0, scale: 0.97, y: 22 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.97, y: 15 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full flex flex-col items-center relative"
+                >
+                  {/* Nút Đóng bìa sổ tay tinh tế ở góc phải trên */}
+                  <div className="w-full max-w-5xl flex justify-end mb-3 px-2 sm:px-0">
+                    <motion.button
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      type="button"
+                      onClick={() => {
+                        cosmicAudio.playTap?.();
+                        setIsNotebookCoverOpen(false);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-white/85 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-300/80 shadow-xs backdrop-blur-md transition-all cursor-pointer select-none"
+                      title="Đóng bìa sổ lại"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Đóng bìa sổ</span>
+                    </motion.button>
+                  </div>
+
+                  <NovelDiaryBinderView
+                    novel={{
+                      id: novel.id,
+                      title: novel.title,
+                      author: novel.author,
+                      translator: novel.translator || 'Jouriee65',
+                      coverImage: novel.coverImage,
+                      genres: novel.genres,
+                      status: novel.status,
+                      synopsis: novel.synopsis,
+                      worldLore: effectiveWorldLore,
+                      uploaderNote: novel.uploaderNote,
+                      chapters: effectiveChapters.map((c) => ({
+                        id: c.id,
+                        chapterNumber: c.chapterNumber,
+                        title: c.title,
+                        publishedAt: c.publishedAt,
+                        isExtra: c.isExtra,
+                      })),
+                    }}
+                    onReadChapter={onReadChapter}
+                    isDarkMode={false}
+                    theme={theme}
+                    comments={comments.map((c) => ({
+                      id: c.id,
+                      userName: c.author,
+                      content: c.content,
+                      createdAt: c.createdAt,
+                      likes: c.likes || 0,
+                    }))}
+                    onPostComment={(author, content) => {
+                      if (author.trim()) {
+                        try {
+                          safeStorage.setItem('cosmo_comment_author_name', author.trim());
+                        } catch {}
+                      }
+                      const formattedDate = formatCommentDate();
+                      const tempComment: NovelComment = {
+                        id: `cm-${Date.now()}`,
+                        truyenId: novel.id,
+                        author: author.trim() || 'Bạn Độc Giả',
+                        avatar: '',
+                        content: content.trim(),
+                        createdAt: formattedDate,
+                        ngayTao: new Date().toISOString(),
+                        likes: 0,
+                        badge: 'Độc Giả',
+                        rating: 5,
+                      };
+                      const updated = [tempComment, ...comments.filter((c) => c.id !== tempComment.id)];
+                      setComments(updated);
+                      try {
+                        safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
+                      } catch {}
+                      onUpdateNovel?.({ ...novel, comments: updated });
+                      try {
+                        addD1Comment({
+                          id: tempComment.id,
+                          truyenId: novel.id,
+                          author: tempComment.author,
+                          content: tempComment.content,
+                          rating: 5,
+                          badge: 'Độc Giả',
+                        }).catch(() => {});
+                      } catch (err) {
+                        console.warn('Could not post comment to Cloudflare D1:', err);
+                      }
+                      triggerToast('Đã lưu bình luận!', 'Cảm nghĩ của bạn đã được ghi chép vào trang sổ.');
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ) : (
           /* Novel Detail Card (Kiểu chuẩn: Kết nối mục bìa truyện và 3 mục Giới thiệu, Mục lục, Bình luận thành chung một khối) */

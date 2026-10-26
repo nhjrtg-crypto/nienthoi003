@@ -270,6 +270,8 @@ interface NovelHomeViewProps {
   onOpenCreateFirestoreTruyen?: () => void;
   onToggleNovelStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteFirestoreNovel?: (novelId: string) => void;
+  isDarkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
@@ -287,6 +289,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   onOpenCreateFirestoreTruyen,
   onToggleNovelStatus,
   onDeleteFirestoreNovel,
+  isDarkMode: propIsDarkMode,
+  onToggleDarkMode: propOnToggleDarkMode,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -345,7 +349,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   });
 
   // Dark Mode: Đồng bộ và ghi nhớ chế độ tối theo lựa chọn của người dùng
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+  const [localIsDarkMode, setLocalIsDarkMode] = useState<boolean>(() => {
+    if (propIsDarkMode !== undefined) return propIsDarkMode;
     try {
       const saved = safeStorage.getItem('cosmo_darkmode');
       return saved === 'true';
@@ -354,29 +359,36 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   });
 
+  const isDarkMode = propIsDarkMode !== undefined ? propIsDarkMode : localIsDarkMode;
+
+  useEffect(() => {
+    if (propIsDarkMode !== undefined) {
+      setLocalIsDarkMode(propIsDarkMode);
+    }
+  }, [propIsDarkMode]);
+
   // Tự động đồng bộ chế độ tối khi quay về trang chủ hoặc từ các view khác
   useEffect(() => {
-    try {
-      const saved = safeStorage.getItem('cosmo_darkmode');
-      if (saved !== null) {
-        const val = saved === 'true';
-        if (val !== isDarkMode) {
-          queueMicrotask(() => setIsDarkMode(val));
-        }
+    const handleDarkChange = (e?: any) => {
+      if (e && e.detail !== undefined) {
+        setLocalIsDarkMode(Boolean(e.detail));
+        return;
       }
-    } catch {}
-
-    const handleStorageChange = () => {
       try {
         const saved = safeStorage.getItem('cosmo_darkmode');
         if (saved !== null) {
           const val = saved === 'true';
-          queueMicrotask(() => setIsDarkMode(val));
+          setLocalIsDarkMode(val);
         }
       } catch {}
     };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+
+    window.addEventListener('cosmo_darkmode_changed', handleDarkChange);
+    window.addEventListener('storage', handleDarkChange);
+    return () => {
+      window.removeEventListener('cosmo_darkmode_changed', handleDarkChange);
+      window.removeEventListener('storage', handleDarkChange);
+    };
   }, []);
 
   // Dark Background Option for non-white, non-cosmic dark themes
@@ -422,13 +434,43 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     }
   });
 
-  const togglePurpleBgEffects = () => {
-    setPurpleBgEffectsEnabled((prev) => {
-      const next = !prev;
+  const togglePurpleBgEffects = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const next = !purpleBgEffectsEnabled;
+    setPurpleBgEffectsEnabled(next);
+    try {
       safeStorage.setItem('cosmo_purple_bg_effects', JSON.stringify(next));
-      return next;
-    });
+    } catch {}
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('cosmo_bg_effects_changed', { detail: next }));
+    }, 10);
   };
+
+  useEffect(() => {
+    const handleBgChange = (e: any) => {
+      if (e.detail !== undefined) {
+        const val = Boolean(e.detail);
+        setPurpleBgEffectsEnabled((curr) => (curr !== val ? val : curr));
+      } else {
+        try {
+          const saved = safeStorage.getItem('cosmo_purple_bg_effects');
+          if (saved !== null) {
+            const parsed = JSON.parse(saved);
+            setPurpleBgEffectsEnabled((curr) => (curr !== parsed ? parsed : curr));
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('cosmo_bg_effects_changed', handleBgChange);
+    window.addEventListener('storage', handleBgChange);
+    return () => {
+      window.removeEventListener('cosmo_bg_effects_changed', handleBgChange);
+      window.removeEventListener('storage', handleBgChange);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -458,21 +500,29 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     // Nếu đang ở theme cosmic thì chuyển sang amethyst-haze sáng
     if (theme === 'cosmic') {
       setTheme('amethyst-haze');
-      setIsDarkMode(false);
+      setLocalIsDarkMode(false);
       safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
       safeStorage.setItem('cosmo_darkmode', 'false');
       document.documentElement.classList.remove('dark');
+      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
+      window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'amethyst-haze' }));
       try { window.dispatchEvent(new Event('storage')); } catch {}
+      propOnToggleDarkMode?.();
+      return;
+    }
+    if (propOnToggleDarkMode) {
+      propOnToggleDarkMode();
       return;
     }
     const next = !isDarkMode;
-    setIsDarkMode(next);
+    setLocalIsDarkMode(next);
     safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
     if (next) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
+    window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
     try { window.dispatchEvent(new Event('storage')); } catch {}
   };
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
@@ -4136,6 +4186,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                           })}
                         </div>
 
+                        {/* Tắt/bật Hiệu ứng nền ở chế độ sáng */}
                         {/* NÚT TOGGLE CHUYỂN CHẾ ĐỘ TỐI Ở DƯỚI CÙNG */}
                         <div
                           role="button"
@@ -4218,11 +4269,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         <button
                           type="button"
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
-                            togglePurpleBgEffects();
+                            togglePurpleBgEffects(e);
                           }}
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onTouchStart={(e) => e.stopPropagation()}
                           className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer hover:bg-zinc-800/60 text-zinc-200"
-                          title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+                          title={purpleBgEffectsEnabled ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
                         >
                           <div className="flex items-center">
                             <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>

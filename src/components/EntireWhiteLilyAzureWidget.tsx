@@ -117,7 +117,7 @@ export const MovingSnowTrain: React.FC<{
   const [hasFirstPassed, setHasFirstPassed] = useState(false);
 
   return (
-    <div className="absolute -top-3.5 sm:-top-5 md:-top-6 left-0 right-0 h-5 sm:h-7 md:h-8 overflow-hidden pointer-events-none z-20">
+    <div className="absolute -top-[18px] sm:-top-[25px] md:-top-[30px] left-0 right-0 h-5 sm:h-7 md:h-8 overflow-hidden pointer-events-none z-20">
       <motion.div
         animate={
           hasFirstPassed
@@ -1000,15 +1000,15 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
       </div>
 
       {/* -----------------------------------------------------------------
-          E. KHU VỰC 3: ANTHESIS // THREE-DAY CYCLE & L I B R A R Y
+          E. KHU VỰC 3: READING HISTORY & L I B R A R Y
           ----------------------------------------------------------------- */}
-      <div className={`relative z-10 pt-2 mb-2 sm:mb-4 border-t ${c.topDivider}`}>
-        <div className={`text-[8px] sm:text-[10px] font-mono tracking-widest uppercase ${c.anthesisSubtitle} mb-1 sm:mb-2`}>
-          ANTHESIS // THREE-DAY CYCLE
+      <div className={`relative z-10 pt-1.5 mb-1 sm:mb-2 border-t ${c.topDivider}`}>
+        <div className={`text-[8px] sm:text-[10px] font-mono tracking-widest uppercase ${c.anthesisSubtitle} mb-0.5 sm:mb-1`}>
+          READING HISTORY
         </div>
 
         {/* Chữ LIBRARY lớn với 4 ngôi sao 4 cánh quanh chữ */}
-        <div className="relative inline-block my-1 sm:my-2 py-0.5 sm:py-1 pr-4 sm:pr-6">
+        <div className="relative inline-block my-0.5 sm:my-1 py-0 sm:py-0.5 pr-4 sm:pr-6">
           <span className="font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-light tracking-[0.25em] sm:tracking-[0.4em] uppercase text-slate-900 select-none">
             L I B R A R Y
           </span>
@@ -1026,13 +1026,13 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
       {/* -----------------------------------------------------------------
           F. KHU VỰC 2: 3 CỘT (TRÊN ĐIỆN THOẠI CŨNG NẰM TRÊN CÙNG 1 DÒNG: COL-5, COL-2, COL-5)
           ----------------------------------------------------------------- */}
-      <div className="relative z-10 grid grid-cols-12 gap-1.5 xs:gap-2 sm:gap-4 md:gap-6 items-center my-2 sm:my-4 py-1 sm:py-2">
+      <div className="relative z-10 grid grid-cols-12 gap-1.5 xs:gap-2 sm:gap-4 md:gap-6 items-center mt-3 sm:mt-4 mb-1 sm:mb-2 py-0.5 sm:py-1">
         
         {/* CỘT TRÁI (col-span-5): THẺ SÁCH ĐỌC GẦN ĐÂY #GEOMETRY_03 */}
         <div className="col-span-5 flex flex-col gap-1.5 sm:gap-2.5 min-w-0">
           <motion.div
             whileHover={{ scale: 1.015 }}
-            className={`relative rounded-sm p-2 xs:p-2.5 sm:p-4 bg-white/95 border ${c.bookCardBorder} text-slate-800 ${c.bookCardShadow} select-none transition-transform`}
+            className={`relative rounded-sm p-2 xs:p-2.5 sm:p-4 min-h-[126px] xs:min-h-[136px] sm:min-h-[175px] flex flex-col justify-between bg-white/95 border ${c.bookCardBorder} text-slate-800 ${c.bookCardShadow} select-none transition-transform`}
           >
             {/* Băng keo Washi Tape trong suốt dán phẳng mép trên */}
             <div
@@ -1055,23 +1055,25 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
               }}
             />
 
-            <div className="relative z-10 space-y-0.5 sm:space-y-1">
-              <div className={`text-[6.5px] xs:text-[7.5px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] uppercase ${c.bookTagColor} font-semibold truncate`}>
-                ĐỌC GẦN ĐÂY
-              </div>
+            <div className="relative z-10 flex flex-col justify-between h-full space-y-1 sm:space-y-1.5">
+              <div className="space-y-0.5 sm:space-y-1">
+                <div className={`text-[7px] xs:text-[8px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] uppercase ${c.bookTagColor} font-semibold truncate`}>
+                  ĐỌC GẦN ĐÂY
+                </div>
 
-              <div>
-                <h4 className="font-serif text-[8.5px] xs:text-[10px] sm:text-sm font-medium tracking-wider text-slate-900 truncate">
-                  {recentNovel?.title || 'Dạ Khúc Bạch Hợp'}
-                </h4>
-                <p className="font-serif italic text-[6.5px] xs:text-[7.5px] sm:text-[10px] text-slate-600 truncate">
-                  {recentNovel ? `Tác giả: ${typeof recentNovel.author === 'string' ? recentNovel.author : recentNovel.author?.name || 'Jouriee65'}` : 'Chương 42: Nở Rộ Trong Tĩnh Lặng'}
-                </p>
+                <div>
+                  <h4 className="font-serif text-[9px] xs:text-[10.5px] sm:text-sm font-medium tracking-wider text-slate-900 line-clamp-1">
+                    {recentNovel?.title || 'Dạ Khúc Bạch Hợp'}
+                  </h4>
+                  <p className="font-serif italic text-[7px] xs:text-[8px] sm:text-[10px] text-slate-600 truncate">
+                    {recentNovel ? `Tác giả: ${typeof recentNovel.author === 'string' ? recentNovel.author : recentNovel.author?.name || 'Jouriee65'}` : 'Chương 42: Nở Rộ Trong Tĩnh Lặng'}
+                  </p>
+                </div>
               </div>
 
               {/* Tiến độ đọc truyện */}
               <div className={`space-y-0.5 sm:space-y-1 pt-1 sm:pt-1.5 border-t ${c.bookCardBorder}`}>
-                <div className="flex items-center justify-between text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-mono text-slate-600">
+                <div className="flex items-center justify-between text-[6px] xs:text-[7px] sm:text-[8px] font-mono text-slate-600">
                   <span>Tiến độ</span>
                   <span className="font-medium text-slate-900">{readingProgress}%</span>
                 </div>
@@ -1081,7 +1083,7 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
                     style={{ width: `${readingProgress}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[5.5px] xs:text-[6.5px] sm:text-[8px] font-mono pt-0.5 text-slate-500">
+                <div className="flex items-center justify-between text-[6px] xs:text-[7px] sm:text-[8px] font-mono pt-0.5 text-slate-500">
                   <span className="truncate">12p trước</span>
                   <button
                     type="button"
@@ -1469,8 +1471,8 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
             />
           </div>
 
-          {/* BẢNG THÔNG SỐ THIÊN VĂN BÊN DƯỚI (DATE / TIME / SEASON) */}
-          <div className={`w-full mt-1 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[6px] xs:text-[7.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
+          {/* BẢNG THÔNG SỐ THIÊN VĂN BÊN DƯỚI (DATE / TIME / SEASON) - Trên điện thoại đưa lên trên một chút */}
+          <div className={`w-full -mt-3.5 xs:-mt-3 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[6px] xs:text-[7.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
             <div className="flex items-center justify-between text-slate-800">
               <span className={`flex items-center gap-0.5 sm:gap-1 ${c.astroLabel}`}>
                 <CalendarIcon className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3" />

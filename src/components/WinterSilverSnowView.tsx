@@ -30,6 +30,7 @@ import { safeStorage } from '../utils/safeStorage';
 import { Novel } from '../types';
 import { EntireWhiteLilyAzureWidget } from './EntireWhiteLilyAzureWidget';
 import { EntireDarkLibraryWidget } from './EntireDarkLibraryWidget';
+import { useHeaderScroll } from '../utils/useHeaderScroll';
 
 export interface WinterSilverSnowViewProps {
   onBackToNovels: () => void;
@@ -393,7 +394,7 @@ const IntricateSnowflakeSVG: React.FC<{
 
 // Small 4-Point Star Icon
 const Small4PointStar: React.FC<{ size?: number; color?: string; className?: string }> = ({ size = 14, color = 'currentColor', className = '' }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} className={className} xmlns="http://www.w3.org/2000/svg">
+  <svg width={size} height={size} viewBox="-1 -1 26 26" fill={color} className={`overflow-visible ${className}`} xmlns="http://www.w3.org/2000/svg">
     <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" />
   </svg>
 );
@@ -683,8 +684,8 @@ interface LibraryThemeConfig {
 const THEME_CONFIGS_DARK: Record<string, LibraryThemeConfig> = {
   'slate-haze': {
     id: 'slate-haze',
-    pageBg: '#3D4755',
-    gradient: 'linear-gradient(135deg, #485463 0%, #3B4654 40%, #2F3946 75%, #252D37 100%)',
+    pageBg: '#212933',
+    gradient: 'linear-gradient(135deg, #2b3542 0%, #212933 40%, #171e26 75%, #0f1319 100%)',
     textPrimary: 'text-white',
     textMuted: 'text-white/70',
     accentText: 'text-cyan-200',
@@ -724,8 +725,8 @@ const THEME_CONFIGS_DARK: Record<string, LibraryThemeConfig> = {
   },
   'amethyst-haze': {
     id: 'amethyst-haze',
-    pageBg: '#241836',
-    gradient: 'linear-gradient(135deg, #32224c 0%, #26193b 40%, #1d122e 75%, #140b20 100%)',
+    pageBg: '#170f23',
+    gradient: 'linear-gradient(135deg, #221435 0%, #170e24 40%, #10091a 75%, #0a0511 100%)',
     textPrimary: 'text-white',
     textMuted: 'text-purple-200/70',
     accentText: 'text-purple-300',
@@ -765,8 +766,8 @@ const THEME_CONFIGS_DARK: Record<string, LibraryThemeConfig> = {
   },
   'sage': {
     id: 'sage',
-    pageBg: '#1f2e24',
-    gradient: 'linear-gradient(135deg, #2b3e32 0%, #203126 40%, #18261d 75%, #101a13 100%)',
+    pageBg: '#131e17',
+    gradient: 'linear-gradient(135deg, #1c2b20 0%, #131e17 40%, #0d1510 75%, #070c09 100%)',
     textPrimary: 'text-white',
     textMuted: 'text-emerald-100/70',
     accentText: 'text-emerald-300',
@@ -806,8 +807,8 @@ const THEME_CONFIGS_DARK: Record<string, LibraryThemeConfig> = {
   },
   'mocha': {
     id: 'mocha',
-    pageBg: '#33251f',
-    gradient: 'linear-gradient(135deg, #44332b 0%, #35261f 40%, #2a1d17 75%, #1e130e 100%)',
+    pageBg: '#1e140f',
+    gradient: 'linear-gradient(135deg, #2b1d16 0%, #1e140f 40%, #150d0a 75%, #0d0806 100%)',
     textPrimary: 'text-white',
     textMuted: 'text-amber-100/70',
     accentText: 'text-amber-200',
@@ -847,8 +848,8 @@ const THEME_CONFIGS_DARK: Record<string, LibraryThemeConfig> = {
   },
   'notebook': {
     id: 'notebook',
-    pageBg: '#28282b',
-    gradient: 'linear-gradient(135deg, #37373b 0%, #2a2a2e 40%, #202024 75%, #17171a 100%)',
+    pageBg: '#18181a',
+    gradient: 'linear-gradient(135deg, #232326 0%, #18181a 40%, #121213 75%, #0b0b0c 100%)',
     textPrimary: 'text-white',
     textMuted: 'text-zinc-300/70',
     accentText: 'text-zinc-200',
@@ -1177,20 +1178,36 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
   const isDarkMode = propIsDarkMode !== undefined ? propIsDarkMode : localIsDarkMode;
 
   useEffect(() => {
+    if (propIsDarkMode !== undefined) {
+      setLocalIsDarkMode(propIsDarkMode);
+    }
+  }, [propIsDarkMode]);
+
+  useEffect(() => {
+    const handleDarkChange = (e?: any) => {
+      if (e && e.detail !== undefined) {
+        setLocalIsDarkMode(Boolean(e.detail));
+        return;
+      }
+      const storedDark = safeStorage.getItem('cosmo_darkmode');
+      if (storedDark !== null) {
+        setLocalIsDarkMode(storedDark === 'true');
+      }
+    };
     const handleStorage = () => {
       const storedTheme = safeStorage.getItem('cosmo_novel_theme');
       if (storedTheme) {
         queueMicrotask(() => setActiveThemeId(storedTheme));
       }
-      const storedDark = safeStorage.getItem('cosmo_darkmode');
-      if (storedDark !== null && propIsDarkMode === undefined) {
-        const isDark = storedDark === 'true';
-        queueMicrotask(() => setLocalIsDarkMode(isDark));
-      }
+      handleDarkChange();
     };
+    window.addEventListener('cosmo_darkmode_changed', handleDarkChange);
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, [propIsDarkMode]);
+    return () => {
+      window.removeEventListener('cosmo_darkmode_changed', handleDarkChange);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, []);
 
   const handleToggleDarkMode = () => {
     cosmicAudio.playChime('sparkle');
@@ -1205,6 +1222,7 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
       } else {
         document.documentElement.classList.remove('dark');
       }
+      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
       try {
         window.dispatchEvent(new Event('storage'));
       } catch {}
@@ -1299,8 +1317,58 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
     return NOVEL_THEME_OPTIONS.find((t) => t.id === activeThemeId) || NOVEL_THEME_OPTIONS[2]; // Default frost
   }, [activeThemeId]);
 
-  // Snowfall toggle state (Top right switch: SNOWFALL)
-  const [isSnowingActive, setIsSnowingActive] = useState<boolean>(false);
+  // Snowfall toggle state linked with homepage (Liên kết nút hiệu ứng nền của thư viện và trang chủ)
+  const [isSnowingActive, setIsSnowingActive] = useState<boolean>(() => {
+    try {
+      const saved = safeStorage.getItem('cosmo_purple_bg_effects');
+      return saved !== null ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  // Đồng bộ trạng thái nút hiệu ứng nền giữa Thư viện và Trang chủ
+  useEffect(() => {
+    const syncBgEffects = () => {
+      try {
+        const saved = safeStorage.getItem('cosmo_purple_bg_effects');
+        if (saved !== null) {
+          const val = JSON.parse(saved);
+          setIsSnowingActive((curr) => (curr !== val ? val : curr));
+        }
+      } catch {}
+    };
+    const handleCustomEvent = (e: any) => {
+      if (e.detail !== undefined) {
+        const val = Boolean(e.detail);
+        setIsSnowingActive((curr) => (curr !== val ? val : curr));
+      } else {
+        syncBgEffects();
+      }
+    };
+    window.addEventListener('cosmo_bg_effects_changed', handleCustomEvent);
+    window.addEventListener('storage', syncBgEffects);
+    return () => {
+      window.removeEventListener('cosmo_bg_effects_changed', handleCustomEvent);
+      window.removeEventListener('storage', syncBgEffects);
+    };
+  }, []);
+
+  const handleToggleSnowing = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    cosmicAudio.playSnowCrunch();
+    const next = !isSnowingActive;
+    setIsSnowingActive(next);
+    try {
+      safeStorage.setItem('cosmo_purple_bg_effects', JSON.stringify(next));
+    } catch {}
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('cosmo_bg_effects_changed', { detail: next }));
+    }, 10);
+  };
 
   // Interactive snowflake color state for Little Library footer
   const [snowflakeColorState, setSnowflakeColorState] = useState<string>(() => snowStyles.snowflakeColor);
@@ -1319,6 +1387,10 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
   const [isMainMenuOpen, setIsMainMenuOpen] = useState<boolean>(false);
   const themeMenuRef = useRef<HTMLDivElement>(null);
   const mainMenuRef = useRef<HTMLDivElement>(null);
+
+  // Auto-hide header on scroll down, reveal on scroll up
+  const isHeaderVisible = useHeaderScroll({ threshold: 40, delta: 6 });
+  const shouldShowHeader = isHeaderVisible || isThemeMenuOpen || isMainMenuOpen;
 
   // Lấy lịch sử truyện đọc gần đây thực tế từ người dùng
   const realRecentReads = useMemo(() => {
@@ -1486,7 +1558,7 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
 
   return (
     <div
-      className={`relative min-h-screen w-full ${themeConfig.textPrimary} flex flex-col justify-between overflow-x-hidden select-none font-sans pb-12 transition-colors duration-500`}
+      className={`relative min-h-screen w-full ${themeConfig.textPrimary} flex flex-col justify-between overflow-x-hidden select-none font-sans pb-12 pt-16 sm:pt-20 transition-colors duration-500`}
       style={!isDarkMode ? { background: getThemeLightPageBackground(activeThemeId) } : { backgroundColor: themeConfig.pageBg }}
     >
       {/* Custom Auto-Hiding 1px Scrollbar Style for Mobile Poetry */}
@@ -1585,13 +1657,12 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
           />
         ))}
 
-        {/* Atmospheric Winter Bokeh Orbs */}
+        {/* Atmospheric Winter Bokeh Orbs - Giảm bớt 1 khối loang màu trắng theo yêu cầu */}
         {isDarkMode && [
-          { x: '18%', y: '35%', size: 140, opacity: 0.18, dur: 9 },
-          { x: '68%', y: '42%', size: 180, opacity: 0.22, dur: 11 },
-          { x: '82%', y: '68%', size: 110, opacity: 0.15, dur: 8 },
-          { x: '35%', y: '78%', size: 160, opacity: 0.16, dur: 10 },
-          { x: '52%', y: '20%', size: 90, opacity: 0.25, dur: 7 },
+          { x: '18%', y: '35%', size: 130, opacity: 0.12, dur: 9 },
+          { x: '68%', y: '42%', size: 160, opacity: 0.14, dur: 11 },
+          { x: '82%', y: '68%', size: 100, opacity: 0.10, dur: 8 },
+          { x: '35%', y: '78%', size: 140, opacity: 0.11, dur: 10 },
         ].map((orb, i) => (
           <motion.div
             key={`bokeh-${i}`}
@@ -1616,30 +1687,31 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
           />
         ))}
 
-        {/* Real-time Animated Falling Snow Particles: CHỈ CHẠY Ở CHẾ ĐỘ TỐI (Bỏ hiệu ứng tuyết rơi ở chế độ sáng theo yêu cầu) */}
+        {/* Real-time Animated Falling Snow Particles: Hiệu ứng nền tuyết rơi (chỉ bật ở chế độ tối khi người dùng bật nút hiệu ứng nền) */}
         {isSnowingActive && isDarkMode && (
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 pointer-events-none z-1">
             {Array.from({ length: 42 }).map((_, idx) => {
-              const size = Math.random() * 4 + 2;
+              const isSnowflake = idx % 5 === 0;
+              const size = isSnowflake ? 14 + (idx % 3) * 3 : Math.random() * 4 + 2;
               const left = Math.random() * 100;
               const duration = Math.random() * 6 + 5;
               const delay = Math.random() * 5;
-              const opacity = Math.random() * 0.7 + 0.3;
+              const opacity = isDarkMode ? Math.random() * 0.5 + 0.4 : Math.random() * 0.4 + 0.35;
               return (
                 <motion.div
                   key={`snow-${idx}`}
-                  className="absolute rounded-full bg-white"
+                  className="absolute pointer-events-none select-none flex items-center justify-center"
                   style={{
                     left: `${left}%`,
-                    top: '-10px',
+                    top: '-20px',
                     width: size,
                     height: size,
                     opacity,
-                    boxShadow: '0 0 6px rgba(255, 255, 255, 0.8)',
                   }}
                   animate={{
                     y: ['0vh', '105vh'],
                     x: [0, (idx % 2 === 0 ? 1 : -1) * (Math.random() * 30 + 15)],
+                    rotate: isSnowflake ? [0, idx % 2 === 0 ? 360 : -360] : 0,
                   }}
                   transition={{
                     repeat: Infinity,
@@ -1647,7 +1719,22 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
                     delay,
                     ease: 'linear',
                   }}
-                />
+                >
+                  {isSnowflake ? (
+                    <CrystalSnowflake6Point
+                      size={size}
+                      color={isDarkMode ? "rgba(255, 255, 255, 0.9)" : "rgba(100, 149, 200, 0.75)"}
+                      style={{ filter: isDarkMode ? 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.7))' : 'drop-shadow(0 0 3px rgba(186, 230, 253, 0.6))' }}
+                    />
+                  ) : (
+                    <div
+                      className={`w-full h-full rounded-full ${isDarkMode ? 'bg-white' : 'bg-sky-400/60'}`}
+                      style={{
+                        boxShadow: isDarkMode ? '0 0 6px rgba(255, 255, 255, 0.8)' : '0 0 4px rgba(125, 211, 252, 0.7)',
+                      }}
+                    />
+                  )}
+                </motion.div>
               );
             })}
           </div>
@@ -1666,7 +1753,10 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
 
       {/* TOP HEADER: Giữ lại nút mũi tên, nút tìm kiếm, tạo nút theme và nút menu giống trang chủ */}
       <nav
-        className={`relative z-40 w-full px-3 sm:px-6 md:px-8 py-3 flex items-center justify-between text-xs font-['Open_Sans'] border-b backdrop-blur-md transition-colors duration-300 ${themeConfig.headerBorder} ${themeConfig.textMuted}`}
+        className={`fixed top-0 left-0 right-0 z-40 px-3 sm:px-6 md:px-8 py-3 flex items-center justify-between text-xs font-['Open_Sans'] border-b backdrop-blur-md transition-[transform,opacity] duration-300 transform ${
+          shouldShowHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
+        } ${themeConfig.headerBorder} ${themeConfig.textMuted}`}
+        style={{ backgroundColor: isDarkMode ? '#0a0d14' : undefined }}
       >
         {/* Left: Nút mũi tên quay lại */}
         <div className="flex items-center gap-2">
@@ -1858,12 +1948,14 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
                       <button
                         type="button"
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
-                          cosmicAudio.playSnowCrunch();
-                          setIsSnowingActive(!isSnowingActive);
+                          handleToggleSnowing(e);
                         }}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onTouchStart={(e) => e.stopPropagation()}
                         className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-xs transition-all cursor-pointer hover:bg-zinc-800/60 text-zinc-200"
-                        title={isSnowingActive ? 'Nhấn để tắt hiệu ứng tuyết rơi' : 'Nhấn để bật hiệu ứng tuyết rơi'}
+                        title={isSnowingActive ? 'Nhấn để tắt hiệu ứng nền' : 'Nhấn để bật hiệu ứng nền'}
                       >
                         <div className="flex items-center">
                           <span className="font-medium text-[11px] sm:text-xs">Hiệu ứng nền</span>
@@ -2383,7 +2475,7 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
                   transition={{ delay: (idx % 6) * 0.06, duration: 0.45 }}
                   whileHover={{ y: -3, scale: 1.01 }}
                   onClick={handleOpenNovel}
-                  className={`group relative flex flex-row items-center gap-3 p-2.5 sm:p-3 rounded-xl border transition-all overflow-hidden text-left cursor-pointer ${
+                  className={`group relative flex flex-row items-center gap-3 p-2.5 sm:p-3 min-h-[128px] sm:min-h-[148px] rounded-xl border transition-all overflow-hidden text-left cursor-pointer ${
                     !isDarkMode
                       ? `${getThemeCardClass(activeThemeId)} shadow-sm hover:shadow-md`
                       : `backdrop-blur-md shadow-md ${themeConfig.recentCardBg} ${themeConfig.recentCardBorder}`

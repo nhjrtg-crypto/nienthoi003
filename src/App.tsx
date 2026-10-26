@@ -694,6 +694,12 @@ export default function App() {
     try {
       safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
     } catch {}
+    if (next) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
     try {
       window.dispatchEvent(new Event('storage'));
     } catch {}
@@ -708,10 +714,14 @@ export default function App() {
     }
   }, [isDarkMode]);
 
-  // Lắng nghe thay đổi chế độ sáng/tối từ các thành phần khác
+  // Lắng nghe thay đổi chế độ sáng/tối từ các thành phần khác (custom event + storage)
   useEffect(() => {
-    const handleStorageChange = () => {
+    const handleDarkModeChange = (e?: any) => {
       try {
+        if (e && e.detail !== undefined) {
+          setIsDarkMode(Boolean(e.detail));
+          return;
+        }
         const saved = safeStorage.getItem('cosmo_darkmode');
         if (saved !== null) {
           const val = saved === 'true';
@@ -719,8 +729,12 @@ export default function App() {
         }
       } catch {}
     };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('cosmo_darkmode_changed', handleDarkModeChange);
+    window.addEventListener('storage', handleDarkModeChange);
+    return () => {
+      window.removeEventListener('cosmo_darkmode_changed', handleDarkModeChange);
+      window.removeEventListener('storage', handleDarkModeChange);
+    };
   }, []);
 
   // Listen to Firebase Auth state
@@ -1527,6 +1541,8 @@ export default function App() {
             }}
             isAdmin={isAdmin}
             currentUser={currentUser}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
             onOpenAdminAuth={() => setIsAdminAuthModalOpen(true)}
             onOpenCreateFirestoreTruyen={() => setIsCreateFirestoreModalOpen(true)}
             onToggleNovelStatus={handleToggleNovelStatus}
@@ -1581,6 +1597,8 @@ export default function App() {
           <NovelDetailView
             novel={selectedNovel}
             allNovels={allMergedNovels}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
             onBack={() => {
               setSelectedNovel(null);
               setReadingChapterNumber(null);

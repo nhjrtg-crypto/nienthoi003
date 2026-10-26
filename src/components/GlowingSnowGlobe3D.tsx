@@ -71,7 +71,7 @@ export const MovingSnowTrain: React.FC<{
   const [hasFirstPassed, setHasFirstPassed] = useState(false);
 
   return (
-    <div className="absolute -top-5 sm:-top-6 left-0 right-0 h-7 sm:h-8 overflow-hidden pointer-events-none z-20">
+    <div className="absolute -top-[24px] sm:-top-[28px] left-0 right-0 h-7 sm:h-8 overflow-hidden pointer-events-none z-20">
       <motion.div
         animate={
           hasFirstPassed
