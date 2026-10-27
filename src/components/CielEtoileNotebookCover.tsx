@@ -174,7 +174,7 @@ const getNotebookCoverTheme = (themeId: string, isDark: boolean): NotebookCoverT
       ringSlotShadow: isDark ? 'shadow-black/40' : 'shadow-purple-900/10',
       sheetShadow: isDark
         ? '2px 0 0 #f5f3ff, 4px 0 0 rgba(255,255,255,0.08), 8px 0 0 rgba(255,255,255,0.04), 14px 4px 18px rgba(0,0,0,0.6)'
-        : '2px 0 0 #ffffff, 4px 0 0 #faf5ff, 6px 0 0 #f3e8ff, 9px 0 0 #e9d5ff, 14px 4px 22px rgba(147,51,234,0.18)',
+        : '2px 0 0 #ffffff, 4px 0 0 #faf5ff, 6px 0 0 #f7f1fe, 9px 0 0 #f1e6fb, 14px 4px 20px rgba(147,51,234,0.09)',
       badgeBg: isDark ? 'bg-purple-500/20' : 'bg-white/70',
       badgeBorder: isDark ? 'border-purple-400/40' : 'border-white/80',
       badgeText: isDark ? 'text-purple-300' : 'text-purple-800',
@@ -208,7 +208,7 @@ const getNotebookCoverTheme = (themeId: string, isDark: boolean): NotebookCoverT
       ringSlotShadow: isDark ? 'shadow-black/40' : 'shadow-emerald-900/10',
       sheetShadow: isDark
         ? '2px 0 0 #f0fdf4, 4px 0 0 rgba(255,255,255,0.08), 8px 0 0 rgba(255,255,255,0.04), 14px 4px 18px rgba(0,0,0,0.6)'
-        : '2px 0 0 #ffffff, 4px 0 0 #f0fdf4, 6px 0 0 #dcfce7, 9px 0 0 #bbf7d0, 14px 4px 22px rgba(22,163,74,0.18)',
+        : '2px 0 0 #ffffff, 4px 0 0 #f0fdf4, 6px 0 0 #ecf7f0, 9px 0 0 #e0f2e6, 14px 4px 20px rgba(22,163,74,0.09)',
       badgeBg: isDark ? 'bg-emerald-500/20' : 'bg-white/70',
       badgeBorder: isDark ? 'border-emerald-400/40' : 'border-white/80',
       badgeText: isDark ? 'text-emerald-300' : 'text-emerald-800',
@@ -242,7 +242,7 @@ const getNotebookCoverTheme = (themeId: string, isDark: boolean): NotebookCoverT
       ringSlotShadow: isDark ? 'shadow-black/40' : 'shadow-amber-900/10',
       sheetShadow: isDark
         ? '2px 0 0 #fffbeb, 4px 0 0 rgba(255,255,255,0.08), 8px 0 0 rgba(255,255,255,0.04), 14px 4px 18px rgba(0,0,0,0.6)'
-        : '2px 0 0 #ffffff, 4px 0 0 #fffbeb, 6px 0 0 #fef3c7, 9px 0 0 #fde68a, 14px 4px 22px rgba(217,119,6,0.18)',
+        : '2px 0 0 #ffffff, 4px 0 0 #fffbeb, 6px 0 0 #fbf5ea, 9px 0 0 #f5ebd8, 14px 4px 20px rgba(217,119,6,0.09)',
       badgeBg: isDark ? 'bg-amber-500/20' : 'bg-white/70',
       badgeBorder: isDark ? 'border-amber-400/40' : 'border-white/80',
       badgeText: isDark ? 'text-amber-300' : 'text-amber-800',

@@ -552,7 +552,7 @@ export const BINDER_THEMES: Record<string, BinderThemeConfig> = {
     ribbonText: 'text-[#2d2242]',
     ribbonIcon: 'text-[#7e22ce]',
 
-    coverCardBorder: 'border-[#d7c4ed]',
+    coverCardBorder: 'border-[#ebdff7]',
     coverInnerBorder: 'border-[#e2d5f2]',
     heartIconColor: '#9333ea',
     titleText: 'text-[#2d2242]',
@@ -1098,7 +1098,7 @@ export const BINDER_THEMES: Record<string, BinderThemeConfig> = {
     ribbonText: 'text-[#233a2d]',
     ribbonIcon: 'text-[#5f8f6f]',
 
-    coverCardBorder: 'border-[#cde0d3]',
+    coverCardBorder: 'border-[#e4efe7]',
     coverInnerBorder: 'border-[#e3eee6]',
     heartIconColor: '#5f8f6f',
     titleText: 'text-[#233a2d]',
@@ -1371,7 +1371,7 @@ export const BINDER_THEMES: Record<string, BinderThemeConfig> = {
     ribbonText: 'text-[#2e2018]',
     ribbonIcon: 'text-[#795947]',
 
-    coverCardBorder: 'border-[#cdbcad]',
+    coverCardBorder: 'border-[#e8ded3]',
     coverInnerBorder: 'border-[#dfcfc2]',
     heartIconColor: '#94725f',
     titleText: 'text-[#2e2018]',
