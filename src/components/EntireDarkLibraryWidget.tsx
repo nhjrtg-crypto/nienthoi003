@@ -405,7 +405,13 @@ export const CelestialDiamondMoonCanvas: React.FC<{
     return () => cancelAnimationFrame(animId);
   }, [moonParticles, surroundingStars, ringColor]);
 
-  return <canvas ref={canvasRef} className={`select-none pointer-events-none w-48 h-48 xs:w-52 xs:h-52 sm:w-60 sm:h-60 md:w-84 md:h-84 lg:w-96 lg:h-96 ${className}`} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ aspectRatio: '1 / 1' }}
+      className={`select-none pointer-events-none aspect-square object-contain ${className || 'w-48 h-48 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-[320px] md:h-[320px] lg:w-[360px] lg:h-[360px] xl:w-[380px] xl:h-[380px]'}`}
+    />
+  );
 };
 
 // =========================================================================
@@ -1083,21 +1089,25 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
               className="absolute -top-3.5 sm:-top-4.5 right-3 sm:right-5 z-20 pointer-events-none"
             />
 
-            <div>
+            {/* Header + Bài thơ căn sát lên trên đầu */}
+            <div className="flex-1 flex flex-col justify-start min-h-0">
               <div className={`flex items-center justify-between text-[7px] xs:text-[8px] sm:text-xs font-mono tracking-wider pb-1.5 sm:pb-2 border-b ${c.borderDivider} ${c.poetHeaderColor}`}>
                 <span className="font-semibold">Quotations</span>
+                <span className="text-[6.5px] xs:text-[7.5px] sm:text-[10px] opacity-75 font-normal uppercase truncate max-w-[140px]">
+                  {currentPoet.author}
+                </span>
               </div>
 
-              {/* 4 dòng trích dẫn lãng mạn trên giấy kẻ dòng */}
-              <div className={`py-1.5 sm:py-3 space-y-0.5 sm:space-y-1 font-serif text-[7.5px] xs:text-[9px] sm:text-xs md:text-sm italic ${c.poetTextColor} leading-relaxed overflow-hidden`}>
+              {/* Các dòng trích dẫn: căn ngay ngắn trên đầu */}
+              <div className={`pt-2 sm:pt-3 pb-1.5 space-y-1 sm:space-y-1.5 font-serif text-[7.5px] xs:text-[8.5px] sm:text-xs md:text-sm italic ${c.poetTextColor} leading-snug sm:leading-relaxed overflow-y-auto max-h-[140px] sm:max-h-none poem-scrollbar-1px text-left`}>
                 {currentPoet.lines.map((line, idx) => (
-                  <p key={idx} className="line-clamp-1">{line}</p>
+                  <p key={idx} className="break-words whitespace-normal">{line}</p>
                 ))}
               </div>
             </div>
 
             {/* Chấm phân trang & Nút NEXT ○ */}
-            <div className={`pt-1.5 sm:pt-2 border-t ${c.borderDivider} flex items-center justify-between`}>
+            <div className={`pt-1.5 sm:pt-2 border-t mt-auto ${c.borderDivider} flex items-center justify-between`}>
               <div className="flex items-center gap-1 sm:gap-1.5 overflow-hidden max-w-[50%]">
                 {poetList.slice(0, 10).map((_, i) => (
                   <span
@@ -1255,17 +1265,24 @@ export const EntireDarkLibraryWidget: React.FC<EntireDarkLibraryWidgetProps> = (
         </div>
 
         {/* CỘT PHẢI (col-span-5): RADAR THIÊN VĂN MẶT TRĂNG KIM CƯƠNG 60FPS + BẢNG THÔNG SỐ */}
-        <div className="col-span-5 flex flex-col justify-center items-center overflow-visible relative min-w-0 md:scale-115 lg:scale-130 transform-gpu origin-center transition-transform">
+        <div className="col-span-5 flex flex-col justify-center items-center relative min-w-0 w-full max-w-full">
           
-          {/* CANVAS 2D: VẦNG TRĂNG LƯỠI LIỀM PHÁT SÁNG & BÁNH RĂNG THIÊN VĂN QUAY MƯỢT MÀ */}
-          <CelestialDiamondMoonCanvas
-            ringColor={c.canvasRingColor}
-            particleColor={c.canvasParticleColor}
-            className="my-0.5 sm:my-1"
-          />
+          {/* KHỐI TINH THỂ THIÊN VĂN: VẦNG TRĂNG KIM CƯƠNG & BÁNH RĂNG THIÊN HÀ TRÒN ĐỀU, NGUY NGA TRÊN PC */}
+          <div className="flex items-center justify-center my-0.5 sm:my-1 w-full overflow-visible">
+            <div
+              style={{ aspectRatio: '1 / 1' }}
+              className="w-48 h-48 xs:w-52 xs:h-52 sm:w-72 sm:h-72 md:w-[360px] md:h-[360px] lg:w-[400px] lg:h-[400px] xl:w-[430px] xl:h-[430px] 2xl:w-[450px] 2xl:h-[450px] aspect-square flex items-center justify-center relative shrink-0"
+            >
+              <CelestialDiamondMoonCanvas
+                ringColor={c.canvasRingColor}
+                particleColor={c.canvasParticleColor}
+                className="w-full h-full aspect-square object-contain"
+              />
+            </div>
+          </div>
 
-          {/* BẢNG THÔNG SỐ THIÊN VĂN (DATE / TIME / SEASON) - Trên điện thoại đưa lên trên một chút */}
-          <div className={`w-full -mt-2.5 xs:-mt-2 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[7px] xs:text-[8.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
+          {/* BẢNG THÔNG SỐ THIÊN VĂN (DATE / TIME / SEASON) - Nằm ngay ngắn trọn vẹn trong khung cả PC và Mobile */}
+          <div className={`w-full mt-1 sm:mt-2 space-y-0.5 sm:space-y-1 font-mono text-[7px] xs:text-[8.5px] sm:text-xs border-t ${c.astroBorder} pt-1 sm:pt-2`}>
             <div className="flex items-center justify-between text-stone-300">
               <span className={`flex items-center gap-0.5 sm:gap-1 ${c.astroLabel}`}>
                 <CalendarIcon className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3 sm:h-3" />

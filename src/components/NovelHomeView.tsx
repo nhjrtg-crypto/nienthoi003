@@ -3178,11 +3178,11 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       }
     }
 
-    // Light mode (áp dụng kiểu dáng mượt mà, màu sắc đồng bộ chuẩn theo từng theme tương tự frost)
+    // Light mode (áp dụng viền ngoài trong suốt kiểu kính mờ theo yêu cầu)
     switch (theme) {
       case 'sage':
         return {
-          outer: 'border-[#c8d8c6] bg-[#f0f4ef]/90 shadow-lg',
+          outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(77,102,74,0.06)]',
           inner: 'bg-white border-[#dce6d9] shadow-md',
           divider: 'border-[#dce6d9]',
           dashedDivider: 'border-[#4d6f53]/40',
@@ -3203,7 +3203,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         };
       case 'mocha':
         return {
-          outer: 'border-[#e4d9bc] bg-[#f8f4ee]/90 shadow-lg',
+          outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(140,109,93,0.06)]',
           inner: 'bg-white border-[#e8ddc2] shadow-md',
           divider: 'border-[#e8ddc2]',
           dashedDivider: 'border-[#8c6d5d]/40',
@@ -3224,7 +3224,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         };
       case 'slate-haze':
         return {
-          outer: 'border-[#c8d6e5] bg-[#f2f6fa]/90 shadow-lg',
+          outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(2,132,199,0.06)]',
           inner: 'bg-white border-[#d8e3ed] shadow-md',
           divider: 'border-[#d8e3ed]',
           dashedDivider: 'border-[#5d7e9d]/40',
@@ -3245,7 +3245,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         };
       case 'notebook':
         return {
-          outer: 'border-neutral-250 bg-[#fafafa]/90 shadow-lg',
+          outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.05)]',
           inner: 'bg-white border-neutral-200 shadow-md',
           divider: 'border-neutral-200',
           dashedDivider: 'border-neutral-400/40',
@@ -3266,7 +3266,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         };
       case 'lululemon':
         return {
-          outer: 'border-[#ded0d4] bg-[#f2ebef]/95 shadow-lg',
+          outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(173,72,98,0.06)]',
           inner: 'bg-white border-[#ded0d4] shadow-md',
           divider: 'border-[#ded0d4]',
           dashedDivider: 'border-[#d8c5ca]',
@@ -3288,7 +3288,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'amethyst-haze':
       default:
         return {
-          outer: 'border-[#ded8ea] bg-[#f7f3fb]/90 shadow-lg',
+          outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(126,88,166,0.06)]',
           inner: 'bg-white border-[#e9e3f3] shadow-md',
           divider: 'border-[#e9e3f3]',
           dashedDivider: 'border-[#856b9e]/40',

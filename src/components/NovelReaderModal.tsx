@@ -2430,10 +2430,10 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
         isDark={isDarkEffective}
       />
 
-      {/* POPUP BÌNH LUẬN NHANH TRONG TRÌNH ĐỌC TRUYỆN (KHÔNG CẦN CUỘN) */}
+      {/* BOTTOM SHEET / MODAL SHEET BÌNH LUẬN NHANH TRONG TRÌNH ĐỌC TRUYỆN */}
       <AnimatePresence>
         {showCommentsPopup && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs">
             {/* Click-outside backdrop */}
             <div
               className="absolute inset-0"
@@ -2441,18 +2441,31 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 8 }}
-              transition={{ duration: 0.16 }}
-              className={`relative w-full max-w-lg md:max-w-xl max-h-[85vh] rounded-3xl border flex flex-col overflow-hidden shadow-2xl z-10 ${
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 320 }}
+              className={`relative w-full max-w-2xl sm:max-w-3xl max-h-[85vh] rounded-t-3xl sm:rounded-t-[2.25rem] rounded-b-none border-t border-x-0 border-b-0 flex flex-col overflow-hidden shadow-[0_-12px_45px_rgba(0,0,0,0.35)] z-10 ${
                 isDarkEffective
                   ? 'bg-[#16181f] border-zinc-700 text-zinc-100 shadow-black/80'
                   : 'bg-white border-zinc-200 text-zinc-900 shadow-zinc-500/25'
               }`}
             >
-              {/* Header của Popup */}
-              <div className="px-5 py-3.5 border-b border-zinc-500/20 flex items-center justify-between shrink-0">
+              {/* Drag handle bar / Thanh kéo chỉ báo Bottom Sheet */}
+              <div
+                className="w-full pt-3 pb-1 flex justify-center shrink-0 cursor-pointer select-none"
+                onClick={() => setShowCommentsPopup(false)}
+                title="Nhấn để đóng"
+              >
+                <div
+                  className={`w-12 h-1.5 rounded-full transition-colors ${
+                    isDarkEffective ? 'bg-zinc-600 hover:bg-zinc-500' : 'bg-zinc-300 hover:bg-zinc-400'
+                  }`}
+                />
+              </div>
+
+              {/* Header của Bottom Sheet */}
+              <div className="px-5 py-3 border-b border-zinc-500/20 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-xl bg-purple-500/15 text-purple-400">
                     <MessageSquare className="w-4 h-4" />
@@ -2471,7 +2484,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   type="button"
                   onClick={() => setShowCommentsPopup(false)}
                   className="p-1.5 rounded-xl border border-transparent hover:border-zinc-500/30 hover:bg-zinc-500/10 opacity-70 hover:opacity-100 transition-all cursor-pointer"
-                  title="Đóng popup (Esc)"
+                  title="Đóng bảng bình luận (Esc)"
                 >
                   <X className="w-4 h-4" />
                 </button>

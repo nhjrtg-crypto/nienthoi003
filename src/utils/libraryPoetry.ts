@@ -1,43 +1,86 @@
 export interface PoetItem {
+  day: number;
   author: string;
+  theme?: string;
   lines: string[];
 }
 
 /**
- * 31 bài thơ tình lãng mạn, thuần khiết và dịu dàng tương ứng 31 ngày trong tháng.
- * Đã lọc và loại bỏ hoàn toàn các đại từ/từ ngữ chỉ nữ giới (she, her, girl, woman, lady...),
- * tập trung vào tình yêu thanh khiết, tri kỷ, vì sao, ánh trăng, sự gắn kết linh hồn vĩnh cửu.
+ * Trọn bộ 31 bài thơ trong kho Quote (Daily Poems):
+ * Kết hợp hài hòa giữa các tác phẩm kinh điển về KIÊN CƯỜNG, HY VỌNG, NIỀM TIN
+ * và sự gắn kết linh hồn son sắt, thuần khiết, không chứa đại từ thiên lệch.
  */
 export const poetList: PoetItem[] = [
   {
-    author: 'WILLIAM SHAKESPEARE',
+    day: 1,
+    author: 'WILLIAM ERNEST HENLEY',
+    theme: 'Kiên cường',
     lines: [
-      'Love is not love which alters when it alteration finds,',
-      'Or bends with the remover to remove:',
-      'O no! it is an ever-fixed mark',
-      'That looks on tempests and is never shaken.',
+      'Out of the night that covers me,',
+      'Black as the pit from pole to pole,',
+      'I thank whatever gods may be',
+      'For my unconquerable soul.',
     ],
   },
   {
+    day: 2,
+    author: 'EMILY DICKINSON',
+    theme: 'Hy vọng',
+    lines: [
+      '“Hope” is the thing with feathers -',
+      'That perches in the soul -',
+      'And sings the tune without the words -',
+      'And never stops - at all.',
+    ],
+  },
+  {
+    day: 3,
+    author: 'MAYA ANGELOU',
+    theme: 'Kiên cường & Vươn lên',
+    lines: [
+      'You may write me down in history',
+      'With your bitter, twisted lies,',
+      'You may trod me in the very dirt',
+      'But still, like dust, I’ll rise.',
+    ],
+  },
+  {
+    day: 4,
     author: 'E. E. CUMMINGS',
+    theme: 'Gắn kết linh hồn',
     lines: [
-      'I carry your heart with me (I carry it in',
-      'My heart) I am never without it (anywhere',
-      'I go you go, my dear; and whatever is done',
-      'By only me is your doing, my darling)',
+      'i carry your heart with me (i carry it in',
+      'my heart) i am never without it',
+      'here is the deepest secret nobody knows',
+      'i carry your heart (i carry it in my heart).',
     ],
   },
   {
-    author: 'JOHN KEATS',
+    day: 5,
+    author: 'LANGSTON HUGHES',
+    theme: 'Hy vọng & Giấc mơ',
     lines: [
-      'Bright star, would I were steadfast as thou art,',
-      'Not in lone splendour hung aloft the night,',
-      'Still, still to hear thy tender-taken breath,',
-      'And so live ever, or else swoon to death.',
+      'Hold fast to dreams,',
+      'For if dreams die,',
+      'Life is a broken-winged bird',
+      'That cannot fly.',
     ],
   },
   {
+    day: 6,
+    author: 'ROBERT FROST',
+    theme: 'Bền bỉ & Kiên định',
+    lines: [
+      'The woods are lovely, dark and deep,',
+      'But I have promises to keep,',
+      'And miles to go before I sleep,',
+      'And miles to go before I sleep.',
+    ],
+  },
+  {
+    day: 7,
     author: 'E. B. BROWNING',
+    theme: 'Niềm tin',
     lines: [
       'How do I love thee? Let me count the ways.',
       'I love thee to the depth and breadth and height',
@@ -46,7 +89,75 @@ export const poetList: PoetItem[] = [
     ],
   },
   {
+    day: 8,
+    author: 'RABINDRANATH TAGORE',
+    theme: 'Niềm tin trước bình minh',
+    lines: [
+      'Faith is the bird that feels the light',
+      'And sings when the dawn is still dark.',
+      'Let your courage shine through the shadow,',
+      'And leave on the night your quiet mark.',
+    ],
+  },
+  {
+    day: 9,
+    author: 'ARTHUR HUGH CLOUGH',
+    theme: 'Vượt qua gian lao',
+    lines: [
+      'Say not the struggle nought availeth,',
+      'The labour and the wounds are vain,',
+      'For far back, through creeks and inlets making,',
+      'Comes silent, flooding in, the main.',
+    ],
+  },
+  {
+    day: 10,
+    author: 'KAHLIL GIBRAN',
+    theme: 'Kiên cường từ thử thách',
+    lines: [
+      'Out of suffering have emerged the strongest souls;',
+      'The most massive characters are seamed with scars;',
+      'Through deepest winter night their spirit glows,',
+      'Unbroken underneath eternal stars.',
+    ],
+  },
+  {
+    day: 11,
+    author: 'RALPH WALDO EMERSON',
+    theme: 'Bản lĩnh & Niềm tin',
+    lines: [
+      'What lies behind us and what lies before us',
+      'Are tiny matters compared to what lies within us.',
+      'Stand firm against the shifting tide,',
+      'With quiet faith and steadfast pride.',
+    ],
+  },
+  {
+    day: 12,
+    author: 'WILLIAM SHAKESPEARE',
+    theme: 'Niềm tin bất biến',
+    lines: [
+      'Love is not love which alters when it alteration finds,',
+      'Or bends with the remover to remove:',
+      'O no! it is an ever-fixed mark',
+      'That looks on tempests and is never shaken.',
+    ],
+  },
+  {
+    day: 13,
+    author: 'ELLA WHEELER WILCOX',
+    theme: 'Ý chí & Định hướng',
+    lines: [
+      'One ship drives east and another drives west',
+      'With the selfsame winds that blow.',
+      '’Tis the set of the sails and not the gales',
+      'Which tells us the way to go.',
+    ],
+  },
+  {
+    day: 14,
     author: 'ROBERT BROWNING',
+    theme: 'Niềm tin vào tương lai',
     lines: [
       'Grow old along with me! The best is yet to be,',
       'The last of life, for which the first was made.',
@@ -55,97 +166,86 @@ export const poetList: PoetItem[] = [
     ],
   },
   {
-    author: 'PABLO NERUDA',
+    day: 15,
+    author: 'VICTOR HUGO',
+    theme: 'Hy vọng',
     lines: [
-      'I love you without knowing how, or when, or from where.',
-      'I love you simply, without problems or pride:',
-      'I love you in this way because I do not know any other way of loving',
-      'Except this, in which there is no you or I, so intimate.',
+      'Even the darkest night will end and the sun will rise.',
+      'Have faith in the quiet morning light,',
+      'No storm can quench the inner flame',
+      'That burns with truth through the longest night.',
     ],
   },
   {
-    author: 'PERCY B. SHELLEY',
+    day: 16,
+    author: 'EMILY BRONTË',
+    theme: 'Linh hồn kiên định',
     lines: [
-      'The fountains mingle with the river',
-      'And the rivers with the ocean,',
-      'The winds of heaven mix for ever',
-      'With a sweet emotion.',
+      'Whatever our souls are made of, yours and mine are the same.',
+      'Through shadows, storms, and the silent falling rain,',
+      'I speak your name into the quiet dark,',
+      'And find in you my sanctuary and my spark.',
     ],
   },
   {
+    day: 17,
+    author: 'H. W. LONGFELLOW',
+    theme: 'Vững bước tiến lên',
+    lines: [
+      'Let us, then, be up and doing,',
+      'With a heart for any fate;',
+      'Still achieving, still pursuing,',
+      'Learn to labour and to wait.',
+    ],
+  },
+  {
+    day: 18,
+    author: 'JALAL AL-DIN RUMI',
+    theme: 'Hy vọng trong vết thương',
+    lines: [
+      'The wound is the place where the Light enters you.',
+      'Do not grieve. Anything you lose comes round',
+      'In another form of grace and strength,',
+      'On sacred, unshakeable ground.',
+    ],
+  },
+  {
+    day: 19,
     author: 'WILLIAM BLAKE',
+    theme: 'Niềm tin vào kỳ tích',
     lines: [
-      'Love seeketh not itself to please,',
-      'Nor for itself hath any care,',
-      'But for another gives its ease,',
-      'And builds a Heaven in Hell’s despair.',
+      'To see a World in a Grain of Sand',
+      'And a Heaven in a Wild Flower,',
+      'Hold Infinity in the palm of your hand',
+      'And Eternity in an hour.',
     ],
   },
   {
-    author: 'LORD BYRON',
+    day: 20,
+    author: 'JOHN KEATS',
+    theme: 'Kiên định bất biến',
     lines: [
-      'There is music in all things, if men had ears:',
-      'Their earth is but an echo of the spheres;',
-      'And like the quiet moonlight upon the sea,',
-      'My silent heart beats only, my love, for thee.',
+      'Bright star, would I were steadfast as thou art,',
+      'Not in lone splendour hung aloft the night,',
+      'Pillowed upon my fair love’s ripening breast,',
+      'To feel for ever its soft fall and swell.',
     ],
   },
   {
-    author: 'WILLIAM SHAKESPEARE',
+    day: 21,
+    author: 'WALT WHITMAN',
+    theme: 'Hướng về ánh sáng',
     lines: [
-      'Shall I compare thee to a summer’s day?',
-      'Thou art more lovely and more temperate:',
-      'Rough winds do shake the darling buds of May,',
-      'And summer’s lease hath all too short a date.',
+      'Keep your face always toward the sunshine,',
+      'And shadows will fall behind you.',
+      'Walk fearless into the wide unknown,',
+      'With the spark of life to guide you.',
     ],
   },
   {
-    author: 'ROBERT BURNS',
-    lines: [
-      'O my Luve is like a red, red rose',
-      'That’s newly sprung in June;',
-      'O my Luve is like the melody',
-      'That’s sweetly played in tune.',
-    ],
-  },
-  {
-    author: 'W. B. YEATS',
-    lines: [
-      'I would that we were, my beloved, white birds on the foam of the sea!',
-      'We fret in the flame of our passion and weary our hearts with desire,',
-      'A meteor that flame on the rim of the shadows, alone and apart,',
-      'And love that shall live through the ages, unbroken in heart.',
-    ],
-  },
-  {
-    author: 'CHRISTINA ROSSETTI',
-    lines: [
-      'I loved you first: but afterwards your love,',
-      'Outsoaring mine, sang such a lofty song',
-      'As drowned the world and turned the sky above,',
-      'To where eternal faithful souls belong.',
-    ],
-  },
-  {
-    author: 'WILLIAM SHAKESPEARE',
-    lines: [
-      'Doubt thou the stars are fire;',
-      'Doubt that the sun doth move;',
-      'Doubt truth to be a liar;',
-      'But never doubt I love.',
-    ],
-  },
-  {
-    author: 'EDGAR ALLAN POE',
-    lines: [
-      'We loved with a love that was more than love—',
-      'I and my dearest soul, my heart’s delight;',
-      'With a tender light from heaven high above,',
-      'That guided both our dreams through the silver night.',
-    ],
-  },
-  {
+    day: 22,
     author: 'HERMANN HESSE',
+    theme: 'Chốn nương tựa bình yên',
     lines: [
       'If I know what love is, it is because of you.',
       'A quiet anchor when the world turns wild and cold,',
@@ -154,144 +254,108 @@ export const poetList: PoetItem[] = [
     ],
   },
   {
-    author: 'W. B. YEATS',
+    day: 23,
+    author: 'MARY OLIVER',
+    theme: 'Trân quý sinh mệnh',
     lines: [
-      'Had I the heavens’ embroidered cloths,',
-      'Enwrought with golden and silver light,',
-      'I would spread the cloths under your feet:',
-      'Tread softly because you tread on my dreams.',
+      'Tell me, what is it you plan to do',
+      'With your one wild and precious life?',
+      'Breathe in the morning, cast off the strife,',
+      'And meet the new day with open eyes.',
     ],
   },
   {
-    author: 'EMILY DICKINSON',
-    lines: [
-      'That love is all there is,',
-      'Is all we know of love;',
-      'It is enough, the freight should be',
-      'Proportioned to the groove.',
-    ],
-  },
-  {
-    author: 'JOHN DONNE',
-    lines: [
-      'Our two souls therefore, which are one,',
-      'Though I must go, endure not yet',
-      'A breach, but an expansion,',
-      'Like gold to airy thinness beat.',
-    ],
-  },
-  {
-    author: 'ALFRED TENNYSON',
-    lines: [
-      'If I had a flower for every time I thought of you,',
-      'I could walk through an eternal garden of grace;',
-      'The stars would bloom softly in twilight blue,',
-      'Reflecting the warmth of your tender embrace.',
-    ],
-  },
-  {
-    author: 'VICTOR HUGO',
-    lines: [
-      'To love or have loved, that is enough.',
-      'Ask nothing further. There is no other pearl',
-      'To be found in the dark folds of life;',
-      'Love is the supreme consummation of the soul.',
-    ],
-  },
-  {
-    author: 'RAINER MARIA RILKE',
-    lines: [
-      'Love consists in this: that two solitudes',
-      'Protect and border and greet each other,',
-      'Under the quiet canopy of ancient skies,',
-      'United in peace that shall fade never.',
-    ],
-  },
-  {
-    author: 'RABINDRANATH TAGORE',
-    lines: [
-      'I seem to have loved you in numberless forms, numberless times,',
-      'In life after life, in age after age, forever.',
-      'The world begins again whenever we meet,',
-      'Our ancient love made young and sweet.',
-    ],
-  },
-  {
-    author: 'ROBERT BROWNING',
-    lines: [
-      'I send my heart up to thee, all my heart',
-      'In this my singing!',
-      'For the stars are bright, and the world is still,',
-      'And love is an eternal spring.',
-    ],
-  },
-  {
-    author: 'KAHLIL GIBRAN',
-    lines: [
-      'Love gives naught but itself and takes naught but from itself.',
-      'Love possesses not nor would it be possessed;',
-      'For love is sufficient unto love,',
-      'A sacred light descending from above.',
-    ],
-  },
-  {
-    author: 'JOHN KEATS',
-    lines: [
-      'A thing of beauty is a joy for ever:',
-      'Its loveliness increases; it will never',
-      'Pass into nothingness; but still will keep',
-      'A bower quiet for us, and a sleep.',
-    ],
-  },
-  {
+    day: 24,
     author: 'PERCY B. SHELLEY',
+    theme: 'Hòa quyện thuần khiết',
     lines: [
-      'Music, when soft voices die,',
-      'Vibrates in the memory—',
-      'Odours, when sweet violets sicken,',
-      'Live within the sense they quicken.',
+      'The fountains mingle with the river',
+      'And the rivers with the ocean,',
+      'Two spirits bound in quiet strength,',
+      'With deep and pure devotion.',
     ],
   },
   {
-    author: 'HENRY WADSWORTH LONGFELLOW',
+    day: 25,
+    author: 'FRIEDRICH NIETZSCHE',
+    theme: 'Ý chí kiên cường',
     lines: [
-      'The night shall be filled with music,',
-      'And the cares, that infest the day,',
-      'Shall fold their tents, like the Arabs,',
-      'And as silently steal away.',
+      'He who has a why to live can bear almost any how.',
+      'Stand upright when the tempest roars,',
+      'The roots run deep beneath the ground,',
+      'Above the storm the spirit soars.',
     ],
   },
   {
-    author: 'EMILY DICKINSON',
+    day: 26,
+    author: 'ANTOINE DE SAINT-EXUPÉRY',
+    theme: 'Niềm tin từ trái tim',
     lines: [
-      'Forever is composed of nows—',
-      'It is not a different time',
-      'Except for infiniteness',
-      'And latitude of home.',
+      'It is only with the heart that one can see rightly;',
+      'What is essential is invisible to the eye.',
+      'A quiet truth that will not fade,',
+      'Beneath the vast and starry sky.',
     ],
   },
   {
-    author: 'MATTHEW ARNOLD',
+    day: 27,
+    author: 'CHRISTINA ROSSETTI',
+    theme: 'Niềm vui & Hy vọng',
     lines: [
-      'Ah, love, let us be true',
-      'To one another! for the world, which seems',
-      'To lie before us like a land of dreams,',
-      'Hath really neither joy, nor love, nor light.',
+      'My heart is like a singing bird',
+      'Whose nest is in a watered shoot;',
+      'My heart is gladder than all these,',
+      'Because my love is come to me.',
     ],
   },
   {
-    author: 'RABINDRANATH TAGORE',
+    day: 28,
+    author: 'EDGAR ALLAN POE',
+    theme: 'Tình cảm son sắt',
     lines: [
-      'Let your life lightly dance on the edges of Time',
-      'Like dew on the tip of a leaf;',
-      'Do not dread the setting of the sun,',
-      'For starlight shall bring you peace.',
+      'We loved with a love that was more than love—',
+      'I and my dearest soul, my heart’s delight;',
+      'With a devotion that time cannot undo,',
+      'Through all the shadows of the night.',
+    ],
+  },
+  {
+    day: 29,
+    author: 'ARTHUR O’SHAUGHNESSY',
+    theme: 'Ước mơ & Tương lai',
+    lines: [
+      'We are the music makers,',
+      'And we are the dreamers of dreams,',
+      'Wandering by lone sea-breakers,',
+      'Yet bringing dawn with silver beams.',
+    ],
+  },
+  {
+    day: 30,
+    author: 'WILLIAM ERNEST HENLEY',
+    theme: 'Làm chủ số phận',
+    lines: [
+      'It matters not how strait the gate,',
+      'How charged with punishments the scroll,',
+      'I am the master of my fate,',
+      'I am the captain of my soul.',
+    ],
+  },
+  {
+    day: 31,
+    author: 'KHALED HOSSEINI',
+    theme: 'Lời hứa kiên định & Hy vọng',
+    lines: [
+      'For you, a thousand times over.',
+      'Through every trial, through frost and night,',
+      'Our love remains an unextinguished fire,',
+      'Our silver sanctuary, our guiding light.',
     ],
   },
 ];
 
 /**
- * Tính mùa theo quy tắc người dùng yêu cầu:
+ * Tính mùa theo quy tắc:
  * - Mùa Xuân: Từ tháng 1 đến tháng 3 (Spring)
  * - Mùa Hạ: Từ tháng 4 đến tháng 6 (Summer)
  * - Mùa Thu: Từ tháng 7 đến tháng 9 (Autumn)

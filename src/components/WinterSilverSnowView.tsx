@@ -48,292 +48,10 @@ export interface WinterSilverSnowViewProps {
   onNavigateToPortfolio?: () => void;
 }
 
-// 31 Pure Romantic English Poems (No seasonal themes - purely love, devotion, soulmates, starlight & passion)
-interface DailyRomanticPoem {
-  day: number;
-  lines: string[];
-}
+import { poetList, PoetItem } from '../utils/libraryPoetry';
 
-const ROMANTIC_POEMS: DailyRomanticPoem[] = [
-  {
-    day: 1,
-    lines: [
-      'My love for you shall know no fear nor end,',
-      'My comrade, brother, soulmate, truest friend;',
-      'Against the darkening skies we stand as one,',
-      'Until the night is conquered by the sun.',
-    ],
-  },
-  {
-    day: 2,
-    lines: [
-      'My bounty is as boundless as the sea,',
-      'My love as deep; the more I give to thee,',
-      'The more I have, for both are infinite.',
-    ],
-  },
-  {
-    day: 3,
-    lines: [
-      'How do I love thee? Let me count the ways.',
-      'I love thee to the depth and breadth and height',
-      'My soul can reach, when feeling out of sight',
-      'For the ends of being and ideal grace.',
-    ],
-  },
-  {
-    day: 4,
-    lines: [
-      'i carry your heart with me (i carry it in',
-      'my heart) i am never without it',
-      'here is the deepest secret nobody knows',
-      'i carry your heart (i carry it in my heart).',
-    ],
-  },
-  {
-    day: 5,
-    lines: [
-      'Out of the night that covers me,',
-      'Black as the pit from pole to pole,',
-      'I find your hand beside my own,',
-      'Unconquered heart, unbroken soul.',
-    ],
-  },
-  {
-    day: 6,
-    lines: [
-      'O my love is like a melody',
-      'That’s boldly played in tune;',
-      'As strong art thou, my steadfast soul,',
-      'Through every storm and moon.',
-    ],
-  },
-  {
-    day: 7,
-    lines: [
-      'For the stars never rise, but I feel the bright eyes',
-      'Of the soul that I love evermore;',
-      'When the tempest is high, together we stand,',
-      'On this unyielding shore.',
-    ],
-  },
-  {
-    day: 8,
-    lines: [
-      'The fountains mingle with the river',
-      'And the rivers with the ocean,',
-      'Two spirits bound in quiet strength,',
-      'With deep and pure devotion.',
-    ],
-  },
-  {
-    day: 9,
-    lines: [
-      'My love shall ever grow',
-      'Vaster than empires and more slow;',
-      'Through bitter frost and searing flame,',
-      'My lips shall praise your sacred name.',
-    ],
-  },
-  {
-    day: 10,
-    lines: [
-      'How many loved your moments of glad grace,',
-      'And loved your beauty with love false or true,',
-      'But one man loved the pilgrim soul in you,',
-      'And loved the sorrows of your changing face.',
-    ],
-  },
-  {
-    day: 11,
-    lines: [
-      'Grow old along with me! The best is yet to be,',
-      'The last of life, for which the first was made.',
-      'Our times are in his hand, united firm we stand,',
-      'Two beating hearts whom nothing shall dissuade.',
-    ],
-  },
-  {
-    day: 12,
-    lines: [
-      'If I know what love is, it is because of you.',
-      'A quiet anchor when the world turns wild and cold,',
-      'A golden thread of devotion woven true,',
-      'A bond more precious than the finest gold.',
-    ],
-  },
-  {
-    day: 13,
-    lines: [
-      'I loved you first: but afterwards your love,',
-      'Outsoaring mine, sang such a lofty song',
-      'As drowned the world and turned the sky above,',
-      'To where eternal faithful souls belong.',
-    ],
-  },
-  {
-    day: 14,
-    lines: [
-      'Doubt thou the stars are fire;',
-      'Doubt that the sun doth move;',
-      'Doubt truth to be a liar;',
-      'But never doubt I love.',
-    ],
-  },
-  {
-    day: 15,
-    lines: [
-      'We loved with a love that was more than love—',
-      'I and my dearest soul, my heart’s delight;',
-      'With a love that the winged seraphs of Heaven',
-      'Coveted both of us through the silver night.',
-    ],
-  },
-  {
-    day: 16,
-    lines: [
-      'Whatever our souls are made of, yours and mine are the same.',
-      'Through shadows, storms, and the silent falling rain,',
-      'I speak your name into the quiet dark,',
-      'And find in you my sanctuary and my spark.',
-    ],
-  },
-  {
-    day: 17,
-    lines: [
-      'Yours is the light by which my spirit’s born:',
-      'Yours is the darkness of my soul’s return—',
-      'You are my sun, my moon, and all my stars,',
-      'Beyond the reach of earthly wounds and scars.',
-    ],
-  },
-  {
-    day: 18,
-    lines: [
-      'He is more myself than I am.',
-      'Whatever our spirits are made of, they are one;',
-      'An unyielding flame that burns through every storm,',
-      'A radiant light beneath a winter sun.',
-    ],
-  },
-  {
-    day: 19,
-    lines: [
-      'When I look at you, I am home.',
-      'No journey too long, no burden too steep,',
-      'Beside you my restless spirit rests calm,',
-      'In a quiet devotion tender and deep.',
-    ],
-  },
-  {
-    day: 20,
-    lines: [
-      'I have crossed oceans of time to find you,',
-      'My fierce companion, my enduring grace;',
-      'Through centuries of silence and of stone,',
-      'I find my haven only in your face.',
-    ],
-  },
-  {
-    day: 21,
-    lines: [
-      'In vain have I struggled. It will not do.',
-      'My feelings will not be repressed.',
-      'You must allow me to tell you how ardently',
-      'I admire and love you above the rest.',
-    ],
-  },
-  {
-    day: 22,
-    lines: [
-      'You pierce my soul. I am half agony, half hope.',
-      'Tell me not that I am too late,',
-      'That such precious feelings are gone forever.',
-      'I offer myself to you again with a heart more your own.',
-    ],
-  },
-  {
-    day: 23,
-    lines: [
-      'Take all my loves, my love, yea take them all;',
-      'What hast thou then more than thou hadst before?',
-      'No love, my love, that thou mayst true love call;',
-      'All mine was thine, before thou hadst this more.',
-    ],
-  },
-  {
-    day: 24,
-    lines: [
-      'Shall I compare thee to a summer’s day?',
-      'Thou art more lovely and more temperate:',
-      'Rough winds do shake the darling buds of May,',
-      'And summer’s lease hath all too short a date.',
-    ],
-  },
-  {
-    day: 25,
-    lines: [
-      'Let me not to the marriage of true minds',
-      'Admit impediments. Love is not love',
-      'Which alters when it alteration finds,',
-      'Or bends with the remover to remove.',
-    ],
-  },
-  {
-    day: 26,
-    lines: [
-      'O, no! it is an ever-fixed mark',
-      'That looks on tempests and is never shaken;',
-      'It is the star to every wandering bark,',
-      'Whose worth’s unknown, although his height be taken.',
-    ],
-  },
-  {
-    day: 27,
-    lines: [
-      'Love alters not with his brief hours and weeks,',
-      'But bears it out even to the edge of doom.',
-      'If this be error and upon me proved,',
-      'I never writ, nor no man ever loved.',
-    ],
-  },
-  {
-    day: 28,
-    lines: [
-      'So long as men can breathe or eyes can see,',
-      'So long lives this, and this gives life to thee.',
-      'Together hand in hand through wind and frost,',
-      'In you I found what I had thought was lost.',
-    ],
-  },
-  {
-    day: 29,
-    lines: [
-      'My heart is like a singing bird',
-      'Whose nest is in a watered shoot;',
-      'My heart is gladder than all these,',
-      'Because my love is come to me.',
-    ],
-  },
-  {
-    day: 30,
-    lines: [
-      'If you live to be a hundred,',
-      'I want to live to be a hundred minus one day,',
-      'So I never have to live without you,',
-      'Along this quiet and silver way.',
-    ],
-  },
-  {
-    day: 31,
-    lines: [
-      'For you, a thousand times over.',
-      'Through every trial, through frost and night,',
-      'Our love remains an unextinguished fire,',
-      'Our silver sanctuary, our guiding light.',
-    ],
-  },
-];
+// Trọn bộ 31 bài thơ kho Quote đồng bộ hoàn toàn với mục Quotations (kiên cường, hy vọng, niềm tin)
+const ROMANTIC_POEMS: PoetItem[] = poetList;
 
 // Complex 6-Point Snowflake SVG Graphic with delicate, semi-translucent styling
 const IntricateSnowflakeSVG: React.FC<{
@@ -941,6 +659,44 @@ export const getThemeLightBtnClass = (th: string): string => {
     case 'amethyst-haze':
     default:
       return 'amethyst-light-btn font-bold !text-[#6b5887] hover:!text-[#7e58a6]';
+  }
+};
+
+export const getLibraryDarkHeaderBg = (th: string): string => {
+  switch (th) {
+    case 'amethyst-haze':
+    case 'cosmic':
+      return 'rgba(23, 14, 36, 0.88)';
+    case 'sage':
+      return 'rgba(18, 29, 22, 0.88)';
+    case 'mocha':
+      return 'rgba(30, 20, 15, 0.88)';
+    case 'lululemon':
+      return 'rgba(36, 17, 24, 0.88)';
+    case 'notebook':
+      return 'rgba(24, 24, 27, 0.88)';
+    case 'slate-haze':
+    default:
+      return 'rgba(20, 28, 38, 0.88)';
+  }
+};
+
+export const getLibraryDarkHeaderBorder = (th: string): string => {
+  switch (th) {
+    case 'amethyst-haze':
+    case 'cosmic':
+      return 'border-purple-400/20';
+    case 'sage':
+      return 'border-emerald-400/20';
+    case 'mocha':
+      return 'border-amber-400/20';
+    case 'lululemon':
+      return 'border-rose-400/20';
+    case 'notebook':
+      return 'border-zinc-500/20';
+    case 'slate-haze':
+    default:
+      return 'border-sky-400/20';
   }
 };
 
@@ -1750,13 +1506,12 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
           }}
         />
       </div>
-
-      {/* TOP HEADER: Giữ lại nút mũi tên, nút tìm kiếm, tạo nút theme và nút menu giống trang chủ */}
+      {/* TOP HEADER: Thanh header đổi màu hợp theme ở cả chế độ sáng và chế độ tối */}
       <nav
         className={`fixed top-0 left-0 right-0 z-40 px-3 sm:px-6 md:px-8 py-3 flex items-center justify-between text-xs font-['Open_Sans'] border-b backdrop-blur-md transition-[transform,opacity] duration-300 transform ${
           shouldShowHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
-        } ${themeConfig.headerBorder} ${themeConfig.textMuted}`}
-        style={{ backgroundColor: isDarkMode ? '#0a0d14' : undefined }}
+        } ${isDarkMode ? getLibraryDarkHeaderBorder(activeThemeId) : themeConfig.headerBorder} ${themeConfig.textMuted}`}
+        style={{ backgroundColor: isDarkMode ? getLibraryDarkHeaderBg(activeThemeId) : undefined }}
       >
         {/* Left: Nút mũi tên quay lại */}
         <div className="flex items-center gap-2">
@@ -1820,7 +1575,7 @@ export const WinterSilverSnowView: React.FC<WinterSilverSnowViewProps> = ({
               <div className="absolute right-0 mt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 {!isDarkMode ? (
                   <div
-                    className="p-[2.5px] rounded-2xl transition-all duration-300 shadow-2xl"
+                    className="p-[2.5px] rounded-2xl transition-all duration-300"
                     style={recentUpdatesStyles.outerStyle}
                   >
                     <div

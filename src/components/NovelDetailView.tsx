@@ -93,6 +93,7 @@ import { SpiralNotebookView, getSpiralPlannerCaroGridStyle } from './SpiralNoteb
 import { NovelAwningHeader } from './NovelAwningHeader';
 import { NovelDiaryBinderView } from './NovelDiaryBinderView';
 import { CielEtoileNotebookCover } from './CielEtoileNotebookCover';
+import { NotebookStationeryBackground } from './NotebookStationeryBackground';
 import { getBinderTheme } from '../utils/binderThemeConfig';
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { safeStorage } from '../utils/safeStorage';
@@ -2456,11 +2457,12 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
             arrow: 'bg-[#f2eef0] text-[#8c5a67] border border-[#e4d7db] hover:bg-[#ebdce0] hover:text-[#382329]',
           };
         case 'amethyst-haze':
+        case 'cosmic':
           return {
-            // Muted dusty mauve / rose as in reference screenshot
-            active: 'bg-[#b07d8f] text-white border border-[#b07d8f] shadow-xs',
-            inactive: 'bg-[#fcfafc] text-[#735d68] border border-[#e8dfec] hover:bg-[#f5eff7]',
-            arrow: 'bg-[#fcfafc] text-[#85707b] border border-[#e8dfec] hover:bg-[#f5eff7] hover:text-[#523d47]',
+            // Theme purple dịu nhẹ, sang trọng đồng bộ với gam màu tím thạch anh
+            active: 'bg-[#7e58a6] text-white border border-[#7e58a6] shadow-xs',
+            inactive: 'bg-[#faf6fd] text-[#654b7c] border border-[#e4d7f2] hover:bg-[#f2e7fa]',
+            arrow: 'bg-[#faf6fd] text-[#7b5ca0] border border-[#e4d7f2] hover:bg-[#f2e7fa] hover:text-[#4a2e68]',
           };
         case 'sage':
           return {
@@ -2534,8 +2536,10 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col transition-colors duration-300 ${isSpiralStyle ? currentBinderTheme.pageBgClass : tStyles.pageBg} relative overflow-x-hidden`}>
-      {/* Trang trí nền: Cosmic hiển thị sao & khí quyển; các theme tối khác hiển thị các khối tròn màu sắc thanh tao */}
-      {!isSpiralStyle && (
+      {/* Trang trí nền: Trang thông tin truyện kiểu cuốn sổ sử dụng nền stationery thủ công đặc biệt */}
+      {isSpiralStyle ? (
+        <NotebookStationeryBackground theme={theme} isDark={isDarkEffective} />
+      ) : (
         <CosmicStarsBackground
           theme={theme}
           isDarkMode={isDarkEffective}
@@ -2614,7 +2618,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               <div className="absolute right-0 mt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 {!isDarkEffective ? (
                   <div
-                    className="p-[2.5px] rounded-2xl transition-all duration-300 shadow-2xl"
+                    className="p-[2.5px] rounded-2xl transition-all duration-300"
                     style={recentUpdatesStyles.outerStyle}
                   >
                     <div
@@ -2870,16 +2874,16 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               {!isNotebookCoverOpen ? (
                 <motion.div
                   key="notebook-cover-view"
-                  initial={{ opacity: 0, y: 18, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
                   exit={{
                     opacity: 0,
-                    scale: 0.96,
-                    y: -15,
-                    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+                    scale: 0.98,
+                    y: -6,
+                    transition: { duration: 0.2, ease: 'easeIn' },
                   }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full flex flex-col items-center"
+                  transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full flex flex-col items-center pt-2 sm:pt-4"
                 >
                   <CielEtoileNotebookCover
                     theme={theme}
@@ -2901,10 +2905,15 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
               ) : (
                 <motion.div
                   key="notebook-content-view"
-                  initial={{ opacity: 0, scale: 0.97, y: 22 }}
+                  initial={{ opacity: 0, scale: 0.99, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.97, y: 15 }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.99,
+                    y: 6,
+                    transition: { duration: 0.2, ease: 'easeIn' },
+                  }}
+                  transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
                   className="w-full flex flex-col items-center relative"
                 >
                   {/* Nút Đóng bìa sổ tay tinh tế ở góc phải trên */}

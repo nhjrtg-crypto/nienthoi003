@@ -1220,9 +1220,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       case 'sage':
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 242, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(162, 198, 172, 0.92) 0%, rgba(182, 215, 192, 0.58) 7%, rgba(205, 230, 212, 0.22) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(140, 180, 155, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(140, 180, 155, 0.15), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',
@@ -1246,9 +1248,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       case 'mocha':
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(254, 247, 240, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(215, 185, 165, 0.92) 0%, rgba(230, 205, 188, 0.58) 7%, rgba(242, 225, 212, 0.22) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(195, 160, 135, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(195, 160, 135, 0.15), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',
@@ -1272,9 +1276,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       case 'amethyst-haze':
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 245, 253, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(200, 185, 220, 0.92) 0%, rgba(215, 202, 232, 0.58) 7%, rgba(232, 222, 245, 0.22) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(180, 160, 205, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(180, 160, 205, 0.15), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',
@@ -1298,9 +1304,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       case 'cosmic':
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(246, 247, 255, 0.8) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(190, 195, 230, 0.92) 0%, rgba(205, 210, 240, 0.58) 7%, rgba(225, 230, 248, 0.22) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(170, 175, 220, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(170, 175, 220, 0.15), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',
@@ -1324,9 +1332,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       case 'notebook':
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.85) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.4) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(212, 212, 216, 0.9) 0%, rgba(228, 228, 231, 0.6) 7%, rgba(244, 244, 245, 0.25) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',
@@ -1350,9 +1360,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       case 'lululemon':
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(249, 246, 247, 0.95) 0%, rgba(255, 255, 255, 0.88) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.4) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(132, 51, 75, 0.75) 0%, rgba(228, 201, 205, 0.55) 7%, rgba(234, 212, 215, 0.22) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(132, 51, 75, 0.12), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(132, 51, 75, 0.1), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',
@@ -1377,9 +1389,11 @@ export function getRecentUpdatesCardStyles(th: NovelThemeId, isDark: boolean): R
       default:
         return {
           outerStyle: {
-            border: '1.5px solid transparent',
-            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(238, 246, 255, 0.75) 100%) padding-box, linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.35) 12%, transparent 26%) border-box, linear-gradient(to top, rgba(155, 180, 208, 0.92) 0%, rgba(175, 200, 224, 0.58) 7%, rgba(195, 218, 238, 0.22) 15%, transparent 24%) border-box',
-            boxShadow: '0 12px 32px rgba(160, 185, 215, 0.18), 0 2px 6px rgba(0, 0, 0, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.45)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 12px 32px rgba(160, 185, 215, 0.15), 0 2px 6px rgba(0, 0, 0, 0.02)',
           },
           innerStyle: {
             border: '1px solid transparent',

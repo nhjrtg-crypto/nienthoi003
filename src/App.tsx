@@ -650,16 +650,35 @@ export default function App() {
   const isPopStateRef = useRef(false);
   const isFirstRenderRef = useRef(true);
   const homeScrollYRef = useRef<number>(0);
+  const isRestoringScrollRef = useRef(false);
 
   // Restore scroll position when returning to home view
   useEffect(() => {
     if (viewMode === 'novel-home' && selectedNovel === null) {
       if (homeScrollYRef.current > 0) {
+        isRestoringScrollRef.current = true;
         requestAnimationFrame(() => {
           window.scrollTo({ top: homeScrollYRef.current, behavior: 'instant' });
+          setTimeout(() => {
+            isRestoringScrollRef.current = false;
+          }, 150);
         });
       }
     }
+  }, [viewMode, selectedNovel]);
+
+  // Luôn theo dõi vị trí cuộn thực tế của trang chủ để không bị nhảy sai vị trí khi người dùng cuộn lên đầu rồi vào thư viện
+  useEffect(() => {
+    if (viewMode !== 'novel-home' || selectedNovel !== null) return;
+    const handleScroll = () => {
+      if (!isRestoringScrollRef.current) {
+        homeScrollYRef.current = window.scrollY;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [viewMode, selectedNovel]);
 
   // Trạng thái màn hình tải trang hiện đại (ModernLoadingScreen)
@@ -1531,6 +1550,7 @@ export default function App() {
             onOpenNovelToReadingPosition={handleOpenNovelToReadingPosition}
             onOpenPublishModal={() => setIsPublishModalOpen(true)}
             onBackToPortfolio={() => {
+              homeScrollYRef.current = window.scrollY;
               setSelectedNovel(null);
               setReadingChapterNumber(null);
               setLightIntroOption('style1');
@@ -1538,6 +1558,7 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenLightIntro={() => {
+              homeScrollYRef.current = window.scrollY;
               setSelectedNovel(null);
               setReadingChapterNumber(null);
               setLightIntroOption('style1');
@@ -1545,6 +1566,7 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenInternalBeyond={() => {
+              homeScrollYRef.current = window.scrollY;
               setViewMode('internal-beyond');
               try {
                 const s = JSON.stringify({ viewMode: 'internal-beyond', novelId: null, readingChapterNumber: null });
@@ -1599,7 +1621,9 @@ export default function App() {
                 safeStorage.setItem('cosmo_active_view', s);
                 safeStorage.setSessionItem('cosmo_active_view', s);
               } catch {}
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              if (homeScrollYRef.current === 0) {
+                window.scrollTo({ top: 0, behavior: 'instant' });
+              }
             }}
           />
         </div>

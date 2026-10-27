@@ -562,7 +562,7 @@ export const getThemeConfig = (themeId: string = 'slate-haze'): WidgetThemeConfi
         readMoreBtnColor: 'text-[#A37764] hover:text-[#5e4334]',
         nienthoiText: 'text-[#7d675e]',
         axisDotBg: 'bg-[#A37764]',
-        axisLineBg: 'border-[#d5c7ab]',
+        axisLineBg: 'bg-[#c9b89d]',
         axisText: 'text-[#5e4334]',
         globeSnowflake1: 'text-[#9c7e6c]/80',
         globeSnowflake2: 'text-[#856755]/75',
@@ -955,21 +955,25 @@ export const EntireWhiteLilyAzureWidget: React.FC<EntireWhiteLilyAzureWidgetProp
               className="absolute -top-3.5 sm:-top-4.5 right-3 sm:right-5 z-20 pointer-events-none"
             />
 
-            <div>
+            {/* Header + Bài thơ căn sát lên trên đầu */}
+            <div className="flex-1 flex flex-col justify-start min-h-0">
               <div className={`flex items-center justify-between text-[7px] xs:text-[8px] sm:text-xs font-mono tracking-wider pb-1.5 sm:pb-2 border-b ${c.calDivider} ${c.poetHeaderColor}`}>
                 <span className="font-semibold">Quotations</span>
+                <span className="text-[6.5px] xs:text-[7.5px] sm:text-[10px] opacity-75 font-normal uppercase truncate max-w-[140px]">
+                  {currentPoet.author}
+                </span>
               </div>
 
-              {/* 4 dòng trích dẫn lãng mạn trên giấy kẻ dòng */}
-              <div className="py-1.5 sm:py-3 space-y-0.5 sm:space-y-1 font-serif text-[7.5px] xs:text-[9px] sm:text-xs md:text-sm italic text-slate-800 leading-relaxed overflow-hidden">
+              {/* Các dòng trích dẫn: căn ngay ngắn trên đầu */}
+              <div className="pt-2 sm:pt-3 pb-1.5 space-y-1 sm:space-y-1.5 font-serif text-[7.5px] xs:text-[8.5px] sm:text-xs md:text-sm italic text-slate-800 leading-snug sm:leading-relaxed overflow-y-auto max-h-[140px] sm:max-h-none poem-scrollbar-1px text-left">
                 {currentPoet.lines.map((line, idx) => (
-                  <p key={idx} className="line-clamp-1">{line}</p>
+                  <p key={idx} className="break-words whitespace-normal">{line}</p>
                 ))}
               </div>
             </div>
 
             {/* Chấm phân trang & Nút NEXT ○ */}
-            <div className={`pt-1.5 sm:pt-2 border-t ${c.calDivider} flex items-center justify-between`}>
+            <div className={`pt-1.5 sm:pt-2 border-t mt-auto ${c.calDivider} flex items-center justify-between`}>
               <div className="flex items-center gap-1 sm:gap-1.5 overflow-hidden max-w-[50%]">
                 {poetList.slice(0, 10).map((_, i) => (
                   <span
