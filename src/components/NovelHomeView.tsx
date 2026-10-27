@@ -3178,12 +3178,14 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       }
     }
 
-    // Light mode (áp dụng viền ngoài trong suốt kiểu kính mờ theo yêu cầu)
+    // Light mode (áp dụng nền Truyện Vừa Mới Đăng bên trong, khôi phục nền kính mờ glassmorphism bao ngoài, giữ nguyên hình tròn bán nguyệt)
+    const recentSt = getRecentUpdatesCardStyles(theme, false);
     switch (theme) {
       case 'sage':
         return {
           outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(77,102,74,0.06)]',
-          inner: 'bg-white border-[#dce6d9] shadow-md',
+          inner: 'border-0',
+          innerStyle: recentSt.innerStyle,
           divider: 'border-[#dce6d9]',
           dashedDivider: 'border-[#4d6f53]/40',
           cutout: 'bg-[#e3ede1] border border-[#b2c6ad] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
@@ -3204,7 +3206,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'mocha':
         return {
           outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(140,109,93,0.06)]',
-          inner: 'bg-white border-[#e8ddc2] shadow-md',
+          inner: 'border-0',
+          innerStyle: recentSt.innerStyle,
           divider: 'border-[#e8ddc2]',
           dashedDivider: 'border-[#8c6d5d]/40',
           cutout: 'bg-[#ede5d8] border border-[#d5c7ab] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
@@ -3225,7 +3228,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'slate-haze':
         return {
           outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(2,132,199,0.06)]',
-          inner: 'bg-white border-[#d8e3ed] shadow-md',
+          inner: 'border-0',
+          innerStyle: recentSt.innerStyle,
           divider: 'border-[#d8e3ed]',
           dashedDivider: 'border-[#5d7e9d]/40',
           cutout: 'bg-[#e2ebf4] border border-[#b8c9dc] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
@@ -3246,7 +3250,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'notebook':
         return {
           outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.05)]',
-          inner: 'bg-white border-neutral-200 shadow-md',
+          inner: 'border-0',
+          innerStyle: recentSt.innerStyle,
           divider: 'border-neutral-200',
           dashedDivider: 'border-neutral-400/40',
           cutout: 'bg-[#eaeaea] border border-neutral-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
@@ -3267,7 +3272,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       case 'lululemon':
         return {
           outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(173,72,98,0.06)]',
-          inner: 'bg-white border-[#ded0d4] shadow-md',
+          inner: 'border-0',
+          innerStyle: recentSt.innerStyle,
           divider: 'border-[#ded0d4]',
           dashedDivider: 'border-[#d8c5ca]',
           cutout: 'bg-[#ebdce0] border border-[#d8c5ca] shadow-[inset_0_2px_4px_rgba(204,123,143,0.08)]',
@@ -3289,7 +3295,8 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       default:
         return {
           outer: 'border-white/60 bg-white/40 backdrop-blur-md shadow-[0_8px_32px_rgba(126,88,166,0.06)]',
-          inner: 'bg-white border-[#e9e3f3] shadow-md',
+          inner: 'border-0',
+          innerStyle: recentSt.innerStyle,
           divider: 'border-[#e9e3f3]',
           dashedDivider: 'border-[#856b9e]/40',
           cutout: 'bg-[#ede8f4] border border-[#cbbfe0] shadow-[inset_0_2px_4px_rgba(0,0,0,0.12)]',
@@ -5110,7 +5117,10 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
             <div className={`relative p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 ${ticketTheme.outer}`}>
               
               {/* KHỐI THẺ CHÍNH (Desktop: 2 cột ngang, Mobile: Xếp dọc ảnh trên thông tin dưới) */}
-              <div className={`relative rounded-xl sm:rounded-2xl border overflow-hidden flex flex-col md:flex-row items-stretch transition-all duration-300 ${ticketTheme.inner}`}>
+              <div
+                style={!isDarkEffective ? ticketTheme.innerStyle : undefined}
+                className={`relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col md:flex-row items-stretch transition-all duration-300 ${ticketTheme.inner}`}
+              >
                 
                 {/* ================================================================= */}
                 {/* CỘT TRÁI (Desktop) / PHẦN TRÊN (Mobile): BÌA TRUYỆN + NÚT SLIDER */}
