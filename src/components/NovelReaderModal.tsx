@@ -50,6 +50,7 @@ import {
 import { safeStorage } from '../utils/safeStorage';
 import { saveRecentRead } from '../utils/recentReads';
 import { useHeaderScroll } from '../utils/useHeaderScroll';
+import { triggerThemeTransition } from '../utils/themeTransition';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
 import {
   isBotComment,
@@ -516,22 +517,31 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     }
   }, [readerTheme, isDarkEffective]);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = (e?: any) => {
     if (readerTheme === 'cosmic') {
       return;
     }
+    const coords = e && typeof e.clientX === 'number' && typeof e.clientY === 'number'
+      ? { x: e.clientX, y: e.clientY }
+      : undefined;
+
     if (propOnToggleDarkMode) {
       propOnToggleDarkMode();
     } else {
-      setLocalIsDarkMode((prev) => {
-        const next = !prev;
+      const next = !isDarkEffective;
+      triggerThemeTransition(() => {
+        setLocalIsDarkMode(next);
         safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+        if (next) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
         window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
         try {
           window.dispatchEvent(new Event('storage'));
         } catch {}
-        return next;
-      });
+      }, coords, next);
     }
   };
 

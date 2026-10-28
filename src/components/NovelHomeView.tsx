@@ -57,6 +57,7 @@ import SugarTodayWidget from './SugarTodayWidget';
 import { safeStorage } from '../utils/safeStorage';
 import { getRecentReads, RecentReadRecord } from '../utils/recentReads';
 import { getDirectImageUrl, handleCoverImageError } from '../utils/imageUtils';
+import { triggerThemeTransition } from '../utils/themeTransition';
 
 const NOVEL_CATEGORY_TABS = [
   { id: 'all', label: 'Tất cả' },
@@ -496,18 +497,24 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = (e?: any) => {
+    const coords = e && typeof e.clientX === 'number' && typeof e.clientY === 'number'
+      ? { x: e.clientX, y: e.clientY }
+      : undefined;
+
     // Nếu đang ở theme cosmic thì chuyển sang amethyst-haze sáng
     if (theme === 'cosmic') {
-      setTheme('amethyst-haze');
-      setLocalIsDarkMode(false);
-      safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
-      safeStorage.setItem('cosmo_darkmode', 'false');
-      document.documentElement.classList.remove('dark');
-      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
-      window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'amethyst-haze' }));
-      try { window.dispatchEvent(new Event('storage')); } catch {}
-      propOnToggleDarkMode?.();
+      triggerThemeTransition(() => {
+        setTheme('amethyst-haze');
+        setLocalIsDarkMode(false);
+        safeStorage.setItem('cosmo_novel_theme', 'amethyst-haze');
+        safeStorage.setItem('cosmo_darkmode', 'false');
+        document.documentElement.classList.remove('dark');
+        window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
+        window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'amethyst-haze' }));
+        try { window.dispatchEvent(new Event('storage')); } catch {}
+        propOnToggleDarkMode?.();
+      }, coords, false);
       return;
     }
     if (propOnToggleDarkMode) {
@@ -515,15 +522,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       return;
     }
     const next = !isDarkMode;
-    setLocalIsDarkMode(next);
-    safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-    if (next) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
-    try { window.dispatchEvent(new Event('storage')); } catch {}
+    triggerThemeTransition(() => {
+      setLocalIsDarkMode(next);
+      safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
+      try { window.dispatchEvent(new Event('storage')); } catch {}
+    }, coords, next);
   };
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
     try {
@@ -4212,9 +4221,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         <div
                           role="button"
                           tabIndex={0}
-                          onClick={() => {
+                          onClick={(e) => {
                             cosmicAudio.playChime('sparkle');
-                            toggleDarkMode();
+                            toggleDarkMode(e);
                           }}
                           onKeyDown={(e) => {
                             if (e.key === ' ' || e.key === 'Enter') {
@@ -4232,7 +4241,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                           <ClayThemeToggle
                             id="clay-toggle-home"
                             isOn={isDarkEffective}
-                            onToggle={toggleDarkMode}
+                            onToggle={(e?: any) => toggleDarkMode(e)}
                             theme={theme}
                             title="Gạt để chuyển sang chế độ tối"
                           />
@@ -4318,9 +4327,9 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                       <div
                         role="button"
                         tabIndex={0}
-                        onClick={() => {
+                        onClick={(e) => {
                           cosmicAudio.playChime('sparkle');
-                          toggleDarkMode();
+                          toggleDarkMode(e);
                         }}
                         onKeyDown={(e) => {
                           if (e.key === ' ' || e.key === 'Enter') {
@@ -4338,7 +4347,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                         <ClayThemeToggle
                           id="clay-toggle-home"
                           isOn={isDarkEffective}
-                          onToggle={toggleDarkMode}
+                          onToggle={(e?: any) => toggleDarkMode(e)}
                           theme={theme}
                           title="Gạt để chuyển sang chế độ sáng"
                         />

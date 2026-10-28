@@ -4,7 +4,7 @@ import { NovelThemeId } from '../utils/themeStyles';
 interface ClayThemeToggleProps {
   id?: string;
   isOn: boolean;
-  onToggle: () => void;
+  onToggle: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   theme?: NovelThemeId;
   title?: string;
   disabled?: boolean;
@@ -30,13 +30,13 @@ export const ClayThemeToggle: React.FC<ClayThemeToggleProps> = ({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!disabled) onToggle();
+        if (!disabled) onToggle(e);
       }}
       onKeyDown={(e) => {
         if (e.key === ' ' || e.key === 'Enter') {
           e.preventDefault();
           e.stopPropagation();
-          if (!disabled) onToggle();
+          if (!disabled) onToggle(e);
         }
       }}
       className={`toggle-wrapper inline-flex items-center shrink-0 cursor-pointer ${disabled ? 'opacity-50 pointer-events-none' : ''}`}

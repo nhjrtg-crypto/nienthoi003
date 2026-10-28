@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'motion/react';
 import {
   Tag,
@@ -641,6 +641,355 @@ export const getTactileBtnStyles = (themeId: NovelThemeId, isDark: boolean): str
         return 'bg-[#f7f7f9] text-[#333338] border-white/90 shadow-[0_3px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.95),inset_0_-1px_1px_rgba(0,0,0,0.03)] hover:shadow-[0_5px_12px_rgba(0,0,0,0.09)] active:shadow-[inset_0_2.5px_5px_rgba(0,0,0,0.18),inset_0_-1px_1px_rgba(255,255,255,0.45)] active:border-black/[0.04]';
     }
   }
+};
+
+// =========================================================================
+// VÒNG NGUYỆT QUẾ TIẾN ĐỘ NỞ HOA (SvgWreathProgressBloom) - THEME FROST
+// Khung cảnh 2 của mục chọn truyện ngẫu nhiên: tính toán tiến độ mượt mà bằng requestAnimationFrame
+// =========================================================================
+export const SvgWreathProgressBloom: React.FC<{
+  progress?: number;
+  isAutoPlay?: boolean;
+  size?: number;
+  isDarkEffective?: boolean;
+}> = ({ progress: propProgress, isAutoPlay = true, size = 240, isDarkEffective = false }) => {
+  const [internalProgress, setInternalProgress] = useState(0);
+  const isPlaying = isAutoPlay;
+  const playbackSpeed = 1;
+
+  // Vòng lặp tính toán tiến độ chuyển động mượt mà
+  useEffect(() => {
+    if (!isPlaying) return;
+    let animId: number;
+    let lastTime = performance.now();
+
+    const step = (time: number) => {
+      const delta = (time - lastTime) / 1000;
+      lastTime = time;
+
+      setInternalProgress((prev) => {
+        // 1 chu kỳ hoàn chỉnh kéo dài 3.2 giây ở tốc độ 1x
+        const increment = (100 / 3.2) * playbackSpeed * delta;
+        const next = prev + increment;
+        if (next >= 100) return 0; // Tự động lặp lại từ đầu
+        return next;
+      });
+
+      animId = requestAnimationFrame(step);
+    };
+
+    animId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animId);
+  }, [isPlaying, playbackSpeed]);
+
+  const effectiveProgress = propProgress !== undefined ? propProgress : internalProgress;
+  const p = Math.min(100, Math.max(0, effectiveProgress)) / 100;
+  // Chu vi vòng tròn bán kính 100: 2 * PI * 100 = 628.3
+  const circumference = 628.3;
+  const strokeDash = circumference * p;
+
+  // 12 đóa hoa phân bố đều quanh vòng tròn (cách nhau 30 độ)
+  const WREATH_FLOWERS = useMemo(() => {
+    return Array.from({ length: 12 }).map((_, i) => {
+      const angle = (i * 360) / 12;
+      const rad = ((angle - 90) * Math.PI) / 180;
+      const x = 150 + 100 * Math.cos(rad);
+      const y = 150 + 100 * Math.sin(rad);
+      const trigger = i / 12; // Ngưỡng nở tương ứng từng vị trí
+      return { x, y, angle, trigger };
+    });
+  }, []);
+
+  return (
+    <div className="relative flex items-center justify-center select-none py-1">
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 300 300"
+        className="overflow-visible select-none max-w-full"
+        style={{ filter: isDarkEffective ? 'drop-shadow(0 12px 30px rgba(56, 189, 248, 0.35))' : 'drop-shadow(0 12px 30px rgba(56, 189, 248, 0.2))' }}
+      >
+        <defs>
+          <linearGradient id={isDarkEffective ? 'wp-ring-frost-dark' : 'wp-ring-frost'} x1="0%" y1="0%" x2="100%" y2="100%">
+            {isDarkEffective ? (
+              <>
+                <stop offset="0%" stopColor="#38BDF8" />
+                <stop offset="50%" stopColor="#60A5FA" />
+                <stop offset="100%" stopColor="#BAE6FD" />
+              </>
+            ) : (
+              <>
+                <stop offset="0%" stopColor="#BAE6FD" />
+                <stop offset="50%" stopColor="#7DD3FC" />
+                <stop offset="100%" stopColor="#38BDF8" />
+              </>
+            )}
+          </linearGradient>
+
+          <linearGradient id={isDarkEffective ? 'wp-petal-frost-dark' : 'wp-petal-frost'} x1="0%" y1="100%" x2="0%" y2="0%">
+            {isDarkEffective ? (
+              <>
+                <stop offset="0%" stopColor="#0284C7" />
+                <stop offset="50%" stopColor="#38BDF8" />
+                <stop offset="100%" stopColor="#F0F9FF" />
+              </>
+            ) : (
+              <>
+                <stop offset="0%" stopColor="#7DD3FC" />
+                <stop offset="70%" stopColor="#BAE6FD" />
+                <stop offset="100%" stopColor="#FFFFFF" />
+              </>
+            )}
+          </linearGradient>
+        </defs>
+
+        {/* Quầng sáng mờ trung tâm */}
+        <circle cx="150" cy="150" r={45 + p * 30} fill={isDarkEffective ? '#0284c7' : '#E0F2FE'} opacity={isDarkEffective ? 0.28 : 0.35} />
+
+        {/* Vòng ray tĩnh mờ định hướng */}
+        <circle
+          cx="150"
+          cy="150"
+          r="100"
+          fill="none"
+          stroke={isDarkEffective ? '#1e293b' : '#E0F2FE'}
+          strokeWidth="3"
+          strokeDasharray="6 6"
+          opacity={isDarkEffective ? 0.75 : 0.7}
+        />
+
+        {/* DÂY LEO VÒNG NGUYỆT QUẾ CHẠY THEO TIẾN ĐỘ TẢI (Clockwise from 12 o'clock) */}
+        <circle
+          cx="150"
+          cy="150"
+          r="100"
+          fill="none"
+          stroke={isDarkEffective ? 'url(#wp-ring-frost-dark)' : 'url(#wp-ring-frost)'}
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeDasharray={`${strokeDash} ${circumference}`}
+          transform="rotate(-90 150 150)"
+          style={{ transition: isAutoPlay ? 'none' : 'stroke-dasharray 0.3s ease' }}
+        />
+
+        {/* DÂY XOẮN PHỤ CHẠY ĐAN XEN (Braided vine) */}
+        <circle
+          cx="150"
+          cy="150"
+          r="95"
+          fill="none"
+          stroke={isDarkEffective ? '#38bdf8' : '#BAE6FD'}
+          strokeWidth="1.5"
+          strokeDasharray={`${Math.max(0, strokeDash - 10)} ${circumference}`}
+          transform="rotate(-85 150 150)"
+          opacity={isDarkEffective ? 0.65 : 0.85}
+        />
+
+        {/* 16 KHÓM LÁ NGUYỆT QUẾ ĐÂM CHỒI DỌC VÒNG TRÒN */}
+        {Array.from({ length: 16 }).map((_, i) => {
+          const leafAngle = (i * 360) / 16;
+          const trigger = i / 16;
+          const leafP = Math.max(0, Math.min(1, (p - trigger) / 0.1));
+          if (leafP <= 0) return null;
+          const rad = ((leafAngle - 90) * Math.PI) / 180;
+          const lx = 150 + 100 * Math.cos(rad);
+          const ly = 150 + 100 * Math.sin(rad);
+          const isOuter = i % 2 === 0;
+          const leafRot = leafAngle + (isOuter ? 45 : -45);
+
+          return (
+            <g
+              key={`wleaf-${i}`}
+              transform={`translate(${lx}, ${ly}) rotate(${leafRot}) scale(${leafP * 0.9})`}
+              style={{ transformOrigin: '0 0' }}
+            >
+              <path
+                d="M 0 0 C 6 -10, 16 -8, 20 0 C 16 8, 6 10, 0 0 Z"
+                fill={isDarkEffective ? '#0c4a6e' : '#BAE6FD'}
+                stroke={isDarkEffective ? '#38bdf8' : '#7DD3FC'}
+                strokeWidth={isDarkEffective ? '0.85' : '0.7'}
+              />
+            </g>
+          );
+        })}
+
+        {/* 12 ĐÓA HOA BUNG NỞ NỐI TIẾP THEO CHIỀU KIM ĐỒNG HỒ */}
+        {WREATH_FLOWERS.map((fl, i) => {
+          const flP = Math.max(0, Math.min(1, (p - fl.trigger) / 0.12));
+          if (flP <= 0) return null;
+          const scale = 0.2 + flP * 0.8;
+          const isMaster = i === 0 || i === 6; // Đóa hoa lớn tại đỉnh và đáy
+
+          return (
+            <g
+              key={`wfl-${i}`}
+              transform={`translate(${fl.x}, ${fl.y}) scale(${scale})`}
+              style={{
+                transformOrigin: '0 0',
+                transition: isAutoPlay ? 'none' : 'transform 0.25s ease',
+              }}
+            >
+              {/* 5 cánh hoa mềm mại */}
+              {Array.from({ length: 5 }).map((_, pi) => {
+                const pAngle = (pi * 360) / 5;
+                return (
+                  <circle
+                    key={pi}
+                    cx="0"
+                    cy={isMaster ? -9 : -6}
+                    r={isMaster ? 6.5 : 4.5}
+                    fill={isDarkEffective ? 'url(#wp-petal-frost-dark)' : 'url(#wp-petal-frost)'}
+                    stroke={isDarkEffective ? '#BAE6FD' : '#FFFFFF'}
+                    strokeWidth="0.6"
+                    transform={`rotate(${pAngle})`}
+                  />
+                );
+              })}
+              {/* Hạt ngọc nhụy hoa */}
+              <circle
+                cx="0"
+                cy="0"
+                r={isMaster ? 4 : 2.5}
+                fill={isDarkEffective ? '#38bdf8' : '#FFFFFF'}
+                stroke={isDarkEffective ? '#e0f2fe' : '#38BDF8'}
+                strokeWidth="0.8"
+              />
+            </g>
+          );
+        })}
+
+        {/* HOA SEN TRUNG TÂM NỞ BỪNG RỰC RỠ KÈM GÓC XOAY THEO TIẾN ĐỘ */}
+        <g
+          transform={`translate(150, 150) scale(${0.3 + p * 0.7}) rotate(${p * 45})`}
+          style={{
+            transformOrigin: '0 0',
+            transition: isAutoPlay ? 'none' : 'transform 0.3s ease',
+          }}
+        >
+          {/* Tầng cánh hoa ngoài */}
+          {Array.from({ length: 8 }).map((_, pi) => (
+            <ellipse
+              key={`cp-${pi}`}
+              cx="0"
+              cy="-16"
+              rx="8"
+              ry="18"
+              fill={isDarkEffective ? 'url(#wp-petal-frost-dark)' : 'url(#wp-petal-frost)'}
+              stroke={isDarkEffective ? '#BAE6FD' : '#FFFFFF'}
+              strokeWidth="0.8"
+              transform={`rotate(${(pi * 360) / 8})`}
+              opacity="0.95"
+            />
+          ))}
+          {/* Tầng cánh hoa trong */}
+          {Array.from({ length: 6 }).map((_, pi) => (
+            <ellipse
+              key={`cp2-${pi}`}
+              cx="0"
+              cy="-10"
+              rx="6"
+              ry="13"
+              fill={isDarkEffective ? '#082f49' : '#FFFFFF'}
+              stroke={isDarkEffective ? '#38bdf8' : '#BAE6FD'}
+              strokeWidth="0.8"
+              transform={`rotate(${(pi * 360) / 6 + 22.5})`}
+            />
+          ))}
+          <circle cx="0" cy="0" r="7" fill="#38BDF8" stroke={isDarkEffective ? '#E0F2FE' : '#FFFFFF'} strokeWidth="1.5" />
+          <circle cx="0" cy="0" r="3" fill={isDarkEffective ? '#E0F2FE' : '#FFFFFF'} />
+        </g>
+
+        {/* CHỈ SỐ PHẦN TRĂM TIẾN ĐỘ TRONG TÂM VÒNG */}
+        <text
+          x="150"
+          y="195"
+          textAnchor="middle"
+          fill={isDarkEffective ? '#7DD3FC' : '#0284C7'}
+          fontSize="11"
+          fontFamily="monospace"
+          fontWeight="bold"
+          opacity={0.9}
+        >
+          {Math.round(p * 100)}%
+        </text>
+      </svg>
+    </div>
+  );
+};
+
+// =========================================================================
+// LOADING LỚN DẠNG XOẮN ỐC (SPIRAL VORTEX) - THEME LINEN (mocha)
+// Dành riêng cho Khung cảnh 2 mục chọn truyện ngẫu nhiên Theme Linen (Sáng & Tối)
+// =========================================================================
+export const LinenSpiralVortexLoading: React.FC<{ isDarkEffective: boolean }> = ({ isDarkEffective }) => {
+  const strokeColor = isDarkEffective ? '#d4a389' : '#8c6150';
+
+  return (
+    <div className="relative w-28 h-28 flex items-center justify-center select-none py-1">
+      {/* Vầng hào quang mộc linen ấm áp phía sau */}
+      <div
+        className={`absolute -inset-2 rounded-full blur-xl pointer-events-none ${
+          isDarkEffective
+            ? 'bg-gradient-to-r from-[#8c6150]/30 via-[#b3826b]/25 to-[#6b4737]/35'
+            : 'bg-gradient-to-r from-[#d6c7b2]/45 via-[#e8ded1]/50 to-[#c5b59e]/40'
+        }`}
+      />
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="vol-linen relative z-10"
+        viewBox="0 0 64 64"
+        width="104"
+        height="104"
+        fill="none"
+        role="img"
+        aria-label="Loading"
+        style={{ color: strokeColor, ['--rate' as any]: 1 }}
+      >
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              .vol-linen { --dur: 3.4s; }
+              .vol-linen-ghost, .vol-linen-line { stroke: currentColor; fill: none; stroke-linecap: round; }
+              .vol-linen-ghost { stroke-width: .8; opacity: ${isDarkEffective ? '0.22' : '0.18'}; }
+              .vol-linen-rig {
+                transform-box: view-box;
+                transform-origin: center;
+                animation: vol-linen-turn calc(var(--dur) * var(--rate, 1) * 2.4) linear infinite;
+              }
+              .vol-linen-line {
+                stroke-width: 1.9;
+                stroke-dasharray: 100 100;
+                stroke-dashoffset: 100;
+                animation: vol-linen-draw calc(var(--dur) * var(--rate, 1)) infinite;
+              }
+              @keyframes vol-linen-draw {
+                0%   { stroke-dashoffset: 100;  animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+                50%  { stroke-dashoffset: 0;    animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+                100% { stroke-dashoffset: -100; }
+              }
+              @keyframes vol-linen-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+              @media (prefers-reduced-motion: reduce) {
+                .vol-linen-line { animation: none; stroke-dashoffset: 0; }
+                .vol-linen-rig  { animation: none; }
+              }
+            `,
+          }}
+        />
+        <path
+          className="vol-linen-ghost"
+          d="M32.0,30.8L32.2,30.6L32.4,30.5L32.7,30.4L33.0,30.3L33.3,30.3L33.7,30.4L34.0,30.6L34.4,30.8L34.7,31.0L35.0,31.4L35.2,31.8L35.4,32.2L35.5,32.7L35.6,33.2L35.5,33.8L35.4,34.4L35.2,34.9L34.9,35.5L34.5,36.0L34.0,36.5L33.4,36.9L32.8,37.2L32.1,37.5L31.3,37.6L30.5,37.6L29.7,37.5L28.8,37.3L28.0,37.0L27.3,36.6L26.5,36.0L25.9,35.3L25.3,34.5L24.9,33.6L24.5,32.6L24.3,31.6L24.3,30.5L24.4,29.4L24.6,28.3L25.0,27.3L25.6,26.2L26.3,25.3L27.2,24.4L28.2,23.7L29.3,23.0L30.5,22.6L31.8,22.3L33.1,22.2L34.5,22.2L35.9,22.5L37.2,22.9L38.5,23.6L39.7,24.4L40.8,25.4L41.8,26.6L42.6,27.9L43.3,29.4L43.7,30.9L43.9,32.5L43.9,34.1L43.7,35.8L43.3,37.4L42.6,39.0L41.7,40.5L40.5,41.9L39.2,43.1L37.7,44.2L36.1,45.0L34.3,45.6L32.4,46.0L30.5,46.1L28.6,45.9L26.6,45.5L24.8,44.8L23.0,43.9L21.3,42.7L19.8,41.2L18.5,39.6L17.4,37.8L16.6,35.8L16.1,33.7L15.8,31.5L15.8,29.3L16.2,27.0L16.8,24.9L17.8,22.8L19.0,20.8L20.5,19.0L22.3,17.4L24.3,16.1L26.5,15.0L28.8,14.2L31.2,13.8L33.7,13.6L36.3,13.9L38.7,14.4L41.1,15.4L43.4,16.6L45.5,18.2L47.4,20.0L49.1,22.1L50.4,24.5L51.5,27.0L52.2,29.7L52.5,32.4L52.4,35.2L52.0,38.0L51.1,40.8L49.9,43.4L48.3,45.8L46.4,48.0L44.2,50.0L41.8,51.7L39.1,53.0L36.2,53.9L33.2,54.5L30.1,54.6L27.0,54.3L24.0,53.6L21.0,52.5L18.2,51.0L15.6,49.1L13.3,46.8L11.3,44.2L9.7,41.4L8.5,38.3L7.6,35.1L7.3,31.7L7.3,28.4L7.9,25.0L8.9,21.7L10.3,18.6L12.2,15.6L14.5,13.0L17.1,10.6L20.1,8.6L23.3,7.1L26.7,5.9L30.3,5.3L34.0,5.1L37.6,5.4L41.3,6.3L44.7,7.6L48.0,9.4L51.1,11.7L53.8,14.3L56.2,17.4L58.1,20.7L59.6,24.3L60.5,28.1L61.0,32.0"
+        />
+        <g className="vol-linen-rig">
+          <path
+            className="vol-linen-line"
+            d="M32.0,30.8L32.2,30.6L32.4,30.5L32.7,30.4L33.0,30.3L33.3,30.3L33.7,30.4L34.0,30.6L34.4,30.8L34.7,31.0L35.0,31.4L35.2,31.8L35.4,32.2L35.5,32.7L35.6,33.2L35.5,33.8L35.4,34.4L35.2,34.9L34.9,35.5L34.5,36.0L34.0,36.5L33.4,36.9L32.8,37.2L32.1,37.5L31.3,37.6L30.5,37.6L29.7,37.5L28.8,37.3L28.0,37.0L27.3,36.6L26.5,36.0L25.9,35.3L25.3,34.5L24.9,33.6L24.5,32.6L24.3,31.6L24.3,30.5L24.4,29.4L24.6,28.3L25.0,27.3L25.6,26.2L26.3,25.3L27.2,24.4L28.2,23.7L29.3,23.0L30.5,22.6L31.8,22.3L33.1,22.2L34.5,22.2L35.9,22.5L37.2,22.9L38.5,23.6L39.7,24.4L40.8,25.4L41.8,26.6L42.6,27.9L43.3,29.4L43.7,30.9L43.9,32.5L43.9,34.1L43.7,35.8L43.3,37.4L42.6,39.0L41.7,40.5L40.5,41.9L39.2,43.1L37.7,44.2L36.1,45.0L34.3,45.6L32.4,46.0L30.5,46.1L28.6,45.9L26.6,45.5L24.8,44.8L23.0,43.9L21.3,42.7L19.8,41.2L18.5,39.6L17.4,37.8L16.6,35.8L16.1,33.7L15.8,31.5L15.8,29.3L16.2,27.0L16.8,24.9L17.8,22.8L19.0,20.8L20.5,19.0L22.3,17.4L24.3,16.1L26.5,15.0L28.8,14.2L31.2,13.8L33.7,13.6L36.3,13.9L38.7,14.4L41.1,15.4L43.4,16.6L45.5,18.2L47.4,20.0L49.1,22.1L50.4,24.5L51.5,27.0L52.2,29.7L52.5,32.4L52.4,35.2L52.0,38.0L51.1,40.8L49.9,43.4L48.3,45.8L46.4,48.0L44.2,50.0L41.8,51.7L39.1,53.0L36.2,53.9L33.2,54.5L30.1,54.6L27.0,54.3L24.0,53.6L21.0,52.5L18.2,51.0L15.6,49.1L13.3,46.8L11.3,44.2L9.7,41.4L8.5,38.3L7.6,35.1L7.3,31.7L7.3,28.4L7.9,25.0L8.9,21.7L10.3,18.6L12.2,15.6L14.5,13.0L17.1,10.6L20.1,8.6L23.3,7.1L26.7,5.9L30.3,5.3L34.0,5.1L37.6,5.4L41.3,6.3L44.7,7.6L48.0,9.4L51.1,11.7L53.8,14.3L56.2,17.4L58.1,20.7L59.6,24.3L60.5,28.1L61.0,32.0"
+            pathLength="100"
+          />
+        </g>
+      </svg>
+    </div>
+  );
 };
 
 // =========================================================================
@@ -1541,8 +1890,8 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
         return <SnowflakeKaleidoscopeLoading isDarkEffective={isDarkEffective} />;
 
       case 'vinyl-player':
-        // THEME LINEN (mocha): Bàn máy phát đĩa than Vinyl quay 360 độ, tone màu mộc/linen ấm áp
-        return <LinenVinylPlayer isDark={isDarkEffective} />;
+        // THEME LINEN (mocha): Loading lớn dạng xoắn ốc cho cả chế độ sáng và tối, đổi màu phù hợp theme linen
+        return <LinenSpiralVortexLoading isDarkEffective={isDarkEffective} />;
 
       case 'cassette':
         // THEME PURPLE (amethyst-haze): Băng Cassette Retro với 2 bánh răng quay mượt, tone tím thạch anh
@@ -1771,103 +2120,8 @@ export const RandomNovelPicker: React.FC<RandomNovelPickerProps> = ({
 
       case 'snowflake':
         // THEME FROST (slate-haze):
-        // Chế độ sáng: Loading lớn dạng vortex/spiral SVG theo yêu cầu người dùng
-        if (!isDarkEffective) {
-          return (
-            <div className="relative w-28 h-28 flex items-center justify-center select-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="vol relative z-10"
-                viewBox="0 0 64 64"
-                width="96"
-                height="96"
-                fill="none"
-                role="img"
-                aria-label="Loading"
-                style={{ color: '#0284c7', ['--rate' as any]: 1 }}
-              >
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html: `
-                      .vol { --dur: 3.4s; }
-                      .vol-ghost, .vol-line { stroke: currentColor; fill: none; stroke-linecap: round; }
-                      .vol-ghost { stroke-width: .8; opacity: .18; }
-                      .vol-rig {
-                        transform-box: view-box;
-                        transform-origin: center;
-                        animation: vol-turn calc(var(--dur) * var(--rate, 1) * 2.4) linear infinite;
-                      }
-                      .vol-line {
-                        stroke-width: 1.9;
-                        stroke-dasharray: 100 100;
-                        stroke-dashoffset: 100;
-                        animation: vol-draw calc(var(--dur) * var(--rate, 1)) infinite;
-                      }
-                      @keyframes vol-draw {
-                        0%   { stroke-dashoffset: 100;  animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
-                        50%  { stroke-dashoffset: 0;    animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
-                        100% { stroke-dashoffset: -100; }
-                      }
-                      @keyframes vol-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                      @media (prefers-reduced-motion: reduce) {
-                        .vol-line { animation: none; stroke-dashoffset: 0; }
-                        .vol-rig  { animation: none; }
-                      }
-                    `,
-                  }}
-                />
-                <path
-                  className="vol-ghost"
-                  d="M32.0,30.8L32.2,30.6L32.4,30.5L32.7,30.4L33.0,30.3L33.3,30.3L33.7,30.4L34.0,30.6L34.4,30.8L34.7,31.0L35.0,31.4L35.2,31.8L35.4,32.2L35.5,32.7L35.6,33.2L35.5,33.8L35.4,34.4L35.2,34.9L34.9,35.5L34.5,36.0L34.0,36.5L33.4,36.9L32.8,37.2L32.1,37.5L31.3,37.6L30.5,37.6L29.7,37.5L28.8,37.3L28.0,37.0L27.3,36.6L26.5,36.0L25.9,35.3L25.3,34.5L24.9,33.6L24.5,32.6L24.3,31.6L24.3,30.5L24.4,29.4L24.6,28.3L25.0,27.3L25.6,26.2L26.3,25.3L27.2,24.4L28.2,23.7L29.3,23.0L30.5,22.6L31.8,22.3L33.1,22.2L34.5,22.2L35.9,22.5L37.2,22.9L38.5,23.6L39.7,24.4L40.8,25.4L41.8,26.6L42.6,27.9L43.3,29.4L43.7,30.9L43.9,32.5L43.9,34.1L43.7,35.8L43.3,37.4L42.6,39.0L41.7,40.5L40.5,41.9L39.2,43.1L37.7,44.2L36.1,45.0L34.3,45.6L32.4,46.0L30.5,46.1L28.6,45.9L26.6,45.5L24.8,44.8L23.0,43.9L21.3,42.7L19.8,41.2L18.5,39.6L17.4,37.8L16.6,35.8L16.1,33.7L15.8,31.5L15.8,29.3L16.2,27.0L16.8,24.9L17.8,22.8L19.0,20.8L20.5,19.0L22.3,17.4L24.3,16.1L26.5,15.0L28.8,14.2L31.2,13.8L33.7,13.6L36.3,13.9L38.7,14.4L41.1,15.4L43.4,16.6L45.5,18.2L47.4,20.0L49.1,22.1L50.4,24.5L51.5,27.0L52.2,29.7L52.5,32.4L52.4,35.2L52.0,38.0L51.1,40.8L49.9,43.4L48.3,45.8L46.4,48.0L44.2,50.0L41.8,51.7L39.1,53.0L36.2,53.9L33.2,54.5L30.1,54.6L27.0,54.3L24.0,53.6L21.0,52.5L18.2,51.0L15.6,49.1L13.3,46.8L11.3,44.2L9.7,41.4L8.5,38.3L7.6,35.1L7.3,31.7L7.3,28.4L7.9,25.0L8.9,21.7L10.3,18.6L12.2,15.6L14.5,13.0L17.1,10.6L20.1,8.6L23.3,7.1L26.7,5.9L30.3,5.3L34.0,5.1L37.6,5.4L41.3,6.3L44.7,7.6L48.0,9.4L51.1,11.7L53.8,14.3L56.2,17.4L58.1,20.7L59.6,24.3L60.5,28.1L61.0,32.0"
-                />
-                <g className="vol-rig">
-                  <path
-                    className="vol-line"
-                    d="M32.0,30.8L32.2,30.6L32.4,30.5L32.7,30.4L33.0,30.3L33.3,30.3L33.7,30.4L34.0,30.6L34.4,30.8L34.7,31.0L35.0,31.4L35.2,31.8L35.4,32.2L35.5,32.7L35.6,33.2L35.5,33.8L35.4,34.4L35.2,34.9L34.9,35.5L34.5,36.0L34.0,36.5L33.4,36.9L32.8,37.2L32.1,37.5L31.3,37.6L30.5,37.6L29.7,37.5L28.8,37.3L28.0,37.0L27.3,36.6L26.5,36.0L25.9,35.3L25.3,34.5L24.9,33.6L24.5,32.6L24.3,31.6L24.3,30.5L24.4,29.4L24.6,28.3L25.0,27.3L25.6,26.2L26.3,25.3L27.2,24.4L28.2,23.7L29.3,23.0L30.5,22.6L31.8,22.3L33.1,22.2L34.5,22.2L35.9,22.5L37.2,22.9L38.5,23.6L39.7,24.4L40.8,25.4L41.8,26.6L42.6,27.9L43.3,29.4L43.7,30.9L43.9,32.5L43.9,34.1L43.7,35.8L43.3,37.4L42.6,39.0L41.7,40.5L40.5,41.9L39.2,43.1L37.7,44.2L36.1,45.0L34.3,45.6L32.4,46.0L30.5,46.1L28.6,45.9L26.6,45.5L24.8,44.8L23.0,43.9L21.3,42.7L19.8,41.2L18.5,39.6L17.4,37.8L16.6,35.8L16.1,33.7L15.8,31.5L15.8,29.3L16.2,27.0L16.8,24.9L17.8,22.8L19.0,20.8L20.5,19.0L22.3,17.4L24.3,16.1L26.5,15.0L28.8,14.2L31.2,13.8L33.7,13.6L36.3,13.9L38.7,14.4L41.1,15.4L43.4,16.6L45.5,18.2L47.4,20.0L49.1,22.1L50.4,24.5L51.5,27.0L52.2,29.7L52.5,32.4L52.4,35.2L52.0,38.0L51.1,40.8L49.9,43.4L48.3,45.8L46.4,48.0L44.2,50.0L41.8,51.7L39.1,53.0L36.2,53.9L33.2,54.5L30.1,54.6L27.0,54.3L24.0,53.6L21.0,52.5L18.2,51.0L15.6,49.1L13.3,46.8L11.3,44.2L9.7,41.4L8.5,38.3L7.6,35.1L7.3,31.7L7.3,28.4L7.9,25.0L8.9,21.7L10.3,18.6L12.2,15.6L14.5,13.0L17.1,10.6L20.1,8.6L23.3,7.1L26.7,5.9L30.3,5.3L34.0,5.1L37.6,5.4L41.3,6.3L44.7,7.6L48.0,9.4L51.1,11.7L53.8,14.3L56.2,17.4L58.1,20.7L59.6,24.3L60.5,28.1L61.0,32.0"
-                    pathLength="100"
-                  />
-                </g>
-              </svg>
-            </div>
-          );
-        }
-
-        // Chế độ tối: Bông tuyết ❄️ xoay chuyển động mượt mà liên tục (giữ nguyên)
-        return (
-          <div className="relative w-28 h-28 flex items-center justify-center select-none">
-            {/* Vầng hào quang xanh sương tuyết tỏa mềm mại phía sau */}
-            <div
-              className={`absolute -inset-2 rounded-full blur-xl animate-pulse ${
-                isDarkEffective
-                  ? 'bg-gradient-to-r from-sky-500/30 via-cyan-500/25 to-blue-500/30'
-                  : 'bg-gradient-to-r from-sky-400/25 via-cyan-300/25 to-blue-300/25'
-              }`}
-            />
-
-            {/* Vòng hào quang băng giá mờ ảo bên ngoài */}
-            <div
-              className={`absolute w-22 h-22 rounded-full border border-dashed animate-[spin_12s_linear_infinite_reverse] ${
-                isDarkEffective ? 'border-cyan-400/30' : 'border-sky-300/40'
-              }`}
-            />
-
-            {/* Bông tuyết trung tâm xoay chuyển động mượt mà liên tục */}
-            <div className="relative z-10 flex items-center justify-center animate-[snowflake-smooth-spin_4s_linear_infinite]">
-              <Snowflake
-                className={`w-16 h-16 transition-all duration-300 ${
-                  isDarkEffective
-                    ? 'text-sky-300 drop-shadow-[0_0_14px_rgba(56,189,248,0.85)] drop-shadow-[0_0_24px_rgba(14,165,233,0.5)]'
-                    : 'text-sky-600 drop-shadow-[0_0_10px_rgba(2,132,199,0.45)]'
-                }`}
-              />
-            </div>
-
-            {/* Các hạt vi tinh thể băng lấp lánh xung quanh */}
-            <div className="absolute top-2 left-3 w-1.5 h-1.5 rounded-full bg-cyan-200 shadow-[0_0_6px_#a5f3fc] animate-ping" />
-            <div className="absolute bottom-2 right-3 w-1.5 h-1.5 rounded-full bg-sky-200 shadow-[0_0_6px_#bae6fd] animate-pulse" />
-            <div className="absolute top-4 right-2 w-1 h-1 rounded-full bg-white shadow-[0_0_4px_#ffffff] animate-pulse" />
-          </div>
-        );
+        // Đồng bộ loading lớn SvgWreathProgressBloom cho cả chế độ sáng và chế độ tối, đổi màu phù hợp
+        return <SvgWreathProgressBloom size={240} isDarkEffective={isDarkEffective} />;
 
       case 'pixel-hourglass':
       case 'eclipse':

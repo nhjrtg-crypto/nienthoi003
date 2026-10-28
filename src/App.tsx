@@ -23,6 +23,7 @@ import { INITIAL_NOVELS } from './data/novelData';
 import { LUA_NHAU_NOVEL } from './data/luaNhauData';
 import { safeStorage } from './utils/safeStorage';
 import { isExtraChapter } from './utils/themeStyles';
+import { triggerThemeTransition } from './utils/themeTransition';
 import {
   auth,
   isUserAdmin,
@@ -719,21 +720,27 @@ export default function App() {
     }
   });
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = (e?: any) => {
+    const coords = e && typeof e.clientX === 'number' && typeof e.clientY === 'number'
+      ? { x: e.clientX, y: e.clientY }
+      : undefined;
+
     const next = !isDarkMode;
-    setIsDarkMode(next);
-    try {
-      safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-    } catch {}
-    if (next) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
-    try {
-      window.dispatchEvent(new Event('storage'));
-    } catch {}
+    triggerThemeTransition(() => {
+      setIsDarkMode(next);
+      try {
+        safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+      } catch {}
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
+      try {
+        window.dispatchEvent(new Event('storage'));
+      } catch {}
+    }, coords, next);
   };
 
   // Đồng bộ class dark trên document.documentElement theo trạng thái isDarkMode

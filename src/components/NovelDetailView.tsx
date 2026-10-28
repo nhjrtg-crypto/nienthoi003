@@ -97,6 +97,7 @@ import { NotebookStationeryBackground } from './NotebookStationeryBackground';
 import { getBinderTheme } from '../utils/binderThemeConfig';
 import { ClayThemeToggle } from './ClayThemeToggle';
 import { safeStorage } from '../utils/safeStorage';
+import { triggerThemeTransition } from '../utils/themeTransition';
 import { TxtImportModal } from './TxtImportModal';
 import { TxtChapterSplitterModal } from './TxtChapterSplitterModal';
 import { cosmicAudio } from '../utils/audioSynth';
@@ -1203,31 +1204,39 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = (e?: any) => {
+    const coords = e && typeof e.clientX === 'number' && typeof e.clientY === 'number'
+      ? { x: e.clientX, y: e.clientY }
+      : undefined;
+
     // Nếu đang ở theme cosmic thì chuyển sang slate-haze sáng
     if (theme === 'cosmic') {
-      setTheme('slate-haze');
-      safeStorage.setItem('cosmo_novel_theme', 'slate-haze');
-      safeStorage.setItem('cosmo_darkmode', 'false');
-      setLocalIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
-      window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'slate-haze' }));
-      try { window.dispatchEvent(new Event('storage')); } catch {}
-      propOnToggleDarkMode?.();
+      triggerThemeTransition(() => {
+        setTheme('slate-haze');
+        safeStorage.setItem('cosmo_novel_theme', 'slate-haze');
+        safeStorage.setItem('cosmo_darkmode', 'false');
+        setLocalIsDarkMode(false);
+        document.documentElement.classList.remove('dark');
+        window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
+        window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'slate-haze' }));
+        try { window.dispatchEvent(new Event('storage')); } catch {}
+        propOnToggleDarkMode?.();
+      }, coords, false);
       return;
     }
     const next = !isDarkMode;
-    setLocalIsDarkMode(next);
-    safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
-    if (next) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
-    try { window.dispatchEvent(new Event('storage')); } catch {}
-    propOnToggleDarkMode?.();
+    triggerThemeTransition(() => {
+      setLocalIsDarkMode(next);
+      safeStorage.setItem('cosmo_darkmode', JSON.stringify(next));
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
+      try { window.dispatchEvent(new Event('storage')); } catch {}
+      propOnToggleDarkMode?.();
+    }, coords, next);
   };
 
   const handleSelectTheme = (newTheme: NovelThemeId) => {
@@ -2883,7 +2892,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                     transition: { duration: 0.2, ease: 'easeIn' },
                   }}
                   transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full flex flex-col items-center pt-2 sm:pt-4"
+                  className="w-full flex flex-col items-center pt-8 sm:pt-14 md:pt-16"
                 >
                   <CielEtoileNotebookCover
                     theme={theme}
@@ -6153,15 +6162,17 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Themed Footer preserving theme background */}
-      <Footer
-        isNovelPlatform={true}
-        borderClass={tStyles.headerBorder}
-        bgClass={tStyles.footerBg}
-        theme={theme}
-        isDarkMode={isDarkEffective}
-        onOpenIntro={onOpenIntro}
-      />
+      {/* Themed Footer preserving theme background - Chỉ hiển thị ở kiểu chuẩn, ẩn ở kiểu cuốn sổ */}
+      {!isSpiralStyle && (
+        <Footer
+          isNovelPlatform={true}
+          borderClass={tStyles.headerBorder}
+          bgClass={tStyles.footerBg}
+          theme={theme}
+          isDarkMode={isDarkEffective}
+          onOpenIntro={onOpenIntro}
+        />
+      )}
 
     </div>
   );
