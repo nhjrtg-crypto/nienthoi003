@@ -3,7 +3,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -27,12 +30,13 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     });
   }
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(JSON.stringify({ success: true, source: 'fallback', items: [] }), { headers });
   }
 
   try {
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS user_reading_progress (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
@@ -47,7 +51,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       )
     `).run().catch(() => {});
 
-    const { results } = await env.DB.prepare(
+    const { results } = await db.prepare(
       'SELECT novel_id, novel_title, chapter_number, chapter_title, progress_percent, scroll_y, reading_time_minutes, updated_at FROM user_reading_progress WHERE user_id = ? ORDER BY updated_at DESC'
     )
       .bind(userId)
@@ -78,7 +82,8 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
   const { request, env } = context;
   const headers = { 'Content-Type': 'application/json' };
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(JSON.stringify({ success: true, source: 'fallback' }), { headers });
   }
 
@@ -102,7 +107,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const updatedAt = typeof body.updatedAt === 'number' ? body.updatedAt : Date.now();
     const recordId = `${userId}:${novelId}`;
 
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS user_reading_progress (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
@@ -117,7 +122,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       )
     `).run().catch(() => {});
 
-    await env.DB.prepare(`
+    await db.prepare(`
       INSERT INTO user_reading_progress (id, user_id, novel_id, novel_title, chapter_number, chapter_title, progress_percent, scroll_y, reading_time_minutes, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET

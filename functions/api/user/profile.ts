@@ -3,7 +3,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -27,12 +30,13 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     });
   }
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(JSON.stringify({ success: true, source: 'fallback', profile: null }), { headers });
   }
 
   try {
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS user_profiles (
         user_id TEXT PRIMARY KEY,
         email TEXT,
@@ -44,7 +48,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       )
     `).run().catch(() => {});
 
-    const row = await env.DB.prepare(
+    const row = await db.prepare(
       'SELECT user_id, email, display_name, nickname, avatar_url, theme_preference FROM user_profiles WHERE user_id = ?'
     )
       .bind(userId)
@@ -80,7 +84,8 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
   const { request, env } = context;
   const headers = { 'Content-Type': 'application/json' };
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(JSON.stringify({ success: true, source: 'fallback' }), { headers });
   }
 
@@ -100,7 +105,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const avatarUrl = (body.avatarUrl || '').trim();
     const themePreference = (body.themePreference || '').trim();
 
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS user_profiles (
         user_id TEXT PRIMARY KEY,
         email TEXT,
@@ -112,7 +117,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       )
     `).run().catch(() => {});
 
-    await env.DB.prepare(`
+    await db.prepare(`
       INSERT INTO user_profiles (user_id, email, display_name, nickname, avatar_url, theme_preference, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
       ON CONFLICT(user_id) DO UPDATE SET

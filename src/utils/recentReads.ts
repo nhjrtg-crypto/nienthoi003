@@ -1,5 +1,6 @@
 import { Novel } from '../types';
 import { safeStorage } from './safeStorage';
+import { syncReadingProgressToD1 } from '../services/d1Service';
 
 export interface RecentReadRecord {
   novelId: string;
@@ -11,6 +12,24 @@ export interface RecentReadRecord {
 
 const STORAGE_KEY = 'cosmo_recent_reads_v2';
 const REAL_READ_KEY = 'cosmo_has_real_read_v1';
+
+export function getActiveSyncUserId(): string {
+  try {
+    const raw = safeStorage.getItem('cosmo_google_user');
+    if (raw) {
+      const gUser = JSON.parse(raw);
+      if (gUser?.uid) return gUser.uid;
+    }
+    let deviceId = safeStorage.getItem('cosmo_device_uuid');
+    if (!deviceId) {
+      deviceId = `dev_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      safeStorage.setItem('cosmo_device_uuid', deviceId);
+    }
+    return deviceId;
+  } catch {
+    return 'fallback_device';
+  }
+}
 
 /**
  * Lấy danh sách truyện đọc gần đây.
@@ -78,7 +97,9 @@ export function saveRecentRead(
   novelId: string,
   chapterNumber: number,
   progressPercent: number,
-  scrollY?: number
+  scrollY?: number,
+  novelTitle?: string,
+  chapterTitle?: string
 ): void {
   try {
     // Đánh dấu người dùng đã có tiến độ đọc thực tế
@@ -104,6 +125,18 @@ export function saveRecentRead(
     const newRecords = [updatedRecord, ...filtered].slice(0, 10);
 
     safeStorage.setItem(STORAGE_KEY, JSON.stringify(newRecords));
+
+    // Đồng bộ lên Cloudflare D1 (nienthoi-intro-db) vĩnh viễn
+    syncReadingProgressToD1({
+      userId: getActiveSyncUserId(),
+      novelId,
+      novelTitle: novelTitle || novelId,
+      chapterNumber,
+      chapterTitle: chapterTitle || `Chương ${chapterNumber}`,
+      progressPercent: clampedPercent,
+      scrollY,
+      updatedAt: updatedRecord.updatedAt,
+    }).catch(() => {});
 
     // Bắn event để các component lắng nghe cập nhật UI ngay lập tức
     if (typeof window !== 'undefined') {
