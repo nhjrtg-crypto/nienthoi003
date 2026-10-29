@@ -2036,7 +2036,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       return;
     }
 
-    const finalAuthor = (googleUser.displayName || userName || googleUser.email?.split('@')[0] || 'Bạn Đọc').trim();
+    const userNickname = safeStorage.getItem('cosmo_profile_nickname');
+    const finalAuthor = (userNickname || googleUser.displayName || userName || googleUser.email?.split('@')[0] || 'Bạn Đọc').trim();
     const finalAvatar = googleUser.photoURL || '';
     try {
       safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
@@ -2062,6 +2063,23 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
     } catch {}
     onUpdateNovel?.({ ...novel, comments: updated });
+
+    // Lưu vào danh sách bình luận đã gửi của người dùng để hiện ngay trong Hồ sơ cá nhân
+    try {
+      const rawUserComments = safeStorage.getItem('cosmo_user_posted_comments_list');
+      const userList = rawUserComments ? JSON.parse(rawUserComments) : [];
+      userList.unshift({
+        id: tempComment.id,
+        sourceTitle: novel.title,
+        chapterOrTopic: 'Bình luận truyện',
+        timeStr: formattedDate,
+        likesCount: 0,
+        userComment: tempComment.content,
+      });
+      safeStorage.setItem('cosmo_user_posted_comments_list', JSON.stringify(userList.slice(0, 50)));
+      window.dispatchEvent(new Event('cosmo_comments_updated'));
+    } catch {}
+
     setNewCommentText('');
     setToastMessage({ title: 'Thành công', desc: 'Bình luận của bạn đã được đăng thành công!' });
     setTimeout(() => setToastMessage(null), 3500);
@@ -5100,7 +5118,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="text-sm font-bold truncate">
-                              {googleUser.displayName || googleUser.email}
+                              {safeStorage.getItem('cosmo_profile_nickname') || googleUser.displayName || googleUser.email}
                             </span>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-0.5">
                               <Check className="w-3 h-3" />

@@ -469,7 +469,8 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     } catch {}
   }, [novel?.id, chapterNumber]);
 
-  // Window scroll handler to track reading progress and save scroll position
+  // Window scroll handler to track reading progress and save scroll position & sync to D1
+  const scrollSyncTimerRef = useRef<any>(null);
   useEffect(() => {
     const handleWindowScroll = () => {
       const currentScrollY = window.scrollY;
@@ -484,13 +485,33 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             Math.max(1, Math.round(((chapterNumber - 1 + inChapterRatio) / totalChapters) * 100))
           );
           saveRecentRead(novel.id, chapterNumber, overallPercent, currentScrollY);
+
+          // Debounce đồng bộ tiến độ đọc lên Cloudflare D1 (nienthoi-intro-db)
+          if (scrollSyncTimerRef.current) clearTimeout(scrollSyncTimerRef.current);
+          scrollSyncTimerRef.current = setTimeout(() => {
+            const currentUid = auth?.currentUser?.uid || getStoredGoogleUser()?.uid;
+            if (currentUid && novel) {
+              syncReadingProgressToD1({
+                userId: currentUid,
+                novelId: novel.id,
+                novelTitle: novel.title,
+                chapterNumber: chapterNumber,
+                progressPercent: overallPercent,
+                scrollY: currentScrollY,
+                updatedAt: Date.now(),
+              }).catch(() => {});
+            }
+          }, 1500);
         } catch {}
       }
     };
 
     window.addEventListener('scroll', handleWindowScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleWindowScroll);
-  }, [novel?.id, chapterNumber, allChapters.length, novel?.chapters.length, novel?.totalChaptersCount]);
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll);
+      if (scrollSyncTimerRef.current) clearTimeout(scrollSyncTimerRef.current);
+    };
+  }, [novel?.id, novel?.title, chapterNumber, allChapters.length, novel?.chapters.length, novel?.totalChaptersCount]);
 
   const isCosmic = readerTheme === 'cosmic';
   const isDarkEffective = isCosmic || isDarkMode;
@@ -867,11 +888,12 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       return;
     }
 
-    const finalAuthor = (googleUser.displayName || authorNameInput || googleUser.email?.split('@')[0] || 'Bạn Đọc').trim();
+    const userNickname = safeStorage.getItem('cosmo_profile_nickname');
+    const finalAuthor = (userNickname || googleUser.displayName || authorNameInput || googleUser.email?.split('@')[0] || 'Bạn Đọc').trim();
     const finalAvatar = googleUser.photoURL || '';
     const formattedDate = formatCommentDate();
 
-    if (rememberName && finalAuthor) {
+    if (finalAuthor) {
       try {
         safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
       } catch {}
@@ -897,6 +919,23 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       safeStorage.setItem(`cosmo_novel_comments_${novel.id}`, JSON.stringify(updated));
     } catch {}
     onUpdateNovel?.({ ...novel, comments: updated });
+
+    // Lưu vào danh sách bình luận đã gửi của người dùng để hiện ngay trong Hồ sơ cá nhân
+    try {
+      const rawUserComments = safeStorage.getItem('cosmo_user_posted_comments_list');
+      const userList = rawUserComments ? JSON.parse(rawUserComments) : [];
+      userList.unshift({
+        id: tempComment.id,
+        sourceTitle: novel.title,
+        chapterOrTopic: `Chương ${chapterNumber}`,
+        timeStr: formattedDate,
+        likesCount: 0,
+        userComment: tempComment.content,
+      });
+      safeStorage.setItem('cosmo_user_posted_comments_list', JSON.stringify(userList.slice(0, 50)));
+      window.dispatchEvent(new Event('cosmo_comments_updated'));
+    } catch {}
+
     setNewCommentContent('');
     showToast('Bình luận thành công!');
 
@@ -2373,7 +2412,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                     </div>
                   )}
                   <span className="text-xs font-bold truncate">
-                    {googleUser.displayName || googleUser.email}
+                    {safeStorage.getItem('cosmo_profile_nickname') || googleUser.displayName || googleUser.email}
                   </span>
                   <span className="px-1.5 py-0.2 rounded-full text-[9px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                     Google
@@ -2672,7 +2711,9 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                         )}
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-semibold">{googleUser.displayName || 'Bạn đọc'}</span>
+                            <span className="text-xs font-semibold">
+                              {safeStorage.getItem('cosmo_profile_nickname') || googleUser.displayName || 'Bạn đọc'}
+                            </span>
                             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-500/15 text-purple-400 font-medium border border-purple-500/30">
                               Google
                             </span>

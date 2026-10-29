@@ -50,7 +50,14 @@ import {
   saveCustomCoverToAllStores,
   getDirectImageUrl,
 } from './utils/imageUtils';
-import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1, getDeletedCommentIds } from './services/d1Service';
+import {
+  incrementGlobalView,
+  fetchNovelCoversFromD1,
+  saveNovelCoverToD1,
+  getDeletedCommentIds,
+  fetchUserProfileFromD1,
+  fetchUserReadingProgressFromD1,
+} from './services/d1Service';
 
 interface SavedViewState {
   viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond' | 'user-profile';
@@ -811,12 +818,56 @@ export default function App() {
     return () => window.removeEventListener('cosmo_theme_changed', handleThemeChange);
   }, []);
 
-  // Listen to Firebase Auth state
+  // Listen to Firebase Auth state & automatically synchronize profile & reading progress from Cloudflare D1
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
         setIsAdmin(isUserAdmin(user));
+
+        // Tự động kéo biệt danh từ Cloudflare D1 (nienthoi-intro-db) sang thiết bị này
+        fetchUserProfileFromD1(user.uid).then((prof) => {
+          if (prof?.nickname) {
+            safeStorage.setItem('cosmo_profile_nickname', prof.nickname);
+            safeStorage.setItem('cosmo_comment_author_name', prof.nickname);
+            window.dispatchEvent(new CustomEvent('cosmo_nickname_changed', { detail: prof.nickname }));
+          }
+        }).catch(() => {});
+
+        // Tự động kéo lịch sử đọc từ Cloudflare D1 (nienthoi-intro-db) sang thiết bị này
+        fetchUserReadingProgressFromD1(user.uid).then((items) => {
+          if (items && items.length > 0) {
+            const raw = safeStorage.getItem('cosmo_recent_reads');
+            let localList: any[] = raw ? JSON.parse(raw) : [];
+            let hasChange = false;
+
+            items.forEach((item) => {
+              const existingIdx = localList.findIndex((r) => r.novelId === item.novelId);
+              if (existingIdx === -1) {
+                localList.push({
+                  novelId: item.novelId,
+                  chapterNumber: item.chapterNumber,
+                  progressPercent: item.progressPercent,
+                  updatedAt: item.updatedAt || Date.now(),
+                });
+                hasChange = true;
+              } else if ((item.updatedAt || 0) > (localList[existingIdx].updatedAt || 0)) {
+                localList[existingIdx] = {
+                  novelId: item.novelId,
+                  chapterNumber: item.chapterNumber,
+                  progressPercent: item.progressPercent,
+                  updatedAt: item.updatedAt || Date.now(),
+                };
+                hasChange = true;
+              }
+            });
+
+            if (hasChange) {
+              safeStorage.setItem('cosmo_recent_reads', JSON.stringify(localList));
+              window.dispatchEvent(new Event('cosmo_recent_reads_updated'));
+            }
+          }
+        }).catch(() => {});
       } else {
         const stored = getStoredAdminSession();
         if (stored) {

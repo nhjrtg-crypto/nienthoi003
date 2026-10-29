@@ -169,44 +169,64 @@ function loadUserComments(
   userNickname: string,
   novels: Novel[]
 ): CommentHistoryItem[] {
-  if (!user) return [];
   const list: CommentHistoryItem[] = [];
-  const userNick = (userNickname || user.displayName || '').trim().toLowerCase();
-  const userEmail = (user.email || '').trim().toLowerCase();
-  const userUid = user.uid;
+  const storedNick = safeStorage.getItem('cosmo_profile_nickname') || '';
+  const userNick = (storedNick || userNickname || '').trim().toLowerCase();
+  const userGoogleName = (user?.displayName || '').trim().toLowerCase();
+  const userEmail = (user?.email || '').trim().toLowerCase();
+  const userEmailPrefix = userEmail ? userEmail.split('@')[0] : '';
+  const userUid = user?.uid;
 
+  if (!user && !userNick) return [];
+
+  // 1. Quét tất cả bình luận từ safeStorage của từng truyện (dữ liệu D1 mới nhất)
   novels.forEach((n) => {
-    const novelComments = n.comments || [];
-    novelComments.forEach((c: any) => {
-      const cName = (c.userName || c.authorName || c.user?.name || '').trim().toLowerCase();
+    let allComments: any[] = n.comments || [];
+    try {
+      const saved = safeStorage.getItem(`cosmo_novel_comments_${n.id}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          allComments = parsed;
+        }
+      }
+    } catch {}
+
+    allComments.forEach((c: any) => {
+      const cAuthor = (c.author || c.authorName || c.userName || c.user?.name || '').trim().toLowerCase();
       const cEmail = (c.userEmail || c.user?.email || '').trim().toLowerCase();
       const cUid = c.userId || c.user?.id || c.uid;
 
       const isMatch =
-        (userNick && cName === userNick) ||
+        (userNick && cAuthor === userNick) ||
+        (userGoogleName && cAuthor === userGoogleName) ||
+        (userEmailPrefix && cAuthor === userEmailPrefix) ||
         (userEmail && cEmail === userEmail) ||
         (userUid && cUid === userUid);
 
       if (isMatch) {
-        list.push({
-          id: String(c.id),
-          sourceTitle: n.title,
-          chapterOrTopic: c.chapterNumber ? `Chương ${c.chapterNumber}` : (c.chapterTitle || 'Bình luận truyện'),
-          timeStr: c.createdAt ? new Date(c.createdAt).toLocaleDateString('vi-VN') : 'Mới đây',
-          likesCount: c.likes || 0,
-          quotedText: c.quotedText || c.quote || undefined,
-          userComment: c.content || c.text || '',
-          authorReply: c.reply
-            ? {
-                authorName: c.reply.authorName || 'Tác giả',
-                replyText: c.reply.content || c.reply.text || c.reply,
-              }
-            : undefined,
-        });
+        if (!list.some((item) => item.id === String(c.id))) {
+          list.push({
+            id: String(c.id),
+            sourceTitle: n.title,
+            chapterOrTopic: c.chapterNumber ? `Chương ${c.chapterNumber}` : (c.chapterTitle || 'Bình luận truyện'),
+            timeStr: c.createdAt || (c.createdTimestamp ? new Date(c.createdTimestamp).toLocaleDateString('vi-VN') : 'Mới đây'),
+            likesCount: c.likes || 0,
+            quotedText: c.quotedText || c.quote || undefined,
+            userComment: c.content || c.text || '',
+            authorReply: c.reply
+              ? {
+                  authorName: c.reply.authorName || 'Tác giả',
+                  replyText: c.reply.content || c.reply.text || c.reply,
+                }
+              : undefined,
+          });
+        }
       }
     });
   });
 
+  // 2. Quét bình luận đã lưu trong danh sách bình luận đã gửi của người dùng
   try {
     const raw = safeStorage.getItem('cosmo_user_posted_comments_list');
     if (raw) {
@@ -421,12 +441,32 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     showToast('Đã đăng xuất tài khoản Google');
   };
 
+  const [dataVersion, setDataVersion] = useState(0);
+
+  useEffect(() => {
+    const handleDataUpdate = () => {
+      setDataVersion((v) => v + 1);
+    };
+    window.addEventListener('cosmo_recent_reads_updated', handleDataUpdate);
+    window.addEventListener('cosmo_comments_updated', handleDataUpdate);
+    window.addEventListener('cosmo_nickname_changed', handleDataUpdate);
+    window.addEventListener('storage', handleDataUpdate);
+    return () => {
+      window.removeEventListener('cosmo_recent_reads_updated', handleDataUpdate);
+      window.removeEventListener('cosmo_comments_updated', handleDataUpdate);
+      window.removeEventListener('cosmo_nickname_changed', handleDataUpdate);
+      window.removeEventListener('storage', handleDataUpdate);
+    };
+  }, []);
+
   const handleSaveNickname = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const clean = tempNickname.trim();
     if (clean) {
       setNickname(clean);
       safeStorage.setItem('cosmo_profile_nickname', clean);
+      safeStorage.setItem('cosmo_comment_author_name', clean);
+      window.dispatchEvent(new CustomEvent('cosmo_nickname_changed', { detail: clean }));
       showToast('Đã cập nhật biệt danh mới!');
 
       // Tự động đồng bộ lên Cloudflare D1 (nienthoi-intro-db)
@@ -451,49 +491,12 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
   // Lịch sử đọc thực tế của người dùng từ recentReads
   const recentReads = useMemo(() => {
     return getRecentReads(novels);
-  }, [novels]);
+  }, [novels, dataVersion]);
 
-  // Lấy 2 bộ gần nhất
+  // Lấy tối đa 2 bộ gần nhất
   const top2RecentNovels = useMemo(() => {
-    if (recentReads.length >= 2) {
-      return recentReads.slice(0, 2);
-    }
-    if (recentReads.length === 1) {
-      const first = recentReads[0];
-      const other = novels.find((n) => n.id !== first.novel.id) || novels[0];
-      const fallbackRecord: RecentReadRecord = {
-        novelId: other.id,
-        chapterNumber: 1,
-        progressPercent: 10,
-        updatedAt: Date.now() - 86400000,
-      };
-      return [first, { novel: other, record: fallbackRecord }];
-    }
-    // Chưa có lịch sử: lấy 2 bộ đầu tiên trong danh mục làm gợi ý
-    if (novels.length >= 2) {
-      return [
-        {
-          novel: novels[0],
-          record: {
-            novelId: novels[0].id,
-            chapterNumber: 1,
-            progressPercent: 5,
-            updatedAt: Date.now(),
-          },
-        },
-        {
-          novel: novels[1],
-          record: {
-            novelId: novels[1].id,
-            chapterNumber: 1,
-            progressPercent: 5,
-            updatedAt: Date.now(),
-          },
-        },
-      ];
-    }
-    return [];
-  }, [recentReads, novels]);
+    return recentReads.slice(0, 2);
+  }, [recentReads]);
 
   // Highlights state: nạp từ thiết bị, khử trùng lặp
   const [highlights] = useState<HighlightQuoteItem[]>(() => {
@@ -518,7 +521,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
   // Bình luận thực tế của người dùng
   const userComments = useMemo(() => {
     return loadUserComments(googleUser, nickname, novels);
-  }, [googleUser, nickname, novels]);
+  }, [googleUser, nickname, novels, dataVersion]);
 
   // Tính các chỉ số thực tế
   const commentsCount = googleUser ? userComments.length : 0;
