@@ -13,7 +13,7 @@ import { PublishNovelModal } from './components/PublishNovelModal';
 import { TwoPagePlannerHeartView } from './components/TwoPagePlannerHeartView';
 import { AboutLightTamagotchiView } from './components/AboutLightTamagotchiView';
 import { InternalBeyondView } from './components/InternalBeyondView';
-import { UserProfileView } from './components/UserProfileView';
+
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { CreateFirestoreTruyenModal } from './components/CreateFirestoreTruyenModal';
 import { DailyLimitExceededModal } from './components/DailyLimitExceededModal';
@@ -59,7 +59,7 @@ import {
 } from './services/d1Service';
 
 interface SavedViewState {
-  viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond' | 'user-profile';
+  viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond';
   selectedNovel: Novel | null;
   readingChapterNumber: number | null;
   targetNovelId?: string | null;
@@ -504,14 +504,8 @@ export function parseRouteFromLocation(): {
     };
   }
 
-  // Giới thiệu
-  if (
-    raw === 'about' ||
-    raw === 'about-light' ||
-    raw === 'gioi-thieu' ||
-    raw === 'intro-light' ||
-    raw === 'intro'
-  ) {
+  // Giới thiệu đã xóa theo yêu cầu
+  if (false) {
     return { viewMode: 'about-light' };
   }
 
@@ -521,10 +515,6 @@ export function parseRouteFromLocation(): {
 
   if (raw === 'novels' || raw === 'novel-home' || raw === 'truyen') {
     return { viewMode: 'novel-home' };
-  }
-
-  if (raw === 'profile' || raw === 'ho-so' || raw === 'user-profile' || raw === 'account' || raw === 'user') {
-    return { viewMode: 'user-profile' };
   }
 
   if (raw === 'internal-beyond' || raw === 'beyond' || raw === 'border' || raw === 'boundary' || raw === 'thu-vien' || raw === 'library') {
@@ -589,13 +579,6 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
       };
     }
 
-    if (route.viewMode === 'user-profile') {
-      return {
-        viewMode: 'user-profile',
-        selectedNovel: null,
-        readingChapterNumber: null,
-      };
-    }
   }
 
   // 2. Ưu tiên số 2: safeStorage 'cosmo_active_view' (hỗ trợ cả localStorage và sessionStorage)
@@ -613,13 +596,6 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
       if (parsed.viewMode === 'about-light') {
         return {
           viewMode: 'about-light',
-          selectedNovel: null,
-          readingChapterNumber: null,
-        };
-      }
-      if (parsed.viewMode === 'user-profile') {
-        return {
-          viewMode: 'user-profile',
           selectedNovel: null,
           readingChapterNumber: null,
         };
@@ -1738,54 +1714,6 @@ export default function App() {
               setViewMode('about-light');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            onOpenUserProfile={() => {
-              setViewMode('user-profile');
-              try {
-                const s = JSON.stringify({ viewMode: 'user-profile', novelId: null, readingChapterNumber: null });
-                safeStorage.setItem('cosmo_active_view', s);
-                safeStorage.setSessionItem('cosmo_active_view', s);
-              } catch {}
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        </div>
-      )}
-
-      {/* VIEW 5: USER PROFILE VIEW (Trang Hồ Sơ Cá Nhân Phong Cách Trang Chủ) */}
-      {viewMode === 'user-profile' && readingChapterNumber === null && (
-        <div className="relative z-10 min-h-screen flex flex-col">
-          <UserProfileView
-            novels={allMergedNovels}
-            onSelectNovel={handleSelectNovel}
-            onOpenNovelToReadingPosition={handleOpenNovelToReadingPosition}
-            onOpenLibrary={() => {
-              cosmicAudio.playChime('sparkle');
-              setViewMode('internal-beyond');
-              try {
-                const s = JSON.stringify({ viewMode: 'internal-beyond', novelId: null, readingChapterNumber: null });
-                safeStorage.setItem('cosmo_active_view', s);
-                safeStorage.setSessionItem('cosmo_active_view', s);
-              } catch {}
-              window.scrollTo({ top: 0, behavior: 'instant' });
-            }}
-            onBackToNovels={() => {
-              cosmicAudio.playChime('sparkle');
-              setViewMode('novel-home');
-              try {
-                const s = JSON.stringify({ viewMode: 'novel-home', novelId: null, readingChapterNumber: null });
-                safeStorage.setItem('cosmo_active_view', s);
-                safeStorage.setSessionItem('cosmo_active_view', s);
-              } catch {}
-              window.scrollTo({ top: 0, behavior: 'instant' });
-            }}
-            isDarkMode={isDarkMode}
-            onToggleDarkMode={toggleDarkMode}
-            theme={appTheme}
-            onSelectTheme={(t) => {
-              setAppTheme(t);
-              safeStorage.setItem('cosmo_novel_theme', t);
-            }}
-            isAdmin={isAdmin}
           />
         </div>
       )}

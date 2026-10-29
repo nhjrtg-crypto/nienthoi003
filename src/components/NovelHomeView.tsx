@@ -4440,25 +4440,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             </div>
                           </button>
 
-                          {/* Hồ sơ cá nhân */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              cosmicAudio.playChime('sparkle');
-                              setIsMainMenuOpen(false);
-                              onOpenUserProfile?.();
-                            }}
-                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                              menuThemeStyles.btnConvex
-                            }`}
-                          >
-                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
-                              <span>Hồ sơ cá nhân</span>
-                              <span className={`text-[7.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
-                                Google
-                              </span>
-                            </div>
-                          </button>
 
                           {/* 3. Tìm kiếm */}
                           <button
@@ -4588,25 +4569,6 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                           </div>
                         </button>
 
-                        {/* Hồ sơ cá nhân */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            cosmicAudio.playChime('sparkle');
-                            setIsMainMenuOpen(false);
-                            onOpenUserProfile?.();
-                          }}
-                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
-                            menuThemeStyles.btnConvex
-                          }`}
-                        >
-                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
-                            <span>Hồ sơ cá nhân</span>
-                            <span className={`text-[7.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
-                              Google
-                            </span>
-                          </div>
-                        </button>
 
                         {/* 3. Tìm kiếm */}
                         <button

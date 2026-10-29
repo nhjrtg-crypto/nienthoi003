@@ -30,7 +30,6 @@ let dbData = {
   },
   covers: {},
   profiles: {},
-  progress: {},
 };
 
 try {
@@ -44,7 +43,6 @@ try {
       if (!dbData.notes) dbData.notes = { style1: [], style2: [] };
       if (!dbData.covers) dbData.covers = {};
       if (!dbData.profiles) dbData.profiles = {};
-      if (!dbData.progress) dbData.progress = {};
     }
   }
 } catch (e) {
@@ -282,50 +280,7 @@ app.post('/api/user/profile', (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/api/user/progress', (req, res) => {
-  const userId = req.query.userId;
-  console.log('[Server API GET /api/user/progress] requested userId:', userId);
-  if (!userId) {
-    return res.status(400).json({ success: false, error: 'Thiếu userId' });
-  }
-  const items = dbData.progress[userId] || [];
-  console.log('[Server API GET /api/user/progress] found progress items count:', items.length);
-  res.json({ success: true, items });
-});
 
-app.post('/api/user/progress', (req, res) => {
-  const body = req.body || {};
-  console.log('[Server API POST /api/user/progress] payload:', body);
-  const userId = (body.userId || '').trim();
-  const novelId = (body.novelId || '').trim();
-  if (!userId || !novelId) {
-    return res.status(400).json({ success: false, error: 'Thiếu userId hoặc novelId' });
-  }
-  if (!dbData.progress[userId]) {
-    dbData.progress[userId] = [];
-  }
-  const list = dbData.progress[userId];
-  const idx = list.findIndex((item) => item.novelId === novelId);
-  const newItem = {
-    userId,
-    novelId,
-    novelTitle: body.novelTitle || '',
-    chapterNumber: typeof body.chapterNumber === 'number' ? body.chapterNumber : 1,
-    chapterTitle: body.chapterTitle || '',
-    progressPercent: typeof body.progressPercent === 'number' ? body.progressPercent : 0,
-    scrollY: typeof body.scrollY === 'number' ? body.scrollY : 0,
-    readingTimeMinutes: typeof body.readingTimeMinutes === 'number' ? body.readingTimeMinutes : 0,
-    updatedAt: typeof body.updatedAt === 'number' ? body.updatedAt : Date.now(),
-  };
-  if (idx !== -1) {
-    list[idx] = newItem;
-  } else {
-    list.unshift(newItem);
-  }
-  saveDb();
-  console.log('[Server API POST /api/user/progress] saved progress successfully for userId:', userId, 'novelId:', novelId);
-  res.json({ success: true });
-});
 
 const distPath = path.join(__dirname, 'dist');
 
