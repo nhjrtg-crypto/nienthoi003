@@ -1146,6 +1146,7 @@ export interface D1ReadingProgress {
  */
 export async function syncUserProfileToD1(profile: D1UserProfile): Promise<{ success: boolean; error?: string }> {
   if (!profile.userId) return { success: false, error: 'Thiếu userId' };
+  console.log('[D1 Sync] Syncing user profile to server:', profile);
 
   try {
     const res = await fetch('/api/user/profile', {
@@ -1156,11 +1157,13 @@ export async function syncUserProfileToD1(profile: D1UserProfile): Promise<{ suc
 
     if (res.ok) {
       const data = await res.json();
+      console.log('[D1 Sync] Profile synced successfully:', data);
       return { success: Boolean(data.success) };
     }
+    console.warn('[D1 Sync] Profile sync HTTP error:', res.status);
     return { success: false, error: 'Lỗi HTTP ' + res.status };
   } catch (err: any) {
-    console.warn('Lỗi khi đồng bộ hồ sơ lên D1:', err);
+    console.error('[D1 Sync] Error syncing user profile to D1:', err);
     return { success: false, error: err?.message };
   }
 }
@@ -1170,6 +1173,7 @@ export async function syncUserProfileToD1(profile: D1UserProfile): Promise<{ suc
  */
 export async function fetchUserProfileFromD1(userId: string): Promise<D1UserProfile | null> {
   if (!userId) return null;
+  console.log('[D1 Sync] Fetching user profile for userId:', userId);
 
   try {
     const res = await fetch(`/api/user/profile?userId=${encodeURIComponent(userId)}`, {
@@ -1179,12 +1183,13 @@ export async function fetchUserProfileFromD1(userId: string): Promise<D1UserProf
 
     if (res.ok) {
       const data = await res.json();
+      console.log('[D1 Sync] Fetch profile response:', data);
       if (data.success && data.profile) {
         return data.profile as D1UserProfile;
       }
     }
   } catch (err) {
-    console.warn('Lỗi tải hồ sơ từ D1:', err);
+    console.error('[D1 Sync] Error fetching user profile from D1:', err);
   }
   return null;
 }
@@ -1196,6 +1201,7 @@ export async function syncReadingProgressToD1(progress: D1ReadingProgress): Prom
   if (!progress.userId || !progress.novelId) {
     return { success: false, error: 'Thiếu userId hoặc novelId' };
   }
+  console.log('[D1 Sync] Syncing reading progress:', progress);
 
   try {
     const res = await fetch('/api/user/progress', {
@@ -1206,10 +1212,11 @@ export async function syncReadingProgressToD1(progress: D1ReadingProgress): Prom
 
     if (res.ok) {
       const data = await res.json();
+      console.log('[D1 Sync] Progress synced successfully:', data);
       return { success: Boolean(data.success) };
     }
   } catch (err: any) {
-    console.warn('Lỗi đồng bộ tiến độ đọc lên D1:', err);
+    console.error('[D1 Sync] Error syncing reading progress to D1:', err);
   }
   return { success: false };
 }
@@ -1219,6 +1226,7 @@ export async function syncReadingProgressToD1(progress: D1ReadingProgress): Prom
  */
 export async function fetchUserReadingProgressFromD1(userId: string): Promise<D1ReadingProgress[]> {
   if (!userId) return [];
+  console.log('[D1 Sync] Fetching reading progress for userId:', userId);
 
   try {
     const res = await fetch(`/api/user/progress?userId=${encodeURIComponent(userId)}`, {
@@ -1228,12 +1236,13 @@ export async function fetchUserReadingProgressFromD1(userId: string): Promise<D1
 
     if (res.ok) {
       const data = await res.json();
+      console.log('[D1 Sync] Fetch progress response:', data);
       if (data.success && Array.isArray(data.items)) {
         return data.items as D1ReadingProgress[];
       }
     }
   } catch (err) {
-    console.warn('Lỗi tải lịch sử đọc từ D1:', err);
+    console.error('[D1 Sync] Error fetching reading progress from D1:', err);
   }
   return [];
 }

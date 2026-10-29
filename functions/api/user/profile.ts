@@ -17,6 +17,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const { request, env } = context;
   const url = new URL(request.url);
   const userId = url.searchParams.get('userId');
+  console.log('[Cloudflare D1 Function GET /api/user/profile] requested userId:', userId);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -24,6 +25,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   };
 
   if (!userId) {
+    console.warn('[Cloudflare D1 Function GET /api/user/profile] Missing userId');
     return new Response(JSON.stringify({ success: false, error: 'Thiếu userId' }), {
       status: 400,
       headers,
@@ -32,6 +34,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
   const db = getDb(env);
   if (!db) {
+    console.warn('[Cloudflare D1 Function GET /api/user/profile] DB binding not found, returning fallback');
     return new Response(JSON.stringify({ success: true, source: 'fallback', profile: null }), { headers });
   }
 
@@ -54,6 +57,8 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       .bind(userId)
       .first();
 
+    console.log('[Cloudflare D1 Function GET /api/user/profile] query result row:', row);
+
     if (!row) {
       return new Response(JSON.stringify({ success: true, profile: null }), { headers });
     }
@@ -73,6 +78,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       { headers }
     );
   } catch (error: any) {
+    console.error('[Cloudflare D1 Function GET /api/user/profile] Error:', error);
     return new Response(JSON.stringify({ success: false, error: error.message }), {
       status: 500,
       headers,
@@ -86,13 +92,16 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
 
   const db = getDb(env);
   if (!db) {
+    console.warn('[Cloudflare D1 Function POST /api/user/profile] DB binding not found, returning fallback');
     return new Response(JSON.stringify({ success: true, source: 'fallback' }), { headers });
   }
 
   try {
     const body = (await request.json().catch(() => ({}))) as any;
+    console.log('[Cloudflare D1 Function POST /api/user/profile] payload:', body);
     const userId = (body.userId || '').trim();
     if (!userId) {
+      console.warn('[Cloudflare D1 Function POST /api/user/profile] Missing userId');
       return new Response(JSON.stringify({ success: false, error: 'Thiếu userId' }), {
         status: 400,
         headers,
@@ -131,8 +140,10 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       .bind(userId, email, displayName, nickname, avatarUrl, themePreference)
       .run();
 
+    console.log('[Cloudflare D1 Function POST /api/user/profile] Successfully saved profile for userId:', userId);
     return new Response(JSON.stringify({ success: true }), { headers });
   } catch (error: any) {
+    console.error('[Cloudflare D1 Function POST /api/user/profile] Error:', error);
     return new Response(JSON.stringify({ success: false, error: error.message }), {
       status: 500,
       headers,

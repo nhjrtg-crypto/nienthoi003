@@ -253,15 +253,18 @@ app.post('/api/covers', (req, res) => {
 
 app.get('/api/user/profile', (req, res) => {
   const userId = req.query.userId;
+  console.log('[Server API GET /api/user/profile] requested userId:', userId);
   if (!userId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId' });
   }
   const profile = dbData.profiles[userId] || null;
+  console.log('[Server API GET /api/user/profile] found profile:', profile);
   res.json({ success: true, profile });
 });
 
 app.post('/api/user/profile', (req, res) => {
   const body = req.body || {};
+  console.log('[Server API POST /api/user/profile] payload:', body);
   const userId = (body.userId || '').trim();
   if (!userId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId' });
@@ -275,20 +278,24 @@ app.post('/api/user/profile', (req, res) => {
     themePreference: body.themePreference || '',
   };
   saveDb();
+  console.log('[Server API POST /api/user/profile] saved profile successfully for userId:', userId);
   res.json({ success: true });
 });
 
 app.get('/api/user/progress', (req, res) => {
   const userId = req.query.userId;
+  console.log('[Server API GET /api/user/progress] requested userId:', userId);
   if (!userId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId' });
   }
   const items = dbData.progress[userId] || [];
+  console.log('[Server API GET /api/user/progress] found progress items count:', items.length);
   res.json({ success: true, items });
 });
 
 app.post('/api/user/progress', (req, res) => {
   const body = req.body || {};
+  console.log('[Server API POST /api/user/progress] payload:', body);
   const userId = (body.userId || '').trim();
   const novelId = (body.novelId || '').trim();
   if (!userId || !novelId) {
@@ -316,6 +323,7 @@ app.post('/api/user/progress', (req, res) => {
     list.unshift(newItem);
   }
   saveDb();
+  console.log('[Server API POST /api/user/progress] saved progress successfully for userId:', userId, 'novelId:', novelId);
   res.json({ success: true });
 });
 

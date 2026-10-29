@@ -529,18 +529,24 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     setIsSyncingD1(true);
     cosmicAudio.playChime('sparkle');
     showToast('Đang cập nhật dữ liệu mới nhất từ Cloudflare D1...');
+    console.log('[Manual Sync] Starting manual sync from D1...');
 
     try {
       const syncId = googleUser?.uid || safeStorage.getItem('cosmo_device_uuid');
+      console.log('[Manual Sync] Active syncId used:', syncId, 'googleUser:', googleUser);
+
       if (syncId) {
         const d1Profile = await fetchUserProfileFromD1(syncId);
+        console.log('[Manual Sync] Fetched D1 Profile result:', d1Profile);
         if (d1Profile?.nickname) {
           setNickname(d1Profile.nickname);
           safeStorage.setItem('cosmo_profile_nickname', d1Profile.nickname);
           safeStorage.setItem('cosmo_comment_author_name', d1Profile.nickname);
+          console.log('[Manual Sync] Updated local nickname to:', d1Profile.nickname);
         }
 
         const d1Progress = await fetchUserReadingProgressFromD1(syncId);
+        console.log('[Manual Sync] Fetched D1 Progress result:', d1Progress);
         if (d1Progress && d1Progress.length > 0) {
           const raw = safeStorage.getItem('cosmo_recent_reads_v2') || safeStorage.getItem('cosmo_recent_reads');
           let localList: RecentReadRecord[] = raw ? JSON.parse(raw) : [];
@@ -569,8 +575,11 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
 
           if (hasChange) {
             safeStorage.setItem('cosmo_recent_reads_v2', JSON.stringify(localList));
+            console.log('[Manual Sync] Updated local reading history with D1 data:', localList);
           }
         }
+      } else {
+        console.warn('[Manual Sync] No valid syncId found (neither Google UID nor device UUID)');
       }
 
       setDataVersion((v) => v + 1);
@@ -579,7 +588,9 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
       window.dispatchEvent(new CustomEvent('cosmo_nickname_changed', { detail: nickname }));
 
       showToast('Đã cập nhật dữ liệu mới nhất từ D1 thành công!');
+      console.log('[Manual Sync] Manual sync completed successfully.');
     } catch (err: any) {
+      console.error('[Manual Sync] Error during manual sync:', err);
       showToast('Lỗi đồng bộ: ' + (err?.message || 'Không thể kết nối D1'));
     } finally {
       setIsSyncingD1(false);
