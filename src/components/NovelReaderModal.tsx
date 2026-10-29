@@ -69,7 +69,6 @@ import {
   deleteComment as deleteD1Comment,
   getDeletedCommentIds,
   markCommentAsDeleted,
-  syncReadingProgressToD1,
 } from '../services/d1Service';
 import { ChapterEditorModal } from './ChapterEditorModal';
 import { ChapterPasswordModal, isChapterPasswordUnlocked } from './ChapterPasswordModal';
@@ -430,20 +429,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
         const savedScroll = safeStorage.getItem(`novel_scroll_${novel.id}_${chapterNumber}`);
         const scrollYVal = savedScroll ? parseFloat(savedScroll) : 0;
         saveRecentRead(novel.id, chapterNumber, initialPercent, scrollYVal);
-
-        // Đồng bộ tiến độ đọc lên Cloudflare D1 (nienthoi-intro-db) nếu đã đăng nhập Google
-        const currentUid = auth?.currentUser?.uid || getStoredGoogleUser()?.uid;
-        if (currentUid) {
-          syncReadingProgressToD1({
-            userId: currentUid,
-            novelId: novel.id,
-            novelTitle: novel.title,
-            chapterNumber: chapterNumber,
-            progressPercent: initialPercent,
-            scrollY: scrollYVal,
-            updatedAt: Date.now(),
-          }).catch(() => {});
-        }
       } catch (e) {
         console.warn('Could not save novel reading history', e);
       }
@@ -485,23 +470,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             Math.max(1, Math.round(((chapterNumber - 1 + inChapterRatio) / totalChapters) * 100))
           );
           saveRecentRead(novel.id, chapterNumber, overallPercent, currentScrollY);
-
-          // Debounce đồng bộ tiến độ đọc lên Cloudflare D1 (nienthoi-intro-db)
-          if (scrollSyncTimerRef.current) clearTimeout(scrollSyncTimerRef.current);
-          scrollSyncTimerRef.current = setTimeout(() => {
-            const currentUid = auth?.currentUser?.uid || getStoredGoogleUser()?.uid;
-            if (currentUid && novel) {
-              syncReadingProgressToD1({
-                userId: currentUid,
-                novelId: novel.id,
-                novelTitle: novel.title,
-                chapterNumber: chapterNumber,
-                progressPercent: overallPercent,
-                scrollY: currentScrollY,
-                updatedAt: Date.now(),
-              }).catch(() => {});
-            }
-          }, 1500);
         } catch {}
       }
     };

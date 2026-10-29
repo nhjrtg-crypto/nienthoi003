@@ -1129,18 +1129,6 @@ export interface D1UserProfile {
   themePreference?: string;
 }
 
-export interface D1ReadingProgress {
-  userId: string;
-  novelId: string;
-  novelTitle?: string;
-  chapterNumber: number;
-  chapterTitle?: string;
-  progressPercent: number;
-  scrollY?: number;
-  readingTimeMinutes?: number;
-  updatedAt?: number;
-}
-
 /**
  * Lưu / cập nhật hồ sơ người dùng lên Cloudflare D1
  */
@@ -1192,59 +1180,6 @@ export async function fetchUserProfileFromD1(userId: string): Promise<D1UserProf
     console.error('[D1 Sync] Error fetching user profile from D1:', err);
   }
   return null;
-}
-
-/**
- * Đồng bộ tiến độ đọc truyện lên Cloudflare D1 (lưu vĩnh viễn trên nienthoi-intro-db)
- */
-export async function syncReadingProgressToD1(progress: D1ReadingProgress): Promise<{ success: boolean; error?: string }> {
-  if (!progress.userId || !progress.novelId) {
-    return { success: false, error: 'Thiếu userId hoặc novelId' };
-  }
-  console.log('[D1 Sync] Syncing reading progress:', progress);
-
-  try {
-    const res = await fetch('/api/user/progress', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(progress),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      console.log('[D1 Sync] Progress synced successfully:', data);
-      return { success: Boolean(data.success) };
-    }
-  } catch (err: any) {
-    console.error('[D1 Sync] Error syncing reading progress to D1:', err);
-  }
-  return { success: false };
-}
-
-/**
- * Tải danh sách lịch sử đọc truyện của người dùng từ Cloudflare D1
- */
-export async function fetchUserReadingProgressFromD1(userId: string): Promise<D1ReadingProgress[]> {
-  if (!userId) return [];
-  console.log('[D1 Sync] Fetching reading progress for userId:', userId);
-
-  try {
-    const res = await fetch(`/api/user/progress?userId=${encodeURIComponent(userId)}`, {
-      method: 'GET',
-      headers: { 'Cache-Control': 'no-cache' },
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      console.log('[D1 Sync] Fetch progress response:', data);
-      if (data.success && Array.isArray(data.items)) {
-        return data.items as D1ReadingProgress[];
-      }
-    }
-  } catch (err) {
-    console.error('[D1 Sync] Error fetching reading progress from D1:', err);
-  }
-  return [];
 }
 
 

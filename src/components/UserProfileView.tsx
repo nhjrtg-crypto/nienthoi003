@@ -36,8 +36,6 @@ import { useHeaderScroll } from '../utils/useHeaderScroll';
 import {
   syncUserProfileToD1,
   fetchUserProfileFromD1,
-  fetchUserReadingProgressFromD1,
-  syncReadingProgressToD1,
 } from '../services/d1Service';
 
 export interface UserProfileViewProps {
@@ -373,55 +371,6 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
             themePreference: activeTheme,
           }).catch(() => {});
         }
-
-        // 2. Tải lịch sử đọc truyện từ D1 và đồng bộ vào thiết bị này, đồng thời đẩy lịch sử local lên D1
-        const d1Items = await fetchUserReadingProgressFromD1(googleUser.uid);
-        if (isMounted) {
-          const raw = safeStorage.getItem('cosmo_recent_reads_v2') || safeStorage.getItem('cosmo_recent_reads');
-          let localList: RecentReadRecord[] = raw ? JSON.parse(raw) : [];
-          let hasChange = false;
-
-          // Đẩy lịch sử local lên D1
-          localList.forEach((item) => {
-            syncReadingProgressToD1({
-              userId: googleUser.uid,
-              novelId: item.novelId,
-              novelTitle: item.novelId,
-              chapterNumber: item.chapterNumber,
-              chapterTitle: `Chương ${item.chapterNumber}`,
-              progressPercent: item.progressPercent,
-              scrollY: item.scrollY,
-              updatedAt: item.updatedAt || Date.now(),
-            }).catch(() => {});
-          });
-
-          // Nạp từ D1 về local
-          d1Items.forEach((item) => {
-            const existingIdx = localList.findIndex((r) => r.novelId === item.novelId);
-            if (existingIdx === -1) {
-              localList.push({
-                novelId: item.novelId,
-                chapterNumber: item.chapterNumber,
-                progressPercent: item.progressPercent,
-                updatedAt: item.updatedAt || Date.now(),
-              });
-              hasChange = true;
-            } else if ((item.updatedAt || 0) > (localList[existingIdx].updatedAt || 0)) {
-              localList[existingIdx] = {
-                novelId: item.novelId,
-                chapterNumber: item.chapterNumber,
-                progressPercent: item.progressPercent,
-                updatedAt: item.updatedAt || Date.now(),
-              };
-              hasChange = true;
-            }
-          });
-
-          if (hasChange) {
-            safeStorage.setItem('cosmo_recent_reads_v2', JSON.stringify(localList));
-            window.dispatchEvent(new Event('cosmo_recent_reads_updated'));
-          }
-        }
       } catch (err) {
         console.warn('Lỗi khi nạp dữ liệu từ D1:', err);
       }
@@ -543,40 +492,6 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
           safeStorage.setItem('cosmo_profile_nickname', d1Profile.nickname);
           safeStorage.setItem('cosmo_comment_author_name', d1Profile.nickname);
           console.log('[Manual Sync] Updated local nickname to:', d1Profile.nickname);
-        }
-
-        const d1Progress = await fetchUserReadingProgressFromD1(syncId);
-        console.log('[Manual Sync] Fetched D1 Progress result:', d1Progress);
-        if (d1Progress && d1Progress.length > 0) {
-          const raw = safeStorage.getItem('cosmo_recent_reads_v2') || safeStorage.getItem('cosmo_recent_reads');
-          let localList: RecentReadRecord[] = raw ? JSON.parse(raw) : [];
-          let hasChange = false;
-
-          d1Progress.forEach((item) => {
-            const existingIdx = localList.findIndex((r) => r.novelId === item.novelId);
-            if (existingIdx === -1) {
-              localList.push({
-                novelId: item.novelId,
-                chapterNumber: item.chapterNumber,
-                progressPercent: item.progressPercent,
-                updatedAt: item.updatedAt || Date.now(),
-              });
-              hasChange = true;
-            } else if ((item.updatedAt || 0) > (localList[existingIdx].updatedAt || 0)) {
-              localList[existingIdx] = {
-                novelId: item.novelId,
-                chapterNumber: item.chapterNumber,
-                progressPercent: item.progressPercent,
-                updatedAt: item.updatedAt || Date.now(),
-              };
-              hasChange = true;
-            }
-          });
-
-          if (hasChange) {
-            safeStorage.setItem('cosmo_recent_reads_v2', JSON.stringify(localList));
-            console.log('[Manual Sync] Updated local reading history with D1 data:', localList);
-          }
         }
       } else {
         console.warn('[Manual Sync] No valid syncId found (neither Google UID nor device UUID)');

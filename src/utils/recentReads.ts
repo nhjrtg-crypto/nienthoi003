@@ -1,6 +1,6 @@
 import { Novel } from '../types';
 import { safeStorage } from './safeStorage';
-import { syncReadingProgressToD1 } from '../services/d1Service';
+
 
 export interface RecentReadRecord {
   novelId: string;
@@ -125,18 +125,6 @@ export function saveRecentRead(
     const newRecords = [updatedRecord, ...filtered].slice(0, 10);
 
     safeStorage.setItem(STORAGE_KEY, JSON.stringify(newRecords));
-
-    // Đồng bộ lên Cloudflare D1 (nienthoi-intro-db) vĩnh viễn
-    syncReadingProgressToD1({
-      userId: getActiveSyncUserId(),
-      novelId,
-      novelTitle: novelTitle || novelId,
-      chapterNumber,
-      chapterTitle: chapterTitle || `Chương ${chapterNumber}`,
-      progressPercent: clampedPercent,
-      scrollY,
-      updatedAt: updatedRecord.updatedAt,
-    }).catch(() => {});
 
     // Bắn event để các component lắng nghe cập nhật UI ngay lập tức
     if (typeof window !== 'undefined') {
