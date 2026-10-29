@@ -13,10 +13,5 @@ binding = "DB"
 database_name = "nienthoi-db"
 database_id = "da9a2b34-1755-4315-8e71-9dbbabf8c643"
 
-# Cơ sở dữ liệu D1 thứ hai dành riêng cho hồ sơ người dùng & đồng bộ đa thiết bị (nienthoi-intro-db)
-[[d1_databases]]
-binding = "USER_DB"
-database_name = "nienthoi-intro-db"
-database_id = "aebc76c8-161a-4801-8970-225664bcd7b0"
 
 
