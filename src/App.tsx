@@ -13,6 +13,7 @@ import { PublishNovelModal } from './components/PublishNovelModal';
 import { TwoPagePlannerHeartView } from './components/TwoPagePlannerHeartView';
 import { AboutLightTamagotchiView } from './components/AboutLightTamagotchiView';
 import { InternalBeyondView } from './components/InternalBeyondView';
+import { UserProfileView } from './components/UserProfileView';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { CreateFirestoreTruyenModal } from './components/CreateFirestoreTruyenModal';
 import { DailyLimitExceededModal } from './components/DailyLimitExceededModal';
@@ -52,7 +53,7 @@ import {
 import { incrementGlobalView, fetchNovelCoversFromD1, saveNovelCoverToD1, getDeletedCommentIds } from './services/d1Service';
 
 interface SavedViewState {
-  viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond';
+  viewMode: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond' | 'user-profile';
   selectedNovel: Novel | null;
   readingChapterNumber: number | null;
   targetNovelId?: string | null;
@@ -435,7 +436,7 @@ function getInitialNovels(): Novel[] {
 }
 
 export function parseRouteFromLocation(): {
-  viewMode?: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond';
+  viewMode?: 'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond' | 'user-profile';
   novelId?: string;
   chapterNumber?: number;
 } {
@@ -516,6 +517,10 @@ export function parseRouteFromLocation(): {
     return { viewMode: 'novel-home' };
   }
 
+  if (raw === 'profile' || raw === 'ho-so' || raw === 'user-profile' || raw === 'account' || raw === 'user') {
+    return { viewMode: 'user-profile' };
+  }
+
   if (raw === 'internal-beyond' || raw === 'beyond' || raw === 'border' || raw === 'boundary' || raw === 'thu-vien' || raw === 'library') {
     return { viewMode: 'internal-beyond' };
   }
@@ -577,6 +582,14 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
         readingChapterNumber: null,
       };
     }
+
+    if (route.viewMode === 'user-profile') {
+      return {
+        viewMode: 'user-profile',
+        selectedNovel: null,
+        readingChapterNumber: null,
+      };
+    }
   }
 
   // 2. Ưu tiên số 2: safeStorage 'cosmo_active_view' (hỗ trợ cả localStorage và sessionStorage)
@@ -594,6 +607,13 @@ function parseSavedViewState(availableNovels: Novel[]): SavedViewState {
       if (parsed.viewMode === 'about-light') {
         return {
           viewMode: 'about-light',
+          selectedNovel: null,
+          readingChapterNumber: null,
+        };
+      }
+      if (parsed.viewMode === 'user-profile') {
+        return {
+          viewMode: 'user-profile',
           selectedNovel: null,
           readingChapterNumber: null,
         };
@@ -632,9 +652,9 @@ export default function App() {
   const initialNovels = useMemo(() => getInitialNovels(), []);
   const initialView = useMemo(() => parseSavedViewState(initialNovels), [initialNovels]);
 
-  // Navigation & View Mode: 'portfolio' (Landing) | 'novel-home' (Trang chủ tiểu thuyết) | 'novel-detail' (Chi tiết bộ truyện) | 'about-light' (Giới thiệu chế độ sáng) | 'internal-beyond' (Internal Beyond)
+  // Navigation & View Mode: 'portfolio' (Landing) | 'novel-home' (Trang chủ tiểu thuyết) | 'novel-detail' (Chi tiết bộ truyện) | 'about-light' (Giới thiệu chế độ sáng) | 'internal-beyond' (Internal Beyond) | 'user-profile' (Hồ sơ cá nhân)
   const [viewMode, setViewMode] = useState<
-    'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond'
+    'portfolio' | 'novel-home' | 'novel-detail' | 'about-light' | 'internal-beyond' | 'user-profile'
   >(initialView.viewMode);
 
   // Light Mode Intro Option: 'style1' (Sổ Kế Hoạch 2 Mặt) | 'style2' (Máy Trứng Tamagotchi)
@@ -773,6 +793,22 @@ export default function App() {
       window.removeEventListener('cosmo_darkmode_changed', handleDarkModeChange);
       window.removeEventListener('storage', handleDarkModeChange);
     };
+  }, []);
+
+  const [appTheme, setAppTheme] = useState<string>(() => {
+    return safeStorage.getItem('cosmo_novel_theme') || 'slate-haze';
+  });
+
+  useEffect(() => {
+    const handleThemeChange = (e: any) => {
+      if (e?.detail) setAppTheme(e.detail);
+      else {
+        const saved = safeStorage.getItem('cosmo_novel_theme');
+        if (saved) setAppTheme(saved);
+      }
+    };
+    window.addEventListener('cosmo_theme_changed', handleThemeChange);
+    return () => window.removeEventListener('cosmo_theme_changed', handleThemeChange);
   }, []);
 
   // Listen to Firebase Auth state
@@ -1051,6 +1087,8 @@ export default function App() {
         desiredPath = '/about';
       } else if (viewMode === 'internal-beyond') {
         desiredPath = '/library';
+      } else if (viewMode === 'user-profile') {
+        desiredPath = '/profile';
       }
 
       const currentPath = window.location.pathname;
@@ -1582,6 +1620,16 @@ export default function App() {
               } catch {}
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
+            onOpenUserProfile={() => {
+              homeScrollYRef.current = window.scrollY;
+              setViewMode('user-profile');
+              try {
+                const s = JSON.stringify({ viewMode: 'user-profile', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             isAdmin={isAdmin}
             currentUser={currentUser}
             isDarkMode={isDarkMode}
@@ -1675,6 +1723,54 @@ export default function App() {
               setViewMode('about-light');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
+            onOpenUserProfile={() => {
+              setViewMode('user-profile');
+              try {
+                const s = JSON.stringify({ viewMode: 'user-profile', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        </div>
+      )}
+
+      {/* VIEW 5: USER PROFILE VIEW (Trang Hồ Sơ Cá Nhân Phong Cách Trang Chủ) */}
+      {viewMode === 'user-profile' && readingChapterNumber === null && (
+        <div className="relative z-10 min-h-screen flex flex-col">
+          <UserProfileView
+            novels={allMergedNovels}
+            onSelectNovel={handleSelectNovel}
+            onOpenNovelToReadingPosition={handleOpenNovelToReadingPosition}
+            onOpenLibrary={() => {
+              cosmicAudio.playChime('sparkle');
+              setViewMode('internal-beyond');
+              try {
+                const s = JSON.stringify({ viewMode: 'internal-beyond', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'instant' });
+            }}
+            onBackToNovels={() => {
+              cosmicAudio.playChime('sparkle');
+              setViewMode('novel-home');
+              try {
+                const s = JSON.stringify({ viewMode: 'novel-home', novelId: null, readingChapterNumber: null });
+                safeStorage.setItem('cosmo_active_view', s);
+                safeStorage.setSessionItem('cosmo_active_view', s);
+              } catch {}
+              window.scrollTo({ top: 0, behavior: 'instant' });
+            }}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
+            theme={appTheme}
+            onSelectTheme={(t) => {
+              setAppTheme(t);
+              safeStorage.setItem('cosmo_novel_theme', t);
+            }}
+            isAdmin={isAdmin}
           />
         </div>
       )}

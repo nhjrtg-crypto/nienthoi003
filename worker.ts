@@ -4,6 +4,7 @@
 
 export interface Env {
   DB?: any;
+  USER_DB?: any;
   ASSETS?: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -843,6 +844,248 @@ export default {
           );
         } catch (error: any) {
           return new Response(JSON.stringify({ success: false, error: error.message }), {
+            status: 500,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+      }
+    }
+
+    // ========================================================================
+    // 6.5 API: /api/user/profile & /api/user/progress (Cloudflare D1: nienthoi-intro-db)
+    // Tự động đồng bộ hồ sơ & lịch sử đọc truyện đa thiết bị qua Google login
+    // ========================================================================
+    if (url.pathname === '/api/user/profile') {
+      const db = env.USER_DB || env.DB;
+      if (!db) {
+        return new Response(JSON.stringify({ success: false, error: 'Database not bound' }), {
+          status: 200,
+          headers: NO_CACHE_HEADERS,
+        });
+      }
+
+      if (request.method === 'GET') {
+        const userId = url.searchParams.get('userId');
+        if (!userId) {
+          return new Response(JSON.stringify({ success: false, error: 'Missing userId' }), {
+            status: 400,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+
+        try {
+          // Tự động tạo bảng user_profiles nếu chưa tồn tại
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS user_profiles (
+              user_id TEXT PRIMARY KEY,
+              email TEXT,
+              display_name TEXT,
+              nickname TEXT,
+              avatar_url TEXT,
+              theme_preference TEXT DEFAULT 'slate-haze',
+              created_at INTEGER,
+              updated_at INTEGER
+            )
+          `).run().catch(() => {});
+
+          const row = await db.prepare('SELECT * FROM user_profiles WHERE user_id = ?').bind(userId).first();
+          if (row) {
+            return new Response(JSON.stringify({
+              success: true,
+              profile: {
+                userId: row.user_id,
+                email: row.email,
+                displayName: row.display_name,
+                nickname: row.nickname,
+                avatarUrl: row.avatar_url,
+                themePreference: row.theme_preference,
+              },
+            }), { headers: NO_CACHE_HEADERS });
+          }
+          return new Response(JSON.stringify({ success: true, profile: null }), { headers: NO_CACHE_HEADERS });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ success: false, error: err.message }), {
+            status: 500,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+      }
+
+      if (request.method === 'POST') {
+        try {
+          const body = await request.json() as any;
+          const { userId, email, displayName, nickname, avatarUrl, themePreference } = body;
+          if (!userId) {
+            return new Response(JSON.stringify({ success: false, error: 'Missing userId' }), {
+              status: 400,
+              headers: NO_CACHE_HEADERS,
+            });
+          }
+
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS user_profiles (
+              user_id TEXT PRIMARY KEY,
+              email TEXT,
+              display_name TEXT,
+              nickname TEXT,
+              avatar_url TEXT,
+              theme_preference TEXT DEFAULT 'slate-haze',
+              created_at INTEGER,
+              updated_at INTEGER
+            )
+          `).run().catch(() => {});
+
+          const now = Date.now();
+          await db.prepare(`
+            INSERT INTO user_profiles (user_id, email, display_name, nickname, avatar_url, theme_preference, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (user_id) DO UPDATE SET
+              email = coalesce(excluded.email, user_profiles.email),
+              display_name = coalesce(excluded.display_name, user_profiles.display_name),
+              nickname = excluded.nickname,
+              avatar_url = coalesce(excluded.avatar_url, user_profiles.avatar_url),
+              theme_preference = coalesce(excluded.theme_preference, user_profiles.theme_preference),
+              updated_at = excluded.updated_at
+          `).bind(
+            userId,
+            email || null,
+            displayName || null,
+            nickname || null,
+            avatarUrl || null,
+            themePreference || 'slate-haze',
+            now,
+            now
+          ).run();
+
+          return new Response(JSON.stringify({ success: true }), { headers: NO_CACHE_HEADERS });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ success: false, error: err.message }), {
+            status: 500,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+      }
+    }
+
+    if (url.pathname === '/api/user/progress') {
+      const db = env.USER_DB || env.DB;
+      if (!db) {
+        return new Response(JSON.stringify({ success: false, error: 'Database not bound' }), {
+          status: 200,
+          headers: NO_CACHE_HEADERS,
+        });
+      }
+
+      if (request.method === 'GET') {
+        const userId = url.searchParams.get('userId');
+        if (!userId) {
+          return new Response(JSON.stringify({ success: false, error: 'Missing userId' }), {
+            status: 400,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+
+        try {
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS user_reading_progress (
+              id TEXT PRIMARY KEY,
+              user_id TEXT NOT NULL,
+              novel_id TEXT NOT NULL,
+              novel_title TEXT,
+              chapter_number INTEGER DEFAULT 1,
+              chapter_title TEXT,
+              progress_percent REAL DEFAULT 0,
+              reading_time_minutes INTEGER DEFAULT 0,
+              updated_at INTEGER
+            )
+          `).run().catch(() => {});
+
+          const { results } = await db.prepare(
+            'SELECT * FROM user_reading_progress WHERE user_id = ? ORDER BY updated_at DESC LIMIT 20'
+          ).bind(userId).all();
+
+          const items = (results || []).map((r: any) => ({
+            userId: r.user_id,
+            novelId: r.novel_id,
+            novelTitle: r.novel_title,
+            chapterNumber: r.chapter_number,
+            chapterTitle: r.chapter_title,
+            progressPercent: r.progress_percent,
+            readingTimeMinutes: r.reading_time_minutes,
+            updatedAt: r.updated_at,
+          }));
+
+          return new Response(JSON.stringify({ success: true, items }), { headers: NO_CACHE_HEADERS });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ success: false, error: err.message }), {
+            status: 500,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+      }
+
+      if (request.method === 'POST') {
+        try {
+          const body = await request.json() as any;
+          const {
+            userId,
+            novelId,
+            novelTitle,
+            chapterNumber = 1,
+            chapterTitle,
+            progressPercent = 0,
+            readingTimeMinutes = 0,
+          } = body;
+
+          if (!userId || !novelId) {
+            return new Response(JSON.stringify({ success: false, error: 'Missing userId or novelId' }), {
+              status: 400,
+              headers: NO_CACHE_HEADERS,
+            });
+          }
+
+          await db.prepare(`
+            CREATE TABLE IF NOT EXISTS user_reading_progress (
+              id TEXT PRIMARY KEY,
+              user_id TEXT NOT NULL,
+              novel_id TEXT NOT NULL,
+              novel_title TEXT,
+              chapter_number INTEGER DEFAULT 1,
+              chapter_title TEXT,
+              progress_percent REAL DEFAULT 0,
+              reading_time_minutes INTEGER DEFAULT 0,
+              updated_at INTEGER
+            )
+          `).run().catch(() => {});
+
+          const progressId = `${userId}_${novelId}`;
+          const now = Date.now();
+
+          await db.prepare(`
+            INSERT INTO user_reading_progress (id, user_id, novel_id, novel_title, chapter_number, chapter_title, progress_percent, reading_time_minutes, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (id) DO UPDATE SET
+              novel_title = coalesce(excluded.novel_title, user_reading_progress.novel_title),
+              chapter_number = excluded.chapter_number,
+              chapter_title = excluded.chapter_title,
+              progress_percent = excluded.progress_percent,
+              reading_time_minutes = user_reading_progress.reading_time_minutes + excluded.reading_time_minutes,
+              updated_at = excluded.updated_at
+          `).bind(
+            progressId,
+            userId,
+            novelId,
+            novelTitle || null,
+            chapterNumber,
+            chapterTitle || null,
+            progressPercent,
+            readingTimeMinutes,
+            now
+          ).run();
+
+          return new Response(JSON.stringify({ success: true }), { headers: NO_CACHE_HEADERS });
+        } catch (err: any) {
+          return new Response(JSON.stringify({ success: false, error: err.message }), {
             status: 500,
             headers: NO_CACHE_HEADERS,
           });

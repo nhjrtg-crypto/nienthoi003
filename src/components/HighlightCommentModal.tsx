@@ -5,6 +5,13 @@ import { safeStorage } from '../utils/safeStorage';
 import { NovelComment } from '../types';
 import { parseCommentContent } from '../utils/chapterHighlights';
 import { getNovelThemeStyles, NovelThemeId } from '../utils/themeStyles';
+import {
+  auth,
+  GoogleUserLike,
+  getStoredGoogleUser,
+  signInWithGoogle,
+  signOutGoogleUser,
+} from '../services/firebase';
 
 export interface HighlightCommentModalProps {
   isOpen: boolean;
@@ -51,14 +58,46 @@ export const HighlightCommentModal: React.FC<HighlightCommentModalProps> = ({
   chapterNumber,
   onSubmit,
 }) => {
-  const [authorName, setAuthorName] = useState(() => {
-    return initialAuthor || safeStorage.getItem('cosmo_comment_author_name') || '';
+  const [googleUser, setGoogleUser] = useState<GoogleUserLike | null>(() => {
+    return (auth?.currentUser as GoogleUserLike | null) || getStoredGoogleUser();
   });
-  const [rememberName, setRememberName] = useState(() => {
-    return safeStorage.getItem('cosmo_remember_comment_author') !== 'false';
-  });
+  const [isLoggingInGoogle, setIsLoggingInGoogle] = useState(false);
+  const [googleLoginError, setGoogleLoginError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleAuthChange = (e: Event) => {
+      const customEvent = e as CustomEvent<GoogleUserLike | null>;
+      setGoogleUser(customEvent.detail || getStoredGoogleUser());
+    };
+    window.addEventListener('cosmo_auth_changed', handleAuthChange);
+    return () => {
+      window.removeEventListener('cosmo_auth_changed', handleAuthChange);
+    };
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    setIsLoggingInGoogle(true);
+    setGoogleLoginError(null);
+    try {
+      const user = await signInWithGoogle();
+      if (user) {
+        setGoogleUser(user);
+      }
+    } catch (err: any) {
+      console.error('Google Sign-in failed in Highlight modal:', err);
+      if (err?.code === 'auth/popup-blocked') {
+        setGoogleLoginError('Trình duyệt đã chặn cửa sổ đăng nhập. Vui lòng cho phép popup để đăng nhập Google.');
+      } else if (err?.code === 'auth/unauthorized-domain') {
+        setGoogleLoginError('Tên miền ứng dụng chưa được ủy quyền trên Firebase Console.');
+      } else {
+        setGoogleLoginError(err?.message || 'Không thể đăng nhập Google. Vui lòng thử lại.');
+      }
+    } finally {
+      setIsLoggingInGoogle(false);
+    }
+  };
+
   const [commentText, setCommentText] = useState('');
-  const [nameError, setNameError] = useState('');
   const [justSubmitted, setJustSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [localComments, setLocalComments] = useState<NovelComment[]>([]);
@@ -169,36 +208,21 @@ export const HighlightCommentModal: React.FC<HighlightCommentModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setCommentText('');
-      setNameError('');
       setJustSubmitted(false);
       setIsSubmitting(false);
       setLocalComments([]);
-      const saved = initialAuthor || safeStorage.getItem('cosmo_comment_author_name') || '';
-      setAuthorName(saved);
     }
-  }, [isOpen, initialAuthor]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleFormSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const trimmedAuthor = authorName.trim();
-    if (!trimmedAuthor || trimmedAuthor.length <= 1) {
-      setNameError('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
+    if (!googleUser) {
+      handleGoogleLogin();
       return;
     }
-    setNameError('');
-
-    if (rememberName) {
-      try {
-        safeStorage.setItem('cosmo_comment_author_name', trimmedAuthor);
-        safeStorage.setItem('cosmo_remember_comment_author', 'true');
-      } catch {}
-    } else {
-      try {
-        safeStorage.setItem('cosmo_remember_comment_author', 'false');
-      } catch {}
-    }
+    const trimmedAuthor = (googleUser.displayName || 'Bạn đọc').trim();
 
     setIsSubmitting(true);
 
@@ -211,7 +235,7 @@ export const HighlightCommentModal: React.FC<HighlightCommentModalProps> = ({
       id: `local-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       truyenId: '',
       author: trimmedAuthor,
-      avatar: '',
+      avatar: googleUser.photoURL || '',
       content: fullContent,
       createdAt: 'Vừa xong',
       ngayTao: new Date().toISOString(),
@@ -297,83 +321,125 @@ export const HighlightCommentModal: React.FC<HighlightCommentModalProps> = ({
               </div>
             )}
 
-            {/* 2. Form Nhập Bình Luận Trích Dẫn */}
-            <form
-              onSubmit={handleFormSubmit}
-              className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${st.formCard}`}
-            >
-              <div className="flex flex-col sm:flex-row gap-2.5 items-start sm:items-center">
-                <div className="w-full sm:w-1/2">
-                  <input
-                    type="text"
-                    placeholder="Tên của bạn *"
-                    value={authorName}
-                    onChange={(e) => {
-                      setAuthorName(e.target.value);
-                      if (e.target.value.trim().length > 1) setNameError('');
-                    }}
-                    maxLength={40}
-                    required
-                    className={`w-full px-3 py-1.5 rounded-xl text-xs border focus:outline-none focus:ring-2 transition-all ${
-                      nameError ? 'border-rose-400 ring-1 ring-rose-400' : ''
-                    } ${st.input}`}
-                  />
+            {/* 2. Form Nhập Bình Luận Trích Dẫn (Yêu cầu đăng nhập Google) */}
+            {!googleUser ? (
+              <div className={`p-4 rounded-2xl border text-center space-y-3 ${st.formCard}`}>
+                <div className="w-10 h-10 mx-auto rounded-full bg-white shadow-xs border border-zinc-200 flex items-center justify-center">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                  </svg>
                 </div>
-                <div className="flex items-center gap-2">
-                  <label className="flex items-center gap-1.5 cursor-pointer text-[11px] select-none opacity-80 hover:opacity-100 transition-opacity">
-                    <input
-                      type="checkbox"
-                      checked={rememberName}
-                      onChange={(e) => setRememberName(e.target.checked)}
-                      className="rounded border-zinc-400 text-purple-600 focus:ring-purple-500/30 w-3.5 h-3.5 cursor-pointer accent-purple-600"
-                    />
-                    <span>Ghi nhớ tên</span>
-                  </label>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-bold">Đăng nhập Google để bình luận trích dẫn</h4>
+                  <p className="text-[11px] opacity-70 mt-0.5">
+                    Xác thực để gửi suy nghĩ về câu văn này
+                  </p>
                 </div>
+                {googleLoginError && (
+                  <div className="text-[11px] text-rose-500 bg-rose-500/10 py-1 px-2.5 rounded-lg border border-rose-500/20 text-left">
+                    {googleLoginError}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={isLoggingInGoogle}
+                  className="w-full py-2 px-3 rounded-xl bg-white hover:bg-zinc-50 text-zinc-800 text-xs font-semibold shadow-xs border border-zinc-200 hover:border-zinc-300 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                >
+                  {isLoggingInGoogle ? (
+                    <div className="w-3.5 h-3.5 border-2 border-zinc-400 border-t-purple-600 rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                    </svg>
+                  )}
+                  <span>{isLoggingInGoogle ? 'Đang mở cửa sổ đăng nhập...' : 'Tiếp tục với Google'}</span>
+                </button>
               </div>
-              {nameError && (
-                <p className="text-[11px] text-rose-500 font-medium pl-1">{nameError}</p>
-              )}
+            ) : (
+              <form
+                onSubmit={handleFormSubmit}
+                className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${st.formCard}`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    {googleUser.photoURL ? (
+                      <img
+                        src={googleUser.photoURL}
+                        alt={googleUser.displayName || 'User'}
+                        className="w-7 h-7 rounded-full object-cover border border-purple-500/40"
+                      />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-purple-600/20 text-purple-400 font-bold flex items-center justify-center text-xs">
+                        {(googleUser.displayName || 'U').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold">{googleUser.displayName || 'Bạn đọc'}</span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-500/15 text-purple-400 font-medium border border-purple-500/30">
+                        Google
+                      </span>
+                    </div>
+                  </div>
 
-              <div>
-                <textarea
-                  rows={3}
-                  placeholder="Chia sẻ suy nghĩ của bạn về đoạn trích này..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  maxLength={1000}
-                  className={`w-full p-3 rounded-xl text-xs sm:text-sm border focus:outline-none focus:ring-2 transition-all resize-none ${st.input}`}
-                />
-              </div>
-
-              <div className="flex items-center justify-between pt-1">
-                <div className="text-[11px]">
-                  {justSubmitted ? (
-                    <span className="text-emerald-500 font-bold flex items-center gap-1">
-                      <span>✓ Đã đăng bình luận thành công</span>
-                    </span>
-                  ) : null}
-                </div>
-
-                <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={onClose}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${st.cancelBtn}`}
+                    onClick={async () => {
+                      await signOutGoogleUser();
+                      setGoogleUser(null);
+                    }}
+                    className="text-[10px] opacity-60 hover:opacity-100 hover:underline cursor-pointer"
                   >
-                    Đóng
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${st.primaryBtn}`}
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Gửi Bình Luận</span>
+                    Đổi tài khoản
                   </button>
                 </div>
-              </div>
-            </form>
+
+                <div>
+                  <textarea
+                    rows={3}
+                    placeholder="Chia sẻ suy nghĩ của bạn về đoạn trích này..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    maxLength={1000}
+                    className={`w-full p-3 rounded-xl text-xs sm:text-sm border focus:outline-none focus:ring-2 transition-all resize-none ${st.input}`}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <div className="text-[11px]">
+                    {justSubmitted ? (
+                      <span className="text-emerald-500 font-bold flex items-center gap-1">
+                        <span>✓ Đã đăng bình luận thành công</span>
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${st.cancelBtn}`}
+                    >
+                      Đóng
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer disabled:opacity-50 ${st.primaryBtn}`}
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Gửi Bình Luận</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
 
             {/* 3. Danh Sách Bình Luận (Tiêu đề bỏ icon lấp lánh bên cạnh) */}
             <div className="space-y-3 pt-1">

@@ -1091,4 +1091,128 @@ export async function saveNovelCoverToD1(
   return { success: true };
 }
 
+// ============================================================================
+// ĐỒNG BỘ HỒ SƠ NGƯỜI DÙNG & TIẾN ĐỘ ĐỌC TRÊN CLOUDFLARE D1 (nienthoi-intro-db)
+// Tự động đồng bộ sang mọi thiết bị khi đăng nhập Google (trừ highlight)
+// ============================================================================
+
+export interface D1UserProfile {
+  userId: string;
+  email?: string;
+  displayName?: string;
+  nickname?: string;
+  avatarUrl?: string;
+  themePreference?: string;
+}
+
+export interface D1ReadingProgress {
+  userId: string;
+  novelId: string;
+  novelTitle?: string;
+  chapterNumber: number;
+  chapterTitle?: string;
+  progressPercent: number;
+  scrollY?: number;
+  readingTimeMinutes?: number;
+  updatedAt?: number;
+}
+
+/**
+ * Lưu / cập nhật hồ sơ người dùng lên Cloudflare D1
+ */
+export async function syncUserProfileToD1(profile: D1UserProfile): Promise<{ success: boolean; error?: string }> {
+  if (!profile.userId) return { success: false, error: 'Thiếu userId' };
+
+  try {
+    const res = await fetch('/api/user/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profile),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return { success: Boolean(data.success) };
+    }
+    return { success: false, error: 'Lỗi HTTP ' + res.status };
+  } catch (err: any) {
+    console.warn('Lỗi khi đồng bộ hồ sơ lên D1:', err);
+    return { success: false, error: err?.message };
+  }
+}
+
+/**
+ * Tải thông tin hồ sơ người dùng từ Cloudflare D1
+ */
+export async function fetchUserProfileFromD1(userId: string): Promise<D1UserProfile | null> {
+  if (!userId) return null;
+
+  try {
+    const res = await fetch(`/api/user/profile?userId=${encodeURIComponent(userId)}`, {
+      method: 'GET',
+      headers: { 'Cache-Control': 'no-cache' },
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.profile) {
+        return data.profile as D1UserProfile;
+      }
+    }
+  } catch (err) {
+    console.warn('Lỗi tải hồ sơ từ D1:', err);
+  }
+  return null;
+}
+
+/**
+ * Đồng bộ tiến độ đọc truyện lên Cloudflare D1 (lưu vĩnh viễn trên nienthoi-intro-db)
+ */
+export async function syncReadingProgressToD1(progress: D1ReadingProgress): Promise<{ success: boolean; error?: string }> {
+  if (!progress.userId || !progress.novelId) {
+    return { success: false, error: 'Thiếu userId hoặc novelId' };
+  }
+
+  try {
+    const res = await fetch('/api/user/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(progress),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return { success: Boolean(data.success) };
+    }
+  } catch (err: any) {
+    console.warn('Lỗi đồng bộ tiến độ đọc lên D1:', err);
+  }
+  return { success: false };
+}
+
+/**
+ * Tải danh sách lịch sử đọc truyện của người dùng từ Cloudflare D1
+ */
+export async function fetchUserReadingProgressFromD1(userId: string): Promise<D1ReadingProgress[]> {
+  if (!userId) return [];
+
+  try {
+    const res = await fetch(`/api/user/progress?userId=${encodeURIComponent(userId)}`, {
+      method: 'GET',
+      headers: { 'Cache-Control': 'no-cache' },
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.items)) {
+        return data.items as D1ReadingProgress[];
+      }
+    }
+  } catch (err) {
+    console.warn('Lỗi tải lịch sử đọc từ D1:', err);
+  }
+  return [];
+}
+
+
 

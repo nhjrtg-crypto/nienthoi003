@@ -265,6 +265,7 @@ interface NovelHomeViewProps {
   onOpenLightIntro?: () => void;
   onOpenAboutView?: () => void;
   onOpenInternalBeyond?: () => void;
+  onOpenUserProfile?: () => void;
   isAdmin?: boolean;
   currentUser?: AdminUserLike | null;
   onOpenAdminAuth?: () => void;
@@ -272,7 +273,7 @@ interface NovelHomeViewProps {
   onToggleNovelStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteFirestoreNovel?: (novelId: string) => void;
   isDarkMode?: boolean;
-  onToggleDarkMode?: () => void;
+  onToggleDarkMode?: (e?: any) => void;
 }
 
 export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
@@ -284,6 +285,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   onOpenLightIntro,
   onOpenAboutView,
   onOpenInternalBeyond,
+  onOpenUserProfile,
   isAdmin = false,
   currentUser = null,
   onOpenAdminAuth,
@@ -513,12 +515,12 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
         window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
         window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'amethyst-haze' }));
         try { window.dispatchEvent(new Event('storage')); } catch {}
-        propOnToggleDarkMode?.();
+        propOnToggleDarkMode?.(e);
       }, coords, false);
       return;
     }
     if (propOnToggleDarkMode) {
-      propOnToggleDarkMode();
+      propOnToggleDarkMode(e);
       return;
     }
     const next = !isDarkMode;
@@ -3830,7 +3832,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
   const themeFontHeading = 'font-source-serif';
 
   // Auto-hide header when scrolling down, reveal when scrolling up
-  const isHeaderVisible = useHeaderScroll({ threshold: 40, delta: 6 });
+  const isHeaderVisible = useHeaderScroll({ threshold: 30, delta: 5 });
   const shouldShowHeader = isHeaderVisible || isThemeMenuOpen || isMainMenuOpen;
 
   const themeIconColor = useMemo(() => {
@@ -4438,6 +4440,26 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             </div>
                           </button>
 
+                          {/* Hồ sơ cá nhân */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              cosmicAudio.playChime('sparkle');
+                              setIsMainMenuOpen(false);
+                              onOpenUserProfile?.();
+                            }}
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                              menuThemeStyles.btnConvex
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                              <span>Hồ sơ cá nhân</span>
+                              <span className={`text-[7.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
+                                Google
+                              </span>
+                            </div>
+                          </button>
+
                           {/* 3. Tìm kiếm */}
                           <button
                             type="button"
@@ -4489,16 +4511,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                             </div>
                           </button>
 
-                          {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu) */}
+                          {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu - ẩn hiển thị theo yêu cầu người dùng) */}
                           <button
                             type="button"
                             id="btn-admin-auth-menu"
+                            style={{ display: 'none' }}
                             onClick={() => {
                               cosmicAudio.playChime('sparkle');
                               setIsMainMenuOpen(false);
                               onOpenAdminAuth();
                             }}
-                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full hidden items-center justify-between transition-all duration-300 cursor-pointer ${
                               menuThemeStyles.btnConvex
                             }`}
                             title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}
@@ -4565,6 +4588,26 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                           </div>
                         </button>
 
+                        {/* Hồ sơ cá nhân */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            cosmicAudio.playChime('sparkle');
+                            setIsMainMenuOpen(false);
+                            onOpenUserProfile?.();
+                          }}
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                            menuThemeStyles.btnConvex
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-[13px] font-serif tracking-wider">
+                            <span>Hồ sơ cá nhân</span>
+                            <span className={`text-[7.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-sans font-medium ${menuThemeStyles.badge}`}>
+                              Google
+                            </span>
+                          </div>
+                        </button>
+
                         {/* 3. Tìm kiếm */}
                         <button
                           type="button"
@@ -4616,16 +4659,17 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
                           </div>
                         </button>
 
-                        {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu) */}
+                        {/* 5. Quản trị viên (Tích hợp dưới cùng dropdown menu - ẩn hiển thị theo yêu cầu người dùng) */}
                         <button
                           type="button"
                           id="btn-admin-auth-menu"
+                          style={{ display: 'none' }}
                           onClick={() => {
                             cosmicAudio.playChime('sparkle');
                             setIsMainMenuOpen(false);
                             onOpenAdminAuth();
                           }}
-                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 cursor-pointer ${
+                          className={`w-full px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full hidden items-center justify-between transition-all duration-300 cursor-pointer ${
                             menuThemeStyles.btnConvex
                           }`}
                           title={isAdmin ? `Quản trị viên: ${currentUser?.email}` : 'Đăng nhập tài khoản quản trị'}

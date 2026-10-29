@@ -91,6 +91,24 @@ export const db = (() => {
 // Initialize Firebase Auth
 export const auth = getAuth(app);
 
+// Automatically synchronize Google user auth state
+if (typeof window !== 'undefined') {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      saveStoredGoogleUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      });
+      window.dispatchEvent(new CustomEvent('cosmo_auth_changed', { detail: user }));
+    } else {
+      clearStoredGoogleUser();
+      window.dispatchEvent(new CustomEvent('cosmo_auth_changed', { detail: null }));
+    }
+  });
+}
+
 // Test connection on demand without forcing unhandled network errors
 export async function testFirebaseConnection(): Promise<boolean> {
   try {
@@ -235,21 +253,95 @@ export function clearAdminSession(): void {
   }
 }
 
+export interface GoogleUserLike {
+  uid: string;
+  email?: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
+}
+
+export const LOCAL_GOOGLE_USER_KEY = 'cosmo_google_auth_user_v1';
+
+export function getStoredGoogleUser(): GoogleUserLike | null {
+  try {
+    const raw = safeStorage.getItem(LOCAL_GOOGLE_USER_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.uid) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('[Firebase] Failed reading stored Google user:', e);
+  }
+  return null;
+}
+
+export function saveStoredGoogleUser(user: GoogleUserLike): void {
+  try {
+    safeStorage.setItem(LOCAL_GOOGLE_USER_KEY, JSON.stringify({
+      uid: user.uid,
+      email: user.email || null,
+      displayName: user.displayName || null,
+      photoURL: user.photoURL || null,
+    }));
+  } catch (e) {
+    console.warn('[Firebase] Failed saving Google user to storage:', e);
+  }
+}
+
+export function clearStoredGoogleUser(): void {
+  try {
+    safeStorage.removeItem(LOCAL_GOOGLE_USER_KEY);
+  } catch {}
+}
+
 // Sign in with Google Popup
 export async function signInWithGoogle(): Promise<User | null> {
   try {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
     const result = await signInWithPopup(auth, provider);
+    if (result.user) {
+      saveStoredGoogleUser({
+        uid: result.user.uid,
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+      });
+      window.dispatchEvent(new CustomEvent('cosmo_auth_changed', { detail: result.user }));
+    }
     return result.user;
   } catch (error: any) {
     if (error?.code === 'auth/popup-closed-by-user' || error?.code === 'auth/cancelled-popup-request') {
       console.log('[Firebase] User closed Google sign-in popup.');
       return null;
     }
+    if (error?.code === 'auth/popup-blocked') {
+      console.error('[Firebase] Popup was blocked by browser.');
+      throw new Error('Trình duyệt đã chặn cửa sổ đăng nhập Google. Vui lòng cho phép mở cửa sổ bật lên (pop-up) cho trang web này rồi thử lại.');
+    }
+    if (error?.code === 'auth/unauthorized-domain') {
+      console.error('[Firebase] Unauthorized domain:', window.location.hostname);
+      throw new Error(`Tên miền ${window.location.hostname} chưa được thêm vào mục Authorized Domains trong Firebase Console.`);
+    }
+    if (error?.code === 'auth/operation-not-allowed') {
+      throw new Error('Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Console.');
+    }
     console.error('[Firebase] Google sign in error:', error);
     throw error;
   }
+}
+
+// Sign out from Google Auth
+export async function signOutGoogleUser(): Promise<void> {
+  try {
+    await signOut(auth);
+  } catch (e) {
+    console.warn('[Firebase] Error signing out Google user:', e);
+  }
+  clearStoredGoogleUser();
+  window.dispatchEvent(new CustomEvent('cosmo_auth_changed', { detail: null }));
 }
 
 // --- Firestore CRUD operations for Truyen ---

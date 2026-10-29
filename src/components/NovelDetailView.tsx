@@ -66,6 +66,7 @@ import {
   Clapperboard,
   Film,
   Reply,
+  User,
 } from 'lucide-react';
 import {
   getDirectImageUrl,
@@ -105,9 +106,12 @@ import { parseCommentContent } from '../utils/chapterHighlights';
 import {
   FirestoreChuongMeta,
   AdminUserLike,
+  GoogleUserLike,
   isBotComment,
   auth,
   signInWithGoogle,
+  signOutGoogleUser,
+  getStoredGoogleUser,
 } from '../services/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
@@ -125,6 +129,7 @@ import {
 } from '../services/d1Service';
 import { formatCommentDate, normalizeCommentDate } from '../utils/dateUtils';
 import { LUA_NHAU_NOVEL } from '../data/luaNhauData';
+import { isNovelBookmarked, toggleNovelBookmark } from '../utils/bookmarks';
 
 // =========================================================================
 // HỌA TIẾT NỀN KHỐI MÀU GRADIENT & ICON MỜ CHO KHỐI BÌA TRUYỆN (KIỂU CHUẨN)
@@ -564,14 +569,16 @@ interface NovelDetailViewProps {
   onToggleStatus?: (novelId: string, currentStatus: 'nhap' | 'daDang') => void;
   onDeleteNovel?: (novelId: string) => void;
   onOpenIntro?: () => void;
+  onOpenUserProfile?: () => void;
   isDarkMode?: boolean;
-  onToggleDarkMode?: () => void;
+  onToggleDarkMode?: (e?: any) => void;
 }
 
 export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   novel,
   onBack,
   onOpenIntro,
+  onOpenUserProfile,
   onReadChapter,
   onAddChapter,
   onUpdateChapters,
@@ -587,7 +594,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   onToggleDarkMode: propOnToggleDarkMode,
 }) => {
   const [activeTab, setActiveTab] = useState<'synopsis' | 'chapters' | 'comments' | 'author'>('synopsis');
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(() => isNovelBookmarked(novel.id));
   const [voteCount, setVoteCount] = useState(novel.monthlyVotes);
   const [hasVoted, setHasVoted] = useState(false);
   const [chapterSortAsc, setChapterSortAsc] = useState(true);
@@ -600,6 +607,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   // Reset về kiểu Chuẩn mỗi khi mở một truyện mới và tải gộp Views + Likes + Comments
   useEffect(() => {
     setDetailLayoutOption('option1');
+    setIsBookmarked(isNovelBookmarked(novel.id));
     if (novel.id) {
       fetchNovelBundle(novel.id).catch(() => {});
     }
@@ -901,21 +909,64 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   const [userRating, setUserRating] = useState(5);
   const [userName, setUserName] = useState(() => {
     try {
+      const stored = getStoredGoogleUser();
+      if (stored?.displayName) return stored.displayName;
       return safeStorage.getItem('cosmo_comment_author_name') || '';
     } catch {
       return '';
     }
   });
-  const [googleUser, setGoogleUser] = useState<any>(auth.currentUser);
+  const [googleUser, setGoogleUser] = useState<GoogleUserLike | null>(() => auth.currentUser || getStoredGoogleUser());
+  const [isLoggingInGoogle, setIsLoggingInGoogle] = useState(false);
+  const [googleAuthError, setGoogleAuthError] = useState<string | null>(null);
+
   useEffect(() => {
+    const handleAuthChange = (e?: any) => {
+      if (e && e.detail !== undefined) {
+        setGoogleUser(e.detail);
+        if (e.detail?.displayName) setUserName(e.detail.displayName);
+        return;
+      }
+      setGoogleUser(auth.currentUser || getStoredGoogleUser());
+    };
+    window.addEventListener('cosmo_auth_changed', handleAuthChange);
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setGoogleUser(user);
-      if (user && user.displayName) {
-        setUserName(user.displayName);
+      if (user) {
+        setGoogleUser(user);
+        if (user.displayName) {
+          setUserName(user.displayName);
+        }
+      } else {
+        const stored = getStoredGoogleUser();
+        setGoogleUser(stored);
       }
     });
-    return () => unsubscribe();
+    return () => {
+      window.removeEventListener('cosmo_auth_changed', handleAuthChange);
+      unsubscribe();
+    };
   }, []);
+
+  const handleGoogleLoginForComment = async () => {
+    setIsLoggingInGoogle(true);
+    setGoogleAuthError(null);
+    try {
+      const user = await signInWithGoogle();
+      if (user) {
+        setGoogleUser(user);
+        if (user.displayName) setUserName(user.displayName);
+        triggerToast('Đăng nhập thành công!', `Chào mừng ${user.displayName || user.email}! Bạn có thể gửi bình luận ngay bây giờ.`);
+      }
+    } catch (err: any) {
+      console.error('[Google Auth] Error during login:', err);
+      const msg = err?.message || 'Không thể đăng nhập bằng Google. Vui lòng thử lại.';
+      setGoogleAuthError(msg);
+      triggerToast('Đăng nhập chưa hoàn tất', msg);
+    } finally {
+      setIsLoggingInGoogle(false);
+    }
+  };
 
   // Synchronize and subscribe to comments in real-time from Cloudflare D1 & safeStorage
   useEffect(() => {
@@ -1220,7 +1271,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: false }));
         window.dispatchEvent(new CustomEvent('cosmo_theme_changed', { detail: 'slate-haze' }));
         try { window.dispatchEvent(new Event('storage')); } catch {}
-        propOnToggleDarkMode?.();
+        propOnToggleDarkMode?.(e);
       }, coords, false);
       return;
     }
@@ -1235,7 +1286,7 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
       }
       window.dispatchEvent(new CustomEvent('cosmo_darkmode_changed', { detail: next }));
       try { window.dispatchEvent(new Event('storage')); } catch {}
-      propOnToggleDarkMode?.();
+      propOnToggleDarkMode?.(e);
     }, coords, next);
   };
 
@@ -1964,7 +2015,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
   };
 
   const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
+    const next = toggleNovelBookmark(novel.id);
+    setIsBookmarked(next);
+    cosmicAudio.playChime('sparkle');
   };
 
   const handleVote = () => {
@@ -1978,12 +2031,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     e.preventDefault();
     if (!newCommentText.trim()) return;
 
-    const finalAuthor = userName.trim();
-    if (!finalAuthor || finalAuthor.length <= 1) {
-      window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
+    if (!googleUser) {
+      handleGoogleLoginForComment();
       return;
     }
-    const finalAvatar = '';
+
+    const finalAuthor = (googleUser.displayName || userName || googleUser.email?.split('@')[0] || 'Bạn Đọc').trim();
+    const finalAvatar = googleUser.photoURL || '';
     try {
       safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
     } catch {}
@@ -2611,6 +2665,18 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {onOpenUserProfile && (
+            <button
+              type="button"
+              onClick={onOpenUserProfile}
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer shadow-xs ${tStyles.themeSelectorBtn}`}
+              title="Hồ sơ cá nhân & Truyện đã lưu"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Hồ sơ</span>
+            </button>
+          )}
+
           {/* Theme Selector Popover (Trình bày đồng bộ như ngoài trang chủ) */}
           <div className="relative" ref={themeMenuRef}>
             <button
@@ -4909,80 +4975,155 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6 max-w-4xl mx-auto"
               >
-                {/* Submit Comment Form */}
-                <form
-                  id="detail-comment-form"
-                  onSubmit={handlePostComment}
-                  className={`p-6 sm:p-7 rounded-3xl border shadow-xs space-y-4 ${
-                    isJournalStyle
-                      ? isDarkEffective
-                        ? 'bg-[#15161C] border-zinc-700/80 text-zinc-100'
-                        : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-xs'
-                      : isNoteStyle
-                      ? isDarkEffective
-                        ? 'bg-[#1D1B16] border-amber-900/50 text-amber-100'
-                        : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-xs'
-                      : isCinemaStyle
-                      ? isDarkEffective
-                        ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100'
-                        : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-xs'
-                      : isCyberStyle
-                      ? isDarkEffective
-                        ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100'
-                        : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-xs'
-                      : isWaxSealStyle
-                      ? isDarkEffective
-                        ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4]'
-                        : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-xs'
-                      : isEditorialStyle
-                      ? isDarkEffective
-                        ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
-                        : 'bg-white border-stone-300 text-stone-900 shadow-xs'
-                      : tStyles.commentForm || detailThemeExtras.innerBox
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[14px] font-bold uppercase tracking-wider ${
-                      isNoteStyle
-                        ? 'font-sans text-amber-800 dark:text-amber-300'
-                        : isCinemaStyle
-                        ? 'font-mono text-neutral-900 dark:text-neutral-100'
-                        : isCyberStyle
-                        ? 'font-mono text-cyan-700 dark:text-cyan-300'
-                        : isWaxSealStyle
-                        ? 'font-serif text-[#523F36] dark:text-[#E0D2C4]'
-                        : isEditorialStyle
-                        ? 'font-mono text-stone-900 dark:text-white'
-                        : isDarkEffective
-                        ? 'text-white'
-                        : 'text-stone-900'
-                    }`}>
-                      {isJournalStyle
-                        ? 'Ghi chép bình luận · 评论'
+                {/* Submit Comment Form / Google Login Gate */}
+                {!googleUser ? (
+                  <div
+                    className={`p-6 sm:p-8 rounded-3xl border shadow-xs text-center space-y-4 backdrop-blur-md ${
+                      isJournalStyle
+                        ? isDarkEffective
+                          ? 'bg-[#15161C] border-zinc-700/80 text-zinc-100'
+                          : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-xs'
                         : isNoteStyle
-                        ? 'Ghi chép bình luận độc giả · 读者留言'
+                        ? isDarkEffective
+                          ? 'bg-[#1D1B16] border-amber-900/50 text-amber-100'
+                          : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-xs'
                         : isCinemaStyle
-                        ? 'Khán giả & Giới phê bình điện ảnh · AUDIENCE REVIEWS'
+                        ? isDarkEffective
+                          ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100'
+                          : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-xs'
                         : isCyberStyle
-                        ? 'NET://USER_DATA_FEEDBACK_STREAM'
+                        ? isDarkEffective
+                          ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100'
+                          : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-xs'
                         : isWaxSealStyle
-                        ? 'Thư Tín & Cảm Tác Của Bạn Đọc'
+                        ? isDarkEffective
+                          ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4]'
+                          : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-xs'
                         : isEditorialStyle
-                        ? 'LETTERS FROM READERS & CRITIQUE · THƯ BẠN ĐỌC'
-                        : 'Bình Luận Về Bộ Truyện'}
-                    </span>
-                  </div>
+                        ? isDarkEffective
+                          ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
+                          : 'bg-white border-stone-300 text-stone-900 shadow-xs'
+                        : tStyles.commentForm || detailThemeExtras.innerBox
+                    }`}
+                  >
+                    <div className="w-12 h-12 mx-auto rounded-2xl bg-white shadow-md flex items-center justify-center border border-zinc-200/80">
+                      <svg className="w-6 h-6" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                      </svg>
+                    </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      required
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Tên của bạn (bắt buộc)"
-                      className={`px-4 py-2.5 rounded-xl text-[14px] sm:text-[16px] font-sans focus:outline-hidden ${tStyles.input}`}
-                    />
+                    <div className="space-y-1">
+                      <h4 className="text-base sm:text-lg font-bold">Đăng nhập bằng Google để bình luận</h4>
+                      <p className="text-xs sm:text-sm opacity-75 max-w-md mx-auto">
+                        Vui lòng kết nối tài khoản Google để gửi bình luận.
+                      </p>
+                    </div>
+
+                    {googleAuthError && (
+                      <p className="text-xs text-rose-500 font-medium">{googleAuthError}</p>
+                    )}
+
+                    <div className="flex justify-center pt-1">
+                      <button
+                        type="button"
+                        disabled={isLoggingInGoogle}
+                        onClick={handleGoogleLoginForComment}
+                        className="px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-2.5 shadow-md bg-white text-zinc-800 hover:bg-zinc-50 border border-zinc-200 transition-all cursor-pointer hover:scale-102 active:scale-98"
+                      >
+                        {isLoggingInGoogle ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
+                            <span>Đang kết nối Google...</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                            </svg>
+                            <span>Đăng nhập với Google</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
+                ) : (
+                  <form
+                    id="detail-comment-form"
+                    onSubmit={handlePostComment}
+                    className={`p-6 sm:p-7 rounded-3xl border shadow-xs space-y-4 ${
+                      isJournalStyle
+                        ? isDarkEffective
+                          ? 'bg-[#15161C] border-zinc-700/80 text-zinc-100'
+                          : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-xs'
+                        : isNoteStyle
+                        ? isDarkEffective
+                          ? 'bg-[#1D1B16] border-amber-900/50 text-amber-100'
+                          : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-xs'
+                        : isCinemaStyle
+                        ? isDarkEffective
+                          ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100'
+                          : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-xs'
+                        : isCyberStyle
+                        ? isDarkEffective
+                          ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100'
+                          : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-xs'
+                        : isWaxSealStyle
+                        ? isDarkEffective
+                          ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4]'
+                          : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-xs'
+                        : isEditorialStyle
+                        ? isDarkEffective
+                          ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
+                          : 'bg-white border-stone-300 text-stone-900 shadow-xs'
+                        : tStyles.commentForm || detailThemeExtras.innerBox
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3 pb-2 border-b border-black/10 dark:border-white/10">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {googleUser.photoURL ? (
+                          <img
+                            src={googleUser.photoURL}
+                            alt={googleUser.displayName || 'Avatar'}
+                            className="w-9 h-9 rounded-full object-cover border border-black/15 dark:border-white/20 shrink-0"
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
+                            {((googleUser.displayName || googleUser.email || 'U')[0]).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-sm font-bold truncate">
+                              {googleUser.displayName || googleUser.email}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-0.5">
+                              <Check className="w-3 h-3" />
+                              <span>Đã xác thực</span>
+                            </span>
+                          </div>
+                          {googleUser.email && (
+                            <p className="text-[11px] opacity-60 truncate">{googleUser.email}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await signOutGoogleUser();
+                          setGoogleUser(null);
+                        }}
+                        className="text-xs opacity-65 hover:opacity-100 hover:underline cursor-pointer shrink-0"
+                      >
+                        Đổi tài khoản
+                      </button>
+                    </div>
 
                   <textarea
                     rows={3}
@@ -5017,8 +5158,9 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                     </button>
                   </div>
                 </form>
+              )}
 
-                {/* Comment List */}
+              {/* Comment List */}
                 <div className="space-y-3.5">
                   {comments.map((comment) => {
                     const parsed = parseCommentContent(comment.content);
