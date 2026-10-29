@@ -11,15 +11,53 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// In-memory stats for Express server
-const inMemoryStats = {
-  likes: {
-    intro_page: 30,
+// Persistent JSON storage file for AI Studio preview environment
+const STORAGE_FILE = path.join(__dirname, 'server_storage.json');
+
+let dbData = {
+  stats: {
+    likes: {
+      intro_page: 30,
+    },
+    views: {
+      total: 3000,
+    },
   },
-  views: {
-    total: 3000,
+  comments: [],
+  notes: {
+    style1: [],
+    style2: [],
   },
+  covers: {},
+  profiles: {},
+  progress: {},
 };
+
+try {
+  if (fs.existsSync(STORAGE_FILE)) {
+    const raw = fs.readFileSync(STORAGE_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') {
+      dbData = { ...dbData, ...parsed };
+      if (!dbData.stats) dbData.stats = { likes: { intro_page: 30 }, views: { total: 3000 } };
+      if (!dbData.comments) dbData.comments = [];
+      if (!dbData.notes) dbData.notes = { style1: [], style2: [] };
+      if (!dbData.covers) dbData.covers = {};
+      if (!dbData.profiles) dbData.profiles = {};
+      if (!dbData.progress) dbData.progress = {};
+    }
+  }
+} catch (e) {
+  console.warn('Could not load server_storage.json:', e);
+}
+
+function saveDb() {
+  try {
+    fs.writeFileSync(STORAGE_FILE, JSON.stringify(dbData, null, 2), 'utf8');
+  } catch (e) {
+    console.warn('Could not save server_storage.json:', e);
+  }
+}
 
 app.get('/api/likes', (req, res) => {
   res.set({
@@ -30,7 +68,7 @@ app.get('/api/likes', (req, res) => {
   const targetId = req.query.targetId === 'intro_page' || String(req.query.targetId || '').startsWith('intro')
     ? 'intro_page'
     : String(req.query.targetId || 'global');
-  const count = inMemoryStats.likes[targetId] ?? (targetId === 'intro_page' ? 30 : 0);
+  const count = dbData.stats.likes[targetId] ?? (targetId === 'intro_page' ? 30 : 0);
   res.json({ success: true, targetId, likeCount: count });
 });
 
@@ -45,29 +83,28 @@ app.post('/api/likes', (req, res) => {
     ? 'intro_page'
     : String(rawTarget);
   const amount = typeof req.body?.amount === 'number' && req.body.amount > 0 ? req.body.amount : 1;
-  const current = inMemoryStats.likes[targetId] ?? (targetId === 'intro_page' ? 30 : 0);
+  const current = dbData.stats.likes[targetId] ?? (targetId === 'intro_page' ? 30 : 0);
   const next = current + amount;
-  inMemoryStats.likes[targetId] = next;
+  dbData.stats.likes[targetId] = next;
+  saveDb();
   res.json({ success: true, targetId, likeCount: next });
 });
 
 app.get('/api/views', (req, res) => {
-  res.json({ success: true, totalViews: inMemoryStats.views.total, todayViews: 0 });
+  res.json({ success: true, totalViews: dbData.stats.views.total, todayViews: 0 });
 });
 
 app.post('/api/views', (req, res) => {
   const amount = typeof req.body?.amount === 'number' && req.body.amount > 0 ? req.body.amount : 1;
-  inMemoryStats.views.total += amount;
-  res.json({ success: true, totalViews: inMemoryStats.views.total, todayViews: 0 });
+  dbData.stats.views.total += amount;
+  saveDb();
+  res.json({ success: true, totalViews: dbData.stats.views.total, todayViews: 0 });
 });
-
-// In-memory comments storage for server
-const inMemoryComments = [];
 
 app.get('/api/comments', (req, res) => {
   const novelId = req.query.novelId;
   const chapterNumber = req.query.chapterNumber ? parseInt(req.query.chapterNumber, 10) : null;
-  let results = inMemoryComments;
+  let results = dbData.comments;
   if (novelId) {
     results = results.filter((c) => c.truyenId === novelId || c.novelId === novelId);
   }
@@ -80,19 +117,21 @@ app.get('/api/comments', (req, res) => {
 app.post('/api/comments', (req, res) => {
   const body = req.body || {};
   if (body.action === 'like' && body.commentId) {
-    const item = inMemoryComments.find((c) => c.id === body.commentId);
+    const item = dbData.comments.find((c) => c.id === body.commentId);
     if (item) item.likes = (item.likes || 0) + 1;
+    saveDb();
     return res.json({ success: true, commentId: body.commentId });
   }
 
   if (body.action === 'delete') {
     const rawId = String(body.commentId || body.id || '').trim();
     if (rawId) {
-      let idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+      let idx = dbData.comments.findIndex((c) => String(c.id).trim() === rawId);
       while (idx !== -1) {
-        inMemoryComments.splice(idx, 1);
-        idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+        dbData.comments.splice(idx, 1);
+        idx = dbData.comments.findIndex((c) => String(c.id).trim() === rawId);
       }
+      saveDb();
       return res.json({ success: true, commentId: rawId, deleted: true });
     }
   }
@@ -112,7 +151,8 @@ app.post('/api/comments', (req, res) => {
     createdTimestamp: body.createdTimestamp || Date.now(),
   };
 
-  inMemoryComments.unshift(newComment);
+  dbData.comments.unshift(newComment);
+  saveDb();
   res.json({ success: true, comment: newComment });
 });
 
@@ -121,23 +161,18 @@ app.delete('/api/comments', (req, res) => {
   if (!rawId) {
     return res.status(400).json({ success: false, error: 'Thiếu comment id' });
   }
-  let idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+  let idx = dbData.comments.findIndex((c) => String(c.id).trim() === rawId);
   while (idx !== -1) {
-    inMemoryComments.splice(idx, 1);
-    idx = inMemoryComments.findIndex((c) => String(c.id).trim() === rawId);
+    dbData.comments.splice(idx, 1);
+    idx = dbData.comments.findIndex((c) => String(c.id).trim() === rawId);
   }
+  saveDb();
   res.json({ success: true, commentId: rawId, deleted: true });
 });
 
-// In-memory notes storage for server
-const inMemoryNotes = {
-  style1: [],
-  style2: [],
-};
-
 app.get('/api/notes', (req, res) => {
   const style = req.query.style === 'style2' ? 'style2' : 'style1';
-  res.json({ success: true, notes: inMemoryNotes[style] || [] });
+  res.json({ success: true, notes: dbData.notes[style] || [] });
 });
 
 app.post('/api/notes', (req, res) => {
@@ -153,8 +188,9 @@ app.post('/api/notes', (req, res) => {
     time: body.time || timeStr,
     createdAt: body.createdAt || Date.now(),
   };
-  if (!inMemoryNotes[style]) inMemoryNotes[style] = [];
-  inMemoryNotes[style].unshift(note);
+  if (!dbData.notes[style]) dbData.notes[style] = [];
+  dbData.notes[style].unshift(note);
+  saveDb();
   res.json({ success: true, note });
 });
 
@@ -162,8 +198,8 @@ app.get('/api/novel-bundle', (req, res) => {
   const novelId = req.query.novelId || 'global';
   const chapterNumber = req.query.chapterNumber ? parseInt(req.query.chapterNumber, 10) : null;
   const targetLikeId = (novelId.startsWith('intro_') || novelId === 'intro') ? 'intro_page' : novelId;
-  const likeCount = inMemoryStats.likes[targetLikeId] ?? (targetLikeId === 'intro_page' ? 30 : 0);
-  let comments = inMemoryComments;
+  const likeCount = dbData.stats.likes[targetLikeId] ?? (targetLikeId === 'intro_page' ? 30 : 0);
+  let comments = dbData.comments;
   if (novelId && novelId !== 'global') {
     comments = comments.filter((c) => c.truyenId === novelId || c.novelId === novelId);
   }
@@ -177,7 +213,7 @@ app.get('/api/novel-bundle', (req, res) => {
     views: {
       novelViews: 0,
       chapterViews: 0,
-      totalGlobalViews: inMemoryStats.views.total,
+      totalGlobalViews: dbData.stats.views.total,
       todayGlobalViews: 0,
     },
     likes: likeCount,
@@ -185,16 +221,13 @@ app.get('/api/novel-bundle', (req, res) => {
   });
 });
 
-// In-memory covers storage for server
-const inMemoryCovers = {};
-
 app.get('/api/covers', (req, res) => {
   const novelId = req.query.novelId;
   if (novelId) {
-    const coverUrl = inMemoryCovers[novelId] || null;
+    const coverUrl = dbData.covers[novelId] || null;
     return res.json({ success: true, novelId, coverUrl });
   }
-  res.json({ success: true, covers: inMemoryCovers });
+  res.json({ success: true, covers: dbData.covers });
 });
 
 app.post('/api/covers', (req, res) => {
@@ -207,24 +240,21 @@ app.post('/api/covers', (req, res) => {
     return res.status(400).json({ success: false, error: 'Thiếu novelId hoặc coverUrl' });
   }
 
-  inMemoryCovers[novelId] = coverUrl;
+  dbData.covers[novelId] = coverUrl;
   if (novelTitle) {
-    inMemoryCovers[novelTitle] = coverUrl;
+    dbData.covers[novelTitle] = coverUrl;
   }
+  saveDb();
 
   res.json({ success: true, novelId, coverUrl });
 });
-
-// In-memory user profiles and reading progress for Express server
-const inMemoryProfiles = {};
-const inMemoryProgress = {};
 
 app.get('/api/user/profile', (req, res) => {
   const userId = req.query.userId;
   if (!userId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId' });
   }
-  const profile = inMemoryProfiles[userId] || null;
+  const profile = dbData.profiles[userId] || null;
   res.json({ success: true, profile });
 });
 
@@ -234,7 +264,7 @@ app.post('/api/user/profile', (req, res) => {
   if (!userId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId' });
   }
-  inMemoryProfiles[userId] = {
+  dbData.profiles[userId] = {
     userId,
     email: body.email || '',
     displayName: body.displayName || '',
@@ -242,6 +272,7 @@ app.post('/api/user/profile', (req, res) => {
     avatarUrl: body.avatarUrl || '',
     themePreference: body.themePreference || '',
   };
+  saveDb();
   res.json({ success: true });
 });
 
@@ -250,7 +281,7 @@ app.get('/api/user/progress', (req, res) => {
   if (!userId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId' });
   }
-  const items = inMemoryProgress[userId] || [];
+  const items = dbData.progress[userId] || [];
   res.json({ success: true, items });
 });
 
@@ -261,10 +292,10 @@ app.post('/api/user/progress', (req, res) => {
   if (!userId || !novelId) {
     return res.status(400).json({ success: false, error: 'Thiếu userId hoặc novelId' });
   }
-  if (!inMemoryProgress[userId]) {
-    inMemoryProgress[userId] = [];
+  if (!dbData.progress[userId]) {
+    dbData.progress[userId] = [];
   }
-  const list = inMemoryProgress[userId];
+  const list = dbData.progress[userId];
   const idx = list.findIndex((item) => item.novelId === novelId);
   const newItem = {
     userId,
@@ -282,6 +313,7 @@ app.post('/api/user/progress', (req, res) => {
   } else {
     list.unshift(newItem);
   }
+  saveDb();
   res.json({ success: true });
 });
 
@@ -300,5 +332,5 @@ if (fs.existsSync(distPath)) {
 }
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT} with persistent storage support`);
 });
