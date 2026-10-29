@@ -4,17 +4,6 @@
 -- (dash.cloudflare.com -> Storage & Databases -> D1 -> Chọn database -> Console)
 -- ============================================================================
 
--- 1. BẢNG THỐNG KÊ TOÀN TRANG (Lượt xem toàn web cộng dồn)
-CREATE TABLE IF NOT EXISTS site_stats (
-  id TEXT PRIMARY KEY,
-  total_views INTEGER NOT NULL DEFAULT 0,
-  today_views INTEGER NOT NULL DEFAULT 0,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Khởi tạo mốc lượt xem ban đầu nếu chưa tồn tại (Bắt đầu từ 3000 theo yêu cầu)
-INSERT OR IGNORE INTO site_stats (id, total_views, today_views) 
-VALUES ('global', 3000, 0);
 
 -- 2. BẢNG LƯỢT XEM TỪNG BỘ TRUYỆN & CHƯƠNG
 CREATE TABLE IF NOT EXISTS novel_views (

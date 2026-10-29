@@ -73,23 +73,11 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       }
     }
 
-    // Lượt xem toàn trang
-    let row = await db.prepare(
-      'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
-    ).first();
-
-    if (!row) {
-      await db.prepare(
-        'INSERT INTO site_stats (id, total_views, today_views) VALUES ("global", 3000, 0)'
-      ).run();
-      row = { total_views: 3000, today_views: 0 };
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
-        totalViews: row.total_views,
-        todayViews: row.today_views,
+        totalViews: 3000,
+        todayViews: 0,
       }),
       { headers: getHeaders }
     );
@@ -135,25 +123,11 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
         .run();
     }
 
-    // 2. Tăng lượt xem toàn trang cộng dồn (Global Website Views)
-    await db.prepare(
-      `INSERT INTO site_stats (id, total_views, today_views, updated_at)
-       VALUES ('global', 3000 + ?, ?, CURRENT_TIMESTAMP)
-       ON CONFLICT(id) 
-       DO UPDATE SET total_views = total_views + ?, today_views = today_views + ?, updated_at = CURRENT_TIMESTAMP`
-    )
-      .bind(amount, amount, amount, amount)
-      .run();
-
-    const row = await db.prepare(
-      'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
-    ).first();
-
     return new Response(
       JSON.stringify({
         success: true,
-        totalViews: row ? row.total_views : 3000,
-        todayViews: row ? row.today_views : 0,
+        totalViews: 3000,
+        todayViews: 0,
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );

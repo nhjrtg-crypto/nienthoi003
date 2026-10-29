@@ -82,16 +82,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
             }
           }
 
-          const sRow = await db.prepare(
-            'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
-          ).first();
-          if (sRow) {
-            totalGlobalViews = sRow.total_views || 3000;
-            todayGlobalViews = sRow.today_views || 0;
-          }
-        } catch {}
-
-        return { novelViews, chapterViews, totalGlobalViews, todayGlobalViews };
+        return { novelViews, chapterViews, totalGlobalViews: 3000, todayGlobalViews: 0 };
       })(),
 
       // 2. Lấy số lượng Likes
