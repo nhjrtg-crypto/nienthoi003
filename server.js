@@ -149,6 +149,8 @@ app.post('/api/comments', (req, res) => {
     likes: 0,
     createdAt: body.createdAt || new Date().toLocaleDateString('vi-VN'),
     createdTimestamp: body.createdTimestamp || Date.now(),
+    userId: body.userId || '',
+    reply: body.reply || null,
   };
 
   dbData.comments.unshift(newComment);

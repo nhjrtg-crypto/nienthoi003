@@ -641,13 +641,35 @@ export async function addComment(commentData: {
   avatar?: string;
   badge?: string;
   rating?: number;
+  userId?: string;
+  reply?: any;
 }): Promise<D1Comment> {
+  const currentNick = safeStorage.getItem('cosmo_profile_nickname') || commentData.author;
+  let currentUserId = commentData.userId;
+  if (!currentUserId) {
+    try {
+      const gUserRaw = safeStorage.getItem('cosmo_google_user');
+      if (gUserRaw) {
+        const gUser = JSON.parse(gUserRaw);
+        if (gUser?.uid) currentUserId = gUser.uid;
+      }
+    } catch {}
+    if (!currentUserId) {
+      let devId = safeStorage.getItem('cosmo_device_uuid');
+      if (!devId) {
+        devId = `dev_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        safeStorage.setItem('cosmo_device_uuid', devId);
+      }
+      currentUserId = devId;
+    }
+  }
+
   const payload = {
     id: commentData.id || `c_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     truyenId: commentData.truyenId,
     chapterNumber: commentData.chapterNumber,
     chapterTitle: commentData.chapterTitle,
-    author: commentData.author.trim() || 'Bạn Đọc',
+    author: currentNick.trim() || 'Bạn Đọc',
     content: commentData.content.trim(),
     avatar: commentData.avatar || '',
     badge: commentData.badge || 'Độc Giả',
@@ -655,6 +677,8 @@ export async function addComment(commentData: {
     likes: 0,
     createdAt: formatCommentDate(),
     createdTimestamp: Date.now(),
+    userId: currentUserId,
+    reply: commentData.reply || null,
   };
 
   // Cập nhật local storage cache ngay lập tức 0ms

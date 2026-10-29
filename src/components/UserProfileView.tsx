@@ -11,6 +11,7 @@ import {
   Sun,
   LogIn,
   X,
+  RefreshCw,
 } from 'lucide-react';
 import { Novel } from '../types';
 import {
@@ -176,15 +177,13 @@ function loadUserComments(
   const userGoogleName = (user?.displayName || '').trim().toLowerCase();
   const userEmail = (user?.email || '').trim().toLowerCase();
   const userEmailPrefix = userEmail ? userEmail.split('@')[0] : '';
-  const userUid = user?.uid;
-
-  if (!user && !userNick) return [];
+  const userUid = user?.uid || safeStorage.getItem('cosmo_device_uuid') || '';
 
   // 1. Quét tất cả bình luận từ safeStorage của từng truyện (dữ liệu D1 mới nhất)
   novels.forEach((n) => {
     let allComments: any[] = n.comments || [];
     try {
-      const saved = safeStorage.getItem(`cosmo_novel_comments_${n.id}`);
+      const saved = safeStorage.getItem(`cosmo_novel_comments_${n.id}`) || safeStorage.getItem(`d1_comments_${n.id}_all`);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -196,17 +195,24 @@ function loadUserComments(
     allComments.forEach((c: any) => {
       const cAuthor = (c.author || c.authorName || c.userName || c.user?.name || '').trim().toLowerCase();
       const cEmail = (c.userEmail || c.user?.email || '').trim().toLowerCase();
-      const cUid = c.userId || c.user?.id || c.uid;
+      const cUid = c.userId || c.user?.id || c.uid || '';
 
       const isMatch =
+        (userUid && cUid && cUid === userUid) ||
         (userNick && cAuthor === userNick) ||
         (userGoogleName && cAuthor === userGoogleName) ||
         (userEmailPrefix && cAuthor === userEmailPrefix) ||
-        (userEmail && cEmail === userEmail) ||
-        (userUid && cUid === userUid);
+        (userEmail && cEmail === userEmail);
 
       if (isMatch) {
         if (!list.some((item) => item.id === String(c.id))) {
+          let replyData = c.reply;
+          if (!replyData && c.reply_json) {
+            try {
+              replyData = JSON.parse(c.reply_json);
+            } catch {}
+          }
+
           list.push({
             id: String(c.id),
             sourceTitle: n.title,
@@ -215,10 +221,10 @@ function loadUserComments(
             likesCount: c.likes || 0,
             quotedText: c.quotedText || c.quote || undefined,
             userComment: c.content || c.text || '',
-            authorReply: c.reply
+            authorReply: replyData
               ? {
-                  authorName: c.reply.authorName || 'Tác giả',
-                  replyText: c.reply.content || c.reply.text || c.reply,
+                  authorName: replyData.authorName || replyData.author || 'Bạn đọc',
+                  replyText: replyData.content || replyData.text || replyData.replyText || replyData,
                 }
               : undefined,
           });
@@ -517,8 +523,71 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     cosmicAudio.playChime('sparkle');
   };
 
-  // Tabs: 'articles' (Lưu lịch sử đọc) | 'comments' (Lịch sử bình luận) | 'highlights' (Highlight truyện)
-  const [activeTab, setActiveTab] = useState<'articles' | 'comments' | 'highlights'>('articles');
+  const [isSyncingD1, setIsSyncingD1] = useState(false);
+
+  const handleManualSyncFromD1 = async () => {
+    setIsSyncingD1(true);
+    cosmicAudio.playChime('sparkle');
+    showToast('Đang cập nhật dữ liệu mới nhất từ Cloudflare D1...');
+
+    try {
+      const syncId = googleUser?.uid || safeStorage.getItem('cosmo_device_uuid');
+      if (syncId) {
+        const d1Profile = await fetchUserProfileFromD1(syncId);
+        if (d1Profile?.nickname) {
+          setNickname(d1Profile.nickname);
+          safeStorage.setItem('cosmo_profile_nickname', d1Profile.nickname);
+          safeStorage.setItem('cosmo_comment_author_name', d1Profile.nickname);
+        }
+
+        const d1Progress = await fetchUserReadingProgressFromD1(syncId);
+        if (d1Progress && d1Progress.length > 0) {
+          const raw = safeStorage.getItem('cosmo_recent_reads_v2') || safeStorage.getItem('cosmo_recent_reads');
+          let localList: RecentReadRecord[] = raw ? JSON.parse(raw) : [];
+          let hasChange = false;
+
+          d1Progress.forEach((item) => {
+            const existingIdx = localList.findIndex((r) => r.novelId === item.novelId);
+            if (existingIdx === -1) {
+              localList.push({
+                novelId: item.novelId,
+                chapterNumber: item.chapterNumber,
+                progressPercent: item.progressPercent,
+                updatedAt: item.updatedAt || Date.now(),
+              });
+              hasChange = true;
+            } else if ((item.updatedAt || 0) > (localList[existingIdx].updatedAt || 0)) {
+              localList[existingIdx] = {
+                novelId: item.novelId,
+                chapterNumber: item.chapterNumber,
+                progressPercent: item.progressPercent,
+                updatedAt: item.updatedAt || Date.now(),
+              };
+              hasChange = true;
+            }
+          });
+
+          if (hasChange) {
+            safeStorage.setItem('cosmo_recent_reads_v2', JSON.stringify(localList));
+          }
+        }
+      }
+
+      setDataVersion((v) => v + 1);
+      window.dispatchEvent(new Event('cosmo_recent_reads_updated'));
+      window.dispatchEvent(new Event('cosmo_comments_updated'));
+      window.dispatchEvent(new CustomEvent('cosmo_nickname_changed', { detail: nickname }));
+
+      showToast('Đã cập nhật dữ liệu mới nhất từ D1 thành công!');
+    } catch (err: any) {
+      showToast('Lỗi đồng bộ: ' + (err?.message || 'Không thể kết nối D1'));
+    } finally {
+      setIsSyncingD1(false);
+    }
+  };
+
+  // Tabs: 'comments' (Lịch sử bình luận) | 'highlights' (Highlight truyện)
+  const [activeTab, setActiveTab] = useState<'comments' | 'highlights'>('comments');
 
   // Lịch sử đọc thực tế của người dùng từ recentReads
   const recentReads = useMemo(() => {
@@ -1100,28 +1169,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
           </div>
         </section>
 
-        {/* 3. Stats Row: COMMENTS (Bình luận) / HOURS (Giờ đọc) / STORIES (Truyện đã đọc) - Đường viền đồng điệu theo theme */}
-        <section className={`border-y py-4 transition-colors ${dividerBorderClass}`}>
-          <div className={`grid grid-cols-3 text-center divide-x ${dividerDivideClass}`}>
-            <div className="px-2">
-              <div className="text-xl sm:text-2xl font-serif font-bold">{commentsCount}</div>
-              <div className="text-[10px] font-bold tracking-wider uppercase opacity-80 mt-0.5">COMMENTS</div>
-              <div className="text-[10px] opacity-60">Bình luận</div>
-            </div>
 
-            <div className="px-2">
-              <div className="text-xl sm:text-2xl font-serif font-bold">{readingHours}</div>
-              <div className="text-[10px] font-bold tracking-wider uppercase opacity-80 mt-0.5">HOURS</div>
-              <div className="text-[10px] opacity-60">Giờ đọc</div>
-            </div>
-
-            <div className="px-2">
-              <div className="text-xl sm:text-2xl font-serif font-bold">{storiesCount}</div>
-              <div className="text-[10px] font-bold tracking-wider uppercase opacity-80 mt-0.5">STORIES</div>
-              <div className="text-[10px] opacity-60">Truyện đã đọc</div>
-            </div>
-          </div>
-        </section>
 
         {/* 4. Cụm Widget 1: Trình bày như ảnh, KHÔNG XUỐNG DÒNG trên mobile, BỎ dấu chấm tròn ở day pm, số giờ hợp theme, ONLINE nổi bật */}
         <section className={`p-3 sm:p-5 rounded-3xl border transition-all ${tStyles.card} relative overflow-hidden`}>
@@ -1203,18 +1251,6 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             <button
               type="button"
-              onClick={() => setActiveTab('articles')}
-              className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 cursor-pointer transition-all ${
-                activeTab === 'articles'
-                  ? profileActionButtonClass
-                  : `${tStyles.themeSelectorBtn} opacity-75 hover:opacity-100`
-              }`}
-            >
-              Lưu lịch sử đọc
-            </button>
-
-            <button
-              type="button"
               onClick={() => setActiveTab('comments')}
               className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 flex items-center gap-1.5 cursor-pointer transition-all ${
                 activeTab === 'comments'
@@ -1238,100 +1274,6 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
             </button>
           </div>
         </section>
-
-        {/* 6. TAB 1: LƯU LỊCH SỬ ĐỌC (READING HISTORY - Bỏ viền trắng nút Đến Thư Viện, font Open Sans cho đang đọc/tiến độ) */}
-        {activeTab === 'articles' && (
-          <section className="space-y-6 pt-2">
-            <div>
-              <div className="text-[10px] font-mono tracking-widest uppercase opacity-60">
-                READING HISTORY
-              </div>
-              <div className={`flex items-baseline justify-between border-b pb-1 mt-1 ${dividerBorderClass}`}>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight">
-                  Lưu trữ
-                </h2>
-                <span className="text-2xl sm:text-3xl font-serif italic font-bold opacity-40">
-                  {String(top2RecentNovels.length).padStart(2, '0')}
-                </span>
-              </div>
-            </div>
-
-            {/* Danh sách 2 bộ gần nhất */}
-            <div className="space-y-4">
-              {top2RecentNovels.length > 0 ? (
-                top2RecentNovels.map((item, idx) => {
-                  const novel = item.novel;
-                  const rec = item.record;
-                  const coverUrl = getDirectImageUrl(novel.coverImage, novel.id || novel.title);
-                  return (
-                    <div
-                      key={novel.id}
-                      onClick={() => {
-                        if (onOpenNovelToReadingPosition) {
-                          onOpenNovelToReadingPosition(novel, rec.chapterNumber);
-                        } else {
-                          onSelectNovel(novel);
-                        }
-                      }}
-                      className="flex gap-3 sm:gap-5 group p-3 sm:p-4 rounded-2xl border border-black/10 dark:border-white/20 hover:border-purple-500/50 cursor-pointer transition-all items-center"
-                    >
-                      <div className="text-xl sm:text-3xl font-serif italic font-bold opacity-30 select-none pt-0.5 w-6 sm:w-8 shrink-0 text-right">
-                        {String(idx + 1).padStart(2, '0')}
-                      </div>
-
-                      <img
-                        src={coverUrl}
-                        alt={novel.title}
-                        onError={(e) => handleCoverImageError(e, novel.id || novel.title)}
-                        className="w-12 h-16 sm:w-16 sm:h-22 rounded-xl object-cover shrink-0 border border-black/10 dark:border-white/10 shadow-xs"
-                      />
-
-                      <div className="flex-1 min-w-0 space-y-1">
-                        <h3 className="text-xs sm:text-sm font-bold truncate group-hover:text-purple-500 transition-colors">
-                          《{novel.title}》
-                        </h3>
-
-                        <p className="text-[10px] sm:text-[11px] opacity-70 truncate font-['Open_Sans',sans-serif]">
-                          Tác giả: {typeof novel.author === 'string' ? novel.author : (novel.author?.name || 'Đang cập nhật')}
-                        </p>
-
-                        {/* Phông chữ Open Sans cho đang đọc và tiến độ, kích cỡ nhỏ gọn */}
-                        <div className="flex items-center gap-1.5 sm:gap-2 text-[9.5px] sm:text-xs opacity-75 font-['Open_Sans',sans-serif]">
-                          <span>Đang đọc: Chương {rec.chapterNumber}</span>
-                          <span>•</span>
-                          <span>Tiến độ: {rec.progressPercent}%</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-8 rounded-2xl border border-dashed border-black/15 dark:border-white/20 text-center space-y-2 opacity-75">
-                  <BookOpen className="w-8 h-8 mx-auto opacity-50" />
-                  <p className="text-xs">Chưa có lịch sử đọc trên thiết bị này.</p>
-                </div>
-              )}
-            </div>
-
-            {/* Nút bấm dẫn đến thư viện - ĐÃ BỎ ĐƯỜNG VIỀN TRẮNG theo yêu cầu người dùng */}
-            <div className="pt-2 flex justify-center sm:justify-start">
-              <button
-                type="button"
-                onClick={() => {
-                  if (onOpenLibrary) {
-                    onOpenLibrary();
-                  } else {
-                    onBackToNovels();
-                  }
-                }}
-                className={`px-5 py-2.5 rounded-2xl border-0 border-transparent text-xs font-bold flex items-center gap-2 cursor-pointer transition-all shadow-md active:scale-95 ${profileActionButtonClass}`}
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>Đến Thư Viện</span>
-              </button>
-            </div>
-          </section>
-        )}
 
         {/* 7. TAB 2: LỊCH SỬ BÌNH LUẬN (COMMENT HISTORY) */}
         {activeTab === 'comments' && (

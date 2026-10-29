@@ -1,5 +1,5 @@
 // Cloudflare Pages Function: /api/comments
-// Quản lý bình luận truyện và từng chương qua Cloudflare D1
+// Quản lý bình luận truyện và từng chương qua Cloudflare D1 (Hỗ trợ lịch sử bình luận, biệt danh, phản hồi)
 
 interface Env {
   DB?: any;
@@ -40,7 +40,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   }
 
   try {
-    // Tự động khởi tạo bảng comments nếu chưa có trên D1
+    // Tự động khởi tạo bảng comments nếu chưa có trên D1 (bao gồm user_id và reply_json)
     await db.prepare(`
       CREATE TABLE IF NOT EXISTS comments (
         id TEXT PRIMARY KEY,
@@ -54,49 +54,57 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
         rating INTEGER DEFAULT 5,
         likes INTEGER DEFAULT 0,
         created_at TEXT NOT NULL,
-        created_timestamp INTEGER NOT NULL
+        created_timestamp INTEGER NOT NULL,
+        user_id TEXT DEFAULT '',
+        reply_json TEXT DEFAULT ''
       )
     `).run().catch(() => {});
 
     let stmt;
+    const selectColumns = `
+      id, novel_id as truyenId, chapter_number as chapterNumber, 
+      chapter_title as chapterTitle, author, content, avatar, 
+      badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp,
+      user_id as userId, reply_json as replyJson
+    `;
+
     if (novelId && chapterNumber !== null && chapterNumber !== undefined && chapterNumber !== '') {
       const chapNum = parseInt(chapterNumber, 10);
       stmt = db.prepare(
-        `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
-                chapter_title as chapterTitle, author, content, avatar, 
-                badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
-         FROM comments 
-         WHERE novel_id = ? AND chapter_number = ?
-         ORDER BY created_timestamp DESC 
-         LIMIT ?`
+        `SELECT ${selectColumns} FROM comments WHERE novel_id = ? AND chapter_number = ? ORDER BY created_timestamp DESC LIMIT ?`
       ).bind(novelId, chapNum, limit);
     } else if (novelId) {
       stmt = db.prepare(
-        `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
-                chapter_title as chapterTitle, author, content, avatar, 
-                badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
-         FROM comments 
-         WHERE novel_id = ?
-         ORDER BY created_timestamp DESC 
-         LIMIT ?`
+        `SELECT ${selectColumns} FROM comments WHERE novel_id = ? ORDER BY created_timestamp DESC LIMIT ?`
       ).bind(novelId, limit);
     } else {
       stmt = db.prepare(
-        `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
-                chapter_title as chapterTitle, author, content, avatar, 
-                badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
-         FROM comments 
-         ORDER BY created_timestamp DESC 
-         LIMIT ?`
+        `SELECT ${selectColumns} FROM comments ORDER BY created_timestamp DESC LIMIT ?`
       ).bind(limit);
     }
 
     const { results } = await stmt.all();
+    const comments = (results || []).map((r: any) => ({
+      id: r.id,
+      truyenId: r.truyenId,
+      chapterNumber: r.chapterNumber,
+      chapterTitle: r.chapterTitle,
+      author: r.author,
+      content: r.content,
+      avatar: r.avatar,
+      badge: r.badge,
+      rating: r.rating,
+      likes: r.likes,
+      createdAt: r.createdAt,
+      createdTimestamp: r.createdTimestamp,
+      userId: r.userId,
+      reply: r.replyJson ? JSON.parse(r.replyJson) : null,
+    }));
 
     return new Response(
       JSON.stringify({
         success: true,
-        comments: results || [],
+        comments,
       }),
       { headers: getHeaders }
     );
@@ -176,10 +184,12 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const rating = typeof body.rating === 'number' ? Math.min(Math.max(body.rating, 1), 5) : 5;
     const chapterNumber = typeof body.chapterNumber === 'number' ? body.chapterNumber : null;
     const chapterTitle = body.chapterTitle ? String(body.chapterTitle).slice(0, 100) : null;
+    const userId = body.userId || '';
+    const replyJson = body.reply ? JSON.stringify(body.reply) : '';
 
     await db.prepare(
-      `INSERT INTO comments (id, novel_id, chapter_number, chapter_title, author, content, avatar, badge, rating, likes, created_at, created_timestamp)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`
+      `INSERT INTO comments (id, novel_id, chapter_number, chapter_title, author, content, avatar, badge, rating, likes, created_at, created_timestamp, user_id, reply_json)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)`
     )
       .bind(
         id,
@@ -192,7 +202,9 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
         badge,
         rating,
         createdAt,
-        createdTimestamp
+        createdTimestamp,
+        userId,
+        replyJson
       )
       .run();
 
@@ -209,6 +221,8 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       likes: 0,
       createdAt,
       createdTimestamp,
+      userId,
+      reply: body.reply || null,
     };
 
     return new Response(
