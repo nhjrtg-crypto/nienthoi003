@@ -3,8 +3,11 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
   ADMIN_SECRET?: string;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -24,7 +27,8 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Cache-Control': 'no-cache, no-store, must-revalidate',
   };
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(
       JSON.stringify({
         success: true,
@@ -37,7 +41,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
   try {
     // Tự động khởi tạo bảng comments nếu chưa có trên D1
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS comments (
         id TEXT PRIMARY KEY,
         novel_id TEXT NOT NULL,
@@ -57,7 +61,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     let stmt;
     if (novelId && chapterNumber !== null && chapterNumber !== undefined && chapterNumber !== '') {
       const chapNum = parseInt(chapterNumber, 10);
-      stmt = env.DB.prepare(
+      stmt = db.prepare(
         `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
                 chapter_title as chapterTitle, author, content, avatar, 
                 badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
@@ -67,7 +71,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
          LIMIT ?`
       ).bind(novelId, chapNum, limit);
     } else if (novelId) {
-      stmt = env.DB.prepare(
+      stmt = db.prepare(
         `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
                 chapter_title as chapterTitle, author, content, avatar, 
                 badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
@@ -77,7 +81,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
          LIMIT ?`
       ).bind(novelId, limit);
     } else {
-      stmt = env.DB.prepare(
+      stmt = db.prepare(
         `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
                 chapter_title as chapterTitle, author, content, avatar, 
                 badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
@@ -107,7 +111,8 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback', message: 'D1 not bound' }),
       { headers: { 'Content-Type': 'application/json' } }
@@ -119,7 +124,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
 
     // 1. Thao tác Thích bình luận (Like comment)
     if (body.action === 'like' && body.commentId) {
-      await env.DB.prepare(
+      await db.prepare(
         'UPDATE comments SET likes = likes + 1 WHERE id = ?'
       )
         .bind(body.commentId)
@@ -135,7 +140,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     if ((body.action === 'delete' || body.method === 'DELETE') && (body.commentId || body.id)) {
       const rawId = String(body.commentId || body.id);
       const trimmedId = rawId.trim();
-      await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
+      await db.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
         .bind(rawId, trimmedId)
         .run();
 
@@ -172,7 +177,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const chapterNumber = typeof body.chapterNumber === 'number' ? body.chapterNumber : null;
     const chapterTitle = body.chapterTitle ? String(body.chapterTitle).slice(0, 100) : null;
 
-    await env.DB.prepare(
+    await db.prepare(
       `INSERT INTO comments (id, novel_id, chapter_number, chapter_title, author, content, avatar, badge, rating, likes, created_at, created_timestamp)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`
     )
@@ -221,7 +226,8 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
 export const onRequestDelete = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback', deleted: true }),
       { headers: { 'Content-Type': 'application/json' } }
@@ -245,7 +251,7 @@ export const onRequestDelete = async (context: EventContext): Promise<Response> 
 
     const rawId = String(commentId);
     const trimmedId = rawId.trim();
-    await env.DB.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
+    await db.prepare('DELETE FROM comments WHERE id = ? OR id = ?')
       .bind(rawId, trimmedId)
       .run();
 

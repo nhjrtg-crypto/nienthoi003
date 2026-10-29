@@ -4,7 +4,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -21,7 +24,8 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Cache-Control': 'no-cache, no-store, must-revalidate',
   };
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback', covers: {} }),
       { headers: getHeaders }
@@ -30,7 +34,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
   try {
     // Tự động khởi tạo bảng nếu chưa có
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS novel_covers (
         novel_id TEXT PRIMARY KEY,
         cover_url TEXT NOT NULL,
@@ -40,7 +44,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     `).run().catch(() => {});
 
     if (novelId) {
-      const row = await env.DB.prepare(
+      const row = await db.prepare(
         'SELECT cover_url FROM novel_covers WHERE novel_id = ? OR novel_title = ?'
       )
         .bind(novelId, novelId)
@@ -52,7 +56,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       );
     }
 
-    const { results } = await env.DB.prepare(
+    const { results } = await db.prepare(
       'SELECT novel_id, cover_url, novel_title FROM novel_covers'
     ).all();
 
@@ -83,7 +87,8 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback' }),
       { headers: { 'Content-Type': 'application/json' } }
@@ -104,7 +109,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     }
 
     // Tự động khởi tạo bảng nếu chưa có
-    await env.DB.prepare(`
+    await db.prepare(`
       CREATE TABLE IF NOT EXISTS novel_covers (
         novel_id TEXT PRIMARY KEY,
         cover_url TEXT NOT NULL,
@@ -114,7 +119,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     `).run().catch(() => {});
 
     // Ghi đè hoặc tạo mới ảnh bìa theo novelId
-    await env.DB.prepare(`
+    await db.prepare(`
       INSERT INTO novel_covers (novel_id, cover_url, novel_title, updated_at)
       VALUES (?, ?, ?, CURRENT_TIMESTAMP)
       ON CONFLICT (novel_id) DO UPDATE SET 
@@ -125,7 +130,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
 
     // Đồng bộ thêm theo tên truyện nếu có
     if (novelTitle && novelTitle !== novelId) {
-      await env.DB.prepare(`
+      await db.prepare(`
         INSERT INTO novel_covers (novel_id, cover_url, novel_title, updated_at)
         VALUES (?, ?, ?, CURRENT_TIMESTAMP)
         ON CONFLICT (novel_id) DO UPDATE SET 

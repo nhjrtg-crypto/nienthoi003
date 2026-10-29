@@ -36,6 +36,7 @@ import {
   syncUserProfileToD1,
   fetchUserProfileFromD1,
   fetchUserReadingProgressFromD1,
+  syncReadingProgressToD1,
 } from '../services/d1Service';
 
 export interface UserProfileViewProps {
@@ -347,20 +348,48 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     let isMounted = true;
     (async () => {
       try {
+        const localCustomNick = safeStorage.getItem('cosmo_profile_nickname');
+
         // 1. Tải hồ sơ người dùng từ D1
         const d1Profile = await fetchUserProfileFromD1(googleUser.uid);
-        if (isMounted && d1Profile?.nickname) {
-          setNickname(d1Profile.nickname);
-          safeStorage.setItem('cosmo_profile_nickname', d1Profile.nickname);
+        if (isMounted) {
+          const finalNick = localCustomNick || d1Profile?.nickname || googleUser.displayName || 'Bạn đọc';
+          setNickname(finalNick);
+          safeStorage.setItem('cosmo_profile_nickname', finalNick);
+
+          // Đồng bộ lại profile lên D1 với biệt danh hiện tại (giữ nguyên biệt danh custom)
+          syncUserProfileToD1({
+            userId: googleUser.uid,
+            email: googleUser.email || undefined,
+            displayName: googleUser.displayName || undefined,
+            nickname: finalNick,
+            avatarUrl: googleUser.photoURL || undefined,
+            themePreference: activeTheme,
+          }).catch(() => {});
         }
 
-        // 2. Tải lịch sử đọc truyện từ D1 và đồng bộ vào thiết bị này
+        // 2. Tải lịch sử đọc truyện từ D1 và đồng bộ vào thiết bị này, đồng thời đẩy lịch sử local lên D1
         const d1Items = await fetchUserReadingProgressFromD1(googleUser.uid);
-        if (isMounted && d1Items.length > 0) {
-          const raw = safeStorage.getItem('cosmo_recent_reads');
+        if (isMounted) {
+          const raw = safeStorage.getItem('cosmo_recent_reads_v2') || safeStorage.getItem('cosmo_recent_reads');
           let localList: RecentReadRecord[] = raw ? JSON.parse(raw) : [];
           let hasChange = false;
 
+          // Đẩy lịch sử local lên D1
+          localList.forEach((item) => {
+            syncReadingProgressToD1({
+              userId: googleUser.uid,
+              novelId: item.novelId,
+              novelTitle: item.novelId,
+              chapterNumber: item.chapterNumber,
+              chapterTitle: `Chương ${item.chapterNumber}`,
+              progressPercent: item.progressPercent,
+              scrollY: item.scrollY,
+              updatedAt: item.updatedAt || Date.now(),
+            }).catch(() => {});
+          });
+
+          // Nạp từ D1 về local
           d1Items.forEach((item) => {
             const existingIdx = localList.findIndex((r) => r.novelId === item.novelId);
             if (existingIdx === -1) {
@@ -383,7 +412,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
           });
 
           if (hasChange) {
-            safeStorage.setItem('cosmo_recent_reads', JSON.stringify(localList));
+            safeStorage.setItem('cosmo_recent_reads_v2', JSON.stringify(localList));
             window.dispatchEvent(new Event('cosmo_recent_reads_updated'));
           }
         }
@@ -404,9 +433,12 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
       const user = await signInWithGoogle();
       if (user) {
         setGoogleUser(user);
-        if (user.displayName && !safeStorage.getItem('cosmo_profile_nickname')) {
-          setNickname(user.displayName);
-        }
+        const existingNick = safeStorage.getItem('cosmo_profile_nickname');
+        const nickToUse = existingNick || user.displayName || 'Bạn đọc';
+        setNickname(nickToUse);
+        safeStorage.setItem('cosmo_profile_nickname', nickToUse);
+        safeStorage.setItem('cosmo_comment_author_name', nickToUse);
+
         cosmicAudio.playChime('sparkle');
         showToast(`Đăng nhập thành công! Chào mừng ${user.displayName || 'bạn'}`);
 
@@ -415,7 +447,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
           userId: user.uid,
           email: user.email || undefined,
           displayName: user.displayName || undefined,
-          nickname: user.displayName || 'Bạn đọc',
+          nickname: nickToUse,
           avatarUrl: user.photoURL || undefined,
           themePreference: activeTheme,
         }).catch(() => {});

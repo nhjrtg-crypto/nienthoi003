@@ -3,7 +3,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -23,7 +26,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Access-Control-Allow-Origin': '*',
   };
 
-  const db = env.DB;
+  const db = getDb(env);
 
   if (!db) {
     return new Response(
@@ -104,7 +107,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     const targetId = rawTarget.startsWith('intro_') || rawTarget === 'intro' ? 'intro_page' : rawTarget;
     const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
 
-    const db = env.DB;
+    const db = getDb(env);
 
     if (!db) {
       return new Response(

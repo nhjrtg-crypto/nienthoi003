@@ -3,7 +3,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -33,9 +36,10 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '50', 10), 1), 100);
 
   const targetLikeId = (novelId.startsWith('intro_') || novelId === 'intro') ? 'intro_page' : novelId;
-  const likeDb = env.DB;
+  const db = getDb(env);
+  const likeDb = db;
 
-  if (!env.DB) {
+  if (!db) {
     return new Response(
       JSON.stringify({
         success: true,
@@ -61,7 +65,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
         try {
           if (novelId && novelId !== 'global') {
-            const nRow = await env.DB.prepare(
+            const nRow = await db.prepare(
               'SELECT SUM(views) as totalNovelViews FROM novel_views WHERE novel_id = ?'
             ).bind(novelId).first();
             if (nRow && typeof nRow.totalNovelViews === 'number') {
@@ -69,7 +73,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
             }
 
             if (chapterNumber !== null && !isNaN(chapterNumber)) {
-              const cRow = await env.DB.prepare(
+              const cRow = await db.prepare(
                 'SELECT views FROM novel_views WHERE novel_id = ? AND chapter_number = ?'
               ).bind(novelId, chapterNumber).first();
               if (cRow && typeof cRow.views === 'number') {
@@ -78,7 +82,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
             }
           }
 
-          const sRow = await env.DB.prepare(
+          const sRow = await db.prepare(
             'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
           ).first();
           if (sRow) {
@@ -113,7 +117,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
           let stmt;
           if (novelId && novelId !== 'global') {
             if (chapterNumber !== null && !isNaN(chapterNumber)) {
-              stmt = env.DB.prepare(
+              stmt = db.prepare(
                 `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
                         chapter_title as chapterTitle, author, content, avatar, 
                         badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
@@ -123,7 +127,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
                  LIMIT ?`
               ).bind(novelId, chapterNumber, limit);
             } else {
-              stmt = env.DB.prepare(
+              stmt = db.prepare(
                 `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
                         chapter_title as chapterTitle, author, content, avatar, 
                         badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp
@@ -134,7 +138,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
               ).bind(novelId, limit);
             }
           } else {
-            stmt = env.DB.prepare(
+            stmt = db.prepare(
               `SELECT id, novel_id as truyenId, chapter_number as chapterNumber, 
                       chapter_title as chapterTitle, author, content, avatar, 
                       badge, rating, likes, created_at as createdAt, created_timestamp as createdTimestamp

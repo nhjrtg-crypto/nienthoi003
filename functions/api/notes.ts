@@ -3,7 +3,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -22,7 +25,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
   };
 
-  const db = env.DB;
+  const db = getDb(env);
 
   if (!db) {
     return new Response(
@@ -75,7 +78,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
-  const db = env.DB;
+  const db = getDb(env);
 
   if (!db) {
     return new Response(

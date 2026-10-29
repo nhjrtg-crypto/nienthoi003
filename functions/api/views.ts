@@ -3,7 +3,10 @@
 
 interface Env {
   DB?: any;
+  USER_DB?: any;
 }
+
+const getDb = (env: Env) => env.USER_DB || env.DB;
 
 interface EventContext {
   request: Request;
@@ -21,8 +24,9 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
   };
 
+  const db = getDb(env);
   // Fallback nếu chưa kết nối D1
-  if (!env.DB) {
+  if (!db) {
     return new Response(
       JSON.stringify({
         success: true,
@@ -38,7 +42,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     if (novelId) {
       if (chapterNumber !== null) {
         const chapNum = parseInt(chapterNumber, 10);
-        const row = await env.DB.prepare(
+        const row = await db.prepare(
           'SELECT views FROM novel_views WHERE novel_id = ? AND chapter_number = ?'
         )
           .bind(novelId, chapNum)
@@ -53,7 +57,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
           { headers: getHeaders }
         );
       } else {
-        const row = await env.DB.prepare(
+        const row = await db.prepare(
           'SELECT SUM(views) as totalNovelViews FROM novel_views WHERE novel_id = ?'
         )
           .bind(novelId)
@@ -70,12 +74,12 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     }
 
     // Lượt xem toàn trang
-    let row = await env.DB.prepare(
+    let row = await db.prepare(
       'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
     ).first();
 
     if (!row) {
-      await env.DB.prepare(
+      await db.prepare(
         'INSERT INTO site_stats (id, total_views, today_views) VALUES ("global", 3000, 0)'
       ).run();
       row = { total_views: 3000, today_views: 0 };
@@ -100,7 +104,8 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
 export const onRequestPost = async (context: EventContext): Promise<Response> => {
   const { request, env } = context;
 
-  if (!env.DB) {
+  const db = getDb(env);
+  if (!db) {
     return new Response(
       JSON.stringify({ success: true, source: 'fallback', incremented: true }),
       { headers: { 'Content-Type': 'application/json' } }
@@ -120,7 +125,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     // 1. Tăng lượt xem từng chương truyện nếu có
     if (body.novelId) {
       const chapNum = typeof body.chapterNumber === 'number' ? body.chapterNumber : 0;
-      await env.DB.prepare(
+      await db.prepare(
         `INSERT INTO novel_views (novel_id, chapter_number, views, updated_at) 
          VALUES (?, ?, ?, CURRENT_TIMESTAMP)
          ON CONFLICT(novel_id, chapter_number) 
@@ -131,7 +136,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     }
 
     // 2. Tăng lượt xem toàn trang cộng dồn (Global Website Views)
-    await env.DB.prepare(
+    await db.prepare(
       `INSERT INTO site_stats (id, total_views, today_views, updated_at)
        VALUES ('global', 3000 + ?, ?, CURRENT_TIMESTAMP)
        ON CONFLICT(id) 
@@ -140,7 +145,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
       .bind(amount, amount, amount, amount)
       .run();
 
-    const row = await env.DB.prepare(
+    const row = await db.prepare(
       'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
     ).first();
 
