@@ -215,6 +215,76 @@ app.post('/api/covers', (req, res) => {
   res.json({ success: true, novelId, coverUrl });
 });
 
+// In-memory user profiles and reading progress for Express server
+const inMemoryProfiles = {};
+const inMemoryProgress = {};
+
+app.get('/api/user/profile', (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) {
+    return res.status(400).json({ success: false, error: 'Thiếu userId' });
+  }
+  const profile = inMemoryProfiles[userId] || null;
+  res.json({ success: true, profile });
+});
+
+app.post('/api/user/profile', (req, res) => {
+  const body = req.body || {};
+  const userId = (body.userId || '').trim();
+  if (!userId) {
+    return res.status(400).json({ success: false, error: 'Thiếu userId' });
+  }
+  inMemoryProfiles[userId] = {
+    userId,
+    email: body.email || '',
+    displayName: body.displayName || '',
+    nickname: body.nickname || body.displayName || 'Bạn đọc',
+    avatarUrl: body.avatarUrl || '',
+    themePreference: body.themePreference || '',
+  };
+  res.json({ success: true });
+});
+
+app.get('/api/user/progress', (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) {
+    return res.status(400).json({ success: false, error: 'Thiếu userId' });
+  }
+  const items = inMemoryProgress[userId] || [];
+  res.json({ success: true, items });
+});
+
+app.post('/api/user/progress', (req, res) => {
+  const body = req.body || {};
+  const userId = (body.userId || '').trim();
+  const novelId = (body.novelId || '').trim();
+  if (!userId || !novelId) {
+    return res.status(400).json({ success: false, error: 'Thiếu userId hoặc novelId' });
+  }
+  if (!inMemoryProgress[userId]) {
+    inMemoryProgress[userId] = [];
+  }
+  const list = inMemoryProgress[userId];
+  const idx = list.findIndex((item) => item.novelId === novelId);
+  const newItem = {
+    userId,
+    novelId,
+    novelTitle: body.novelTitle || '',
+    chapterNumber: typeof body.chapterNumber === 'number' ? body.chapterNumber : 1,
+    chapterTitle: body.chapterTitle || '',
+    progressPercent: typeof body.progressPercent === 'number' ? body.progressPercent : 0,
+    scrollY: typeof body.scrollY === 'number' ? body.scrollY : 0,
+    readingTimeMinutes: typeof body.readingTimeMinutes === 'number' ? body.readingTimeMinutes : 0,
+    updatedAt: typeof body.updatedAt === 'number' ? body.updatedAt : Date.now(),
+  };
+  if (idx !== -1) {
+    list[idx] = newItem;
+  } else {
+    list.unshift(newItem);
+  }
+  res.json({ success: true });
+});
+
 const distPath = path.join(__dirname, 'dist');
 
 if (fs.existsSync(distPath)) {

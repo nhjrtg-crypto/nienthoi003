@@ -1706,7 +1706,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     <div className={`min-h-screen w-full ${readerRootBgClass} transition-colors duration-300 relative flex flex-col`}>
       {/* Top Header Bar */}
       <header
-        className={`sticky top-0 z-30 border-b glass-header px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all duration-300 transform ${
+        className={`fixed top-0 left-0 right-0 z-40 border-b glass-header px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all duration-300 transform ${
           shouldShowHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
         } ${tStyles.headerBg} ${tStyles.headerBorder}`}
       >
@@ -2145,7 +2145,7 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
       </header>
 
       {/* Main Content Reading Area (Cuộn bằng thanh cuộn mặc định của trình duyệt) */}
-      <main className={`${marginContainerClass} mx-auto py-10 sm:py-14 w-full flex-1 transition-all duration-300`}>
+      <main className={`${marginContainerClass} mx-auto pt-24 pb-10 sm:py-14 w-full flex-1 transition-all duration-300`}>
         {/* Chapter Title Banner */}
         <div className={`text-center mb-10 pb-6 border-b ${tStyles.sectionHeaderBorder}`}>
           <span className={`inline-block text-xs font-novel-title px-3 py-1 rounded-full border ${tStyles.heroTag}`}>

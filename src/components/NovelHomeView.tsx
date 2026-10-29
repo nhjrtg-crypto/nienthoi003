@@ -3943,7 +3943,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
 
       {/* Novel Platform Top Bar */}
       <header
-        className={`sticky top-0 z-40 glass-header border-b px-4 sm:px-8 py-3.5 transition-[transform,opacity] duration-300 transform ${
+        className={`fixed top-0 left-0 right-0 z-40 glass-header border-b px-4 sm:px-8 py-3.5 transition-[transform,opacity] duration-300 transform ${
           shouldShowHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
         } ${tStyles.headerBg} ${tStyles.headerBorder}`}
       >
@@ -4707,7 +4707,7 @@ export const NovelHomeView: React.FC<NovelHomeViewProps> = ({
       </header>
 
       {/* Main Page Content */}
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full pt-20">
         {/* Mobile Search Bar Section */}
         {showSearchBar ? (
           <div ref={mobileSearchContainerRef} className="px-4 py-2 md:hidden relative animate-in fade-in duration-200">

@@ -725,7 +725,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
     <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${tStyles.pageBg}`}>
       {/* 1. Header Trang Hồ Sơ: Tự động ẩn khi cuộn xuống, hiện khi cuộn lên, ĐÃ BỎ nút toggle riêng lẻ trên header */}
       <header
-        className={`sticky top-0 z-40 backdrop-blur-md border-b transition-[transform,opacity] duration-300 transform ${
+        className={`fixed top-0 left-0 right-0 z-40 backdrop-blur-md border-b transition-[transform,opacity] duration-300 transform ${
           shouldShowHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
         } ${tStyles.headerBg} ${tStyles.headerBorder}`}
       >
@@ -946,7 +946,7 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pt-24 pb-8 space-y-6">
         {/* Toast Alert Feedback */}
         <AnimatePresence>
           {toastMessage && (
