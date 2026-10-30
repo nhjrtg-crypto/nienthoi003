@@ -1177,7 +1177,7 @@ export const Footer: React.FC<FooterProps> = ({
   }, []);
 
   const handleIncrement = () => {
-    incrementGlobalView(1);
+    // Không cộng lượt xem khi bấm nút theo yêu cầu
   };
 
   const handleRefreshViews = async () => {

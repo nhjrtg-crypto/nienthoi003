@@ -122,12 +122,12 @@ const pendingLikesTimers: Record<string, any> = {};
 let pendingGlobalViewsAmount = 0;
 let pendingViewsTimer: any = null;
 
-// Khởi tạo cache ban đầu từ localStorage (duy trì mốc 158.000 lượt xem)
+// Khởi tạo cache ban đầu từ localStorage (duy trì mốc chuẩn 158.000 lượt xem)
 try {
   const savedViews = safeStorage.getItem('cf_d1_global_views');
   if (savedViews) {
     const parsed = parseInt(savedViews, 10);
-    if (!isNaN(parsed) && parsed >= 158000) {
+    if (!isNaN(parsed) && parsed >= 158000 && parsed <= 165000) {
       inMemoryGlobalViews = parsed;
     } else {
       inMemoryGlobalViews = 158000;
@@ -169,10 +169,10 @@ export async function fetchGlobalViews(force = false): Promise<number> {
         const data = await res.json();
         if (typeof data.totalViews === 'number' && data.totalViews > 0) {
           let resolved = data.totalViews;
-          if (resolved < 158000) {
-            resolved = 158000 + Math.max(0, resolved - 3000);
+          if (resolved < 158000 || resolved > 165000) {
+            resolved = 158000;
           }
-          inMemoryGlobalViews = Math.max(resolved, inMemoryGlobalViews);
+          inMemoryGlobalViews = resolved;
           lastViewsFetchTime = Date.now();
           safeStorage.setItem('cf_d1_global_views', String(inMemoryGlobalViews));
           globalViewsListeners.forEach((fn) => fn(inMemoryGlobalViews));
@@ -198,10 +198,10 @@ function flushPendingViews(): void {
     .then((data) => {
       if (data && typeof data.totalViews === 'number') {
         let resolved = data.totalViews;
-        if (resolved < 158000) {
-          resolved = 158000 + Math.max(0, resolved - 3000);
+        if (resolved < 158000 || resolved > 165000) {
+          resolved = 158000;
         }
-        inMemoryGlobalViews = Math.max(resolved, inMemoryGlobalViews);
+        inMemoryGlobalViews = resolved;
         safeStorage.setItem('cf_d1_global_views', String(inMemoryGlobalViews));
         globalViewsListeners.forEach((fn) => fn(inMemoryGlobalViews));
       }

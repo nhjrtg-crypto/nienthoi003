@@ -2028,9 +2028,8 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     e.preventDefault();
     if (!newCommentText.trim()) return;
 
-    const userNickname = safeStorage.getItem('cosmo_profile_nickname');
-    const finalAuthor = (userNickname || googleUser?.displayName || userName || 'Bạn Đọc').trim();
-    if (!finalAuthor || finalAuthor.length <= 1) {
+    const finalAuthor = userName.trim();
+    if (!finalAuthor || finalAuthor.length < 2) {
       window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
       return;
     }
@@ -4979,159 +4978,87 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6 max-w-4xl mx-auto"
               >
-                {/* Submit Comment Form / Google Login Gate */}
-                {!googleUser ? (
-                  <div
-                    className={`p-6 sm:p-8 rounded-3xl border shadow-xs text-center space-y-4 backdrop-blur-md ${
-                      isJournalStyle
-                        ? isDarkEffective
-                          ? 'bg-[#15161C] border-zinc-700/80 text-zinc-100'
-                          : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-xs'
-                        : isNoteStyle
-                        ? isDarkEffective
-                          ? 'bg-[#1D1B16] border-amber-900/50 text-amber-100'
-                          : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-xs'
-                        : isCinemaStyle
-                        ? isDarkEffective
-                          ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100'
-                          : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-xs'
-                        : isCyberStyle
-                        ? isDarkEffective
-                          ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100'
-                          : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-xs'
-                        : isWaxSealStyle
-                        ? isDarkEffective
-                          ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4]'
-                          : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-xs'
-                        : isEditorialStyle
-                        ? isDarkEffective
-                          ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
-                          : 'bg-white border-stone-300 text-stone-900 shadow-xs'
-                        : tStyles.commentForm || detailThemeExtras.innerBox
-                    }`}
-                  >
-                    <div className="w-12 h-12 mx-auto rounded-2xl bg-purple-600/10 shadow-sm flex items-center justify-center border border-purple-500/20">
-                      <span className="text-xl">✍️</span>
-                    </div>
-
-                    <div className="space-y-1">
-                      <h4 className="text-base sm:text-lg font-bold">Nhập biệt danh để bình luận</h4>
-                      <p className="text-xs sm:text-sm opacity-75 max-w-md mx-auto">
-                        Vui lòng nhập tên để gửi bình luận.
-                      </p>
-                    </div>
-
-                    {googleAuthError && (
-                      <p className="text-xs text-rose-500 font-medium">{googleAuthError}</p>
-                    )}
-
-                    <div className="flex flex-col gap-3 pt-1">
-                      <input
-                        type="text"
-                        placeholder="Nhập biệt danh của bạn..."
-                        value={manualNameInput}
-                        onChange={(e) => setManualNameInput(e.target.value)}
-                        className="px-4 py-2.5 rounded-full text-sm border border-zinc-200 focus:outline-none focus:border-purple-400"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleManualLoginForComment(manualNameInput)}
-                        className="px-6 py-2.5 rounded-full font-bold text-sm bg-purple-600 text-white hover:bg-purple-500 transition-all cursor-pointer"
-                      >
-                        Bắt đầu bình luận
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <form
-                    id="detail-comment-form"
-                    onSubmit={handlePostComment}
-                    className={`p-6 sm:p-7 rounded-3xl border shadow-xs space-y-4 ${
-                      isJournalStyle
-                        ? isDarkEffective
-                          ? 'bg-[#15161C] border-zinc-700/80 text-zinc-100'
-                          : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-xs'
-                        : isNoteStyle
-                        ? isDarkEffective
-                          ? 'bg-[#1D1B16] border-amber-900/50 text-amber-100'
-                          : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-xs'
-                        : isCinemaStyle
-                        ? isDarkEffective
-                          ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100'
-                          : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-xs'
-                        : isCyberStyle
-                        ? isDarkEffective
-                          ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100'
-                          : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-xs'
-                        : isWaxSealStyle
-                        ? isDarkEffective
-                          ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4]'
-                          : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-xs'
-                        : isEditorialStyle
-                        ? isDarkEffective
-                          ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
-                          : 'bg-white border-stone-300 text-stone-900 shadow-xs'
-                        : tStyles.commentForm || detailThemeExtras.innerBox
-                    }`}
-                  >
-                <div className="flex items-center justify-between gap-3 pb-2 border-b border-black/10 dark:border-white/10">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
-                      {(safeStorage.getItem('cosmo_profile_nickname') || 'U').charAt(0).toUpperCase()}
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-sm font-bold truncate">
-                        {safeStorage.getItem('cosmo_profile_nickname') || 'Bạn đọc'}
-                      </span>
-                    </div>
+                {/* Submit Comment Form */}
+                <form
+                  id="detail-comment-form"
+                  onSubmit={handlePostComment}
+                  className={`p-5 sm:p-6 rounded-3xl border shadow-xs space-y-3.5 ${
+                    isJournalStyle
+                      ? isDarkEffective
+                        ? 'bg-[#15161C] border-zinc-700/80 text-zinc-100'
+                        : 'bg-white border-[#E8DFD8] text-[#3D3A37] shadow-xs'
+                      : isNoteStyle
+                      ? isDarkEffective
+                        ? 'bg-[#1D1B16] border-amber-900/50 text-amber-100'
+                        : 'bg-[#FFFDF7] border-amber-200 text-[#3C321E] shadow-xs'
+                      : isCinemaStyle
+                      ? isDarkEffective
+                        ? 'bg-[#18181B] border-neutral-700/80 text-neutral-100'
+                        : 'bg-[#FAF9F5] border-[#E2DDD5] text-neutral-900 shadow-xs'
+                      : isCyberStyle
+                      ? isDarkEffective
+                        ? 'bg-[#09111C] border-cyan-500/40 text-cyan-100'
+                        : 'bg-[#F2F9FB] border-cyan-600/30 text-[#092B38] shadow-xs'
+                      : isWaxSealStyle
+                      ? isDarkEffective
+                        ? 'bg-[#1C1613] border-[#4A3831] text-[#EDE0D4]'
+                        : 'bg-[#FBF5ED] border-[#DAC8B6] text-[#3A2A22] shadow-xs'
+                      : isEditorialStyle
+                      ? isDarkEffective
+                        ? 'bg-[#15161A] border-zinc-700 text-zinc-100'
+                        : 'bg-white border-stone-300 text-stone-900 shadow-xs'
+                      : tStyles.commentForm || detailThemeExtras.innerBox
+                  }`}
+                >
+                  {/* Ô nhập tên - chuẩn giao diện theo ảnh đính kèm (Bắt buộc điền tên) */}
+                  <div>
+                    <input
+                      type="text"
+                      required
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      placeholder="Tên của bạn (Bắt buộc)..."
+                      className={`w-full px-4 py-3 rounded-2xl text-[14px] sm:text-[15px] font-sans border transition-colors focus:outline-hidden ${tStyles.input}`}
+                    />
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      safeStorage.setItem('cosmo_profile_nickname', '');
-                      setGoogleUser(null);
-                    }}
-                    className="text-xs opacity-65 hover:opacity-100 hover:underline cursor-pointer shrink-0"
-                  >
-                    Đổi tên
-                  </button>
-                </div>
+                  {/* Ô nhập cảm nhận / nhận xét */}
+                  <div>
+                    <textarea
+                      rows={3}
+                      required
+                      value={newCommentText}
+                      onChange={(e) => setNewCommentText(e.target.value)}
+                      placeholder="Viết cảm nhận, nhận xét về truyện..."
+                      className={`w-full px-4 py-3 rounded-2xl text-[14px] sm:text-[15px] font-sans border transition-colors focus:outline-hidden resize-none ${tStyles.input}`}
+                    />
+                  </div>
 
-                  <textarea
-                    rows={3}
-                    required
-                    value={newCommentText}
-                    onChange={(e) => setNewCommentText(e.target.value)}
-                    placeholder="Chia sẻ cảm nhận, bình luận về tình tiết truyện..."
-                    className={`w-full px-4 py-3 rounded-2xl text-[14px] sm:text-[16px] font-sans focus:outline-hidden resize-none ${tStyles.input}`}
-                  />
-
-                  <div className="flex justify-end">
+                  {/* Nút Đăng ở góc dưới phải như ảnh */}
+                  <div className="flex justify-end pt-1">
                     <button
                       type="submit"
-                      className={`px-5 py-2.5 rounded-full text-[14px] sm:text-[16px] font-bold cursor-pointer shadow-sm flex items-center gap-2 ${
+                      className={`px-5 py-2.5 rounded-2xl text-[14px] sm:text-[15px] font-bold cursor-pointer shadow-xs flex items-center gap-2 transition-all active:scale-95 ${
                         isJournalStyle
-                          ? 'bg-[#9E5D72] hover:bg-[#8B4D61] text-white shadow-xs font-sans'
+                          ? 'bg-[#9E5D72] hover:bg-[#8B4D61] text-white'
                           : isNoteStyle
-                          ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-xs font-sans'
+                          ? 'bg-amber-600 hover:bg-amber-500 text-white'
                           : isCinemaStyle
-                          ? 'bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-900 shadow-xs font-mono text-xs uppercase'
+                          ? 'bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-900'
                           : isCyberStyle
-                          ? 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-xs font-mono'
+                          ? 'bg-cyan-600 hover:bg-cyan-500 text-white'
                           : isWaxSealStyle
-                          ? 'bg-red-800 hover:bg-red-700 text-amber-100 shadow-xs font-serif'
+                          ? 'bg-red-800 hover:bg-red-700 text-amber-100'
                           : isEditorialStyle
-                          ? 'bg-stone-900 hover:bg-black dark:bg-white dark:text-black text-white font-mono uppercase text-xs'
+                          ? 'bg-stone-900 hover:bg-black dark:bg-white dark:text-black text-white'
                           : detailThemeExtras.primaryBtn
                       }`}
                     >
                       <Send className="w-4 h-4" />
-                      <span>{isWaxSealStyle ? 'Đóng Dấu Gửi Thư' : isCyberStyle ? 'TRANSMIT_LOG' : isCinemaStyle ? 'SUBMIT REVIEW' : 'Gửi Bình Luận'}</span>
+                      <span>Đăng</span>
                     </button>
                   </div>
                 </form>
-              )}
 
               {/* Comment List */}
                 <div className="space-y-3.5">

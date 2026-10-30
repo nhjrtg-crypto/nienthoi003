@@ -226,10 +226,9 @@ export default {
               'INSERT INTO site_stats (id, total_views, today_views) VALUES ("global", 158000, 0)'
             ).run();
             row = { total_views: 158000, today_views: 0 };
-          } else if (typeof row.total_views === 'number' && row.total_views < 158000) {
-            const migrated = 158000 + Math.max(0, row.total_views - 3000);
-            await env.DB.prepare('UPDATE site_stats SET total_views = ? WHERE id = "global"').bind(migrated).run();
-            row.total_views = migrated;
+          } else if (typeof row.total_views === 'number' && (row.total_views < 158000 || row.total_views > 165000)) {
+            await env.DB.prepare('UPDATE site_stats SET total_views = 158000 WHERE id = "global"').run();
+            row.total_views = 158000;
           }
 
           return new Response(

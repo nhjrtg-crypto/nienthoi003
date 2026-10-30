@@ -850,16 +850,17 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
 
 
 
-    const userNickname = safeStorage.getItem('cosmo_profile_nickname');
-    const finalAuthor = (userNickname || authorNameInput || 'Bạn Đọc').trim();
-    const finalAvatar = ''; // Since Google is removed
+    const finalAuthor = authorNameInput.trim();
+    if (!finalAuthor || finalAuthor.length < 2) {
+      window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
+      return;
+    }
+    const finalAvatar = '';
     const formattedDate = formatCommentDate();
 
-    if (finalAuthor) {
-      try {
-        safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
-      } catch {}
-    }
+    try {
+      safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
+    } catch {}
 
     const tempComment: NovelComment = {
       id: `cm-${Date.now()}`,
@@ -2325,94 +2326,65 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
             </div>
           </div>
 
-          {/* Form viết bình luận / Google login gate */}
-          {!googleUser ? (
-            <div className={`p-4 sm:p-5 rounded-2xl border text-center space-y-3 transition-colors ${chapterCommentBoxClass}`}>
-              <div className="flex flex-col gap-3">
-                <input
-                  type="text"
-                  placeholder="Nhập biệt danh của bạn..."
-                  value={manualNameInput}
-                  onChange={(e) => setManualNameInput(e.target.value)}
-                  className="px-4 py-2.5 rounded-full text-sm border border-zinc-200 focus:outline-none focus:border-purple-400"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleManualLoginForComment(manualNameInput)}
-                  className="px-5 py-2 rounded-full font-bold text-xs bg-purple-600 text-white hover:bg-purple-500 transition-all cursor-pointer mx-auto"
-                >
-                  Bắt đầu bình luận
-                </button>
-              </div>
+          {/* Form viết bình luận - Chuẩn giống trang thông tin truyện */}
+          <form
+            id="chapter-comment-form"
+            onSubmit={handlePostChapterComment}
+            className={`p-4 sm:p-5 rounded-2xl border space-y-3.5 transition-colors ${chapterCommentBoxClass}`}
+          >
+            {/* Ô nhập tên - chuẩn giao diện theo ảnh đính kèm (Bắt buộc điền tên) */}
+            <div>
+              <input
+                type="text"
+                required
+                value={authorNameInput}
+                onChange={(e) => {
+                  setAuthorNameInput(e.target.value);
+                  try {
+                    safeStorage.setItem('cosmo_comment_author_name', e.target.value);
+                  } catch {}
+                }}
+                placeholder="Tên của bạn (Bắt buộc)..."
+                className={`w-full px-4 py-3 rounded-2xl text-[13px] sm:text-[14px] font-sans border transition-colors focus:outline-hidden ${
+                  isDarkEffective
+                    ? 'bg-zinc-800/80 border-zinc-700 text-zinc-100 placeholder-zinc-500'
+                    : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
+                }`}
+              />
             </div>
-          ) : (
-            <form
-              id="chapter-comment-form"
-              onSubmit={handlePostChapterComment}
-              className={`p-4 sm:p-5 rounded-2xl border space-y-3 transition-colors ${chapterCommentBoxClass}`}
-            >
-              <div className="flex items-center justify-between gap-3 pb-1 border-b border-black/10 dark:border-white/10">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-7 h-7 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-xs shrink-0">
-                      {(safeStorage.getItem('cosmo_profile_nickname') || 'U').charAt(0).toUpperCase()}
-                    </div>
-                    <span className="text-xs font-bold truncate">
-                      {safeStorage.getItem('cosmo_profile_nickname') || 'Bạn đọc'}
-                    </span>
-                  </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] opacity-60 hidden sm:inline">
-                    Chương {chapterNumber}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await signOutGoogleUser();
-                      setGoogleUser(null);
-                    }}
-                    className="text-[11px] opacity-60 hover:opacity-100 hover:underline cursor-pointer"
-                  >
-                    Đổi tài khoản
-                  </button>
-                </div>
-              </div>
+            {/* Ô nhập cảm nhận / nhận xét */}
+            <div>
+              <textarea
+                rows={3}
+                required
+                value={newCommentContent}
+                onChange={(e) => setNewCommentContent(e.target.value)}
+                placeholder="Viết cảm nhận, nhận xét về truyện..."
+                className={`w-full px-4 py-3 rounded-2xl text-[13px] sm:text-[14px] font-sans border transition-colors focus:outline-hidden resize-none ${
+                  isDarkEffective
+                    ? 'bg-zinc-800/80 border-zinc-700 text-zinc-100 placeholder-zinc-500'
+                    : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
+                }`}
+              />
+            </div>
 
-              <div>
-                <textarea
-                  rows={3}
-                  placeholder={`Bạn nghĩ gì về chương ${chapterNumber}? Hãy chia sẻ cảm nhận với mọi người...`}
-                  value={newCommentContent}
-                  onChange={(e) => setNewCommentContent(e.target.value)}
-                  maxLength={1000}
-                  required
-                  className={`w-full p-3.5 rounded-xl text-xs sm:text-sm border focus:outline-none focus:ring-2 focus:ring-purple-500/30 transition-all resize-none ${
-                    isDarkEffective
-                      ? 'bg-zinc-800/80 border-zinc-700 text-zinc-100 placeholder-zinc-500'
-                      : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
-                  }`}
-                />
-              </div>
-
-              <div className="flex items-center justify-between gap-3 pt-1">
-                <span className="text-[11px] opacity-60">
-                  {newCommentContent.length}/1000 ký tự
-                </span>
-                <button
-                  type="submit"
-                  disabled={!newCommentContent.trim() || isSubmittingComment}
-                  className={`px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all shadow-xs cursor-pointer ${
-                    !newCommentContent.trim() || isSubmittingComment
-                      ? 'opacity-40 cursor-not-allowed'
-                      : `${tStyles.buttonPrimary} hover:scale-102 active:scale-98`
-                  }`}
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{isSubmittingComment ? 'Đang gửi...' : 'Gửi Bình Luận'}</span>
-                </button>
-              </div>
-            </form>
-          )}
+            {/* Nút Đăng ở góc dưới phải như ảnh */}
+            <div className="flex justify-end pt-1">
+              <button
+                type="submit"
+                disabled={isSubmittingComment}
+                className={`px-5 py-2.5 rounded-2xl text-[13px] sm:text-[14px] font-bold cursor-pointer shadow-xs flex items-center gap-2 transition-all active:scale-95 ${
+                  isSubmittingComment
+                    ? 'opacity-50 cursor-not-allowed'
+                    : `${tStyles.buttonPrimary} hover:scale-102`
+                }`}
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>{isSubmittingComment ? 'Đang gửi...' : 'Đăng'}</span>
+              </button>
+            </div>
+          </form>
 
           {/* Danh sách bình luận */}
           <div className="space-y-3">
@@ -2592,116 +2564,64 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
                   '--scrollbar-thumb': readerSettingsScrollbarColor,
                 } as React.CSSProperties}
               >
-                {/* Form bình luận nhanh */}
-                  {!safeStorage.getItem('cosmo_profile_nickname') ? (
-                  <div className={`p-4 rounded-2xl border text-center space-y-3 ${tStyles.commentForm || tStyles.card}`}>
-                    <div className="w-10 h-10 mx-auto rounded-full bg-white shadow-xs border border-zinc-200 flex items-center justify-center">
-                      <svg className="w-5 h-5" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-xs sm:text-sm font-bold">Đăng nhập Google để bình luận</h4>
-                      <p className={`text-[11px] mt-0.5 ${tStyles.cardAuthor}`}>
-                        Xác thực nhanh để chia sẻ suy nghĩ tại Chương {chapterNumber}
-                      </p>
-                    </div>
-                    {googleAuthError && (
-                      <div className="text-[11px] text-rose-500 bg-rose-500/10 py-1 px-2.5 rounded-lg border border-rose-500/20 text-left">
-                        {googleAuthError}
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-3 pt-1">
-                      <input
-                        type="text"
-                        placeholder="Nhập biệt danh của bạn..."
-                        value={manualNameInput}
-                        onChange={(e) => setManualNameInput(e.target.value)}
-                        className="px-4 py-2.5 rounded-full text-sm border border-zinc-200 focus:outline-none focus:border-purple-400"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleManualLoginForComment(manualNameInput)}
-                        className="w-full py-2 px-3 rounded-xl bg-purple-600 text-white text-xs font-semibold hover:bg-purple-500 transition-all cursor-pointer"
-                      >
-                        Bắt đầu bình luận
-                      </button>
-                    </div>
+                {/* Form bình luận nhanh - Chuẩn giống trang thông tin truyện */}
+                <form
+                  onSubmit={handlePostChapterComment}
+                  className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.commentForm || tStyles.card}`}
+                >
+                  {/* Ô nhập tên - Bắt buộc */}
+                  <div>
+                    <input
+                      type="text"
+                      required
+                      value={authorNameInput}
+                      onChange={(e) => {
+                        setAuthorNameInput(e.target.value);
+                        try {
+                          safeStorage.setItem('cosmo_comment_author_name', e.target.value);
+                        } catch {}
+                      }}
+                      placeholder="Tên của bạn (Bắt buộc)..."
+                      className={`w-full px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-sans border transition-colors focus:outline-hidden ${
+                        isDarkEffective
+                          ? 'bg-zinc-800/80 border-zinc-700 text-zinc-100 placeholder-zinc-500'
+                          : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
+                      }`}
+                    />
                   </div>
-                ) : (
-                  <form
-                    onSubmit={handlePostChapterComment}
-                    className={`p-3.5 sm:p-4 rounded-2xl border space-y-3 transition-colors ${tStyles.commentForm || tStyles.card}`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-purple-600/20 text-purple-400 font-bold flex items-center justify-center text-xs">
-                          {(safeStorage.getItem('cosmo_profile_nickname') || 'U').charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-semibold">
-                              {safeStorage.getItem('cosmo_profile_nickname') || 'Bạn đọc'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[11px] hidden sm:inline ${tStyles.cardAuthor}`}>
-                          Chương {chapterNumber}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            await signOutGoogleUser();
-                            setGoogleUser(null);
-                          }}
-                          className="text-[10px] opacity-60 hover:opacity-100 hover:underline cursor-pointer"
-                        >
-                          Đổi
-                        </button>
-                      </div>
-                    </div>
+                  {/* Ô nhập cảm nhận */}
+                  <div>
+                    <textarea
+                      rows={3}
+                      required
+                      value={newCommentContent}
+                      onChange={(e) => setNewCommentContent(e.target.value)}
+                      placeholder="Viết cảm nhận, nhận xét về truyện..."
+                      className={`w-full p-3 rounded-xl text-xs sm:text-sm border transition-colors focus:outline-hidden resize-none ${
+                        isDarkEffective
+                          ? 'bg-zinc-800/80 border-zinc-700 text-zinc-100 placeholder-zinc-500'
+                          : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
+                      }`}
+                    />
+                  </div>
 
-                    <div>
-                      <textarea
-                        rows={3}
-                        placeholder={`Bạn nghĩ gì về chương ${chapterNumber}? Chia sẻ cảm nhận nhanh...`}
-                        value={newCommentContent}
-                        onChange={(e) => setNewCommentContent(e.target.value)}
-                        maxLength={1000}
-                        required
-                        className={`w-full p-3 rounded-xl text-xs sm:text-sm border focus:outline-none focus:ring-2 focus:ring-purple-500/30 transition-all resize-none ${
-                          isDarkEffective
-                            ? 'bg-zinc-800/80 border-zinc-700 text-zinc-100 placeholder-zinc-500'
-                            : 'bg-white border-zinc-300 text-zinc-800 placeholder-zinc-400'
-                        }`}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between gap-3 pt-0.5">
-                      <span className="text-[10px] opacity-60">
-                        {newCommentContent.length}/1000 ký tự
-                      </span>
-                      <button
-                        type="submit"
-                        disabled={!newCommentContent.trim() || isSubmittingComment}
-                        className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
-                          !newCommentContent.trim() || isSubmittingComment
-                            ? 'opacity-40 cursor-not-allowed'
-                            : `${tStyles.buttonPrimary} hover:scale-102 active:scale-98`
-                        }`}
-                      >
-                        <Send className="w-3 h-3" />
-                        <span>{isSubmittingComment ? 'Đang gửi...' : 'Gửi Bình Luận'}</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
+                  {/* Nút Đăng ở góc dưới phải */}
+                  <div className="flex justify-end pt-0.5">
+                    <button
+                      type="submit"
+                      disabled={isSubmittingComment}
+                      className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${
+                        isSubmittingComment
+                          ? 'opacity-50 cursor-not-allowed'
+                          : `${tStyles.buttonPrimary} hover:scale-102`
+                      }`}
+                    >
+                      <Send className="w-3 h-3" />
+                      <span>{isSubmittingComment ? 'Đang gửi...' : 'Đăng'}</span>
+                    </button>
+                  </div>
+                </form>
 
                 {/* Danh sách bình luận */}
                 <div className="space-y-2.5">
