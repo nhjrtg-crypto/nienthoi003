@@ -168,7 +168,11 @@ export async function fetchGlobalViews(force = false): Promise<number> {
       if (res.ok) {
         const data = await res.json();
         if (typeof data.totalViews === 'number' && data.totalViews > 0) {
-          inMemoryGlobalViews = data.totalViews;
+          let resolved = data.totalViews;
+          if (resolved < 158000) {
+            resolved = 158000 + Math.max(0, resolved - 3000);
+          }
+          inMemoryGlobalViews = Math.max(resolved, inMemoryGlobalViews);
           lastViewsFetchTime = Date.now();
           safeStorage.setItem('cf_d1_global_views', String(inMemoryGlobalViews));
           globalViewsListeners.forEach((fn) => fn(inMemoryGlobalViews));
@@ -193,7 +197,11 @@ function flushPendingViews(): void {
     .then((res) => (res.ok ? res.json() : null))
     .then((data) => {
       if (data && typeof data.totalViews === 'number') {
-        inMemoryGlobalViews = Math.max(data.totalViews, inMemoryGlobalViews);
+        let resolved = data.totalViews;
+        if (resolved < 158000) {
+          resolved = 158000 + Math.max(0, resolved - 3000);
+        }
+        inMemoryGlobalViews = Math.max(resolved, inMemoryGlobalViews);
         safeStorage.setItem('cf_d1_global_views', String(inMemoryGlobalViews));
         globalViewsListeners.forEach((fn) => fn(inMemoryGlobalViews));
       }

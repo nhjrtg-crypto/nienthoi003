@@ -73,11 +73,30 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       }
     }
 
+    // Lượt xem toàn trang
+    let row: any = null;
+    try {
+      row = await db.prepare(
+        'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
+      ).first();
+
+      if (!row) {
+        await db.prepare(
+          'INSERT INTO site_stats (id, total_views, today_views) VALUES ("global", 158000, 0)'
+        ).run();
+        row = { total_views: 158000, today_views: 0 };
+      } else if (typeof row.total_views === 'number' && row.total_views < 158000) {
+        const migrated = 158000 + Math.max(0, row.total_views - 3000);
+        await db.prepare('UPDATE site_stats SET total_views = ? WHERE id = "global"').bind(migrated).run();
+        row.total_views = migrated;
+      }
+    } catch {}
+
     return new Response(
       JSON.stringify({
         success: true,
-        totalViews: 158000,
-        todayViews: 0,
+        totalViews: row ? row.total_views : 158000,
+        todayViews: row ? row.today_views : 0,
       }),
       { headers: getHeaders }
     );
@@ -123,11 +142,25 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
         .run();
     }
 
+    // 2. Tăng lượt xem toàn trang cộng dồn (Global Website Views)
+    await db.prepare(
+      `INSERT INTO site_stats (id, total_views, today_views, updated_at) 
+       VALUES ('global', 158000 + ?, ?, CURRENT_TIMESTAMP)
+       ON CONFLICT(id) 
+       DO UPDATE SET total_views = MAX(total_views, 158000) + ?, today_views = today_views + ?, updated_at = CURRENT_TIMESTAMP`
+    )
+      .bind(amount, amount, amount, amount)
+      .run();
+
+    const row = await db.prepare(
+      'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
+    ).first();
+
     return new Response(
       JSON.stringify({
         success: true,
-        totalViews: 158000,
-        todayViews: 0,
+        totalViews: row ? row.total_views : 158000,
+        todayViews: row ? row.today_views : 0,
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );

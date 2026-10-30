@@ -5,6 +5,14 @@
 -- ============================================================================
 
 
+-- 1. BẢNG THỐNG KÊ TOÀN TRANG (Lượt xem toàn web cộng dồn)
+CREATE TABLE IF NOT EXISTS site_stats (
+  id TEXT PRIMARY KEY,
+  total_views INTEGER NOT NULL DEFAULT 158000,
+  today_views INTEGER NOT NULL DEFAULT 0,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 2. BẢNG LƯỢT XEM TỪNG BỘ TRUYỆN & CHƯƠNG
 CREATE TABLE IF NOT EXISTS novel_views (
   novel_id TEXT NOT NULL,

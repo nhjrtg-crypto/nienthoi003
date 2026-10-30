@@ -217,11 +217,71 @@ export default {
             }
           }
 
+          let row = await env.DB.prepare(
+            'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
+          ).first();
+
+          if (!row) {
+            await env.DB.prepare(
+              'INSERT INTO site_stats (id, total_views, today_views) VALUES ("global", 158000, 0)'
+            ).run();
+            row = { total_views: 158000, today_views: 0 };
+          } else if (typeof row.total_views === 'number' && row.total_views < 158000) {
+            const migrated = 158000 + Math.max(0, row.total_views - 3000);
+            await env.DB.prepare('UPDATE site_stats SET total_views = ? WHERE id = "global"').bind(migrated).run();
+            row.total_views = migrated;
+          }
+
+          return new Response(
+            JSON.stringify({ success: true, totalViews: row.total_views, todayViews: row.today_views }),
+            { headers: CACHE_HEADERS_GET }
+          );
+        } catch (error: any) {
+          return new Response(JSON.stringify({ success: false, error: error.message }), {
+            status: 500,
+            headers: NO_CACHE_HEADERS,
+          });
+        }
+      }
+
+      if (request.method === 'POST') {
+        if (!env.DB) {
+          return new Response(
+            JSON.stringify({ success: true, source: 'fallback', incremented: true }),
+            { headers: NO_CACHE_HEADERS }
+          );
+        }
+
+        try {
+          const body = (await request.json().catch(() => ({}))) as any;
+          const amount = typeof body.amount === 'number' && body.amount > 0 ? body.amount : 1;
+
+          if (body.novelId) {
+            const chapNum = typeof body.chapterNumber === 'number' ? body.chapterNumber : 0;
+            await env.DB.prepare(
+              `INSERT INTO novel_views (novel_id, chapter_number, views, updated_at) 
+               VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+               ON CONFLICT(novel_id, chapter_number) 
+               DO UPDATE SET views = views + ?, updated_at = CURRENT_TIMESTAMP`
+            ).bind(body.novelId, chapNum, amount, amount).run();
+          }
+
+          await env.DB.prepare(
+            `INSERT INTO site_stats (id, total_views, today_views, updated_at)
+             VALUES ('global', 158000 + ?, ?, CURRENT_TIMESTAMP)
+             ON CONFLICT(id) 
+             DO UPDATE SET total_views = MAX(total_views, 158000) + ?, today_views = today_views + ?, updated_at = CURRENT_TIMESTAMP`
+          ).bind(amount, amount, amount, amount).run();
+
+          const row = await env.DB.prepare(
+            'SELECT total_views, today_views FROM site_stats WHERE id = "global"'
+          ).first();
+
           return new Response(
             JSON.stringify({
               success: true,
-              totalViews: 3000,
-              todayViews: 0,
+              totalViews: row ? row.total_views : 158000,
+              todayViews: row ? row.today_views : 0,
             }),
             { headers: NO_CACHE_HEADERS }
           );
