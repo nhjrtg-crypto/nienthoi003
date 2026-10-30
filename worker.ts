@@ -38,6 +38,26 @@ export default {
     }
 
     // ========================================================================
+    // 0.5. CHẶN VÀ DẬP TẮT LỖI 405 CHO MỌI REQUEST TIẾN ĐỘ / PROGRESS / PROFILE CỦA BẢN CŨ
+    // Trả về 200 OK ngay lập tức để Cloudflare không báo 405 Method Not Allowed
+    // ========================================================================
+    if (
+      url.pathname === '/api/user/progress' ||
+      url.pathname.startsWith('/api/user/progress') ||
+      url.pathname === '/api/user/profile' ||
+      url.pathname.startsWith('/api/user/profile') ||
+      url.pathname.includes('/progress')
+    ) {
+      return new Response(null, {
+        status: 410, // 410 Gone: Báo hiệu endpoint đã vĩnh viễn bị xóa/ngừng hoạt động để trình duyệt client ngừng gửi request
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      });
+    }
+
+    // ========================================================================
     // 1. API: /api/novel-bundle (GỘP API: Lấy cả Views + Likes + Comments trong 1 request)
     // ========================================================================
     if (url.pathname === '/api/novel-bundle' || url.pathname === '/api/bundle') {
