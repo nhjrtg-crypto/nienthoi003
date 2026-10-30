@@ -32,7 +32,10 @@ export default {
     // ========================================================================
     if (!url.pathname.startsWith('/api/')) {
       if (env.ASSETS) {
-        return env.ASSETS.fetch(request);
+        const res = await env.ASSETS.fetch(request);
+        const newRes = new Response(res.body, res);
+        newRes.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        return newRes;
       }
       return new Response('Not found', { status: 404 });
     }
