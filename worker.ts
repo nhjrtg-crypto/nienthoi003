@@ -95,6 +95,7 @@ export default {
                     }
                   }
                 }
+              } catch {}
 
               return { novelViews, chapterViews, totalGlobalViews: 3000, todayGlobalViews: 0 };
             })(),

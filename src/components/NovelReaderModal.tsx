@@ -740,7 +740,6 @@ export const NovelReaderModal: React.FC<NovelReaderModalProps> = ({
     };
     setGoogleUser(user);
     setAuthorNameInput(nickname);
-    triggerToast('Đăng nhập thành công!', `Chào mừng ${nickname}! Bạn có thể gửi bình luận ngay bây giờ.`);
   };
 
   useEffect(() => {

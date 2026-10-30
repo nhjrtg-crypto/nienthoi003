@@ -2028,14 +2028,13 @@ export const NovelDetailView: React.FC<NovelDetailViewProps> = ({
     e.preventDefault();
     if (!newCommentText.trim()) return;
 
-    if (!googleUser) {
-      handleGoogleLoginForComment();
+    const userNickname = safeStorage.getItem('cosmo_profile_nickname');
+    const finalAuthor = (userNickname || googleUser?.displayName || userName || 'Bạn Đọc').trim();
+    if (!finalAuthor || finalAuthor.length <= 1) {
+      window.alert('Vui lòng nhập tên của bạn (tối thiểu 2 ký tự) để bình luận!');
       return;
     }
-
-    const userNickname = safeStorage.getItem('cosmo_profile_nickname');
-    const finalAuthor = (userNickname || googleUser.displayName || userName || googleUser.email?.split('@')[0] || 'Bạn Đọc').trim();
-    const finalAvatar = googleUser.photoURL || '';
+    const finalAvatar = googleUser?.photoURL || '';
     try {
       safeStorage.setItem('cosmo_comment_author_name', finalAuthor);
     } catch {}

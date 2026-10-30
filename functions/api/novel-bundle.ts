@@ -81,6 +81,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
               }
             }
           }
+        } catch {}
 
         return { novelViews, chapterViews, totalGlobalViews: 3000, todayGlobalViews: 0 };
       })(),
