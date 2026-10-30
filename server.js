@@ -20,7 +20,7 @@ let dbData = {
       intro_page: 30,
     },
     views: {
-      total: 3000,
+      total: 158000,
     },
   },
   comments: [],
@@ -38,7 +38,7 @@ try {
     const parsed = JSON.parse(raw);
     if (parsed && typeof parsed === 'object') {
       dbData = { ...dbData, ...parsed };
-      if (!dbData.stats) dbData.stats = { likes: { intro_page: 30 }, views: { total: 3000 } };
+      if (!dbData.stats) dbData.stats = { likes: { intro_page: 30 }, views: { total: 158000 } };
       if (!dbData.comments) dbData.comments = [];
       if (!dbData.notes) dbData.notes = { style1: [], style2: [] };
       if (!dbData.covers) dbData.covers = {};

@@ -60,7 +60,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       (async () => {
         let novelViews = 0;
         let chapterViews = 0;
-        let totalGlobalViews = 3000;
+        let totalGlobalViews = 158000;
         let todayGlobalViews = 0;
 
         try {
@@ -83,7 +83,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
           }
         } catch {}
 
-        return { novelViews, chapterViews, totalGlobalViews: 3000, todayGlobalViews: 0 };
+        return { novelViews, chapterViews, totalGlobalViews: 158000, todayGlobalViews: 0 };
       })(),
 
       // 2. Lấy số lượng Likes

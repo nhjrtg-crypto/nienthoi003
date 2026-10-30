@@ -65,7 +65,7 @@ function deduplicatedFetch<T>(key: string, fetcher: () => Promise<T>): Promise<T
 }
 
 // Memory caches
-let inMemoryGlobalViews = 3000;
+let inMemoryGlobalViews = 158000;
 let lastViewsFetchTime = 0;
 const globalViewsListeners = new Set<(views: number) => void>();
 
@@ -122,21 +122,19 @@ const pendingLikesTimers: Record<string, any> = {};
 let pendingGlobalViewsAmount = 0;
 let pendingViewsTimer: any = null;
 
-// Khởi tạo cache ban đầu từ localStorage (tự động đưa về mốc 3000 theo yêu cầu)
+// Khởi tạo cache ban đầu từ localStorage (duy trì mốc 158.000 lượt xem)
 try {
   const savedViews = safeStorage.getItem('cf_d1_global_views');
   if (savedViews) {
     const parsed = parseInt(savedViews, 10);
-    if (!isNaN(parsed) && parsed > 0) {
-      if (parsed >= 10000) {
-        inMemoryGlobalViews = 3000;
-        safeStorage.setItem('cf_d1_global_views', '3000');
-      } else {
-        inMemoryGlobalViews = Math.max(parsed, 3000);
-      }
+    if (!isNaN(parsed) && parsed >= 158000) {
+      inMemoryGlobalViews = parsed;
+    } else {
+      inMemoryGlobalViews = 158000;
+      safeStorage.setItem('cf_d1_global_views', '158000');
     }
   } else {
-    safeStorage.setItem('cf_d1_global_views', '3000');
+    safeStorage.setItem('cf_d1_global_views', '158000');
   }
 } catch {}
 

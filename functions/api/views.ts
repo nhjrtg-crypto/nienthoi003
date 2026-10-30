@@ -31,7 +31,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
       JSON.stringify({
         success: true,
         source: 'fallback',
-        totalViews: 3000,
+        totalViews: 158000,
         todayViews: 0,
       }),
       { headers: getHeaders }
@@ -76,7 +76,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     return new Response(
       JSON.stringify({
         success: true,
-        totalViews: 3000,
+        totalViews: 158000,
         todayViews: 0,
       }),
       { headers: getHeaders }
@@ -126,7 +126,7 @@ export const onRequestPost = async (context: EventContext): Promise<Response> =>
     return new Response(
       JSON.stringify({
         success: true,
-        totalViews: 3000,
+        totalViews: 158000,
         todayViews: 0,
       }),
       { headers: { 'Content-Type': 'application/json' } }
